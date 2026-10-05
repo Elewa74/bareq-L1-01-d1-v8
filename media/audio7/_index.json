@@ -900,10 +900,11 @@
   "take": "composed",
   "checks": {
    "composed": "bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
+   "note": "rebuilt with v8 bq7_S_mi",
    "dur": 1.99,
-   "lufs": -17.4,
-   "tp": -5.0
+   "lufs": -17.5,
+   "tp": -4.0,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -1108,17 +1109,25 @@
   "id": "bq7_S_mi",
   "speaker": "HAB",
   "text": "مِ",
-  "dur": 0.39,
+  "dur": 0.42,
   "file": "media/audio7/bq7_S_mi.mp3",
-  "take": "G_sA_A#1",
+  "take": "mi8a_C",
   "checks": {
    "kind": "short",
    "vowel_est_s": 0.18,
    "voiced_s": 0.28,
    "breath_after_s": 0.0,
-   "dur": 0.39,
+   "dur": 0.42,
    "lufs": -17.4,
-   "tp": -5.5
+   "tp": -4.0,
+   "asr": "مي",
+   "nasal_ms": 130,
+   "i_ms": 150,
+   "F1_hz": 396,
+   "F2_hz": 3223,
+   "note": "owner R3-6: bright full [i] like the start of «مي»; prompt «مِي» cut short (old take was lax «مِه», F1≈500)",
+   "max_closed_nasal_s": 0,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -1277,10 +1286,11 @@
   "take": "composed",
   "checks": {
    "composed": "bq7_S_mi +0.6s bq7_S_mii",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
+   "note": "rebuilt with v8 bq7_S_mi",
    "dur": 1.78,
-   "lufs": -17.5,
-   "tp": -5.0
+   "lufs": -17.4,
+   "tp": -3.7,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -1499,10 +1509,11 @@
   "take": "composed",
   "checks": {
    "composed": "c_E01ok +0.35s bq7_S_ma +0.45s bq7_S_maa +0.45s bq7_S_mu +0.45s bq7_S_mi",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
+   "note": "rebuilt with v8 bq7_S_mi",
    "dur": 6.5,
    "lufs": -17.4,
-   "tp": -1.9
+   "tp": -1.9,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -1939,15 +1950,16 @@
   "id": "bq7_E02_ok",
   "speaker": "HAB",
   "text": "نَعَمْ! سَمِعْناهُ في كُلِّ الكَلِماتِ: مَ… مِ… مُ… ما… مي… مو.",
-  "dur": 9.09,
+  "dur": 9.12,
   "file": "media/audio7/bq7_E02_ok.mp3",
   "take": "composed",
   "checks": {
    "composed": "c_E02ok +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu +0.45s bq7_S_maa +0.45s bq7_S_mii +0.45s bq7_S_muu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 9.09,
+   "note": "rebuilt with v8 bq7_S_mi",
+   "dur": 9.12,
    "lufs": -17.4,
-   "tp": -2.0
+   "tp": -1.9,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -2066,15 +2078,16 @@
   "id": "bq7_E03_intro",
   "speaker": "HAB",
   "text": "اِسْمَعْ كَلِمَتَيْنِ، وَالْمِسِ الكَلِمَةَ الَّتي فيها صَوْتُنا: مَ… مِ… مُ.",
-  "dur": 6.37,
+  "dur": 6.4,
   "file": "media/audio7/bq7_E03_intro.mp3",
   "take": "composed",
   "checks": {
    "composed": "c_E03 +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 6.37,
+   "note": "rebuilt with v8 bq7_S_mi",
+   "dur": 6.4,
    "lufs": -17.4,
-   "tp": -1.8
+   "tp": -1.8,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -2088,12 +2101,13 @@
    "asr_turbo": "اسمع والمس كل كلمة فيها صوتنا ما م م",
    "dur": 6.01,
    "lufs": -17.4,
-   "tp": -2.0,
+   "tp": -1.7,
    "max_closed_nasal_s": 0.07,
    "nasal_run_resolution_s": 0.05,
-   "fix_round": "VOICE r3 2026-10-05",
+   "fix_round": "v8 2026-10-05",
    "composed": "c_l1all +0.35 S_ma +0.45 S_mi +0.45 S_mu",
-   "ma_source": "approved bq7_S_ma (real vowel)"
+   "ma_source": "approved bq7_S_ma (real vowel)",
+   "note": "rebuilt with v8 bq7_S_mi"
   }
  },
  {
@@ -3089,15 +3103,16 @@
   "id": "bq7_E05_say_mi",
   "speaker": "HAB",
   "text": "قُلْ مَعي: مِ.",
-  "dur": 1.38,
+  "dur": 1.41,
   "file": "media/audio7/bq7_E05_say_mi.mp3",
   "take": "composed",
   "checks": {
    "composed": "c_qul_maai +0.3s bq7_S_mi",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.38,
-   "lufs": -17.4,
-   "tp": -5.5
+   "note": "rebuilt with v8 bq7_S_mi",
+   "dur": 1.41,
+   "lufs": -17.5,
+   "tp": -4.1,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -3342,15 +3357,16 @@
   "id": "bq7_E06_recall",
   "speaker": "HAB",
   "text": "سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.",
-  "dur": 3.97,
+  "dur": 4.0,
   "file": "media/audio7/bq7_E06_recall.mp3",
   "take": "composed",
   "checks": {
    "composed": "c_E06rec +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 3.97,
+   "note": "rebuilt with v8 bq7_S_mi",
+   "dur": 4.0,
    "lufs": -17.4,
-   "tp": -2.7
+   "tp": -2.7,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -3450,10 +3466,11 @@
   "take": "composed",
   "checks": {
    "composed": "c_E06vow +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
+   "note": "rebuilt with v8 bq7_S_mi",
    "dur": 4.21,
-   "lufs": -17.5,
-   "tp": -4.4
+   "lufs": -17.4,
+   "tp": -4.0,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -5260,23 +5277,23 @@
   "id": "bq7_E11_r_s5",
   "speaker": "BRQ",
   "text": "هَذا حَرْفُ المِيمِ: م. صَوْتُهُ: مَ، مِ، مُ.",
-  "dur": 5.62,
+  "dur": 5.69,
   "file": "media/audio7/bq7_E11_r_s5.mp3",
   "take": "composed",
   "checks": {
-   "composed": "c_rs5 (BRQ «هَذا حَرْفُ المِيمِ. صَوْتُهُ:» fx_brq_A) +0.4 brq_ma +0.45 brq_mi +0.45 brq_mu",
+   "composed": "c_rs5 +0.4 brq_ma +0.45 brq_mi(v8, bmi_A) +0.45 brq_mu",
    "asr": "هذا حرف الميم صوته ما مي مو",
    "vowel_F2_hz": {
     "ma": 1726,
     "mi": 2320,
     "mu": 1148
    },
-   "note": "replaces hummed rs5_B; standalone «م» after المِيمِ dropped (letter name + sound kept)",
-   "dur": 5.62,
-   "lufs": -17.5,
-   "tp": -4.2,
+   "note": "Bariq «مِ» re-taken (old ASR «مه» → new «مي»)",
+   "dur": 5.69,
+   "lufs": -17.4,
+   "tp": -4.0,
    "max_closed_nasal_s": 0.14,
-   "fix_round": "R2-fix 2026-10-05",
+   "fix_round": "v8 2026-10-05",
    "nasal_run_resolution_s": 0.05
   }
  },
@@ -5579,10 +5596,11 @@
   "take": "composed",
   "checks": {
    "composed": "c_qul +0.35s bq7_S_ma +0.4s bq7_S_mi +0.4s bq7_S_mu +0.4s bq7_S_maa +0.4s bq7_S_mii +0.4s bq7_S_muu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
+   "note": "rebuilt with v8 bq7_S_mi",
    "dur": 6.3,
    "lufs": -17.4,
-   "tp": -3.6
+   "tp": -3.3,
+   "fix_round": "v8 2026-10-05"
   }
  },
  {
@@ -6106,6 +6124,69 @@
    "dur": 2.35,
    "lufs": -19.3,
    "tp": -1.7
+  }
+ },
+ {
+  "id": "bq7_E13_jda3",
+  "speaker": "JDA",
+  "text": "أَمْسِكا يَدي يا وَلَدَيَّ… هَيّا نَدْخُلْ!",
+  "dur": 3.03,
+  "file": "media/audio7/bq7_E13_jda3.mp3",
+  "take": "jda3_C",
+  "checks": {
+   "dur": 3.03,
+   "lufs": -17.6,
+   "tp": -4.1,
+   "asr_medium": "أمسك يدي يا ولدي هيا ندخل",
+   "dual_check": "after «أَمْسِكا» kāf: 0.30 s voiced to the «يدي» d-burst (HAB «أمسيكا» ref = 0.24 s) → dual ā present; ASR folds ā",
+   "voice": "Kalemon - Grandmother 0dHpICF3K2yC9cu1PEWg (approved JDA_0)",
+   "takes": 3,
+   "max_closed_nasal_s": 0.18,
+   "nasal_run_resolution_s": 0.05,
+   "note": "«وَلَدَيَّ» in pause = /waladayy/; ASR writes «ولدي» — listen",
+   "fix_round": "JDA 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E13_jda6",
+  "speaker": "JDA",
+  "text": "تَفَضَّلا يا وَلَدَيَّ!",
+  "dur": 2.01,
+  "file": "media/audio7/bq7_E13_jda6.mp3",
+  "take": "jda6_A",
+  "checks": {
+   "dur": 2.01,
+   "lufs": -17.5,
+   "tp": -4.2,
+   "asr_medium": "تفضلا يا ولدي",
+   "dual_check": "«تفضلا» dual heard by ASR",
+   "voice": "Kalemon - Grandmother 0dHpICF3K2yC9cu1PEWg (approved JDA_0)",
+   "takes": 3,
+   "max_closed_nasal_s": 0.13,
+   "nasal_run_resolution_s": 0.05,
+   "note": "«وَلَدَيَّ» in pause = /waladayy/; ASR writes «ولدي» — listen",
+   "fix_round": "JDA 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E13_jda7",
+  "speaker": "JDA",
+  "text": "اِرْبِطا الحِزامَ… سَنَعودُ إِلى البَيْتِ.",
+  "dur": 2.9,
+  "file": "media/audio7/bq7_E13_jda7.mp3",
+  "take": "jda7_A",
+  "checks": {
+   "dur": 2.9,
+   "lufs": -17.5,
+   "tp": -1.4,
+   "asr_medium": "اربط الحزام سنعود الى البيت",
+   "dual_check": "ṭ + 0.12 s vowel+l before ḥ = «اِرْبِطَ‿الْحِزامَ» (dual ā shortened before the article, as in MSA); same in all 3 takes",
+   "voice": "Kalemon - Grandmother 0dHpICF3K2yC9cu1PEWg (approved JDA_0)",
+   "takes": 3,
+   "max_closed_nasal_s": 0.17,
+   "nasal_run_resolution_s": 0.05,
+   "note": "«وَلَدَيَّ» in pause = /waladayy/; ASR writes «ولدي» — listen",
+   "fix_round": "JDA 2026-10-05"
   }
  },
  {
@@ -7585,6 +7666,23 @@
    "lufs": -19.1,
    "tp": -2.0,
    "gain": "same gain as mix"
+  }
+ },
+ {
+  "id": "bq7_song_v8",
+  "speaker": "MUSIC",
+  "text": "الأُنْشودَةُ — v8 mix",
+  "dur": 60.02,
+  "file": "media/audio7/bq7_song_v8.mp3",
+  "take": "song_A + re-voiced outro",
+  "checks": {
+   "master_lufs": -16.0,
+   "tp": -2.6,
+   "vocal_over_bed_LU_min": 8.9,
+   "vocal_over_bed_LU_median": 13.3,
+   "outro": "«شُكْرًا يا ماجِدْ!» re-voiced 57.56–59.40 (SAY×2 + BRQ chorus stack, rubberband to the 103.4 BPM grid), ASR «شكراً يا ماجد»",
+   "stems": "v7/audio8/song/",
+   "cues": "v7/audio8/song/song_v8_cues.json"
   }
  }
 ]

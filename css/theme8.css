@@ -1,0 +1,263 @@
+/* theme8.css — Bariq v8 design system (DESIGN team) · draft_unapproved · loaded ONLY when <html data-theme="8">
+   Contract: /home/claude/web/v7/design/THEME8.md  (class names are frozen — add, never rename)
+   Icons: «ب + ج» = flat duotone shapes + navy line + white die-cut rim (assets/icons8/*.svg)
+   Letter font: Vazirmatn (owner decision 2026-10-05) as --font-letter. Instruction text keeps --ff-child. */
+
+@font-face { font-family: 'BQ8 Letter'; font-weight: 700; font-style: normal; font-display: block;
+  src: url(../assets/fonts/Vazirmatn-Arabic-700.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF, U+200C-200D, U+0020-0040; }
+@font-face { font-family: 'BQ8 Letter'; font-weight: 900; font-style: normal; font-display: block;
+  src: url(../assets/fonts/Vazirmatn-Arabic-900.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF, U+200C-200D, U+0020-0040; }
+
+/* ───────── 1 · tokens ───────── */
+:root[data-theme="8"] {
+  --bq8-navy: #0B2D4F; --bq8-ink: #0B2D4F; --bq8-yellow: #FFC21A; --bq8-cream: #FFF8E8; --bq8-white: #fff; --bq8-meem: #E2574C;
+  --bq8-listen: #FF9F1C; --bq8-listen-l: #FFE1B0; --bq8-listen-d: #D96F00;
+  --bq8-replay: #8B5CF6; --bq8-replay-l: #E4D8FF; --bq8-replay-d: #5B33C9;
+  --bq8-touch:  #FF5F9E; --bq8-touch-l:  #FFD6E6; --bq8-touch-d:  #D12E70;
+  --bq8-eye:    #1FA2F2; --bq8-eye-l:    #CDEBFF; --bq8-eye-d:    #0A6FC0;
+  --bq8-mouth:  #FF5A4E; --bq8-mouth-l:  #FFD9D4; --bq8-mouth-d:  #C8291F;
+  --bq8-ear:    #22C27A; --bq8-ear-l:    #CFF5E2; --bq8-ear-d:    #0F8A52;
+  --bq8-star:   #FFC21A; --bq8-star-l:   #FFF0B8; --bq8-star-d:   #D68F00;
+  --bq8-home:   #3D7BF0; --bq8-home-l:   #D6E4FF; --bq8-home-d:   #1F4FB8;
+  --bq8-ok: #22C27A; --bq8-no: #FF8A3D;
+  --bq8-r-xs: 10px; --bq8-r-sm: 16px; --bq8-r-md: 24px; --bq8-r-lg: 32px; --bq8-r-xl: 46px;
+  --font-letter: 'BQ8 Letter', 'Vazirmatn', 'Noto Naskh Arabic', sans-serif;
+  --font-ui: var(--ff-ui, 'Readex Pro', system-ui, sans-serif);
+  --font-bubble: var(--ff-child, 'Scheherazade New', serif);
+  --font-kid: 'Baloo Bhaijaan 2', var(--font-ui);
+  --bq8-touch-min: 64px;
+  --u: 1px;
+}
+
+/* derived sizes: re-declared on every stage child so var(--u) scales with the stage (custom props resolve where declared) */
+:root[data-theme="8"], .bq8-stage > * {
+  /* unit: 1px of the 1180-wide design. Outside a stage = 1px; inside a stage it scales with the stage width */
+  --bq8-line: calc(var(--u) * 3.5);
+  --bq8-rim: calc(var(--u) * 5);
+  --bq8-sh-1: 0 calc(var(--u)*4) calc(var(--u)*8) rgba(11,45,79,.18);
+  --bq8-sh-2: 0 calc(var(--u)*12) calc(var(--u)*24) calc(var(--u)*-8) rgba(11,45,79,.40);
+  --bq8-sh-3: 0 calc(var(--u)*22) calc(var(--u)*46) calc(var(--u)*-14) rgba(5,55,95,.50);
+  --bq8-btn: max(var(--bq8-touch-min), calc(var(--u) * 76));
+  --bq8-btn-lg: max(var(--bq8-touch-min), calc(var(--u) * 104));
+}
+
+/* ───────── 2 · stage ───────── */
+.bq8-stage, .bq8-stage *, .bq8-stage *::before, .bq8-stage *::after { box-sizing: border-box; }
+.bq8-stage { position: relative; width: 100%; aspect-ratio: 1180 / 820; container-type: size; overflow: hidden;
+  border-radius: 24px; isolation: isolate; color: var(--bq8-navy); direction: rtl;
+  --u: calc(100cqw / 1180);
+  background: #5CC8EE; }
+.bq8-island, .bq8-board {
+  background:
+    url(../media/img8/d8_island_bg.webp) center / cover no-repeat,
+    radial-gradient(120% 90% at 50% 45%, #8EE0F7 0, #3BBDEB 52%, #1890D0 100%); }
+.bq8-map { background: url(../media/img8/d8_island_map.webp) center / cover no-repeat, radial-gradient(120% 90% at 50% 45%, #8EE0F7 0, #3BBDEB 52%, #1890D0 100%); }
+/* soft vignette so the panel reads first */
+.bq8-island::before, .bq8-board::before, .bq8-map::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(75% 70% at 50% 52%, rgba(255,255,255,.10), rgba(255,255,255,0) 60%, rgba(4,40,80,.14) 100%); }
+.bq8-stage > * { --u: calc(100cqw / 1180); position: absolute; z-index: 1; }
+
+/* HUD: listen (start/right) · bubble · progress (end/left) */
+.bq8-hud { top: calc(var(--u)*22); inset-inline: calc(var(--u)*26); display: flex; align-items: center; gap: calc(var(--u)*16); z-index: 5; }
+.bq8-hud .bq8-progress { margin-inline-start: auto; }
+
+/* framed content panel (island = light gold frame) */
+.bq8-panel { top: calc(var(--u)*150); bottom: calc(var(--u)*116); inset-inline: calc(var(--u)*84); z-index: 2;
+  display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*24); padding: calc(var(--u)*26);
+  border-radius: calc(var(--u)*44);
+  border: calc(var(--u)*9) solid transparent;
+  background:
+    linear-gradient(180deg, rgba(255,252,243,.97), rgba(255,244,219,.97)) padding-box,
+    linear-gradient(160deg, #FFF1BE 0%, #FFCF4D 22%, #F2A516 55%, #FFD86B 78%, #E59A12 100%) border-box;
+  box-shadow: 0 0 0 calc(var(--u)*3) rgba(255,255,255,.75), var(--bq8-sh-3), inset 0 calc(var(--u)*2) 0 #fff; }
+.bq8-panel::before { content: ''; position: absolute; inset: calc(var(--u)*8); border-radius: calc(var(--u)*30); pointer-events: none;
+  border: calc(var(--u)*2) dashed rgba(214,143,0,.38); }
+.bq8-panel--wide { inset-inline: calc(var(--u)*34); }
+.bq8-panel--low { top: calc(var(--u)*170); }
+.bq8-panel--tall { top: calc(var(--u)*128); bottom: calc(var(--u)*92); }
+.bq8-panel--col { flex-direction: column; }
+
+/* wooden board variant (premium carved oak; uses the ART plate when present) */
+.bq8-board .bq8-panel { border-style: solid; border-color: transparent; border-width: calc(var(--u)*46) calc(var(--u)*77);
+  border-radius: 0; padding: calc(var(--u)*6) 0;
+  border-image: url(../media/img8/d8_board_frame.webp) 12% fill / calc(var(--u)*46) calc(var(--u)*77) / 0 stretch;
+  background: none; box-shadow: none; filter: drop-shadow(0 calc(var(--u)*18) calc(var(--u)*18) rgba(60,30,0,.38)); }
+.bq8-board .bq8-panel::before, .bq8-board .bq8-panel::after { display: none; }
+.bq8-board--fallback .bq8-panel, .bq8-board.no-art .bq8-panel { border-image: none;
+  background: linear-gradient(#FBEFD6, #F5E2BC) padding-box,
+    repeating-linear-gradient(92deg, rgba(120,70,20,.10) 0 3px, transparent 3px 11px) border-box,
+    linear-gradient(180deg, #E0A462, #B8773A) border-box;
+  box-shadow: inset 0 0 0 calc(var(--u)*2) rgba(140,85,35,.35), var(--bq8-sh-3); }
+
+/* stars that replace the basket */
+.bq8-stars { bottom: calc(var(--u)*30); inset-inline: 0; margin-inline: auto; width: max-content; z-index: 4;
+  display: flex; gap: calc(var(--u)*14); padding: calc(var(--u)*8) calc(var(--u)*20);
+  border-radius: 999px; background: rgba(11,45,79,.72); box-shadow: 0 0 0 calc(var(--u)*3) rgba(255,255,255,.7), var(--bq8-sh-1); }
+.bq8-star { display: block; width: calc(var(--u)*58); height: calc(var(--u)*58); background: url(../assets/icons8/star_empty.svg) center / contain no-repeat; opacity: .9; }
+.bq8-star.is-on { background-image: url(../assets/icons8/star.svg); opacity: 1; animation: bq8-pop .45s cubic-bezier(.3,1.6,.5,1) both; }
+
+/* progress dots */
+.bq8-progress { position: relative; display: flex; align-items: center; gap: calc(var(--u)*8); padding: calc(var(--u)*10) calc(var(--u)*16);
+  border-radius: 999px; background: rgba(255,255,255,.92); box-shadow: 0 0 0 var(--bq8-line) rgba(11,45,79,.12), var(--bq8-sh-1); }
+.bq8-progress > i { width: calc(var(--u)*20); height: calc(var(--u)*20); border-radius: 999px; background: #DCE5F0; box-shadow: inset 0 calc(var(--u)*-3) 0 rgba(0,0,0,.08); }
+.bq8-progress > i.is-done { background: var(--bq8-ok); }
+.bq8-progress > i.is-now { width: calc(var(--u)*40); background: var(--bq8-yellow); }
+
+/* Bariq slot (bottom-left in RTL = inline-end) */
+.bq8-bariq { bottom: calc(var(--u)*6); inset-inline-end: calc(var(--u)*4); width: calc(var(--u)*200); z-index: 6; pointer-events: none; }
+.bq8-bariq img { display: block; width: 100%; filter: drop-shadow(0 calc(var(--u)*16) calc(var(--u)*12) rgba(0,40,80,.28)); animation: bq8-bob 3.2s ease-in-out infinite; }
+.bq8-bariq::after { content: ''; position: absolute; inset-inline: 22%; bottom: calc(var(--u)*-2); height: calc(var(--u)*18); border-radius: 50%;
+  background: radial-gradient(rgba(0,40,80,.28), transparent 70%); z-index: -1; }
+.bq8-stage--nobariq .bq8-bariq { display: none; }
+
+/* ───────── 3 · icons ───────── */
+.bq8-ic { display: inline-block; width: 1em; height: 1em; flex: none; background: center / contain no-repeat; vertical-align: middle; }
+.bq8-icimg { width: 1em; height: 1em; }
+.bq8-ic--listen{background-image:url(../assets/icons8/listen.svg)} .bq8-ic--sound_off{background-image:url(../assets/icons8/sound_off.svg)}
+.bq8-ic--replay{background-image:url(../assets/icons8/replay.svg)} .bq8-ic--touch{background-image:url(../assets/icons8/touch.svg)}
+.bq8-ic--hand_drag{background-image:url(../assets/icons8/hand_drag.svg)} .bq8-ic--eye{background-image:url(../assets/icons8/eye.svg)}
+.bq8-ic--mouth{background-image:url(../assets/icons8/mouth.svg)} .bq8-ic--ear{background-image:url(../assets/icons8/ear.svg)}
+.bq8-ic--star{background-image:url(../assets/icons8/star.svg)} .bq8-ic--star_empty{background-image:url(../assets/icons8/star_empty.svg)}
+.bq8-ic--home{background-image:url(../assets/icons8/home.svg)} .bq8-ic--map{background-image:url(../assets/icons8/map.svg)}
+.bq8-ic--pencil{background-image:url(../assets/icons8/pencil.svg)} .bq8-ic--puzzle{background-image:url(../assets/icons8/puzzle.svg)}
+.bq8-ic--next{background-image:url(../assets/icons8/next.svg)} .bq8-ic--back{background-image:url(../assets/icons8/back.svg)}
+.bq8-ic--check{background-image:url(../assets/icons8/check.svg)} .bq8-ic--close{background-image:url(../assets/icons8/close.svg)}
+.bq8-ic--play{background-image:url(../assets/icons8/play.svg)} .bq8-ic--pause{background-image:url(../assets/icons8/pause.svg)}
+.bq8-ic--fullscreen{background-image:url(../assets/icons8/fullscreen.svg)} .bq8-ic--hint{background-image:url(../assets/icons8/hint.svg)}
+.bq8-ic--family{background-image:url(../assets/icons8/family.svg)} .bq8-ic--book{background-image:url(../assets/icons8/book.svg)}
+.bq8-ic--game{background-image:url(../assets/icons8/game.svg)} .bq8-ic--lock{background-image:url(../assets/icons8/lock.svg)}
+
+/* ───────── 4 · buttons ───────── */
+.bq8-btn { --h: var(--bq8-star-l); --hd: var(--bq8-star); position: relative; display: inline-grid; place-items: center; flex: none;
+  width: var(--bq8-btn); height: var(--bq8-btn); padding: 0; border-radius: 50%; cursor: pointer;
+  border: var(--bq8-line) solid var(--bq8-navy);
+  background: radial-gradient(circle at 38% 30%, #fff 0, var(--h) 58%);
+  box-shadow: inset 0 calc(var(--u)*-6) 0 color-mix(in srgb, var(--hd) 45%, transparent), 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*8) calc(var(--u)*12) rgba(11,45,79,.28);
+  font-size: calc(var(--bq8-btn) * .72); transition: transform .12s ease, box-shadow .12s ease; -webkit-tap-highlight-color: transparent; }
+.bq8-btn > .bq8-ic { margin-top: calc(var(--u)*-3); }
+.bq8-btn:hover { transform: translateY(calc(var(--u)*-2)); }
+.bq8-btn:active { transform: translateY(calc(var(--u)*3)) scale(.97); box-shadow: inset 0 calc(var(--u)*-3) 0 color-mix(in srgb, var(--hd) 45%, transparent), 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*3) calc(var(--u)*6) rgba(11,45,79,.28); }
+.bq8-btn:disabled { filter: grayscale(.8); opacity: .55; cursor: default; }
+.bq8-btn.is-active { box-shadow: inset 0 calc(var(--u)*-6) 0 color-mix(in srgb, var(--hd) 45%, transparent), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--hd), 0 calc(var(--u)*10) calc(var(--u)*16) rgba(11,45,79,.32); transform: scale(1.06); }
+.bq8-btn.is-pulse::after { content: ''; position: absolute; inset: calc(var(--u)*-10); border-radius: 50%; border: calc(var(--u)*4) solid var(--hd); animation: bq8-ring 1.6s ease-out infinite; }
+.bq8-btn--lg { width: var(--bq8-btn-lg); height: var(--bq8-btn-lg); font-size: calc(var(--bq8-btn-lg) * .72); }
+.bq8-btn--sm { width: var(--bq8-touch-min); height: var(--bq8-touch-min); font-size: calc(var(--bq8-touch-min) * .74); }
+.bq8-btn--listen { --h: #FFE38A; --hd: var(--bq8-star-d); }
+.bq8-btn--replay { --h: var(--bq8-replay-l); --hd: var(--bq8-replay); }
+.bq8-btn--touch  { --h: var(--bq8-touch-l);  --hd: var(--bq8-touch); }
+.bq8-btn--eye    { --h: var(--bq8-eye-l);    --hd: var(--bq8-eye); }
+.bq8-btn--mouth  { --h: var(--bq8-mouth-l);  --hd: var(--bq8-mouth); }
+.bq8-btn--ear    { --h: var(--bq8-ear-l);    --hd: var(--bq8-ear); }
+.bq8-btn--star   { --h: var(--bq8-star-l);   --hd: var(--bq8-star); }
+.bq8-btn--home   { --h: var(--bq8-home-l);   --hd: var(--bq8-home); }
+.bq8-btn--next   { --h: var(--bq8-ear-l);    --hd: var(--bq8-ear); }
+.bq8-btn--back   { --h: var(--bq8-home-l);   --hd: var(--bq8-home); }
+.bq8-btn--check  { --h: var(--bq8-ear-l);    --hd: var(--bq8-ear); }
+.bq8-btn--hint   { --h: #FFF4C2;             --hd: var(--bq8-star); }
+.bq8-pill { --h: var(--bq8-ear); --hd: var(--bq8-ear-d); display: inline-flex; align-items: center; gap: calc(var(--u)*10); min-height: var(--bq8-touch-min);
+  padding: 0 calc(var(--u)*28); border-radius: 999px; border: var(--bq8-line) solid var(--bq8-navy); background: var(--h); color: #fff;
+  font: 700 calc(var(--u)*28)/1 var(--font-ui); box-shadow: inset 0 calc(var(--u)*-6) 0 var(--hd), 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-1); cursor: pointer; }
+.bq8-pill .bq8-ic { font-size: 1.5em; }
+
+/* ───────── 5 · instruction bubble ───────── */
+.bq8-bubble { position: relative; min-height: var(--bq8-touch-min); display: flex; align-items: center; padding: calc(var(--u)*12) calc(var(--u)*28);
+  border-radius: calc(var(--u)*30); background: #fff; color: var(--bq8-navy);
+  font: 700 calc(var(--u)*30)/1.75 var(--font-bubble);
+  box-shadow: 0 0 0 var(--bq8-line) rgba(11,45,79,.9), 0 0 0 calc(var(--u)*8.5) rgba(255,255,255,.85), var(--bq8-sh-2); }
+.bq8-bubble--small { font-size: calc(var(--u)*24); padding-block: calc(var(--u)*6); }
+.bq8-bubble--bariq::after { content: ''; position: absolute; bottom: calc(var(--u)*-14); inset-inline-end: calc(var(--u)*36); width: calc(var(--u)*26); height: calc(var(--u)*26);
+  background: #fff; transform: rotate(45deg); box-shadow: calc(var(--u)*3) calc(var(--u)*3) 0 0 rgba(11,45,79,.9); }
+
+/* ───────── 6 · picture answer card ───────── */
+.bq8-card { position: relative; width: calc(var(--u)*212); flex: none; padding: calc(var(--u)*10) calc(var(--u)*10) calc(var(--u)*12);
+  border-radius: calc(var(--u)*28); background: #fff; border: var(--bq8-line) solid var(--bq8-navy);
+  box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); cursor: pointer; transition: transform .16s ease, box-shadow .16s ease, opacity .2s; }
+.bq8-card > img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: calc(var(--u)*18); }
+.bq8-card--sm { width: calc(var(--u)*168); } .bq8-card--lg { width: calc(var(--u)*262); }
+.bq8-card__word { display: block; text-align: center; margin-top: calc(var(--u)*6); font: 700 calc(var(--u)*36)/1.35 var(--font-letter); color: var(--bq8-navy); }
+.bq8-card__ear { position: absolute; left: 50%; bottom: calc(var(--u)*-30); transform: translateX(-50%); }
+.bq8-card__ear .bq8-btn { font-size: calc(var(--bq8-touch-min) * .92); }
+.bq8-card:has(.bq8-card__ear) { padding-bottom: calc(var(--u)*40); }
+.bq8-card:hover, .bq8-card.is-picked { transform: translateY(calc(var(--u)*-6)) rotate(-1deg); }
+.bq8-card.is-picked { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), var(--bq8-sh-2); }
+.bq8-card.is-correct { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-ok), var(--bq8-sh-2); }
+.bq8-card.is-correct::after { content: ''; position: absolute; top: calc(var(--u)*-22); inset-inline-start: calc(var(--u)*-22); width: calc(var(--u)*62); height: calc(var(--u)*62);
+  background: url(../assets/icons8/check.svg) center / contain no-repeat; animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
+.bq8-card.is-wrong { animation: bq8-shake-soft .3s ease; }
+.bq8-card.is-dim { opacity: .42; filter: grayscale(.6); pointer-events: none; }
+.bq8-card--hoverplay:hover .bq8-card__ear, .bq8-card--hoverplay .bq8-card__ear:hover { animation: bq8-wiggle .6s ease; }
+
+/* ───────── 7 · letter / syllable / word tiles (glyph always fits) ───────── */
+.bq8-letter { font-family: var(--font-letter); font-weight: 700; }
+.bq8-m { color: var(--bq8-meem); }
+.bq8-tile { --w: calc(var(--u)*120); position: relative; display: inline-grid; place-items: center; flex: none; width: var(--w); aspect-ratio: 1;
+  --fs: .58; border-radius: calc(var(--u)*24); background: linear-gradient(#FFFDF6, #FFF2D2);
+  border: var(--bq8-line) solid var(--bq8-navy); box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2);
+  font: 700 calc(var(--w) * var(--fs))/1.25 var(--font-letter); color: var(--bq8-navy); overflow: hidden; cursor: grab; touch-action: none; }
+.bq8-tile > span { display: block; line-height: 1.25; padding-bottom: calc(var(--w) * .06); white-space: nowrap; }
+.bq8-tile--letter { --w: calc(var(--u)*170); --fs: .64; }
+.bq8-tile--syll { --fs: .48; }
+.bq8-tile--word { aspect-ratio: 1.6; --fs: .27; }
+.bq8-tile.is-drag { cursor: grabbing; transform: scale(1.08) rotate(-3deg); box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*26) calc(var(--u)*30) calc(var(--u)*-10) rgba(11,45,79,.5); z-index: 20; }
+.bq8-tile.is-placed { background: linear-gradient(#EFFFF6, #CFF5E2); animation: bq8-pop .3s ease both; }
+.bq8-tile.is-wrong { animation: bq8-shake-soft .3s ease; }
+
+/* ───────── 8 · E08 jigsaw ───────── */
+.bq8-puzzle { position: relative; display: flex; flex-direction: row; align-items: center; direction: rtl; }
+.bq8-piece { --pw: calc(var(--u)*230); position: relative; display: grid; place-items: center; flex: none; width: var(--pw); aspect-ratio: 324 / 248;
+  background: url(../assets/icons8/piece_mid_c1.svg) center / 100% 100% no-repeat;
+  padding: 0 calc(var(--pw) * .08) 0 calc(var(--pw) * .19); font: 700 calc(var(--pw) * .27)/1.3 var(--font-letter); color: var(--bq8-navy); white-space: nowrap; cursor: grab; touch-action: none; }
+.bq8-puzzle > .bq8-piece + .bq8-piece { margin-right: calc(var(--pw) * -.2346); }   /* knob of the previous piece locks into the socket */
+.bq8-piece--first  { background-image: url(../assets/icons8/piece_first_c1.svg); }
+.bq8-piece--mid    { background-image: url(../assets/icons8/piece_mid_c2.svg); }
+.bq8-piece--last   { background-image: url(../assets/icons8/piece_last_c3.svg); }
+.bq8-piece--single { background-image: url(../assets/icons8/piece_single_c4.svg); }
+.bq8-piece--slot.bq8-piece--first { background-image: url(../assets/icons8/piece_first_slot.svg); }
+.bq8-piece--slot.bq8-piece--mid   { background-image: url(../assets/icons8/piece_mid_slot.svg); }
+.bq8-piece--slot.bq8-piece--last  { background-image: url(../assets/icons8/piece_last_slot.svg); }
+.bq8-piece--slot { cursor: default; color: transparent; }
+.bq8-piece.is-placed { animation: bq8-snap .28s cubic-bezier(.3,1.5,.5,1) both; }
+.bq8-piece.is-hint { animation: bq8-wiggle 1s ease 2; }
+.bq8-puzzle.is-done { filter: drop-shadow(0 0 calc(var(--u)*14) rgba(255,214,90,.9)); }
+
+/* ───────── 9 · drop slots (E14 etc.) — every slot says what belongs in it ───────── */
+.bq8-slot { position: relative; display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*8); padding: calc(var(--u)*10) calc(var(--u)*12) calc(var(--u)*14);
+  min-width: calc(var(--u)*180); border-radius: calc(var(--u)*28); background: rgba(255,255,255,.62);
+  border: calc(var(--u)*4) dashed rgba(11,45,79,.38); transition: background .15s, border-color .15s, transform .15s; }
+.bq8-slot__label { display: flex; align-items: center; gap: calc(var(--u)*10); padding: calc(var(--u)*6) calc(var(--u)*14) calc(var(--u)*6) calc(var(--u)*8);
+  border-radius: 999px; background: #fff; box-shadow: 0 0 0 calc(var(--u)*3) var(--slot-c, var(--bq8-eye)), var(--bq8-sh-1);
+  font: 700 calc(var(--u)*34)/1.3 var(--font-letter); color: var(--bq8-navy); }
+.bq8-slot__label img, .bq8-slot__label .bq8-ic { width: calc(var(--u)*52); height: calc(var(--u)*52); border-radius: calc(var(--u)*12); object-fit: cover; font-size: calc(var(--u)*52); }
+.bq8-slot__body { display: flex; flex-wrap: wrap; justify-content: center; gap: calc(var(--u)*10); min-height: calc(var(--u)*110); min-width: calc(var(--u)*150); align-items: center; }
+.bq8-slot.is-over { background: rgba(255,240,184,.85); border-color: var(--bq8-star-d); border-style: solid; transform: scale(1.03); }
+.bq8-slot.is-filled { border-style: solid; border-color: var(--bq8-ok); background: rgba(207,245,226,.75); }
+.bq8-slot.is-wrong { border-color: var(--bq8-no); animation: bq8-shake-soft .3s ease; }
+.bq8-slot--round { border-radius: 50%; aspect-ratio: 1; justify-content: center; }
+
+/* ───────── 10 · E04 skill row ───────── */
+.bq8-skillrow { position: relative; display: inline-flex; align-items: center; gap: calc(var(--u)*40); padding: calc(var(--u)*16) calc(var(--u)*30);
+  border-radius: 999px; background: rgba(255,255,255,.7); box-shadow: 0 0 0 calc(var(--u)*3) rgba(11,45,79,.12); }
+.bq8-skillrow::before { content: ''; position: absolute; inset-inline: calc(var(--u)*60); top: 50%; border-top: calc(var(--u)*6) dotted rgba(11,45,79,.28); z-index: -1; }
+.bq8-skillrow .bq8-btn { width: max(64px, calc(var(--u)*96)); height: max(64px, calc(var(--u)*96)); font-size: max(46px, calc(var(--u)*70)); }
+
+/* ───────── 11 · lesson map nodes ───────── */
+.bq8-node { position: absolute; display: grid; place-items: center; width: calc(var(--u)*112); height: calc(var(--u)*112); border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #fff, #FFF0B8 60%); border: var(--bq8-line) solid var(--bq8-navy);
+  box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*10) calc(var(--u)*14) rgba(11,45,79,.35); font-size: calc(var(--u)*76); transform: translate(50%, -50%); }
+.bq8-node.is-done { background: radial-gradient(circle at 38% 30%, #fff, #CFF5E2 60%); }
+.bq8-node.is-done::after { content: ''; position: absolute; top: -12%; inset-inline-start: -12%; width: 42%; height: 42%; background: url(../assets/icons8/check.svg) center / contain no-repeat; }
+.bq8-node.is-now { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*12) var(--bq8-yellow), 0 calc(var(--u)*10) calc(var(--u)*14) rgba(11,45,79,.35); animation: bq8-bob 2.4s ease-in-out infinite; }
+.bq8-node.is-locked { filter: grayscale(.7); opacity: .75; }
+
+/* ───────── 12 · motion ───────── */
+.bq8-pop { animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
+.bq8-shake-soft { animation: bq8-shake-soft .3s ease; }
+.bq8-fly { transition: transform .5s cubic-bezier(.5,0,.3,1), opacity .5s; }
+@keyframes bq8-pop { 0% { transform: scale(.3); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
+@keyframes bq8-snap { 0% { transform: scale(1.12) } 100% { transform: scale(1) } }
+@keyframes bq8-shake-soft { 0%,100% { translate: 0 } 25% { translate: -6px } 75% { translate: 6px } }
+@keyframes bq8-wiggle { 0%,100% { rotate: 0deg } 25% { rotate: -8deg } 75% { rotate: 8deg } }
+@keyframes bq8-bob { 0%,100% { translate: 0 0 } 50% { translate: 0 -6px } }
+@keyframes bq8-ring { 0% { transform: scale(.9); opacity: .9 } 100% { transform: scale(1.35); opacity: 0 } }
+@media (prefers-reduced-motion: reduce) { [data-theme="8"] * { animation: none !important; transition: none !important; } }
+.bq8-bubble--bariq-start::after { inset-inline-end: auto; inset-inline-start: calc(var(--u)*36); box-shadow: calc(var(--u)*-3) calc(var(--u)*3) 0 0 rgba(11,45,79,.9); transform: rotate(-45deg); }

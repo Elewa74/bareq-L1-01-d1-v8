@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261005103027",
+"build": "261005135130",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -3811,6 +3811,9 @@ window.BQ_DATA={
 "bq7_E13_brq5",
 "bq7_E13_brq8",
 "bq7_E13_brq9",
+"bq7_E13_jda3",
+"bq7_E13_jda6",
+"bq7_E13_jda7",
 "bq7_E13_maj1",
 "bq7_E13_maj5",
 "bq7_E13_maj7",
@@ -3937,7 +3940,8 @@ window.BQ_DATA={
 "bq7_W_timsah_emph",
 "bq7_W_timsah_seg",
 "bq7_song",
-"bq7_song_bed"
+"bq7_song_bed",
+"bq7_song_v8"
 ],
 "audio7_index_missing": [],
 "assets": {

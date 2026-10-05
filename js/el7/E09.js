@@ -5,7 +5,10 @@
    التغذية (قرار ز/ح): نجاح «✔ الشَّكْلُ صَحيحٌ.» · محاولة ١ «جَرِّبْ مَرَّةً أُخْرى. اِبْدَأْ مِنْ هُنا.» + نقطة البدء تنبض ·
    محاولة ٢: المسار المنقّط أوضح + نقطة تجري عليه · محاولة ٣: بارق يرسم الحرف ببطء ثم نمضي. لا «خطأ».
    يُسجَّل S8 (قرينة) لبنود الموجّه والمستقلّ الستّة: ok = نجح من الأولى أو الثانية بلا مساعدة.
-   محرّك اللمس: X.writePad (ix7b.js) — امتداد لمحرّك v6 المعتمد على الآيباد (أحداث المؤشّر · touch-action:none · سماحية · نقطة بدء + أسهم). */
+   محرّك اللمس: X.writePad (ix7b.js) — امتداد لمحرّك v6 المعتمد على الآيباد (أحداث المؤشّر · touch-action:none · سماحية · نقطة بدء + أسهم).
+   v8 (?theme=8 · OWNER_R3-9 «الفونت وشكل الميم هذا غير مناسب»): كلّ نموذج وكلّ مسار تتبّع بخطّ Vazirmatn Bold — المسارات مُشتقّة من
+   خطوط الحرف نفسه (X.FORMS8 · v7/ix2_v8/meem_paths.py)، والممرّ = شكل الحرف الحقيقيّ، وبقيّة الكلمة بالخطّ والحجم نفسيهما فتلتحم.
+   اللوح الخشبيّ (.bq8-board) · ٤ نجوم = المراحل الأربع. */
 (function () {
   'use strict';
   const ID = 'E09';
@@ -50,6 +53,21 @@
 .e09.is-short .e09-main { padding-top: 34px; }
 .e09.is-short .e09-bottom { position: absolute; bottom: 0; inset-inline: 0; z-index: 3; min-height: 0; pointer-events: none; }
 .e09.is-short { padding-top: 0; }
+/* ---------- v8 ---------- */
+.x7p.e09 { justify-content: center; gap: calc(var(--u)*14); padding: calc(var(--u)*10) calc(var(--u)*20); }
+.x7p.e09 .e09-main { gap: calc(var(--u)*34); }
+.x7p.e09 .e09-side { gap: calc(var(--u)*16); }
+.x7p.e09 .e09-model8.bq8-tile { --w: calc(var(--u)*170); --fs: .62; color: var(--bq8-meem); cursor: default; }
+.x7p.e09 .e09-pic8 { width: calc(var(--u)*176); cursor: default; }
+.x7p.e09 .e09-pic8:hover { transform: none; }
+.x7p.e09 .x7-wp { --wp-h: var(--e09-h); width: min(100%, calc(var(--e09-h) * var(--wp-ar, 1))); }
+.x7p.e09 { --e09-h: calc(var(--u)*430); }
+.x7p.e09 .e09-bottom { position: absolute; z-index: 4; bottom: calc(var(--u)*-34); inset-inline: 0; min-height: 0; pointer-events: none; }
+.x7p.e09.is-tall { --e09-h: calc(var(--u)*600); }
+.x7p.e09.is-tall .e09-main { flex-direction: column; }
+.x7p.e09.is-tall .e09-side { flex-direction: row; }
+.x7p.e09.is-tall .e09-padwrap { align-self: stretch; flex: 0 0 auto; width: 100%; }
+.x7p.e09.is-tall .e09-main { justify-content: center; }
 @container stage (max-width: 620px) { .e09-main { flex-direction: column; gap: 8px; } .e09-side { flex-direction: row; } .e09-model, .e09-picbox { width: 78px; } .e09-model .x7-w { font-size: 54px; } }
 `;
 
@@ -57,7 +75,9 @@
     const X = BQ.ix7b, h = BQ.h;
     X.style('st-e09', CSS);
     const S = X.session(ctx);
-    const root = X.root(ctx, 'e09');
+    const V8 = X.v8();
+    const root = X.root(ctx, 'e09', { board: true, stars: 4, panel: ['wide', 'tall'] });
+    const F8 = root._8;
     const top = h('div.e09-top');
     const ph = X.phase(top, STAGES.map((s) => s.label));
     const nItems = STAGES.reduce((a, s) => a + s.items.length, 0);
@@ -74,6 +94,7 @@
 
     // ارتفاع اللوحة المتاح
     const fit = () => {
+      if (V8) return;
       const H = stage.clientHeight || 500;
       const narrow = stage.clientWidth < 620;
       const short = H < 400;
@@ -91,6 +112,7 @@
     note();
     let k = STAGES.slice(0, startStage).reduce((a, s) => a + s.items.length, 0);
     (async () => {
+      if (F8) F8.starsTo(startStage);
       for (let si = startStage; si < STAGES.length; si++) {
         const st = STAGES[si];
         ph.set(si);
@@ -99,6 +121,7 @@
           await item(st, st.items[ii], ii === 0);
           k++;
         }
+        if (F8) F8.star(); // one star per stage: trace · copy · guided · independent
       }
       dots.set(nItems);
       ctx.done();
@@ -110,8 +133,8 @@
     async function item(st, it, firstOfStage) {
       fb.clear();
       side.replaceChildren(); padWrap.replaceChildren();
-      if (it.model) side.append(h('div.e09-model.x7-in', { 'aria-hidden': 'true' }, h('span.x7-w', null, 'م')));
-      if (it.img) side.append(h('div.e09-picbox.x7-in', null, X.pic(ctx, it.img, { noText: st.key === 'indep' })));
+      if (it.model) side.append(V8 ? h('div.e09-model8.bq8-tile.bq8-tile--letter.x7-in', { 'aria-hidden': 'true' }, h('span', null, 'م')) : h('div.e09-model.x7-in', { 'aria-hidden': 'true' }, h('span.x7-w', null, 'م')));
+      if (it.img) side.append(V8 ? h('div.bq8-card.e09-pic8.x7-in', null, h('img', { src: ctx.img(it.img), alt: '', draggable: 'false' })) : h('div.e09-picbox.x7-in', null, X.pic(ctx, it.img, { noText: st.key === 'indep' })));
       side.hidden = !side.childNodes.length;
       let stage2 = false, failsHandled = 0, assisted = false;
       const pad = X.writePad(padWrap, {
@@ -120,7 +143,7 @@
         onFail: (reason, n) => onFail(reason, n),
       });
       pad.el.classList.add('x7-in');
-      ctx.instruction(X.text(st.line), st.line, { icon: 'hand' });
+      ctx.instruction(X.text(st.line), st.line, { icon: V8 ? 'pencil' : 'hand' });
       // التعليمة: النموذج أوّلاً في أوّل بند من التتبّع
       if (it.demo) {
         pad.lock(true);
@@ -169,7 +192,8 @@
       const rows = log.map((r) => '<tr><td>' + esc(r.word) + '</td><td>' + esc({ trace: 'تتبّع', copy: 'نسخ', guided: 'موجّه', indep: 'مستقلّ' }[r.stage]) + '</td><td>' + (r.assisted ? 'بمساعدة بارق' : r.fails === 0 ? 'من المحاولة الأولى' : 'بعد ' + X.AR(r.fails) + ' محاولة') + '</td></tr>').join('');
       const sheet = () => {
         // ورقة كتابة A4 مكافئة: صفّ «م» منقّطة بنقطة بدء، ثم مـ / ـمـ / ـم في كلماتها
-        const F = X.FORMS, row = (form, n, before, after, word) => {
+        const F = X.forms(), V8s = F === X.FORMS8, LF = V8s ? 'BQ8 Letter' : 'Scheherazade New', row = (form, n, before, after, word) => {
+          if (V8s) return row8(form, n, before, after, word);
           const f = F[form], [vx, vy, vw, vh] = f.vb;
           const cell = (i) => '<svg viewBox="' + (vx - (after ? 34 : 4)) + ' ' + vy + ' ' + (vw + (after ? 34 : 4) + (before ? 34 : 4)) + ' ' + vh + '" style="height:24mm;flex:none">' +
             '<line x1="-60" x2="120" y1="' + (f.base || 57) + '" y2="' + (f.base || 57) + '" stroke="#9CC9E6" stroke-width=".6"/>' +
@@ -178,6 +202,19 @@
             (before ? '<text x="' + (f.exitR ? f.exitR[0] : vx + vw) + '" y="' + f.base + '" font-size="36" font-family="Scheherazade New" font-weight="700" direction="rtl" text-anchor="end" fill="#00345B">' + before + '</text>' : '') +
             (after ? '<text x="' + (f.exitL ? f.exitL[0] : vx) + '" y="' + f.base + '" font-size="36" font-family="Scheherazade New" font-weight="700" direction="rtl" text-anchor="start" fill="#00345B">' + after + '</text>' : '') + '</svg>';
           return '<div style="display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:3mm;margin:3mm 0;padding-bottom:2mm;border-bottom:1px dashed #cde;width:100%">' + (word ? '<b style="font:700 26px Scheherazade New;min-width:30mm;color:#00345B">' + word + '</b>' : '') + Array.from({ length: n }, (_, i) => cell(i)).join('') + '</div>';
+        };
+        /* v8: the Vazirmatn meem — light outline + dotted centre line + green start dot; the rest of the word in the same font */
+        const row8 = (form, n, before, after, word) => {
+          const f = F[form], m = f.d.match(/M([\d.]+) ([\d.]+)/);
+          const top = (before || after) ? f.base - f.fs * 0.78 : f.box[1] - 4, bot = (before || after) ? Math.max(f.box[1] + f.box[3], f.base + f.fs * 0.3) + 4 : f.box[1] + f.box[3] + 4;
+          const left = f.box[0] - (after ? f.fs * 0.75 : 4), right = f.box[0] + f.box[2] + (before ? f.fs * 0.6 : 4);
+          const cell = (i) => '<svg viewBox="' + left + ' ' + top + ' ' + (right - left) + ' ' + (bot - top) + '" style="height:26mm;flex:none">' +
+            '<line x1="' + left + '" x2="' + right + '" y1="' + f.base + '" y2="' + f.base + '" stroke="#9CC9E6" stroke-width=".7"/>' +
+            (i < 2 ? '<path d="' + f.o + '" fill="#0B2D4F" fill-opacity=".07" stroke="#0B2D4F" stroke-opacity=".3" stroke-width=".4"/><path d="' + f.d + '" fill="none" stroke="#7a8fa6" stroke-width="1.6" stroke-dasharray=".1 3.8" stroke-linecap="round"/>' : '') +
+            '<circle cx="' + m[1] + '" cy="' + m[2] + '" r="3.4" fill="#22C27A"/>' +
+            (before ? '<text x="' + f.adv + '" y="' + f.base + '" font-size="' + f.fs + '" font-family="BQ8 Letter" font-weight="700" direction="rtl" text-anchor="end" fill="#0B2D4F">' + before + '</text>' : '') +
+            (after ? '<text x="' + f.origin + '" y="' + f.base + '" font-size="' + f.fs + '" font-family="BQ8 Letter" font-weight="700" direction="rtl" text-anchor="start" fill="#0B2D4F">' + after + '</text>' : '') + '</svg>';
+          return '<div style="display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:3mm;margin:3mm 0;padding-bottom:2mm;border-bottom:1px dashed #cde;width:100%">' + (word ? '<b style="font:700 26px \'' + LF + '\';min-width:30mm;color:#0B2D4F">' + word + '</b>' : '') + Array.from({ length: n }, (_, i) => cell(i)).join('') + '</div>';
         };
         const d = document.createElement('div');
         d.setAttribute('dir', 'rtl'); d.style.cssText = 'width:100%;align-self:flex-start';

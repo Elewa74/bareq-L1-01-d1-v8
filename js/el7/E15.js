@@ -2,7 +2,8 @@
    بعده: يتأمّل شكل «م» ويستدعي أسماء الأشياء أثناء التلوين.
    على الشاشة: color_page1 (م كبيرة مع بارق) ثم color_page2 (مانجو، موز، قمر، مشط، مفتاح، تمساح) · لوحة ٨ ألوان كبيرة ·
    لمس منطقة = تعبئة (تعبئة فيضية على لوحة رسم من فنّ الخطوط؛ الخطوط تبقى سوداء بالمزج «ضرب») · لمس شيء أوّل مرّة يُسمِع اسمه (bq7_W_*) ·
-   زرّ «تَراجُع» أيقونة · الانتهاء bq7_E15_done. الطباعة A4 من دليل المعلّم فقط (لا زرّ «اطبع» على شاشة الطفل). */
+   زرّ «تَراجُع» أيقونة · الانتهاء bq7_E15_done. الطباعة A4 من دليل المعلّم فقط (لا زرّ «اطبع» على شاشة الطفل).
+   v8 (?theme=8): إعادة تلبيس فقط — اللوح الخشبيّ، الصفحة ورقة بيضاء بإطار ملصق، الألوان أقراص ملصقات، «تراجع» زرّ ملصق. لا تغيير في السلوك. */
 (function () {
   'use strict';
   const ID = 'E15';
@@ -48,6 +49,23 @@
   .e15-sw { width: 60px; height: 60px; border-radius: 16px; }
   .e15-tool { width: 60px; height: 60px; }
 }
+/* ---------- v8 (restyle only) ---------- */
+.x7p.e15 { flex-direction: row; align-items: center; justify-content: center; gap: calc(var(--u)*40); padding: calc(var(--u)*6) calc(var(--u)*20); }
+.x7p.e15 .e15-page { height: calc(var(--u)*452); border-radius: calc(var(--u)*20); border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 calc(var(--u)*8) #fff, var(--bq8-sh-2); }
+.x7p.e15 .e15-side { gap: calc(var(--u)*22); }
+.x7p.e15 .e15-pal { grid-template-columns: repeat(2, auto); gap: calc(var(--u)*16); }
+.x7p.e15 .e15-sw { width: max(64px, calc(var(--u)*80)); height: max(64px, calc(var(--u)*80)); border-radius: 50%; border: var(--bq8-line) solid var(--bq8-navy);
+  box-shadow: inset 0 calc(var(--u)*-7) 0 rgba(0,0,0,.18), 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-1); }
+.x7p.e15 .e15-sw::after { inset: 18% 18% auto auto; width: 24%; height: 24%; }
+.x7p.e15 .e15-sw[aria-pressed="true"] { transform: scale(1.12); box-shadow: inset 0 calc(var(--u)*-7) 0 rgba(0,0,0,.18), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*13) var(--bq8-navy), var(--bq8-sh-1); }
+.x7p.e15 .e15-tools { gap: calc(var(--u)*20); align-items: center; }
+.x7p.e15 .e15-undo8:disabled { filter: grayscale(.8); opacity: .5; }
+.x7p.e15 .e15-sw2 { width: max(64px, calc(var(--u)*76)); height: max(80px, calc(var(--u)*100)); border-radius: calc(var(--u)*14); border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-1); }
+.x7p.e15 .e15-sw2.is-go { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*12) var(--bq8-yellow), 0 0 calc(var(--u)*26) var(--bq8-yellow); }
+.x7p.e15.is-tall { flex-direction: column; gap: calc(var(--u)*24); }
+.x7p.e15.is-tall .e15-page { height: calc(var(--u)*720); }
+.x7p.e15.is-tall .e15-side { flex-direction: row; }
+.x7p.e15.is-tall .e15-pal { grid-template-columns: repeat(4, auto); }
 @media (prefers-reduced-motion: reduce) { .e15-dot { animation: none; opacity: 0; } .e15-sw { transition: none; } }
 `;
 
@@ -55,10 +73,13 @@
     const X = BQ.ix7b, h = BQ.h;
     X.style('st-e15', CSS);
     const S = X.session(ctx);
-    const root = X.root(ctx, 'e15');
+    const V8 = X.v8();
+    const root = X.root(ctx, 'e15', { board: true, panel: ['wide', 'tall'] });
     const fitH = () => { const H = stage.clientHeight || 600; root.style.setProperty('--H', H + 'px'); root.classList.toggle('is-short', H < 470); };
-    fitH();
-    if (window.ResizeObserver) { const ro = new ResizeObserver(fitH); ro.observe(stage); ctx.onCleanup(() => ro.disconnect()); }
+    if (!V8) {
+      fitH();
+      if (window.ResizeObserver) { const ro = new ResizeObserver(fitH); ro.observe(stage); ctx.onCleanup(() => ro.disconnect()); }
+    }
     const page = h('div.e15-page', { role: 'img', 'aria-label': 'صَفْحَةُ التَّلْوينِ' }, h('div.e15-wait', null, '…'));
     const pageWrap = h('div.e15-pagewrap', null, page);
     let cur = 0;
@@ -68,7 +89,7 @@
       b.addEventListener('click', () => { cur = i; sws.forEach((x, j) => x.setAttribute('aria-pressed', String(j === i))); X.anim(b, 'fx7-pop', 400); });
       return b;
     });
-    const undoBtn = h('button.e15-tool', { type: 'button', 'aria-label': 'تَراجُعٌ', disabled: true }, X.icon('undo'));
+    const undoBtn = V8 ? h('button.bq8-btn.bq8-btn--replay.e15-undo8', { type: 'button', 'aria-label': 'تَراجُعٌ', disabled: true }, X.i8('replay')) : h('button.e15-tool', { type: 'button', 'aria-label': 'تَراجُعٌ', disabled: true }, X.icon('undo'));
     // زرّ واحد يبدّل الصفحة (صورة مصغّرة للصفحة الأخرى) ويضيء حين تكتمل الصفحة الأولى
     const goBtn = h('button.e15-sw2', { type: 'button', 'aria-label': 'الصَّفْحَةُ الأُخْرى' });
     const setSwitch = () => { goBtn.style.backgroundImage = 'url("' + ctx.img(PAGES[(pi + 1) % PAGES.length].key) + '")'; };
@@ -201,7 +222,7 @@
     note();
     (async () => {
       await show(0);
-      ctx.instruction(X.text('bq7_E15_intro'), 'bq7_E15_intro', { icon: 'hand' });
+      ctx.instruction(X.text('bq7_E15_intro'), 'bq7_E15_intro', { icon: V8 ? 'touch' : 'hand' });
       await X.nameSound(S, 'bq7_E15_intro');
       load(1); // تحميل مسبق للصفحة الثانية
     })();

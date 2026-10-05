@@ -5,7 +5,15 @@
    ١٧ بنداً بالترتيب S1→S9 (S4: البند ١ إدراكيّ «أيّهما صحيحة؟» + البند ٢ «قُلْ» بحكم المعلّم/وليّ الأمر من لوحة مخفيّة: ضغط مطوَّل ١٫٥ ث على بارق).
    التسجيل (عقد المنصّة): record(S, ok, {kind:'item', item:1|2}) · بعد المراجعة بند إعادة واحد {kind:'retest'} · تدريب المراجعة {kind:'practice'} (لا يُحتسب).
    النتيجة: ٩ أيقونات بلا أسماء — المتقنة ذهبية، وعلى غيرها بارق صغير يلوّح ← مراجعات تلقائية بالترتيب (≤ ٤٠ ث لكلّ مهارة) بتلميحات كاملة ← بند إعادة محايد.
-   الحكم من BQ.mastery (E11 وحده يقرّر «أتقن»). */
+   الحكم من BQ.mastery (E11 وحده يقرّر «أتقن»).
+   v8 (?theme=8 · OWNER_R3-11) — ما يُقاس لم يتغيّر (البنود والمهارات والمحاولة الواحدة كما هي)؛ تغيّر العرض فقط:
+   · إعادة الاستماع: المرور بالفأرة فوق الخيار يُسمعه ثانيةً · على اللمس: ضغطة مطوّلة على الخيار أو لمس شريحة الأذن تُسمعه بلا إجابة.
+   · الصور: بطاقات كبيرة بصورة الكلمة الصحيحة + شريحة أذن (للخيارات المسموعة فقط؛ القراءة S7 وS9 تبقى صامتة كما في المواصفة).
+   · «أيّ فقّاعة…» (S2): بطاقات سمّاعة مرقّمة «١ ٢ ٣» تضيء وتهتزّ موجاتها حين تُسمِع صوتها.
+   · «أقول الكلمة مرّتين» (S4): صورة الكلمة فوق، وتحتها بطاقتا بارق مرقّمتان «١ ٢» تتكلّم كلّ منهما حين تُسمِع قولها.
+   · «قصير أم طويل؟» (S3): بطاقة الصوت فوق + بارق يقفز (نقطة قصيرة) / بارق ينزلق (شريط طويل).
+   · أوّل مرّة يظهر كلّ نوع: يد صغيرة تشير إلى شرائح الأذن ثمّ تنقر الصفّ (عرض «كيف ألعب» بلا إجابة).
+   · ٣ نجوم = تقدّم محايد (ثلث البنود) — لا تكشف الصواب. */
 (function () {
   'use strict';
   const ID = 'E11';
@@ -146,15 +154,109 @@
 @container stage (max-width: 520px) { .e11-res { gap: 10px; } .e11-snd { width: 92px; } .e11-tw button { font-size: 72px; } }
 @media (prefers-reduced-motion: reduce) { .e11-opt, .e11-ri { transition: none; } }
 `;
+  const CSS8 = `
+.x7p.e11 { gap: calc(var(--u)*18); }
+.x7p.e11 .e11-top { display: none; }
+.x7p.e11 .e11-body { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u)*30); }
+.x7p.e11 .e11-opts { display: flex; direction: rtl; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: calc(var(--u)*46); }
+.x7p.e11 .e11-opt { position: relative; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+.x7p.e11 .e11-opt:focus-visible { outline: 4px solid var(--bq8-navy); outline-offset: 6px; }
+.x7p.e11 .e11-opts.is-locked .e11-opt { cursor: default; }
+.x7p.e11 .e11-opt.bq8-card { width: calc(var(--u)*250); }
+.x7p.e11.is-tall .e11-opts { gap: calc(var(--u)*28); }
+.x7p.e11.is-tall .e11-opt.bq8-card { width: calc(var(--u)*236); }
+.x7p.e11 .e11-opt.bq8-card .bq8-card__ear .bq8-btn { width: max(64px, calc(var(--u)*72)); height: max(64px, calc(var(--u)*72)); font-size: max(46px, calc(var(--u)*54)); }
+/* states (one shared look for cards, tiles, speaker cards) */
+.x7p.e11 .e11-opt.is-play, .x7p.e11 .e11-opt.is-say { transform: translateY(calc(var(--u)*-8)); box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-listen), var(--bq8-sh-2); }
+.x7p.e11 .e11-opt.is-pick { transform: translateY(calc(var(--u)*-6)); box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-eye), var(--bq8-sh-2); }
+.x7p.e11 .e11-opts.is-locked .e11-opt:not(.is-pick):not(.is-play):not(.is-say) { opacity: .62; }
+.x7p.e11 .e11-opt.is-ok { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-ok), var(--bq8-sh-2); }
+.x7p.e11 .e11-opt.is-dim { opacity: .4; filter: grayscale(.6); }
+.x7p.e11 .e11-opt.is-glow { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), 0 0 calc(var(--u)*40) var(--bq8-yellow); }
+/* numbered speaker cards (S2 sounds · S4 Bariq says it twice) */
+.x7p.e11 .e11-sc { --c: var(--bq8-eye); --cl: var(--bq8-eye-l); width: calc(var(--u)*214); padding: calc(var(--u)*16) calc(var(--u)*14) calc(var(--u)*48); border-radius: calc(var(--u)*34); background: #fff;
+  border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); display: flex; flex-direction: column; align-items: center; transition: transform .16s, box-shadow .16s, opacity .2s; }
+.x7p.e11 .e11-sc[data-c="1"] { --c: var(--bq8-mouth); --cl: var(--bq8-mouth-l); } .x7p.e11 .e11-sc[data-c="2"] { --c: var(--bq8-ear); --cl: var(--bq8-ear-l); }
+.x7p.e11 .e11-sc[data-c="3"] { --c: var(--bq8-replay); --cl: var(--bq8-replay-l); }
+.x7p.e11 .e11-num { font-family: var(--font-letter) !important; position: absolute; top: calc(var(--u)*-20); inset-inline-start: calc(var(--u)*-20); width: calc(var(--u)*62); height: calc(var(--u)*62); border-radius: 50%; display: grid; place-items: center;
+  background: var(--c); color: #fff; font: 700 calc(var(--u)*38)/1 var(--font-kid); box-shadow: 0 0 0 var(--bq8-line) var(--bq8-navy), 0 0 0 calc(var(--u)*8) #fff, var(--bq8-sh-1); padding-bottom: calc(var(--u)*4); }
+.x7p.e11 .e11-spk { position: relative; width: calc(var(--u)*150); height: calc(var(--u)*150); border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 38% 30%, #fff 0, var(--cl) 62%); box-shadow: inset 0 0 0 calc(var(--u)*4) var(--c); }
+.x7p.e11 .e11-spk .bq8-ic { font-size: calc(var(--u)*104); }
+.x7p.e11 .e11-spk .e11-brqface { width: 92%; height: 92%; object-fit: contain; }
+.x7p.e11 .e11-spk .bq-brq { width: 96%; display: flow-root; }
+.x7p.e11 .e11-spk::before, .x7p.e11 .e11-spk::after { content: ''; position: absolute; inset: calc(var(--u)*-6); border-radius: 50%; border: calc(var(--u)*5) solid var(--c); opacity: 0; pointer-events: none; }
+.x7p.e11 .e11-opt:is(.is-play, .is-say) .e11-spk::before { animation: x7Wave 1s ease-out infinite; }
+.x7p.e11 .e11-opt:is(.is-play, .is-say) .e11-spk::after { animation: x7Wave 1s .45s ease-out infinite; }
+@keyframes x7Wave { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
+.x7p.e11 .e11-sc .bq8-card__ear { bottom: calc(var(--u)*-34); }
+.x7p.e11 .e11-sc .bq8-card__ear .bq8-btn { width: max(64px, calc(var(--u)*72)); height: max(64px, calc(var(--u)*72)); font-size: max(46px, calc(var(--u)*54)); }
+.x7p.e11 .e11-wordpic { width: calc(var(--u)*176); cursor: default; }
+.x7p.e11 .e11-wordpic:hover { transform: none; }
+/* short / long (S3) */
+.x7p.e11 .e11-len { display: block; margin: calc(var(--u)*10) auto 0; height: calc(var(--u)*26); border-radius: 999px; background: var(--bq8-navy); }
+.x7p.e11 .e11-len.is-short { width: calc(var(--u)*26); } .x7p.e11 .e11-len.is-long { width: 78%; }
+.x7p.e11 .e11-stim { display: flex; align-items: center; gap: calc(var(--u)*18); }
+/* written options & words */
+.x7p.e11 .e11-opt.bq8-tile { --w: calc(var(--u)*170); --fs: .56; cursor: pointer; }
+.x7p.e11 .e11-word.bq8-tile { --w: calc(var(--u)*380); --fs: .3; cursor: default; }
+.x7p.e11 .e11-form { display: flex; direction: rtl; align-items: center; gap: calc(var(--u)*14); }
+.x7p.e11 .e11-form .bq8-tile { --w: calc(var(--u)*170); --fs: .56; cursor: default; }
+.x7p.e11 .e11-blank { width: calc(var(--u)*170); height: calc(var(--u)*170); border-radius: calc(var(--u)*24); border: calc(var(--u)*5) dashed rgba(11,45,79,.35); background: rgba(255,255,255,.7); display: grid; place-items: center; font: 700 calc(var(--u)*80)/1 var(--font-letter); color: rgba(11,45,79,.35); }
+.x7p.e11 .e11-tw { display: inline-flex; direction: rtl; padding: calc(var(--u)*8) calc(var(--u)*30) calc(var(--u)*18); cursor: pointer; border-radius: calc(var(--u)*34); background: linear-gradient(#FFFDF6, #FFF2D2);
+  border: var(--bq8-line) solid var(--bq8-navy); box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); }
+.x7p.e11 .e11-tw button { min-width: 0; min-height: max(96px, calc(var(--u)*170)); padding: 0; margin: 0; border: 0; border-radius: calc(var(--u)*18); background: transparent; cursor: pointer; font: 700 calc(var(--u)*130)/1.3 var(--font-letter); color: var(--bq8-navy); }
+.x7p.e11 .e11-tw button.is-pick { background: rgba(31,162,242,.18); }
+.x7p.e11 .e11-tw button.is-ok { color: var(--bq8-meem); background: rgba(34,194,122,.18); }
+.x7p.e11 .e11-tw button.is-glow { background: rgba(255,194,26,.35); }
+/* say (S4 item 2) */
+.x7p.e11 .e11-say { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*22); }
+.x7p.e11 .e11-saybrq { width: calc(var(--u)*230); touch-action: none; -webkit-user-select: none; user-select: none; border-radius: 50%; }
+.x7p.e11 .e11-saybrq .bq-brq { width: 100%; display: flow-root; }
+.x7p.e11 .e11-saybrq.is-hold { box-shadow: 0 0 0 calc(var(--u)*10) rgba(11,45,79,.15); }
+.x7p.e11 .e11-chain { display: flex; direction: rtl; gap: calc(var(--u)*14); flex-wrap: wrap; justify-content: center; }
+.x7p.e11 .e11-chain .bq8-tile { --w: calc(var(--u)*112); --fs: .52; cursor: default; }
+.x7p.e11 .e11-chain .bq8-tile--word { --w: calc(var(--u)*220); --fs: .3; }
+.x7p.e11 .e11-chain .is-lit { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), var(--bq8-sh-2); }
+.x7p.e11 .e11-judge { position: absolute; z-index: 20; inset-inline: 0; top: calc(var(--u)*10); margin: auto; width: max-content; display: flex; gap: 10px; padding: 10px 14px; border-radius: 22px; background: var(--bq8-navy); box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.x7p.e11 .e11-judge button { min-width: 64px; min-height: 64px; border: 0; border-radius: 16px; background: #fff; display: grid; place-items: center; cursor: pointer; padding: 6px; }
+.x7p.e11 .e11-judge button .x7-ic { width: 40px; height: 40px; }
+.x7p.e11 .e11-judge button[aria-pressed="true"] { box-shadow: 0 0 0 4px var(--bq8-yellow); }
+/* results */
+.x7p.e11 .e11-res { display: grid; grid-template-columns: repeat(3, auto); gap: calc(var(--u)*20) calc(var(--u)*30); justify-content: center; }
+.x7p.e11 .e11-ri { position: relative; width: calc(var(--u)*124); aspect-ratio: 1; border-radius: calc(var(--u)*30); background: #fff; border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-1); display: grid; place-items: center; transition: box-shadow .4s, background .4s; }
+.x7p.e11 .e11-ri img.ic { width: 76%; height: 76%; object-fit: contain; filter: saturate(.55); opacity: .82; transition: filter .4s, opacity .4s; }
+.x7p.e11 .e11-ri.is-gold { background: radial-gradient(circle at 50% 40%, #FFF6C4, #FFD54A); box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), 0 0 calc(var(--u)*26) rgba(255,194,26,.65); }
+.x7p.e11 .e11-ri.is-gold img.ic { filter: none; opacity: 1; }
+.x7p.e11 .e11-ri.is-cur { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-eye), var(--bq8-sh-1); }
+.x7p.e11 .e11-ri .e11-wave { position: absolute; bottom: calc(var(--u)*-16); inset-inline-start: calc(var(--u)*-16); width: 52%; }
+.x7p.e11 .e11-ri .e11-wave .bq-brq { width: 100%; display: flow-root; }
+.x7p.e11 .e11-ri .e11-glyph { position: absolute; left: 31%; top: 47%; transform: translate(-50%, -50%); font: 700 calc(var(--u)*24)/1 var(--font-letter); color: var(--bq8-meem); }
+/* Bariq re-teaches */
+.x7p.e11 .e11-teach { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*18); }
+.x7p.e11 .e11-teach .e11-big { font: 700 calc(var(--u)*190)/1.2 var(--font-letter); color: var(--bq8-meem); }
+.x7p.e11 .e11-ctx, .x7p.e11 .e11-mouth { width: calc(var(--u)*460); aspect-ratio: 16/9; border-radius: calc(var(--u)*28); overflow: hidden; border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); }
+.x7p.e11 .e11-ctx img, .x7p.e11 .e11-mouth img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.x7p.e11 .e11-teach .e11-opts .e11-opt { cursor: default; }
+.x7p.e11 .e11-go.bq8-btn { width: max(64px, calc(var(--u)*104)); height: max(64px, calc(var(--u)*104)); font-size: max(46px, calc(var(--u)*74)); }
+.x7p.e11 .e11-wp8 { display: flex; justify-content: center; width: 100%; }
+.x7p.e11 .x7-wp { --wp-h: calc(var(--u)*400); width: min(100%, calc(var(--u)*400 * var(--wp-ar, 1))); }
+.x7p.e11.is-tall .x7-wp { --wp-h: calc(var(--u)*560); width: min(100%, calc(var(--u)*560 * var(--wp-ar, 1))); }
+.bq8-stage.is-tall > .x7p.e11 { --u: calc(100cqw / 1040); }
+@media (prefers-reduced-motion: reduce) { .x7p.e11 .e11-opt, .x7p.e11 .e11-ri { transition: none; } .x7p.e11 .e11-spk::before, .x7p.e11 .e11-spk::after { animation: none !important; } }
+`;
   const NEXT_SVG = '<svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   function run(stage, ctx) {
     const X = BQ.ix7b, h = BQ.h, W = X.W;
-    X.style('st-e11', CSS);
+    const V8 = X.v8();
+    X.style('st-e11', V8 ? CSS8 : CSS);
     X.ICON.next = NEXT_SVG;
     X.ICON.near = '<svg viewBox="0 0 48 48"><path d="M24 4l5.6 12.3 13.4 1.4-10 9 2.9 13.2L24 33.2 12.1 39.9 15 26.7l-10-9 13.4-1.4z" fill="#FFF6C4" stroke="#C98F00" stroke-width="2" stroke-linejoin="round"/><path d="M24 4l5.6 12.3 13.4 1.4-10 9 2.9 13.2L24 33.2z" fill="#FEBA02"/></svg>';
     const S = X.session(ctx);
-    const root = X.root(ctx, 'e11');
+    const root = X.root(ctx, 'e11', { panel: ['tall', 'col'], stars: 3 });
+    const F8 = root._8;
+    const AR = X.AR;
+    const coached = new Set(); // v8 «how to play» hand: once per item type
     const top = h('div.e11-top');
     const nItems = SK.reduce((a, s) => a + ITEMS[s].length, 0);
     const dots = X.dots(top, nItems);
@@ -162,8 +264,10 @@
     root.append(top, body);
     const buddy = X.buddy(root);
     const fitH = () => { const H = stage.clientHeight || 600; root.style.setProperty('--H', H + 'px'); root.classList.toggle('is-short', H < 420); };
-    fitH();
-    if (window.ResizeObserver) { const ro = new ResizeObserver(fitH); ro.observe(stage); ctx.onCleanup(() => ro.disconnect()); }
+    if (!V8) {
+      fitH();
+      if (window.ResizeObserver) { const ro = new ResizeObserver(fitH); ro.observe(stage); ctx.onCleanup(() => ro.disconnect()); }
+    }
     const M = () => BQ.mastery;
     const log = {}; SK.forEach((s) => { log[s] = { items: [], practice: [], retest: null, judge: null }; });
     let ackI = 0;
@@ -186,6 +290,7 @@
           const r = await runItem(it, 'neutral');
           log[s].items.push(r.ok);
           X.record(ctx, s, r.ok, { kind: 'item', item: i + 1 });
+          if (F8) F8.starsTo(Math.floor(k * 3 / nItems)); // neutral progress (thirds of the check) — never shows right/wrong
           note();
           buddy.mood('talk', 900);
           await S.say(ackI++ % 2 ? 'bq7_E11_ack2' : 'bq7_E11_ack1');
@@ -206,13 +311,22 @@
       opts = BQ.shuffle(opts);
       // الرأس: الكلمة المكتوبة / الشكل / الكلمة اللمسية
       let wrapOpts, btns = [];
+      if (V8) {
+        if (it.type === 'read') body.append(h('div.e11-word.bq8-tile.bq8-tile--word.x7-in', null, X.markMeem(W[it.word].t)));
+        if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('div.bq8-tile.bq8-tile--syll', null, X.markMeem(it.before)), h('div.e11-blank', { 'aria-hidden': 'true' }, '?')));
+        // «I say the word twice»: the picture of the word Bariq says sits above his two numbered cards
+        if (it.type === 'brq') { const wk = brqWord(it); if (wk) body.append(h('div.bq8-card.bq8-card--sm.e11-wordpic.x7-in', { 'aria-hidden': 'true' }, h('img', { src: ctx.img(W[wk].img), alt: '', draggable: 'false' }))); }
+        // the sound to judge (S3 short/long · S5) is a big replay sticker above the options
+        if (it.stim && it.type !== 'tapword') body.append(h('div.e11-stim.x7-in', null, X.btn8('listen', { size: 'lg', label: 'اِسْمَعِ الصَّوْتَ', cls: 'e11-stimbtn', onclick: () => { if (!asking) S.say(it.stim, { stim: true }); } })));
+      } else {
       if (it.type === 'read') body.append(h('div.e11-word.x7-w.x7-in', null, X.markMeem(W[it.word].t)));
       if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('span.x7-w', null, it.before), h('div.e11-blank', null, h('span.x7-w', null, '?'))));
+      }
       if (it.type === 'tapword') {
         const w = W[it.word];
         const pcs = X.pieces(w.letters || X.letters(w.t));
         wrapOpts = h('div.e11-tw.x7-in', { role: 'group', 'aria-label': 'الكَلِمَةُ' });
-        btns = pcs.map((p, i) => { const b = h('button', { type: 'button', 'aria-label': 'حَرْفٌ ' + X.AR(i + 1), dataset: { k: X.bare(p.src) === 'م' ? 'm' : 'x' + i } }, p.t); wrapOpts.append(b); return b; });
+        btns = pcs.map((p, i) => { const b = h('button', { type: 'button', 'aria-label': 'حَرْفٌ ' + X.AR(i + 1), dataset: { k: X.bare(p.src) === 'م' ? 'm' : 'x' + i } }, p.t); if (V8) X.suk(b); wrapOpts.append(b); return b; });
         // الحرف هدفٌ ضيّق: لمسة في أيّ مكان من البطاقة تذهب إلى أقرب حرف (الحروف متّصلة بلا فراغات)
         wrapOpts.addEventListener('click', (e) => {
           if (e.target.closest('button')) return;
@@ -225,6 +339,12 @@
         wrapOpts = h('div.e11-opts' + (it.type === 'brq' ? '.e11-brqs' : ''), { role: 'group' });
         btns = opts.map((x, n) => { const b = optEl(it, x.o, n); b.dataset.k = x.key; wrapOpts.append(b); return b; });
         body.append(wrapOpts);
+        if (V8) btns.forEach((b) => {
+          if (b.getAttribute('role') === 'button') b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); } });
+          // owner R3-11: «لمّا أعمل هوفر عليها أسمع تاني» — hover (mouse) replays; touch-hold or the ear chip replays without answering
+          const au = audioOf(it, b.dataset.k);
+          if (au && (it.announce || it.type === 'brq')) X.replayable(b, () => replayOne(b, au), { ear: b.querySelector('.e11-ear8'), canPlay: () => !asking && !replaying });
+        });
       }
       const ck = it.type === 'tapword' ? 'm' : correctKey;
       if (window.BQ_QA) wrapOpts.dataset.ck = ck; // للاختبار الآليّ فقط
@@ -234,18 +354,25 @@
         if (it.q) await S.say(it.q);
         if (it.type === 'tapword' && it.say) await S.say(X.wordId(it.word), { stim: true });
         if (it.stim) await S.say(it.stim, { stim: true });
-        if (it.announce || it.type === 'brq') for (const b of btns) { b.classList.add('is-play'); await S.say(audioOf(it, b.dataset.k), { stim: true }); b.classList.remove('is-play'); await S.sleep(180); }
+        if (it.announce || it.type === 'brq') for (const b of btns) { b.classList.add('is-play'); if (b._face) b._face.brq('talk'); await S.say(audioOf(it, b.dataset.k), { stim: true }); if (b._face) b._face.brq('idle'); b.classList.remove('is-play'); await S.sleep(180); }
       };
-      ctx.instruction(X.text(it.q), it.q, { icon: 'ear' });
+      ctx.instruction(X.text(it.q), it.q, { icon: it.type === 'read' ? 'eye' : 'ear' });
       ctx.onReplay(() => { if (!asking) asking = ask().finally(() => { asking = null; }); });
       wrapOpts.classList.add('is-locked');
       asking = ask(); await asking; asking = null;
+      // v8: the first time each kind of item appears, a small hand shows «listen again here · then touch one» (no answer shown)
+      const ct = it.type + (it.announce ? '+' : '');
+      if (V8 && !coached.has(ct) && (it.announce || it.type === 'brq')) {
+        coached.add(ct);
+        asking = X.coach(S, btns.map((b) => b.querySelector('.e11-ear8')).filter(Boolean), wrapOpts); await asking; asking = null;
+      }
       wrapOpts.classList.remove('is-locked');
       let tries = 0;
       return new Promise((resolve) => {
         let over = false;
         btns.forEach((b) => b.addEventListener('click', async () => {
           if (over || b.classList.contains('is-dim') || asking) return;
+          if (V8 && replaying) { BQ.audio.stop(); replaying = false; b.classList.remove('is-say'); }
           if (!learn) {
             over = true;
             b.classList.add('is-pick'); wrapOpts.classList.add('is-locked'); X.anim(b, 'fx7-pop', 420);
@@ -273,6 +400,12 @@
         }));
       });
     }
+    let replaying = false;
+    async function replayOne(b, au) {
+      replaying = true; b.classList.add('is-say'); if (b._face) b._face.brq('talk');
+      try { await S.say(au, { stim: true }); } finally { replaying = false; b.classList.remove('is-say'); if (b._face) b._face.brq('idle'); }
+    }
+    function brqWord(it) { const m = /brq_([a-z]+)_ok/.exec((it.opts || [])[0] || ''); return m && W[m[1]] ? m[1] : null; }
     function optKey(it, i) {
       const o = it.opts ? it.opts[i] : null;
       if (o == null) return '';
@@ -300,6 +433,7 @@
     }
     function optEl(it, o, n) {
       const aria = 'خِيارٌ ' + X.AR(n + 1);
+      if (V8) return optEl8(it, o, n, aria);
       if (it.type === 'pic' || it.type === 'read') return h('button.e11-opt.e11-card.x7-in', { type: 'button', 'aria-label': aria }, X.pic(ctx, W[o.pic].img));
       if (it.type === 'snd') return h('button.e11-opt.e11-snd.x7-in', { type: 'button', 'aria-label': aria, dataset: { c: n % SND_COL.length } }, X.icon('speaker'));
       if (it.type === 'txt' || it.type === 'form') return h('button.e11-opt.e11-txt.x7-in', { type: 'button', 'aria-label': aria }, h('span.x7-w', null, o));
@@ -308,13 +442,34 @@
       return h('button.e11-opt', { type: 'button' }, String(o));
     }
 
+    /** v8 options. Cards are div[role=button] so the ear chip inside can be a real button. */
+    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْمَعْ مَرَّةً أُخْرى' }, X.i8('ear'))); }
+    function optEl8(it, o, n, aria) {
+      const card = (cls, kids) => h('div.e11-opt.x7-in' + cls, { role: 'button', tabindex: '0', 'aria-label': aria }, kids);
+      if (it.type === 'pic' || it.type === 'read') {
+        const kids = [h('img', { src: ctx.img(W[o.pic].img), alt: '', draggable: 'false' })];
+        if (it.type === 'pic' && it.announce) kids.push(ear8()); // only options that are heard can be heard again (S7 reading and S9 stay silent)
+        return card('.bq8-card', kids);
+      }
+      if (it.type === 'snd') { const c = card('.e11-sc', [h('span.e11-num', { 'aria-hidden': 'true' }, AR(n + 1)), h('span.e11-spk', { 'aria-hidden': 'true' }, X.i8('listen')), ear8()]); c.dataset.c = String(n % 4); return c; }
+      if (it.type === 'brq') {
+        const face = X.brq(n ? 'think' : 'idle');
+        const c = card('.e11-sc', [h('span.e11-num', { 'aria-hidden': 'true' }, AR(n + 1)), h('span.e11-spk', { 'aria-hidden': 'true' }, face), ear8()]);
+        c.dataset.c = String(n); c._face = face;
+        return c;
+      }
+      if (it.type === 'img') return card('.bq8-card', [h('img', { src: ctx.img(o === 'hop' ? 'bariq_hop' : 'bariq_glide'), alt: '', draggable: 'false', style: { objectFit: 'contain', background: '#EAF6FF' } }), h('span.e11-len' + (o === 'hop' ? '.is-short' : '.is-long'), { 'aria-hidden': 'true' })]);
+      if (it.type === 'txt' || it.type === 'form') return card('.bq8-tile.bq8-tile--syll', [X.markMeem(o)]);
+      return card('', [String(o)]);
+    }
+
     /* الكتابة: قياس = محاولة واحدة بلا دليل · تدريب (trace) = سياسة E09 */
     async function writeItem(it, mode) {
       const learn = mode === 'learn';
       const trace = it.type === 'trace';
       ctx.instruction(X.text(it.q), it.q, { icon: 'hand' });
       ctx.onReplay(() => S.say(it.q));
-      const wrap = h('div.x7-in', { style: { display: 'flex', justifyContent: 'center', width: '100%' } });
+      const wrap = V8 ? h('div.e11-wp8.x7-in') : h('div.x7-in', { style: { display: 'flex', justifyContent: 'center', width: '100%' } });
       body.append(wrap);
       let fails = 0;
       const pad = X.writePad(wrap, {
@@ -343,8 +498,8 @@
       ctx.instruction(X.text(it.q), it.q, { icon: 'mouth' });
       ctx.onReplay(() => S.say(it.q));
       const brqWrap = h('div.e11-saybrq.x7-in', { role: 'img', 'aria-label': 'بارِق' }, X.brq('talk'));
-      const chain = h('div.e11-chain', { 'aria-hidden': 'true' }, ['مَ', 'مِ', 'مُ', 'ما', 'مي', 'مو'].map((t) => h('span.x7-w', null, X.markMeem(t))));
-      const go = h('button.x7-btn.e11-go', { type: 'button', 'aria-label': 'التّالي', disabled: true }, X.icon('next'));
+      const chain = h('div.e11-chain', { 'aria-hidden': 'true' }, ['مَ', 'مِ', 'مُ', 'ما', 'مي', 'مو'].map((t) => (V8 ? h('span.bq8-tile.bq8-tile--syll', null, X.markMeem(t)) : h('span.x7-w', null, X.markMeem(t)))));
+      const go = V8 ? h('button.bq8-btn.bq8-btn--next.e11-go', { type: 'button', 'aria-label': 'التّالي', disabled: true }, X.i8('next')) : h('button.x7-btn.e11-go', { type: 'button', 'aria-label': 'التّالي', disabled: true }, X.icon('next'));
       body.append(h('div.e11-say', null, brqWrap, chain, go));
       X.longPress(brqWrap, 1500, () => judgePanel(body));
       await S.say(it.q);
@@ -413,14 +568,21 @@
       buddy.mood('talk', 1500);
       for (const t of R.teach) {
         box.replaceChildren();
-        if (t.pic) box.append(h('div.e11-card', null, X.pic(ctx, W[t.pic].img)));
+        if (t.pic) box.append(V8 ? h('div.bq8-card.e11-wordpic.bq8-pop', null, h('img', { src: ctx.img(W[t.pic].img), alt: '' })) : h('div.e11-card', null, X.pic(ctx, W[t.pic].img)));
         if (t.ctxImg) box.append(h('div.e11-ctx', null, h('img', { src: ctx.img(t.ctxImg), alt: '', draggable: 'false' })));
         if (t.mouth) box.append(h('div.e11-mouth', null, h('img', { src: ctx.img(t.mouth), alt: '', draggable: 'false' })));
         if (t.glyph) box.append(h('div.e11-big', { 'aria-hidden': 'true' }, t.glyph));
+        if (V8) {
+          if (t.hopglide) box.append(h('div.e11-opts', null, ['hop', 'glide'].map((o) => h('div.e11-opt.bq8-card', null, h('img', { src: ctx.img('bariq_' + o), alt: '', style: { objectFit: 'contain', background: '#EAF6FF' } }), h('span.e11-len' + (o === 'hop' ? '.is-short' : '.is-long'))))));
+          if (t.snd) box.append(h('div.e11-opts', null, t.snd.map((x, i) => h('div.e11-opt.e11-sc', { dataset: { c: String(i) } }, h('span.e11-num', null, AR(i + 1)), h('span.e11-spk', null, X.i8('listen'))))));
+          if (t.words) box.append(h('div.e11-chain', null, t.words.map((w) => h('span.bq8-tile.bq8-tile--word.is-lit', null, X.markMeem(W[w].t)))));
+          if (t.chain) { const ch = h('div.e11-chain', null, t.chain.map((w) => h('span.bq8-tile' + (w.length > 3 ? '.bq8-tile--word' : '.bq8-tile--syll'), null, X.markMeem(w)))); box.append(ch); [...ch.children].forEach((c, i) => setTimeout(() => c.classList.add('is-lit'), 500 + i * 700)); }
+        } else {
         if (t.hopglide) box.append(h('div.e11-opts', null, h('span.e11-imgopt', null, h('img', { src: ctx.img('bariq_hop'), alt: '' })), h('span.e11-imgopt', null, h('img', { src: ctx.img('bariq_glide'), alt: '' }))));
         if (t.snd) box.append(h('div.e11-opts', null, t.snd.map((x, i) => h('span.e11-snd', { dataset: { c: i } }, X.icon('speaker')))));
         if (t.words) box.append(h('div.e11-chain', null, t.words.map((w) => h('span.x7-w.is-lit', null, X.markMeem(W[w].t)))));
         if (t.chain) { const ch = h('div.e11-chain', null, t.chain.map((w) => h('span.x7-w', null, X.markMeem(w)))); box.append(ch); [...ch.children].forEach((c, i) => setTimeout(() => c.classList.add('is-lit'), 500 + i * 700)); }
+        }
         ctx.instruction(X.text(t.line), t.line, { icon: 'ear' });
         await S.say(t.line, { stim: /^bq7_(W|S)_/.test(t.line) });
         if (t.turn) { await S.say('bq7_G_your_turn'); await S.sleep(2600); }

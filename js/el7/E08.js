@@ -5,7 +5,10 @@
    أ٢ التركيب بالسحب (قطعتان + مشتِّتة، الخانات من اليمين) — S7 · أ٣ القراءة المستقلّة (كلمة مكتوبة ← صورتها، بلا صوت قبل الجواب) — S7
    ب «حَلِّلْ»: الكلمة تتفكّك إلى حروفها؛ الميم وحدها تُسحب إلى خانتها (أوّل/وسط/آخر) — S6. (لا تسمية للحروف الأخرى.)
    المحاولات (DECISIONS ح): ✗١ تلميح يعلّل · ✗٢ ضوء على الصواب · ③ «هَذا هُوَ. اِسْمَعْ مَعي:» + النموذج بهدوء. لا «خطأ».
-   القطع تُعرض بأشكالها السياقية (ZWJ) فتلتحم بصرياً حين تتجاور، ثم تُستبدل بالكلمة مطبوعة كاملة. */
+   القطع تُعرض بأشكالها السياقية (ZWJ) فتلتحم بصرياً حين تتجاور، ثم تُستبدل بالكلمة مطبوعة كاملة.
+   v8 (?theme=8 · OWNER_R3-8 · THEME8): لعبة بازل على إطار الجزيرة — القطع قطع بازل حقيقية تتعشّق (لسان/تجويف · .bq8-piece)،
+   الخانات قطع منقّطة، القطع السائبة مائلة قليلاً في الأسفل، والقطعة الصحيحة تستقرّ مباشرة بنقرة. الحروف بخطّ Vazirmatn والميم ملوّنة.
+   السكون: «رْ» تُرسم بحلقة سكون مرفوعة أوضح (X.suk) كي لا تُقرأ «ز» — لا تُحذف. النجوم (٥) تمتلئ مع الإجابات الصحيحة من المحاولة الأولى. */
 (function () {
   'use strict';
   const ID = 'E08';
@@ -96,13 +99,69 @@
   .e08-arrow { width: 22px; height: 22px; }
 }
 `;
+  /* v8: its own sheet (the v7 sheet is NOT loaded with theme 8, so no v7 tile/box looks leak into the v8 pieces) */
+  const CSS8 = `
+.x7p.e08 .e08-body { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.x7p.e08 .e08-chain, .x7p.e08 .e08-opts, .x7p.e08 .e08-split, .x7p.e08 .e08-boxes { display: flex; direction: rtl; align-items: center; justify-content: center; }
+.x7p.e08 .e08-split { transition: gap .4s; }
+.x7p.e08 .e08-top { display: none; }
+/* ---------- v8 ---------- */
+.x7p.e08 { justify-content: center; gap: calc(var(--u)*30); }
+.x7p.e08 .e08-body { gap: calc(var(--u)*34); }
+.x7p.e08 .e08-row8 { display: flex; direction: rtl; align-items: center; justify-content: center; gap: calc(var(--u)*44); }
+.x7p.e08 .e08-chain { gap: calc(var(--u)*22); flex-wrap: nowrap; }
+.x7p.e08 .e08-link.bq8-tile { min-width: 0; min-height: 0; padding: 0; cursor: pointer; overflow: visible; }
+.x7p.e08 .e08-link.bq8-tile--syll { --w: calc(var(--u)*176); }
+.x7p.e08 .e08-link.bq8-tile--word { --w: calc(var(--u)*300); --fs: .3; }
+.x7p.e08 .e08-link > .e08-ear8 { position: absolute; top: calc(var(--u)*-18); inset-inline-start: calc(var(--u)*-18); font-size: calc(var(--u)*54); }
+.x7p.e08 .e08-link.is-wait { animation: x7Pulse 1.3s ease-in-out infinite; }
+.x7p.e08 .e08-link.is-heard { box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-ear), var(--bq8-sh-2); }
+.x7p.e08 .e08-arr8 { font-size: calc(var(--u)*58); flex: none; }
+.x7p.e08 .bq8-card { cursor: default; }
+.x7p.e08 .bq8-card:hover { transform: none; }
+.x7p.e08 .e08-tray8 { display: flex; direction: rtl; justify-content: center; align-items: center; gap: calc(var(--u)*40); min-height: calc(var(--u)*190); }
+.x7p.e08 .bq8-piece { --pw: calc(var(--u)*240); font-size: calc(var(--pw) * .34); }
+.x7p.e08 .bq8-piece > span { display: block; line-height: 1.3; padding-bottom: calc(var(--pw) * .04); }
+.x7p.e08 .bq8-piece--slot.is-hint { color: rgba(11,45,79,.30); }
+.x7p.e08 .e08-tray8 .bq8-piece { filter: drop-shadow(0 calc(var(--u)*10) calc(var(--u)*8) rgba(11,45,79,.28)); }
+.x7p.e08 .e08-word8 { --w: calc(var(--u)*360); cursor: default; }
+.x7p.e08 .e08-word8.bq8-tile--word { --fs: .3; }
+.x7p.e08 .e08-readw.bq8-tile { --w: calc(var(--u)*380); --fs: .3; cursor: default; padding: 0; border-radius: calc(var(--u)*30); }
+.x7p.e08 .e08-readw.is-pulse b { animation: x7Pulse .8s ease-in-out 3; display: inline-block; }
+.x7p.e08 .e08-opts { gap: calc(var(--u)*44); }
+.x7p.e08 .e08-opt.bq8-card { width: calc(var(--u)*214); }
+.x7p.e08 .e08-opt.is-ok { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-ok), var(--bq8-sh-2); }
+.x7p.e08 .e08-opt.is-ok::after { content: ''; position: absolute; top: calc(var(--u)*-22); inset-inline-start: calc(var(--u)*-22); width: calc(var(--u)*62); height: calc(var(--u)*62); background: url(assets/icons8/check.svg) center / contain no-repeat; animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
+.x7p.e08 .e08-opt.is-dim { opacity: .42; filter: grayscale(.6); }
+.x7p.e08 .e08-opt.is-glow { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), 0 0 calc(var(--u)*40) var(--bq8-yellow); }
+.x7p.e08 .e08-split { gap: calc(var(--u)*22); }
+.x7p.e08 .e08-split.is-joined { gap: 0; }
+.x7p.e08 .e08-let.bq8-tile { --w: calc(var(--u)*136); --fs: .56; min-width: 0; min-height: 0; padding: 0; transition: transform .3s, opacity .3s; }
+.x7p.e08 .e08-let.bq8-tile:not(.is-meem) { cursor: default; background: linear-gradient(#fff, #F1F4F8); color: #7D93AA; }
+.x7p.e08 .e08-let.is-meem { color: var(--bq8-meem); }
+.x7p.e08 .e08-split.is-joined .e08-let { opacity: 0; }
+.x7p.e08 .e08-boxes { gap: calc(var(--u)*22); }
+.x7p.e08 .e08-box.bq8-slot { width: calc(var(--u)*136); height: calc(var(--u)*136); min-width: 0; padding: 0; justify-content: center; }
+.x7p.e08 .e08-box .x7-w { font-size: calc(var(--u)*76); color: var(--bq8-meem); }
+.x7p.e08 .e08-box.is-full { border-style: solid; border-color: var(--bq8-ok); background: rgba(207,245,226,.85); }
+.bq8-stage.is-tall > .x7p.e08 { --u: calc(100cqw / 1000); }
+.x7p.e08.is-tall .e08-body { gap: calc(var(--u)*60); }
+.x7p.e08.is-tall .e08-row8 { flex-direction: column; gap: calc(var(--u)*40); }
+`;
   const ARROW = '<svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   function run(stage, ctx) {
     const X = BQ.ix7b, h = BQ.h, W = X.W;
-    X.style('st-e08', CSS);
+    X.style('st-e08', X.v8() ? CSS8 : CSS);
     const S = X.session(ctx);
-    const root = X.root(ctx, 'e08');
+    const V8 = X.v8();
+    const root = X.root(ctx, 'e08', { panel: ['tall', 'col'], stars: 5 });
+    const F8 = root._8;
+    /* v8 helpers: picture card · piece text (tatweel shows the join) · stars for first-try answers */
+    const card8 = (key, ear) => h('div.bq8-card.bq8-card--sm.x7-in', null, h('img', { src: ctx.img(key), alt: '', draggable: 'false' }), ear ? h('span.bq8-card__ear', null, ear) : null);
+    const pieceText = (p) => X.markMeem((p.joinPrev ? 'ـ' : '') + p.src + (p.joinNext ? 'ـ' : ''));
+    let okN = 0; const SCORED = BUILD.length + READ.length + ANALYZE.length;
+    const scored = (ok) => { if (ok) okN++; if (F8) F8.starsTo(Math.floor(okN * 5 / SCORED)); };
     const top = h('div.e08-top');
     const ph = X.phase(top, ['اِقْرَأْ وَرَكِّبْ', 'حَلِّلْ']);
     const total = CHAINS.length + BUILD.length + READ.length + ANALYZE.length;
@@ -112,8 +171,10 @@
     const buddy = X.buddy(root);
     const log = { build: [], read: [], analyze: [] };
     const fitH = () => { const H = stage.clientHeight || 600; root.style.setProperty('--H', H + 'px'); root.classList.toggle('is-short', H < 420); };
-    fitH();
-    if (window.ResizeObserver) { const ro = new ResizeObserver(fitH); ro.observe(stage); ctx.onCleanup(() => ro.disconnect()); }
+    if (!V8) {
+      fitH();
+      if (window.ResizeObserver) { const ro = new ResizeObserver(fitH); ro.observe(stage); ctx.onCleanup(() => ro.disconnect()); }
+    }
     let k = 0;
     const clear = () => body.replaceChildren();
     const yes = async () => { buddy.mood('cheer', 2000); S.fx(X.sfx.ok, 0.45); await S.say(X.yes()); };
@@ -150,14 +211,17 @@
     async function chain(c) {
       clear();
       const row = h('div.e08-chain');
-      const picBox = h('div.e08-card', { hidden: true }, X.pic(ctx, W[c.word].img));
-      const wrap = h('div.e08-pic-row', null, row, picBox);
+      const picBox = V8 ? card8(W[c.word].img) : h('div.e08-card', { hidden: true }, X.pic(ctx, W[c.word].img));
+      if (V8) picBox.hidden = true;
+      const wrap = h(V8 ? 'div.e08-row8' : 'div.e08-pic-row', null, row, picBox);
       body.append(wrap);
       const items = c.links.map((s) => ({ text: s, au: X.sylId(s) })).concat([{ text: W[c.word].t, au: X.wordId(c.word), word: true }]);
       for (let i = 0; i < items.length; i++) {
-        if (i) row.append(h('span.e08-arrow.x7-in', { 'aria-hidden': 'true', html: ARROW }));
+        if (i) row.append(V8 ? X.i8('next', 'e08-arr8.x7-in') : h('span.e08-arrow.x7-in', { 'aria-hidden': 'true', html: ARROW }));
         const it = items[i];
-        const b = h('button.e08-link.x7-in.is-wait', { type: 'button', 'aria-label': 'اِلْمِسْ وَاسْمَعْ' }, X.markMeem(it.text), h('span.e08-ear', { 'aria-hidden': 'true' }, X.icon('ear')));
+        const b = V8
+          ? h('button.e08-link.bq8-tile.x7-in.is-wait' + (it.word ? '.bq8-tile--word' : '.bq8-tile--syll'), { type: 'button', 'aria-label': 'اِلْمِسْ وَاسْمَعْ' }, X.markMeem(it.text), X.i8('ear', 'e08-ear8'))
+          : h('button.e08-link.x7-in.is-wait', { type: 'button', 'aria-label': 'اِلْمِسْ وَاسْمَعْ' }, X.markMeem(it.text), h('span.e08-ear', { 'aria-hidden': 'true' }, X.icon('ear')));
         row.append(b);
         await S.sleep(it.word ? 900 : 600); // وقت ليقرأ بصوته أوّلاً
         await new Promise((res) => {
@@ -181,18 +245,34 @@
     async function build(it) {
       clear();
       const w = W[it.w];
-      const ear = h('button.x7-ear', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ', onclick: () => S.say(X.wordId(it.w), { stim: true }) }, X.icon('ear'));
-      const card = h('div.e08-card.x7-in', null, X.pic(ctx, w.img));
-      body.append(h('div.e08-pic-row', null, card, ear));
+      const sayWord = () => S.say(X.wordId(it.w), { stim: true });
       const pcs = X.pieces(it.parts);
-      const slots = h('div.e08-slots');
-      const tray = h('div.e08-tray');
-      body.append(slots, tray);
-      const slotEls = pcs.map((p, i) => h('div.e08-slot', { 'aria-label': 'خانَةٌ ' + X.AR(i + 1), dataset: { i } }));
-      slots.append(...slotEls);
+      let slots, tray, slotEls;
+      if (V8) {
+        // v8: picture card (+ ear) · the word's place = dotted jigsaw slots (first = right, with the knob · last = left, with the socket)
+        const ear = X.btn8('ear', { size: 'sm', label: 'اِسْمَعِ الكَلِمَةَ', onclick: sayWord });
+        slots = h('div.bq8-puzzle.e08-slots8');
+        slotEls = pcs.map((p, i) => h('div.bq8-piece.bq8-piece--slot.x7-8.' + (i === 0 ? 'bq8-piece--first' : 'bq8-piece--last'), { 'aria-label': 'خانَةٌ ' + X.AR(i + 1), dataset: { i } }));
+        slots.append(...slotEls);
+        body.append(h('div.e08-row8', null, card8(w.img, ear), slots));
+        tray = h('div.e08-tray8');
+        body.append(tray);
+      } else {
+        const ear = h('button.x7-ear', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ', onclick: sayWord }, X.icon('ear'));
+        const card = h('div.e08-card.x7-in', null, X.pic(ctx, w.img));
+        body.append(h('div.e08-pic-row', null, card, ear));
+        slots = h('div.e08-slots');
+        tray = h('div.e08-tray');
+        body.append(slots, tray);
+        slotEls = pcs.map((p, i) => h('div.e08-slot', { 'aria-label': 'خانَةٌ ' + X.AR(i + 1), dataset: { i } }));
+        slots.append(...slotEls);
+      }
       // القطع: الصحيحتان بشكلهما السياقيّ + المشتِّتة بشكل الخانة الأولى
-      const disShape = X.pieces([it.dis].concat(it.parts.slice(1)))[0].t;
-      const tilesData = pcs.map((p, i) => ({ src: p.src, t: p.t, slot: i })).concat([{ src: it.dis, t: disShape, slot: -1 }]);
+      const disP = X.pieces([it.dis].concat(it.parts.slice(1)))[0];
+      const disShape = disP.t;
+      const tilesData = pcs.map((p, i) => ({ src: p.src, t: p.t, p, slot: i })).concat([{ src: it.dis, t: disShape, p: disP, slot: -1 }]);
+      // v8 colours: the two «first» pieces (right one + distractor) get random colours so colour never gives the answer away
+      const firstCols = BQ.shuffle(['c1', 'c4']);
       let errors = 0, filled = 0, done = false, resolve;
       const fin = new Promise((r) => { resolve = r; });
       const dnd = X.dnd({
@@ -206,10 +286,29 @@
           return false;
         },
       });
-      BQ.shuffle(tilesData).forEach((d) => tray.append(dnd.tile(h('div.x7-in', { 'aria-label': 'قِطْعَةٌ', dataset: { slot: d.slot } }, h('span.x7-w', null, d.t)), d)));
+      if (V8) {
+        BQ.shuffle(tilesData).forEach((d, n) => {
+          const kind = d.slot === 1 ? 'last' : 'first';
+          d.col = kind === 'last' ? 'c3' : firstCols[d.slot === 0 ? 0 : 1];
+          const el = h('div.bq8-piece.x7-8.x7-in.bq8-piece--' + kind, { 'aria-label': 'قِطْعَةٌ', dataset: { slot: d.slot } }, pieceText(d.p));
+          el.style.backgroundImage = 'url(assets/icons8/piece_' + kind + '_' + d.col + '.svg)';
+          el.style.rotate = [-4, 3, -2, 4][n % 4] + 'deg';
+          tray.append(dnd.tile(el, d));
+        });
+      } else BQ.shuffle(tilesData).forEach((d) => tray.append(dnd.tile(h('div.x7-in', { 'aria-label': 'قِطْعَةٌ', dataset: { slot: d.slot } }, h('span.x7-w', null, d.t)), d)));
       slotEls.forEach((z, i) => dnd.zone(z, { i }));
       await S.say(X.wordId(it.w), { stim: true });
       function place(t, z) {
+        if (V8) {
+          // straight into its place: the slot becomes the piece (same colour), a short settle bounce, no flight
+          z.replaceChildren(pieceText(t._d.p));
+          z.classList.remove('bq8-piece--slot', 'is-hint'); z.style.backgroundImage = t.style.backgroundImage;
+          z.classList.add('is-full', 'is-placed');
+          t.classList.add('is-used');
+          S.fx(X.sfx.snap, 0.5);
+          if (++filled === pcs.length) complete();
+          return;
+        }
         z.replaceChildren(h('span.x7-w', null, t._d.t));
         z.classList.add('is-full'); z.classList.remove('is-hint');
         t.classList.add('is-used');
@@ -222,26 +321,34 @@
         if (errors === 1) { buddy.mood('think', 1500); await S.say(L.order); await S.say(X.segId(it.w), { stim: true }); }
         else if (errors === 2) {
           const z = slotEls.find((s) => !s.classList.contains('is-full'));
-          if (z) { z.classList.add('is-hint'); z.replaceChildren(h('span.x7-w', null, pcs[+z.dataset.i].t)); }
+          if (z) { z.classList.add('is-hint'); z.replaceChildren(V8 ? pieceText(pcs[+z.dataset.i]) : h('span.x7-w', null, pcs[+z.dataset.i].t)); }
           [...tray.children].forEach((c) => { if (c._d && z && c._d.slot === +z.dataset.i) c.classList.add('is-glow'); });
           await S.say(X.G.light);
         } else if (errors >= 3 && !done) {
           done = true;
           await S.say(X.G.model);
-          [...tray.children].forEach((c) => { if (c._d.slot >= 0 && !c.classList.contains('is-used')) { const z = slotEls[c._d.slot]; z.replaceChildren(h('span.x7-w', null, c._d.t)); z.classList.add('is-full'); c.classList.add('is-used'); } else if (c._d.slot < 0) c.classList.add('is-dim'); });
+          [...tray.children].forEach((c) => {
+            if (c._d.slot >= 0 && !c.classList.contains('is-used')) {
+              const z = slotEls[c._d.slot];
+              if (V8) { z.replaceChildren(pieceText(c._d.p)); z.classList.remove('bq8-piece--slot', 'is-hint'); z.style.backgroundImage = c.style.backgroundImage; z.classList.add('is-placed'); }
+              else z.replaceChildren(h('span.x7-w', null, c._d.t));
+              z.classList.add('is-full'); c.classList.add('is-used');
+            } else if (c._d.slot < 0) c.classList.add('is-dim');
+          });
           await fuse(false);
         }
       }
       async function complete() { if (done) return; done = true; tray.querySelectorAll('.x7-tile').forEach((c) => { if (!c.classList.contains('is-used')) c.classList.add('is-dim'); }); await fuse(true); }
       async function fuse(good) {
-        slots.classList.add('is-fused');
-        await S.sleep(420);
-        const word = h('div.e08-word.x7-in', null, X.markMeem(w.t));
+        slots.classList.add(V8 ? 'is-done' : 'is-fused');
+        await S.sleep(V8 ? 650 : 420);
+        const word = V8 ? h('div.e08-word8.bq8-tile.bq8-tile--word.bq8-pop', null, X.markMeem(w.t)) : h('div.e08-word.x7-in', null, X.markMeem(w.t));
         slots.replaceChildren(word);
         if (good) X.burst(word, 12);
         await S.say(X.wordId(it.w), { stim: true });
         if (good) await yes(); else await S.say(X.G.next);
         const ok1 = good && errors === 0;
+        scored(ok1);
         X.record(ctx, 'S7', ok1, { task: 'build', word: it.w });
         log.build.push({ w: w.t, errors, ok: ok1 }); note();
         await S.sleep(600);
@@ -254,13 +361,15 @@
     async function read(it) {
       clear();
       const w = W[it.w];
-      const wordEl = h('div.e08-readw.x7-in', { dataset: { k: it.w } }, X.markMeem(w.t));
+      const wordEl = h(V8 ? 'div.e08-readw.bq8-tile.bq8-tile--word.x7-in' : 'div.e08-readw.x7-in', { dataset: { k: it.w } }, X.markMeem(w.t));
       const opts = h('div.e08-opts');
       body.append(wordEl, opts);
       let tries = 0, over = false, resolve;
       const fin = new Promise((r) => { resolve = r; });
       const btns = BQ.shuffle(it.opts).map((o) => {
-        const b = h('button.e08-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, X.pic(ctx, W[o].img));
+        const b = V8
+          ? h('button.bq8-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, h('img', { src: ctx.img(W[o].img), alt: '', draggable: 'false' }))
+          : h('button.e08-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, X.pic(ctx, W[o].img));
         b.addEventListener('click', () => pick(b, o));
         return b;
       });
@@ -287,6 +396,7 @@
         }
       }
       async function finish(ok1) {
+        scored(ok1);
         X.record(ctx, 'S7', ok1, { task: 'read', word: it.w });
         log.read.push({ w: w.t, tries, ok: ok1 }); note();
         await S.sleep(700);
@@ -299,21 +409,25 @@
     async function analyze(key) {
       clear();
       const w = W[key];
-      const card = h('div.e08-card.x7-in', null, X.pic(ctx, w.img));
+      const card = V8 ? card8(w.img) : h('div.e08-card.x7-in', null, X.pic(ctx, w.img));
       const wordRow = h('div.e08-split.is-joined');
       const pcs = X.pieces(w.letters);
       const mIdx = w.letters.findIndex((l) => X.bare(l) === 'م');
-      const letEls = pcs.map((p, i) => h('span.e08-let' + (i === mIdx ? '.is-meem' : ''), null, h('span.x7-w', null, p.t)));
+      const letEls = V8
+        ? w.letters.map((l, i) => h('span.e08-let.bq8-tile.x7-8' + (i === mIdx ? '.is-meem' : ''), null, X.markMeem(l)))
+        : pcs.map((p, i) => h('span.e08-let' + (i === mIdx ? '.is-meem' : ''), null, h('span.x7-w', null, p.t)));
       wordRow.append(...letEls);
-      body.append(card, wordRow);
+      let joined = null;
+      if (V8) { joined = h('div.e08-word8.bq8-tile.bq8-tile--word.x7-in', null, X.markMeem(w.t)); body.append(h('div.e08-row8', null, card, joined)); body.append(wordRow); }
+      else body.append(card, wordRow);
       await S.say(X.wordId(key), { stim: true });
       // التفكّك: الحروف تنفصل إلى أشكالها المنفردة
       await S.sleep(300);
-      letEls.forEach((el, i) => { el.firstChild.textContent = w.letters[i]; });
+      if (!V8) letEls.forEach((el, i) => { el.firstChild.textContent = w.letters[i]; });
       wordRow.classList.remove('is-joined');
       await S.sleep(500);
       const boxes = h('div.e08-boxes', { dataset: { m: mIdx } });
-      const boxEls = w.letters.map((l, i) => h('div.e08-box.x7-in', { 'aria-label': 'خانَةٌ ' + X.AR(i + 1), dataset: { i } }));
+      const boxEls = w.letters.map((l, i) => h(V8 ? 'div.e08-box.bq8-slot.x7-8.x7-in' : 'div.e08-box.x7-in', { 'aria-label': 'خانَةٌ ' + X.AR(i + 1), dataset: { i } }));
       boxes.append(...boxEls);
       body.append(boxes);
       let errors = 0, over = false, resolve;
@@ -333,7 +447,8 @@
       const posLine = X.G.pos[w.pos];
       async function good(z) {
         over = true;
-        z.replaceChildren(h('span.x7-w', null, w.letters[mIdx])); z.classList.add('is-full');
+        z.replaceChildren(V8 ? X.markMeem(w.letters[mIdx]) : h('span.x7-w', null, w.letters[mIdx])); z.classList.add('is-full');
+        if (V8) X.anim(z, 'bq8-pop', 420);
         meem.classList.add('is-used');
         S.fx(X.sfx.snap, 0.5);
         await S.sleep(450);
@@ -347,7 +462,7 @@
         else if (!over) {
           over = true;
           boxEls[mIdx].classList.remove('is-glow');
-          boxEls[mIdx].replaceChildren(h('span.x7-w', null, w.letters[mIdx])); boxEls[mIdx].classList.add('is-full');
+          boxEls[mIdx].replaceChildren(V8 ? X.markMeem(w.letters[mIdx]) : h('span.x7-w', null, w.letters[mIdx])); boxEls[mIdx].classList.add('is-full');
           meem.classList.add('is-used');
           await S.say(X.G.model);
           await rejoin(false);
@@ -356,10 +471,12 @@
       async function rejoin(ok) {
         boxes.remove();
         meem.classList.remove('is-used', 'x7-tile'); meem.style.visibility = 'visible';
-        wordRow.replaceChildren(h('div.e08-word.x7-in', null, X.markMeem(w.t)));
-        if (ok) { X.burst(wordRow, 12); await yes(); }
+        if (V8) { wordRow.remove(); if (joined) { joined.classList.remove('x7-in'); X.anim(joined, 'bq8-pop', 450); } }
+        else wordRow.replaceChildren(h('div.e08-word.x7-in', null, X.markMeem(w.t)));
+        if (ok) { X.burst(V8 ? joined : wordRow, 12); await yes(); }
         await S.say(posLine);
         const ok1 = ok && errors === 0;
+        scored(ok1);
         X.record(ctx, 'S6', ok1, { task: 'analyze', word: key });
         log.analyze.push({ w: w.t, errors, ok: ok1 }); note();
         await S.sleep(700);
