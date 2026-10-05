@@ -541,10 +541,11 @@ body.show-plan .hdr-tools { display: none; }
   .hdr-crumb { display: none; }
   .hdr-title { font-size: 17px; }
   .elp { gap: 6px; }
-  .elp-play { border-radius: 20px; padding: 10px 10px 0; }
-  .elp-say { width: 60px; height: 60px; }
-  .elp-fn { width: 46px; height: 46px; }
-  .elp-instr { gap: 10px; min-height: 60px; }
+  /* v8 fixed stage: in-stage rules never react to the viewport (stage8.css) */
+  :where(:root:not([data-theme="8"])) .elp-play { border-radius: 20px; padding: 10px 10px 0; }
+  :where(:root:not([data-theme="8"])) .elp-say { width: 60px; height: 60px; }
+  :where(:root:not([data-theme="8"])) .elp-fn { width: 46px; height: 46px; }
+  :where(:root:not([data-theme="8"])) .elp-instr { gap: 10px; min-height: 60px; }
   .ft-in .status { margin-inline-start: 0; }
 }
 /* الدرج للهاتف واللوح العمودي اللمسي فقط؛ على الكمبيوتر تبقى القائمة عموداً ثابتاً على اليمين (طلب المالك) */
@@ -572,7 +573,7 @@ body.show-plan .hdr-tools { display: none; }
   .elp-tool .bq-ic { width: 20px; height: 20px; }
   .elp-tool-l { display: none; }
   .elp-tool-s { display: block; }
-  .elp-instr-t, .elp-cap { font-size: clamp(17px, 4.6vw, 21px); padding: 4px 12px 6px; }
+  :where(:root:not([data-theme="8"])) .elp-instr-t, :where(:root:not([data-theme="8"])) .elp-cap { font-size: clamp(17px, 4.6vw, 21px); padding: 4px 12px 6px; }
 }
 @media (max-width: 520px) {
   .hdr-logo img { width: 74px; }

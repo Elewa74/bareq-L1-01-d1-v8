@@ -3,7 +3,14 @@
    على الشاشة: color_page1 (م كبيرة مع بارق) ثم color_page2 (مانجو، موز، قمر، مشط، مفتاح، تمساح) · لوحة ٨ ألوان كبيرة ·
    لمس منطقة = تعبئة (تعبئة فيضية على لوحة رسم من فنّ الخطوط؛ الخطوط تبقى سوداء بالمزج «ضرب») · لمس شيء أوّل مرّة يُسمِع اسمه (bq7_W_*) ·
    زرّ «تَراجُع» أيقونة · الانتهاء bq7_E15_done. الطباعة A4 من دليل المعلّم فقط (لا زرّ «اطبع» على شاشة الطفل).
-   v8 (?theme=8): إعادة تلبيس فقط — اللوح الخشبيّ، الصفحة ورقة بيضاء بإطار ملصق، الألوان أقراص ملصقات، «تراجع» زرّ ملصق. لا تغيير في السلوك. */
+   v8 (?theme=8): إعادة تلبيس — اللوح الخشبيّ، الصفحة ورقة بيضاء بإطار ملصق، الألوان أقراص ملصقات، «تراجع» زرّ ملصق.
+   OWNER_R3 E15 (2026-10-05): (١) الختام القياسيّ: بعد تلوين ٣ مناطق أو الحرف يُسجَّل الإنجاز (ctx.done) + bq7_E15_done ويظهر زرّ «التّالي»
+   (bq8-pill ≥٦٤px) يفتح ورقة الختام الموحّدة (X.end ← BQ.ui.endCard: «أَحْسَنْتَ!» + «التّالي» + «أَعِدْ») مع bq7_G_end.
+   (٢) التعبئة للمناطق المغلقة فقط: خلفية الصفحة (كلّ منطقة تلمس حافّة الصورة) وأيّ منطقة أكبر من ٢٢٪ من الصفحة (بطاقة الحرف) لا تتلوّن أبداً.
+   v8 E15 meem glyph (2026-10-05 · OWNER_R3 «حرف الـ م به خطأ»): «م» الصفحة ١ كانت شكلاً مرسوماً (راية بلا فراغ) داخل color_page1.webp (ART).
+   الآن: media/img8/color_page1_meem8.webp = color_page1_blank + «م» المنفصلة (U+0645) من خطّ Vazirmatn Bold (خطّ الحرف v8)، محيط الحرف
+   مرسوم من مخطّط الحرف نفسه (fontTools) بخطّ أسود ١٢px مثل إطار البطاقة. جسم الحرف (الرأس + الذيل) منطقة واحدة، والفراغ الدائريّ منطقة مستقلّة
+   تبقى بيضاء حين يُلوَّن الجسم. letter = نقطة داخل الجسم (لا الفراغ). السكربت: v7/ix2_v8/meem_page1/render.py */
 (function () {
   'use strict';
   const ID = 'E15';
@@ -11,7 +18,11 @@
   const NAMES = ['أَحْمَرُ', 'بُرْتُقالِيٌّ', 'أَصْفَرُ', 'أَخْضَرُ', 'أَزْرَقُ فاتِحٌ', 'أَزْرَقُ', 'بَنَفْسَجِيٌّ', 'بُنِّيٌّ'];
   /* الصفحة ٢: شبكة ٢×٣ (الصورة: يسار/يمين × ٣ صفوف) ← اسم الشيء */
   const GRID2 = [['manju', 'mawz'], ['qamar', 'musht'], ['miftah', 'timsah']];
-  const PAGES = [{ key: 'color_page1', min: 4 }, { key: 'color_page2', min: 6, grid: GRID2 }];
+  /* letter = نقطة داخل جسم «م» (نسبة من الصفحة) — تلوين الحرف وحده يكفي للختام · hole = مركز الفراغ الدائريّ (منطقة مستقلّة، ليست الحرف) · card = نقطة في بطاقة الحرف (تُحجب كخلفية) */
+  const PAGES = [{ key: 'color_page1', src: 'media/img8/color_page1_meem8.webp', letter: [0.3725, 0.4278], hole: [0.5581, 0.3707], card: [0.42, 0.72] },
+    { key: 'color_page2', grid: GRID2 }];
+  const MIN_FILLS = 3;      // «قدرٌ معقول» قبل زرّ «التّالي»
+  const BG_MAX = 0.22;      // منطقة أكبر من هذا (نسبة من الصفحة) = خلفية/بطاقة، لا تُلوَّن
   const PW = 760; // دقّة المعالجة (العرض بالبكسل)
 
   const CSS = `
@@ -66,7 +77,18 @@
 .x7p.e15.is-tall .e15-page { height: calc(var(--u)*720); }
 .x7p.e15.is-tall .e15-side { flex-direction: row; }
 .x7p.e15.is-tall .e15-pal { grid-template-columns: repeat(4, auto); }
-@media (prefers-reduced-motion: reduce) { .e15-dot { animation: none; opacity: 0; } .e15-sw { transition: none; } }
+.e15-fin { flex: none; display: flex; align-items: center; justify-content: center; }
+.e15-fin[hidden] { display: flex !important; visibility: hidden; }
+.e15-finbtn { min-height: 64px; min-width: 64px; }
+.e15-dot.is-no { background: transparent !important; border: 3px solid rgba(11,45,79,.35); }
+.x7p.e15 .e15-finbtn { flex-direction: column; justify-content: center; gap: calc(var(--u)*4); min-width: max(64px, calc(var(--u)*132)); min-height: max(64px, calc(var(--u)*132));
+  padding: calc(var(--u)*12) calc(var(--u)*16) calc(var(--u)*20); border-radius: calc(var(--u)*34); font: 700 max(20px, calc(var(--u)*30))/1.6 var(--font-ui); }
+.x7p.e15 .e15-finbtn .bq8-ic { font-size: max(40px, calc(var(--u)*62)); margin: 0; }
+.x7p.e15 .e15-finbtn.is-pulse { animation: e15Glow 1.6s ease-in-out 4; }
+@keyframes e15Glow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+.x7p.e15.is-tall .e15-finbtn { min-width: max(64px, calc(var(--u)*110)); min-height: max(64px, calc(var(--u)*110)); }
+@container stage (max-width: 620px) { .e15:not(.x7p) .e15-fin { order: 3; } }
+@media (prefers-reduced-motion: reduce) { .e15-dot { animation: none; opacity: 0; } .e15-sw { transition: none; } .x7p.e15 .e15-finbtn.is-pulse { animation: none; } }
 `;
 
   function run(stage, ctx) {
@@ -92,18 +114,24 @@
     const undoBtn = V8 ? h('button.bq8-btn.bq8-btn--replay.e15-undo8', { type: 'button', 'aria-label': 'تَراجُعٌ', disabled: true }, X.i8('replay')) : h('button.e15-tool', { type: 'button', 'aria-label': 'تَراجُعٌ', disabled: true }, X.icon('undo'));
     // زرّ واحد يبدّل الصفحة (صورة مصغّرة للصفحة الأخرى) ويضيء حين تكتمل الصفحة الأولى
     const goBtn = h('button.e15-sw2', { type: 'button', 'aria-label': 'الصَّفْحَةُ الأُخْرى' });
-    const setSwitch = () => { goBtn.style.backgroundImage = 'url("' + ctx.img(PAGES[(pi + 1) % PAGES.length].key) + '")'; };
+    const srcOf = (i) => PAGES[i].src || ctx.img(PAGES[i].key);
+    const setSwitch = () => { goBtn.style.backgroundImage = 'url("' + srcOf((pi + 1) % PAGES.length) + '")'; };
     const side = h('div.e15-side', null, h('div.e15-pal', { role: 'group', 'aria-label': 'الأَلْوانُ' }, sws), h('div.e15-tools', null, undoBtn, goBtn));
-    root.append(pageWrap, side);
+    // زرّ الختام «التّالي» — مخفيّ (يحجز مكانه) حتى يلوّن الطفل قدراً معقولاً
+    const finLbl = h('span.e15-finlbl', null, 'التّالي');
+    const finBtn = V8 ? h('button.bq8-pill.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, X.i8('next'), finLbl)
+      : h('button.x7-btn.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, finLbl, X.icon('next'));
+    const fin = h('div.e15-fin', { hidden: true }, finBtn);
+    root.append(pageWrap, side, fin);
     const buddy = X.buddy(root);
 
     const state = PAGES.map(() => null); // لكلّ صفحة: {cv, g, w, h, lab, color(ImageData), line(img), fills:Map, undo:[], named:Set, n}
-    let pi = 0, finished = false, doneSaid = false;
+    let pi = 0, ready = false, ended = false;
     async function load(i) {
       if (state[i]) return state[i];
       const img = new Image();
       img.decoding = 'async';
-      img.src = ctx.img(PAGES[i].key);
+      img.src = srcOf(i);
       await new Promise((r) => { img.onload = r; img.onerror = r; });
       if (!img.naturalWidth) return null;
       const w = PW, hh = Math.round(PW * img.naturalHeight / img.naturalWidth);
@@ -131,7 +159,21 @@
         sizes.push(cnt); n++;
       }
       const color = g.createImageData(w, hh); color.data.fill(255);
-      const st = { cv, g, w, h: hh, lab, sizes, color, line: img, fills: new Map(), undo: [], named: new Set(), bg: lab[w * 2 + 2] };
+      // الخلفية: كلّ منطقة تلمس حافّة الصورة + كلّ منطقة كبيرة جدّاً (بطاقة/ورقة) — لا تُلوَّن أبداً
+      const blocked = new Set();
+      for (let x = 0; x < w; x++) { blocked.add(lab[x]); blocked.add(lab[N - w + x]); }
+      for (let y = 0; y < hh; y++) { blocked.add(lab[y * w]); blocked.add(lab[y * w + w - 1]); }
+      sizes.forEach((c, r) => { if (c > N * BG_MAX) blocked.add(r); });
+      if (PAGES[i].card) blocked.add(lab[Math.round(PAGES[i].card[1] * hh) * w + Math.round(PAGES[i].card[0] * w)]); // بطاقة الحرف = خلفية دائماً (≈٢٢٪ بعد الحرف الجديد، فلا نعتمد على BG_MAX وحده)
+      blocked.delete(-1);
+      let letter = -1;
+      if (PAGES[i].letter) {
+        const lx = Math.round(PAGES[i].letter[0] * w), ly = Math.round(PAGES[i].letter[1] * hh), r = lab[ly * w + lx];
+        if (r >= 0 && !blocked.has(r) && sizes[r] > N * 0.01) letter = r;
+      }
+      const hole = PAGES[i].hole ? lab[Math.round(PAGES[i].hole[1] * hh) * w + Math.round(PAGES[i].hole[0] * w)] : -1;
+      if (hole >= 0 && hole === letter) letter = -1; // الفراغ ليس جسم الحرف
+      const st = { cv, g, w, h: hh, lab, sizes, color, line: img, fills: new Map(), undo: [], named: new Set(), blocked, letter, hole, bg: lab[w * 2 + 2] };
       draw(st);
       cv.addEventListener('pointerdown', (e) => tap(st, e));
       cv.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -153,14 +195,16 @@
       if (col) st.fills.set(r, col); else st.fills.delete(r);
       draw(st);
     }
+    const ok = (st, r) => r >= 0 && st.sizes[r] > 25 && !st.blocked.has(r);
     function regionAt(st, x, y) {
       const w = st.w;
       let r = st.lab[y * w + x];
-      if (r >= 0 && st.sizes[r] > 25) return r;
+      if (r >= 0 && st.blocked.has(r)) return -1; // لمس الخلفية/خارج الرسم: لا تعبئة
+      if (ok(st, r)) return r;
       // على الخطّ: أقرب منطقة حقيقية حول نقطة اللمس
       for (let rad = 1; rad <= 10; rad++) for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) {
         const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= w || yy >= st.h) continue;
-        r = st.lab[yy * w + xx]; if (r >= 0 && st.sizes[r] > 25) return r;
+        r = st.lab[yy * w + xx]; if (ok(st, r)) return r;
       }
       return -1;
     }
@@ -170,7 +214,12 @@
       const rc = st.cv.getBoundingClientRect();
       const fx = (e.clientX - rc.left) / rc.width, fy = (e.clientY - rc.top) / rc.height;
       const x = Math.max(0, Math.min(st.w - 1, Math.round(fx * st.w))), y = Math.max(0, Math.min(st.h - 1, Math.round(fy * st.h)));
-      const r = regionAt(st, x, y); if (r < 0) return;
+      const r = regionAt(st, x, y);
+      if (r < 0) { // لا شيء يُلوَّن هنا: حلقة خفيفة فقط
+        const no = h('span.e15-dot.is-no', { 'aria-hidden': 'true', style: { left: (fx * 100) + '%', top: (fy * 100) + '%' } });
+        page.append(no); setTimeout(() => no.remove(), 600);
+        return;
+      }
       const col = COLORS[cur];
       if (st.fills.get(r) === col) return;
       st.undo.push({ r, prev: st.fills.get(r) || null });
@@ -181,18 +230,41 @@
       S.fx(X.sfx.snap, 0.25);
       // اسم الشيء أوّل مرّة (الصفحة ٢: الشبكة ٢×٣؛ لا خلفية)
       const grid = PAGES[pi].grid;
-      if (grid && r !== st.bg && st.sizes[r] < st.w * st.h * 0.25) {
+      if (grid) {
         const row = Math.min(2, Math.floor(fy * 3)), colI = fx < 0.5 ? 0 : 1;
         const k = grid[row][colI];
         if (!st.named.has(k)) { st.named.add(k); S.say(X.wordId(k), { stim: true }); buddy.mood('talk', 1000); }
       }
       const filled = st.fills.size;
       if (filled % 5 === 0) buddy.mood('clap', 1400);
-      if (filled >= PAGES[pi].min) {
-        if (pi < PAGES.length - 1) goBtn.classList.add('is-go');
-        else if (!doneSaid) { doneSaid = true; complete(); }
+      if (enough(st)) {
+        if (!ready) becomeReady();
+        else glowOther();
       }
     }
+    const enough = (st) => !!st && (st.fills.size >= MIN_FILLS || (st.letter >= 0 && st.fills.has(st.letter)));
+    // الصفحة الأخرى لم تُلوَّن بعد → زرّ تبديل الصفحة يضيء (اختياريّ؛ «التّالي» متاح دائماً بعد الجاهزيّة)
+    function glowOther() { const o = (pi + 1) % PAGES.length; goBtn.classList.toggle('is-go', enough(state[pi]) && !enough(state[o])); }
+    async function becomeReady() {
+      ready = true;
+      ctx.done(); // يُسجَّل الإنجاز فوراً (سهم «التّالي» في المنصّة يعمل أيضاً)
+      glowOther();
+      fin.hidden = false;
+      X.anim(finBtn, 'fx7-pop', 500);
+      if (V8) finBtn.classList.add('is-pulse');
+      if (X.fitInk) requestAnimationFrame(() => X.fitInk(finLbl, finBtn, { grow: true }));
+      buddy.mood('cheer', 3000);
+      X.burst(page, 14);
+      await S.say('bq7_E15_done'); // «ما أَجْمَلَ أَلْوانَكَ!»
+    }
+    finBtn.addEventListener('click', () => {
+      if (ended || !S.live) return; ended = true;
+      finBtn.classList.remove('is-pulse');
+      if (!BQ.state.done.has(ctx.meta.id)) ctx.done();
+      buddy.mood('cheer', 3000);
+      X.end(ctx, S, { line: ['bq7_G_end', 'bq7_G_yes2'] }); // ورقة الختام الموحّدة + «أَحْسَنْتَ! أَنْهَيْتَ النَّشاطَ.»
+      setTimeout(() => { ended = false; }, 800);
+    });
     undoBtn.addEventListener('click', () => {
       const st = state[pi]; if (!st || !st.undo.length) return;
       const u = st.undo.pop(); paint(st, u.r, u.prev);
@@ -209,14 +281,7 @@
       if (!S.live || pi !== i) return;
       page.replaceChildren(st ? st.cv : h('div.e15-wait', null, '…'));
       undoBtn.disabled = !(st && st.undo.length);
-      if (st && i < PAGES.length - 1 && st.fills.size >= PAGES[i].min) goBtn.classList.add('is-go');
-    }
-    async function complete() {
-      buddy.mood('cheer', 3500);
-      X.burst(page, 14);
-      await S.say('bq7_E15_done');
-      if (!finished) { finished = true; ctx.done(); }
-      note();
+      if (st) glowOther();
     }
 
     note();
@@ -228,10 +293,10 @@
     })();
 
     function note() {
-      const b1 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print([{ img: ctx.img('color_page1') }, { img: ctx.img('color_page2') }], { title: 'لوّن — صوت الميم' }) }, 'اطبع الصفحتين للتلوين (A4)');
+      const b1 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print([{ img: srcOf(0) }, { img: srcOf(1) }], { title: 'لوّن — صوت الميم' }) }, 'اطبع الصفحتين للتلوين (A4)');
       const b2 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => { const pgs = state.filter(Boolean).map((st) => ({ img: st.cv.toDataURL('image/png') })); if (pgs.length) X.print(pgs, { title: 'تلوين الطفل' }); } }, 'اطبع ما لوّنه الطفل');
       X.note(ctx, h('div', null,
-        h('div', { html: '<p><b>ما يجري:</b> يختار الطفل لوناً ثم يلمس منطقة فتتلوّن (الصفحة ١: «م» كبيرة مع بارق · الصفحة ٢: مانجو، موز، قمر، مشط، مفتاح، تمساح — لمس الشيء أوّل مرّة يُسمِع اسمه). «تراجع» يلغي آخر تلوين.</p>' +
+        h('div', { html: '<p><b>ما يجري:</b> يختار الطفل لوناً ثم يلمس منطقة فتتلوّن (الصفحة ١: «م» كبيرة مع بارق · الصفحة ٢: مانجو، موز، قمر، مشط، مفتاح، تمساح — لمس الشيء أوّل مرّة يُسمِع اسمه). «تراجع» يلغي آخر تلوين. خلفية الصفحة لا تتلوّن. بعد ٣ مناطق أو تلوين الحرف يظهر «التّالي» ويُسجَّل النشاط منجزاً، ويمكن للطفل أن يكمل التلوين.</p>' +
           '<p><b>اسأله أثناء التلوين:</b> «ما هذا؟ أين الميم في اسمه؟» — دون ضغط؛ هذا نشاط تعزيز غير مسجَّل.</p>' }),
         h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } }, b1, b2)));
     }

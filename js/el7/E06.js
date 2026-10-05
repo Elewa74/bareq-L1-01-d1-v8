@@ -236,7 +236,7 @@
       for (const w of WORDS) {
         steps.cur(si);
         const info = I.W[w.slug];
-        const tw = I.tapWord(info.w, { aria: info.w, minW: V8 ? 64 : 60 }); // تشكيل حقيقيّ + مناطق لمس مقيسة (lib)
+        const tw = I.tapWord(info.w, { aria: info.w, minW: V8 ? 64 : 60, whole: (c) => c.b === 'م' }); // تشكيل حقيقيّ + مناطق لمس مقيسة (lib) · منطقة «م» تشمل رسمها وحركتها كاملين
         const word = tw.el; word.classList.add('e06-word');
         const spans = tw.cl.map((c) => c.hit);
         const tIdx = tw.cl.findIndex((c) => c.b === 'م');

@@ -558,6 +558,65 @@
   const FN = [[/قول|قُل|غَنّ|رَدِّد|ما هَذا|سَمِعْتُ فَرْقاً/, 'mouth'], [/أَيْنَ|مَنْ|المِسْ|الْمِسْ|تَتَبَّع|ضَعْ|اقْلِب|رَتِّب|اخْتَر/, 'hand'], [/انْظُر|شاهِد|حَرْفُ|هَذِهِ الميمُ|^ماء/, 'eye']];
   const fnIcon = (text, line) => { const t = text || ((BQ.line(line) || {}).t) || ''; for (const [re, ic] of FN) if (re.test(t)) return ic; return 'ear'; };
 
+  /* ---------- v8 FIXED STAGE (owner R3 «STAGE» 2026-10-05: «مقاس النشاط وشكل عرضه يكون ثابت») · css/stage8.css ----------
+     Theme 8: .elp-play is ALWAYS 1180×740 layout px and is scaled uniformly (transform) to fit .elp-fit, centred and letter-boxed —
+     the same composition on every screen (no reflow / no portrait layout). Layout sizes inside the stage never change, so element
+     fit() code (clientWidth/clientHeight) always sees the same box; rect-based hit tests (getBoundingClientRect, getScreenCTM) stay right.
+     Code that moves an in-stage element by a raw clientX/Y delta must divide it by BQ.stageScale(). */
+  const STAGE = (BQ.STAGE = { w: 1180, h: 740 });
+  const fixed8 = (BQ.fixedStage = () => document.documentElement.dataset.theme === '8');
+  let stageS = 1;
+  BQ.stageScale = () => (fixed8() ? stageS : 1);
+  function stageFit(box, play) {
+    if (!fixed8()) return;
+    const fit = () => {
+      const W = box.clientWidth, H = box.clientHeight; if (!W || !H) return;
+      stageS = Math.min(W / STAGE.w, H / STAGE.h);
+      const s = String(+stageS.toFixed(5));
+      play.style.setProperty('--bq-s', s); document.documentElement.style.setProperty('--bq-stage-s', s);
+      box.classList.add('is-fit');
+    };
+    fit();
+    if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(box); cleanups.push(() => ro.disconnect()); }
+    else { window.addEventListener('resize', fit); cleanups.push(() => window.removeEventListener('resize', fit)); }
+  }
+  /* element <style> blocks (theme 8): viewport @media (width/height/orientation/aspect) are switched off and vw/vh/vmin/vmax become px
+     of the 1180×820 reference screen, so nothing inside the stage reacts to the window. Teacher pages / print styles are left alone. */
+  const VP_MQ = /(width|height|aspect-ratio|orientation)/, VP_U = /(-?\d*\.?\d+)(?:s|d|l)?(vw|vh|vmin|vmax)\b/g, VP_SKIP = /^(st-plan7|x7-print-st)$/;
+  const vpPx = (v) => v.replace(VP_U, (m, n, u) => +(parseFloat(n) * (u === 'vw' ? 1180 : u === 'vh' ? 820 : u === 'vmin' ? 820 : 1180) / 100).toFixed(2) + 'px');
+  function tameRules(rules) {
+    for (const r of Array.from(rules || [])) {
+      if (r.media && r.cssRules) { const mt = r.media.mediaText || ''; if (VP_MQ.test(mt) && !/print/.test(mt)) { try { r.media.mediaText = 'not all'; } catch (e) { /* */ } continue; } }
+      if (r.cssRules) { tameRules(r.cssRules); continue; }
+      if (!r.style) continue;
+      for (const p of Array.from(r.style)) {
+        const v = r.style.getPropertyValue(p); VP_U.lastIndex = 0;
+        if (v && VP_U.test(v)) { VP_U.lastIndex = 0; try { r.style.setProperty(p, vpPx(v), r.style.getPropertyPriority(p)); } catch (e) { /* */ } }
+      }
+    }
+  }
+  function tameStyle(el) { if (!el || el.tagName !== 'STYLE' || el._bqTamed || VP_SKIP.test(el.id || '')) return; el._bqTamed = true; try { tameRules(el.sheet && el.sheet.cssRules); } catch (e) { /* */ } }
+  /* element JS that asks the window's ORIENTATION (E10's «أَدِرِ الجِهازَ» card) gets «no match» in theme 8: the stage is always landscape
+     (same rule as the element CSS above). Platform queries (drawer, reduced motion) have no orientation term and are untouched. */
+  if (fixed8() && window.matchMedia) {
+    const mm = window.matchMedia.bind(window);
+    window.matchMedia = function (q) {
+      if (!/orientation/i.test(String(q))) return mm(q);
+      const noop = () => {};
+      return { matches: false, media: String(q), onchange: null, addEventListener: noop, removeEventListener: noop, addListener: noop, removeListener: noop, dispatchEvent: () => false };
+    };
+  }
+  if (fixed8() && window.MutationObserver) {
+    document.querySelectorAll('head style').forEach(tameStyle);
+    new MutationObserver((recs) => recs.forEach((r) => r.addedNodes.forEach(tameStyle))).observe(document.head, { childList: true });
+    /* drag ghosts live in <body> (outside the scaled stage) with the stage unit --u copied from layout px → carry the scale too */
+    new MutationObserver((recs) => recs.forEach((r) => r.addedNodes.forEach((n) => {
+      if (n.nodeType !== 1 || !n.style || n._bqU) return;
+      const u = parseFloat(n.style.getPropertyValue('--u'));
+      if (u && stageS !== 1) { n._bqU = true; n.style.setProperty('--u', (u * stageS) + 'px'); }
+    }))).observe(document.body, { childList: true });
+  }
+
   /** صفحة العنصر: رأس + [تعليمة + مسرح] + نصّ مصاحب + تنقّل + دليل المعلّم (درج) */
   function frame(meta) {
     const content = $('#content');
@@ -586,6 +645,7 @@
     /* شريط الفعل داخل الإطار: يستقبل «أَكْمِلْ» وأمثاله إن وقعت خارج المساحة المرئيّة من المسرح (لا تمرير للوصول إليها) */
     const dock = h('div.elp-dock');
     const play = h('div.elp-play', null, instr, stage, dock);
+    const fitBox = h('div.elp-fit', null, play); // v8 fixed stage: the free area; outside theme 8 it is display:contents
     const docked = new Set();
     const PRIM = '.kx-cont, .vp-go2, .bq-btn';
     const SKIP = '.bq-end, .bq-sess, .elp-cover, .bq-adult, .elp-dock';
@@ -667,8 +727,9 @@
         h('h2.elp-title', { id: 'elp-t', tabindex: '-1' }, cleanName(meta.name))),
       h('div.elp-tools', { role: 'group', 'aria-label': 'أدوات المعلّم' }, adultBtn, ccBtn, restartBtn));
     const nav = navBar(meta.id);
-    const f = h('section.bq-frame.elp', { dataset: { el: meta.id }, 'aria-labelledby': 'elp-t' }, head, play, nav, scrim, adultPanel);
+    const f = h('section.bq-frame.elp', { dataset: { el: meta.id }, 'aria-labelledby': 'elp-t' }, head, fitBox, nav, scrim, adultPanel);
     content.replaceChildren(f);
+    stageFit(fitBox, play);
     const ctx = {
       meta, stage, frame: f,
       alive: () => L.alive && BQ.state.current === meta.id && f.isConnected,
@@ -700,6 +761,7 @@
       clear() { BQ.audio.stop(); stage.replaceChildren(); },
       age: () => BQ.state.age,
       _renderInstr: renderInstr,
+      stageScale: () => BQ.stageScale(), // v8 fixed stage: visual px per layout px (1 outside theme 8)
     };
     adultBody.replaceChildren(h('div', { html: guideHtml(meta) }));
     return ctx;
@@ -788,7 +850,67 @@
   const COVER = {};
   function designedCover(id) { const m = BQ.meta(id) || {}; return Promise.resolve(m.cover_file || null); }
   BQ.coverInfo = (id) => { const m = BQ.meta(id) || {}; const c = COVER[id] || []; return { title: m.cover_title || c[0] || cleanName(m.name), child: m.cover_child || c[1] || '', pose: m.cover_pose || c[2] || 'wave' }; };
+  /* v8 (COVERS · THEME8 §D6 · قالبا المالك 2026-10-05): نشاط = شارة «نَشاطٌ تَفاعُلِيٌّ» + العنوان + «اِبْدَأِ النَّشاطَ» ·
+     فيديو = تشغيل كبير فوق الصورة + شارة المدّة + «فيديو» + العنوان + المدّة (حقيقية من ملفّ الفيديو).
+     الصورة media/img8/cov8_<ID>.webp (GPT)، وإن غابت فالغلاف القديم cover_file. COV8_PLAY = مركز البقعة الهادئة لزرّ التشغيل [x,y] ٪ من صورة الغلاف نفسها؛ يُحوَّل إلى موضع داخل إطار الصورة بعد القصّ (object-position) في كلّ مقاس. */
+  const COV8_PLAY = { E02: [53, 15], E07: [36, 24], E12: [52, 16], E13: [42, 20] };
+  function cov8Play(card, img, p) {
+    const art = img.parentNode;
+    const place = () => {
+      const aw = art.clientWidth, ah = art.clientHeight, nw = img.naturalWidth, nh = img.naturalHeight;
+      if (!aw || !ah || !nw || !nh || !/img8\/cov8_/.test(img.currentSrc || img.src)) return;
+      const sc = Math.max(aw / nw, ah / nh), dw = nw * sc, dh = nh * sc;
+      const op = (getComputedStyle(img).objectPosition || '50% 50%').split(' ').map((v) => parseFloat(v) / 100);
+      const cl = (v) => Math.min(86, Math.max(14, v)).toFixed(1) + '%';
+      const x = cl((p[0] / 100 * dw - (dw - aw) * (op[0] || 0)) / aw * 100), y = cl((p[1] / 100 * dh - (dh - ah) * (isNaN(op[1]) ? .5 : op[1])) / ah * 100);
+      card.style.setProperty('--bq8-play-x', x); card.style.setProperty('--bq8-play-y', y); card.style.setProperty('--bq8-play-px', x); card.style.setProperty('--bq8-play-py', y);
+    };
+    if (img.complete) place(); img.addEventListener('load', place);
+    if (window.ResizeObserver) { const ro = new ResizeObserver(place); ro.observe(art); }
+  }
+  const BLANK8 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+  const COV8_POS = { E06: '3% 50%' }; // قصّ خاصّ لصورة غلاف (الشخصية قريبة من الحافة)
+  const COV8_DUR = { E02: 72, E07: 61, E12: 63, E13: 88 };
+  const mmss = (s) => { s = Math.max(0, Math.round(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  function cover8(ctx, onStart) {
+    const meta = ctx.meta, id = meta.id, info = BQ.coverInfo(id), isVid = meta.kind === 'video';
+    const play = ctx.frame.querySelector('.elp-play');
+    if (play) play.classList.add('has-cover');
+    ctx.frame.classList.add('has-cover');
+    let c = null;
+    const go = () => { A.unlock(); if (play) play.classList.remove('has-cover'); ctx.frame.classList.remove('has-cover'); if (c) c.remove(); onStart(); };
+    /* known v8 covers (data.js «cov8», scanned by build_data_v7.py) → never request a missing file (no 404); old data without the list → try + fallback */
+    const has8 = !Array.isArray(D.cov8) || D.cov8.includes(id);
+    const img = h('img', { src: has8 ? 'media/img8/cov8_' + id + '.webp' : (meta.cover_file || BLANK8), alt: '', decoding: 'async', draggable: 'false' });
+    if (has8 && COV8_POS[id]) img.style.objectPosition = COV8_POS[id];
+    img.addEventListener('error', () => { img.style.objectPosition = ''; if (meta.cover_file) img.src = meta.cover_file; }, { once: true });
+    const tid = 'elp-cv-t';
+    const title = h('h3.bq8-cover__title', { id: tid }, info.title);
+    let card;
+    if (isVid) {
+      const dur = h('span.bq8-cover__dur'), time = h('span.bq8-cover__time');
+      const setDur = (s) => { const t = mmss(s); dur.textContent = t; time.textContent = t; time.setAttribute('aria-label', 'المُدَّةُ ' + t); };
+      if (COV8_DUR[id]) setDur(COV8_DUR[id]); else { dur.hidden = true; time.hidden = true; }
+      try { // المدّة الحقيقية من ملفّ الفيديو (البيانات الوصفية فقط)
+        const v = document.createElement('video'); v.preload = 'metadata'; v.muted = true;
+        v.addEventListener('loadedmetadata', () => { if (isFinite(v.duration) && v.duration > 0) { setDur(v.duration); dur.hidden = false; time.hidden = false; } v.removeAttribute('src'); v.load(); }, { once: true });
+        v.src = 'media/video7/' + (meta.video || id) + (meta.video_720 ? '_720' : '') + '.mp4';
+      } catch (e) { /* */ }
+      card = h('div.bq8-cover.bq8-cover--video', { role: 'group', 'aria-labelledby': tid },
+        h('div.bq8-cover__art', { onclick: go }, img, h('button.bq8-cover__play', { type: 'button', 'aria-label': 'شاهِدْ: ' + info.title, onclick: (e) => { e.stopPropagation(); go(); } }), dur),
+        h('div.bq8-cover__side', null, h('span.bq8-cover__chip', null, h('i.bq8-ic.bq8-ic--play', { 'aria-hidden': 'true' }), 'فيديو'), title, time));
+      if (COV8_PLAY[id]) cov8Play(card, img, COV8_PLAY[id]);
+    } else {
+      card = h('div.bq8-cover.bq8-cover--activity', { role: 'group', 'aria-labelledby': tid },
+        h('div.bq8-cover__art', { onclick: go }, img),
+        h('div.bq8-cover__side', null, h('span.bq8-cover__chip', null, h('i.bq8-ic.bq8-ic--game', { 'aria-hidden': 'true' }), 'نَشاطٌ تَفاعُلِيٌّ'), title,
+          h('button.bq8-cover__go', { type: 'button', onclick: go }, 'اِبْدَأِ النَّشاطَ', h('i.bq8-ic.bq8-ic--next', { 'aria-hidden': 'true' }))));
+    }
+    c = h('div.elp-start.elp-cover', { dataset: { el: id } }, card);
+    (play || ctx.stage).append(c);
+  }
   function cover(ctx, def, onStart) {
+    if (document.documentElement.dataset.theme === '8') return cover8(ctx, onStart);
     const meta = ctx.meta, id = meta.id;
     const info = BQ.coverInfo(id);
     const hk = (def && def.hero) || meta.hero;

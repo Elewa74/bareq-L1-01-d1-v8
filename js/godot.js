@@ -149,7 +149,8 @@
     };
     api.load(opt.src, opt.station);
     /* R3-F7: هاتف عموديّ (< ٦٠٠ بكسل) ⇒ بطاقة «أَدِرِ الجِهازَ» (أيقونة + بارق، بلا نصّ) فوق اللوحة، تختفي عند الإدارة أو بلمسة «تابِعْ» */
-    const rotMQ = window.matchMedia ? matchMedia('(orientation: portrait) and (max-width: 599.98px)') : null;
+    /* v8 fixed stage (theme 8): the stage keeps one landscape composition on every screen → no rotate card (owner R3 «STAGE») */
+    const rotMQ = window.matchMedia && !(BQ.fixedStage && BQ.fixedStage()) ? matchMedia('(orientation: portrait) and (max-width: 599.98px)') : null;
     let rot = null;
     const ROT = '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="20" y="8" width="24" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="4"/><path d="M12 44a22 22 0 0 0 30 12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M38 50l5 6-7 3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const rotSync = () => {

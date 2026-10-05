@@ -671,10 +671,14 @@
   };
 
   /* ================= كلمة مكتوبة بحروف قابلة للّمس — تشكيل حقيقيّ ================= */
-  /** I.tapWord(text, {aria}) → {el, cl:[{b, i, hit}], paint(i, cls), unpaint(i, cls), layout()}
+  /** I.tapWord(text, {aria, minW, whole(c)}) → {el, cl:[{b, i, hit}], paint(i, cls), unpaint(i, cls), layout(), at(clientX)}
    *  الكلمة عقدة نصّ واحدة (الاتصال والحركات بمحرّك الخطّ نفسه في كلّ متصفّح، بلا ZWJ ولا تقطيع).
-   *  مناطق اللمس أزرار شفّافة فوقها، تُقاس من Range.getClientRects لكلّ حرف (بحركاته)، وتُقسَم المسافة بين الحروف
-   *  عند منتصفها فلا ثغرات ولا تداخل. التلوين: نسخة من الكلمة فوقها مقصوصة (clip-path) على مستطيل الحرف وحده. */
+   *  مناطق اللمس أزرار شفّافة فوقها، تُقاس من Range.getClientRects لكلّ حرف (بحركاته)، والتلوين نسخة من الكلمة مقصوصة على منطقة الحرف.
+   *  v8 owner-late (E06 «مِفْتاحْ»): المنطقة = صندوق الحرف المقيس نفسه، لا تُزاح أبداً عن رسمه. كان شرط minW (٦٤) يدفع الحدود
+   *  دفعاً أماميّاً/خلفيّاً حتى تصير المناطق شرائح متساوية — في كلمة حروفها الداخلية أضيق من ٦٤ (ف ت ا بخطّ Vazirmatn) انزاحت
+   *  منطقة «مِ» إلى الحاشية فوقعت لمسة «م» الظاهرة على منطقة «ف» (خطأ). الآن: كلّ حدّ بين حرفين محصور بين حافّتي الحرفين المقيستين،
+   *  وminW يُطبَّق فقط حيث يوجد فراغ (حرفا الطرفين يمتدّان إلى حاشية البطاقة). القياس يُعاد بعد تحميل الخطّ الفعليّ وانتهاء الحركات،
+   *  ومع كلّ لمسة حقيقية تُوجَّه إلى الحرف الذي تحت الإصبع فعلاً (لو تغيّر التخطيط بعد آخر قياس). */
   I.tapWord = function (text, o) {
     o = o || {};
     const MARKS = /[ً-ٰٟ]/;
@@ -697,44 +701,118 @@
       hitL.append(c.hit);
       c.paints = {};
     });
+    let order = cl.slice(), B = null, Wd = 0;
+    // التلوين مقصوص على منطقة الحرف نفسها (ما يُلوَّن = ما يُلمَس)؛ حرفا الطرفين مفتوحان للخارج (ذيل «ح» وما يتجاوز الحاشية)
     const clip = (c) => {
-      const W = wrap.clientWidth || 1;
-      const a = Math.max(0, c.x0 - 2), b = Math.max(0, W - c.x1 - 2);
-      return 'inset(-40% ' + b + 'px -40% ' + a + 'px)';
+      if (!B || c.k == null) return 'inset(0 100% 0 0)';
+      const k = c.k, n = order.length;
+      const a = k === 0 ? '-50%' : Math.max(0, B[k] - 0.5) + 'px';
+      const r = k === n - 1 ? '-50%' : Math.max(0, Wd - B[k + 1] - 0.5) + 'px';
+      return 'inset(-40% ' + r + ' -40% ' + a + ')';
+    };
+    // صندوق نطاق [s,e) في الإحداثيّات الحقيقية للشاشة: اتّحاد مستطيلاته غير الصفرية، أو null
+    const rect = (node, s, e) => {
+      const r = document.createRange(); r.setStart(node, s); r.setEnd(node, e);
+      const rs = [...r.getClientRects()].filter((q) => q.width > 0.5 && q.height > 0.5);
+      if (!rs.length) return null;
+      return { l: Math.min(...rs.map((q) => q.left)), r: Math.max(...rs.map((q) => q.right)) };
+    };
+    // حبر الحرف الفعليّ (بحركاته) لـ o.whole: الخطّ قد يرسم الحرف خارج صندوق تقدّمه (وصلة النسخ cursive attachment، الحركات، الذيول)
+    // ولا يظهر ذلك في Range. نرسم على canvas بالخطّ نفسه البادئةَ حتى الحرف k (و ZWJ يحفظ شكله الموصول) والبادئةَ حتى k-1،
+    // فالبكسلات الجديدة هي حبر الحرف k بموضعه الحقيقيّ في الكلمة (الحروف السابقة لا تتغيّر). تُربط بالتخطيط بالحافّة اليمنى للكلمة.
+    const NOLEFT = 'اأإآٱدذرزوؤةىء';
+    const inkCache = {};
+    const inkOf = (k, st) => {
+      const font = st.fontStyle + ' ' + st.fontWeight + ' ' + st.fontSize + ' ' + st.fontFamily, key = font + '|' + k;
+      if (key in inkCache) return inkCache[key];
+      let res = null;
+      try {
+        const cnv = I._twCnv || (I._twCnv = document.createElement('canvas'));
+        const g = cnv.getContext('2d', { willReadFrequently: true });
+        g.font = font;
+        const fs = parseFloat(st.fontSize) || 100, full = g.measureText(text).width;
+        const pad = Math.ceil(fs * 0.8), Wc = Math.ceil(full + 2 * pad), Hc = Math.ceil(fs * 2.6), ax = Wc - pad;
+        const pre = (j) => (j < 0 ? '' : text.slice(0, cl[j].e) + (j < cl.length - 1 && !NOLEFT.includes(cl[j].b) ? '‍' : ''));
+        const draw = (str) => {
+          cnv.width = Wc; cnv.height = Hc; // يمسح ويعيد ضبط السياق
+          g.font = font; g.direction = 'rtl'; g.textAlign = 'right'; g.textBaseline = 'alphabetic'; g.fillStyle = '#000';
+          if (str) g.fillText(str, ax, Math.round(fs * 1.5));
+          return g.getImageData(0, 0, Wc, Hc).data;
+        };
+        const A = draw(pre(k)), P = draw(pre(k - 1));
+        let xl = Infinity, xr = -Infinity;
+        for (let y = 0; y < Hc; y++) for (let x = 0; x < Wc; x++) { const q = (y * Wc + x) * 4 + 3; if (A[q] > 60 && P[q] < 20) { if (x < xl) xl = x; if (x > xr) xr = x; } }
+        if (xr >= xl && full > 0) res = { dl: ax - xl, dr: ax - (xr + 1), full };
+      } catch (e) { res = null; }
+      inkCache[key] = res;
+      return res;
     };
     const api = {
       el, cl, text,
       layout() {
-        const node = txt.firstChild; if (!node) return;
-        const wr0 = wrap.getBoundingClientRect(); if (!wr0.width) return;
-        // القياس بلا تحويل: الكلمة قد تكون في حركة دخول (scale .94) — نقسم على معامل التحجيم فتبقى المناطق صحيحة بعد انتهائها
-        const sc = wrap.offsetWidth ? wr0.width / wrap.offsetWidth : 1;
-        const wr = { left: wr0.left, width: wrap.offsetWidth || wr0.width };
-        cl.forEach((c) => {
-          const r = document.createRange(); r.setStart(node, c.s); r.setEnd(node, c.e);
-          const b = r.getBoundingClientRect();
-          c.x0 = (b.left - wr.left) / sc; c.x1 = (b.right - wr.left) / sc;
+        const node = txt.firstChild; if (!node || !el.isConnected) return;
+        const wr0 = wrap.getBoundingClientRect(); if (!wr0.width || !wrap.offsetWidth) return;
+        // القياس بلا تحويل: المسرح الثابت يُحجَّم (transform) والكلمة قد تكون في حركة دخول — نقسم على معامل التحجيم
+        const sc = wr0.width / wrap.offsetWidth;
+        Wd = wrap.offsetWidth;
+        const X = (v) => (v - wr0.left) / sc;
+        // ١) صندوق كلّ حرف (بحركاته) ← الحرف الأساسيّ وحده ← (مركّب/ربط) قسمة صندوق المجموعة بالتساوي من اليمين
+        cl.forEach((c) => { c.box = rect(node, c.s, c.e) || rect(node, c.s, c.s + 1); });
+        for (let k = 0; k < cl.length; k++) {
+          if (cl[k].box) continue;
+          let j = k; while (j + 1 < cl.length && !cl[j + 1].box) j++;
+          const g0 = k > 0 ? k - 1 : k, g1 = (k > 0 || j + 1 >= cl.length) ? j : j + 1;
+          const U = rect(node, cl[g0].s, cl[g1].e);
+          if (U) { const wd = (U.r - U.l) / (g1 - g0 + 1); for (let q = g0; q <= g1; q++) { const z = q - g0; cl[q].box = { l: U.r - (z + 1) * wd, r: U.r - z * wd }; } }
+          k = j;
+        }
+        if (cl.some((c) => !c.box)) return;
+        const st = getComputedStyle(txt);
+        const all = rect(node, 0, text.length), wordR = all && all.r, wordW = all ? all.r - all.l : 0;
+        cl.forEach((c, k) => {
+          c.x0 = X(c.box.l); c.x1 = X(c.box.r);
+          c.i0 = c.x0; c.i1 = c.x1;
+          const ik = o.whole && o.whole(c) ? inkOf(k, st) : null; c.ink = ik;
+          if (ik && wordR) { const f = wordW / ik.full; c.i0 = Math.min(c.x0, X(wordR - ik.dl * f)); c.i1 = Math.max(c.x1, X(wordR - ik.dr * f)); }
         });
-        const cs = getComputedStyle(el), padL = parseFloat(cs.paddingLeft) || 0, padR = parseFloat(cs.paddingRight) || 0; // حرفا الطرفين يمتدّان إلى الحاشية
-        const order = cl.slice().sort((p, q) => (p.x0 + p.x1) - (q.x0 + q.x1)); // يسار ← يمين
+        const cs = getComputedStyle(el), padL = parseFloat(cs.paddingLeft) || 0, padR = parseFloat(cs.paddingRight) || 0;
+        order = cl.slice().sort((p, q) => (p.x0 + p.x1) - (q.x0 + q.x1)); // يسار ← يمين
         const n = order.length;
-        // حدود طبيعية: منتصف المسافة بين الحروف، وحرفا الطرفين يمتدّان إلى الحاشية
-        const B = [-padL];
-        for (let k = 1; k < n; k++) B.push((order[k - 1].x1 + order[k].x0) / 2);
-        B.push(wr.width + padR);
-        // R3-F3: كلّ منطقة ≥ minW (٦٠ نقطة للطفل) — دفعٌ أماميّ ثم خلفيّ يحفظ الترتيب ولا يترك ثغرة ولا تداخلاً
+        order.forEach((c, k) => { c.k = k; });
+        // ٢) كلّ حدّ داخليّ محصور بين حافّة الحرف الأيسر اليمنى وحافّة الأيمن اليسرى (ملتصقان غالباً ← الحدّ ثابت على الالتقاء)
+        const lo = [], hi = [];
+        B = [-padL];
+        for (let k = 1; k < n; k++) {
+          const L = order[k - 1], R = order[k];
+          lo[k] = Math.min(L.x1, R.x0); hi[k] = Math.max(L.x1, R.x0);
+          // o.whole: حبر الحرف كلّه داخل منطقته (يدخل الحدّ في جاره بقدر التجاوز فقط — مركز الجار يبقى له)
+          const rIn = R.i0 < lo[k], lIn = L.i1 > hi[k];
+          if (rIn && lIn) lo[k] = hi[k] = (R.i0 + L.i1) / 2;
+          else if (rIn) lo[k] = hi[k] = R.i0;
+          else if (lIn) lo[k] = hi[k] = L.i1;
+          B.push((lo[k] + hi[k]) / 2);
+        }
+        B.push(Wd + padR);
+        // ٣) R3-F3: ≥ minW حيث يسمح الفراغ فقط — الحدّ لا يخرج من مجاله فلا تنزاح منطقة عن حرفها
         const m = Math.min(o.minW || 60, (B[n] - B[0]) / n);
-        for (let k = 1; k <= n; k++) B[k] = Math.max(B[k], B[k - 1] + m);
-        B[n] = wr.width + padR;
-        for (let k = n - 1; k >= 0; k--) B[k] = Math.min(B[k], B[k + 1] - m);
+        for (let k = 1; k < n; k++) B[k] = Math.min(hi[k], Math.max(B[k], B[k - 1] + m));
+        for (let k = n - 1; k >= 1; k--) B[k] = Math.max(lo[k], Math.min(B[k], B[k + 1] - m));
         const padT = parseFloat(cs.paddingTop) || 0, padB = parseFloat(cs.paddingBottom) || 0; // اللمس يشمل البطاقة كلّها عمودياً
         order.forEach((c, k) => {
           Object.assign(c.hit.style, { left: B[k] + 'px', width: Math.max(1, B[k + 1] - B[k]) + 'px', top: -padT + 'px', bottom: -padB + 'px' });
           c.zw = B[k + 1] - B[k];
           Object.values(c.paints).forEach((d) => { d.style.clipPath = clip(c); });
         });
+        api.sc = sc;
       },
-      /** يلوّن حرفاً بصنف (is-m · is-hint · is-try) */
+      /** الحرف الذي تحت نقطة شاشة أفقيّة (بعد قياس جديد) */
+      at(clientX) {
+        api.layout(); if (!B) return null;
+        const wr = wrap.getBoundingClientRect(), lx = (clientX - wr.left) / (api.sc || 1);
+        let k = 0; while (k < order.length - 1 && lx >= B[k + 1]) k++;
+        return order[k];
+      },
+      /** يلوّن حرفاً بصنف (is-m · is-hint · is-try · is-no) */
       paint(i, cls) {
         const c = cl[i]; if (!c || c.paints[cls]) return;
         const d = h('span.i7-tw-d.' + cls, { 'aria-hidden': 'true' }, text);
@@ -745,9 +823,31 @@
       },
       unpaint(i, cls) { const c = cl[i]; if (!c || !c.paints[cls]) return; c.paints[cls].remove(); delete c.paints[cls]; c.hit.classList.remove(cls); },
     };
-    try { const ro = new ResizeObserver(() => api.layout()); ro.observe(wrap); api.ro = ro; } catch (e) { window.addEventListener('resize', api.layout); }
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => api.layout());
-    requestAnimationFrame(() => api.layout());
+    // لمسة حقيقية: تُوجَّه إلى الحرف الذي تحت الإصبع بقياس لحظيّ (لوحة المفاتيح والنقر البرمجيّ يمرّان كما هما)
+    el.addEventListener('click', (e) => {
+      if (!e.isTrusted || !e.detail) return;
+      const hb = e.target && e.target.closest && e.target.closest('.i7-tw-hit'); if (!hb) return;
+      const c = api.at(e.clientX);
+      if (c && c.hit !== hb) { e.stopPropagation(); e.preventDefault(); c.hit.click(); }
+    }, true);
+    const relayout = () => requestAnimationFrame(() => api.layout());
+    try { const ro = new ResizeObserver(relayout); ro.observe(wrap); api.ro = ro; } catch (e) { window.addEventListener('resize', relayout); }
+    ['animationend', 'transitionend'].forEach((ev) => el.addEventListener(ev, relayout));
+    const fonts = document.fonts;
+    if (fonts) {
+      const onFonts = () => { if (!el.isConnected && api.seen) { fonts.removeEventListener('loadingdone', onFonts); return; } relayout(); };
+      try { fonts.addEventListener('loadingdone', onFonts); } catch (e) { /* */ }
+      if (fonts.ready) fonts.ready.then(relayout);
+    }
+    // القياس الأوّل بعد الإلحاق بالصفحة، ثم بعد تحميل الخطّ الفعليّ للكلمة (لا يكفي fonts.ready إن لم يكن التحميل قد بدأ)
+    let tries = 0;
+    const first = () => {
+      if (!el.isConnected) { if (tries++ < 120) requestAnimationFrame(first); return; }
+      api.seen = true; api.layout();
+      if (fonts && fonts.load) { const st = getComputedStyle(txt); fonts.load(st.fontStyle + ' ' + st.fontWeight + ' ' + st.fontSize + ' ' + st.fontFamily, text).then(relayout, relayout); }
+      setTimeout(relayout, 700); // بعد حركة الدخول
+    };
+    requestAnimationFrame(first);
     return api;
   };
 

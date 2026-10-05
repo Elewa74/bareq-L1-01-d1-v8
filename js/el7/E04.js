@@ -6,6 +6,9 @@
    التحقّق bq7_E04_check_intro ثم ٣ جولات × ٣ بطاقات: q_maktab (مَكْتَب | قَميص · مُشْط) · q_miftah (مِفْتاح | مانْجو · تِمْساح) · q_numur (نُمور | تِمْساح · مَكْتَب)
      ✓ G_yes* + mean_<w> · ✗١ G_listen_again + W · ✗٢ G_look_light · ③ G_model + W. النهاية bq7_E04_end. record('S9', ok1) لكلّ جولة.
    لا كلمة مكتوبة على شاشة الطفل (قبل E06): الصفحة الورقية تحمل أيقونات الروتين الثلاث (أذن · فم · عين) بدل الكلمة. ctx.step 'check' ← التحقّق مباشرة.
+   v8 owner-late 2026-10-05 (يلغي القاعدة السابقة في E04 وحده): «يجب ظهور الكلمة مع الصورة أيضاً، ليكون الكلمة والصورة والصوت» — الكلمة المشكولة
+   (I.W، Vazirmatn، كحليّ، بلا تلوين للميم) تحت الصورة داخل إطار كلّ بطاقة: بطاقة التعليم (بوجهيها؛ لمس الكلمة يُسمِعها) · بطاقات التحقّق
+   (لمسها = اختيار البطاقة) · صورة «قُلْها!».
    جولة إصلاح R1-9 (الناتج ٨ «يستعمل الكلمة»): بعد التحقّق بندان شفهيّان «قُلْها!» — صورة السياق + سؤال ماجد (قَميص ثم نُمور — لا تكرّر مواقف قياس E11) ← «دَوْرُكَ!» + وقفة ٣ ث
      (بلا ميكروفون) ← نموذج في جملة (bq7_E04_mean_<w>). حكم المعلّم من اللوحة المخفيّة (ضغط مطوَّل ١٫٥ ث على زاوية بارق) ← BQ.mastery.judge('S9', …)
      — قرينة تعبيرية تظهر في #mastery، لا تُغيّر حكم E11. ctx.step 'oral' ← البندان مباشرة. */
@@ -96,6 +99,19 @@
 .bq8-stage.is-tall .e04-8 .e04-quiz .i7-card.i8-card { --s: calc(var(--u)*300); }
 .bq8-stage.is-tall .e04-8 .e04-oral { flex-direction: column; }
 .bq8-stage.is-tall .e04-8 .e04-opic { width: calc(var(--u)*560); }
+/* owner-late 2026-10-05 «الكلمة والصورة والصوت»: the written word (full tashkeel, Vazirmatn, navy, NO coloured meem) under every picture,
+   INSIDE the card frame — fixed bands sized so every haraka stays inside the frame and clear of the ear/mouth/eye stickers. */
+.e04-8 .e04-col { gap: calc(var(--u)*18); }
+.e04-8 .e04-photo { width: calc(var(--u)*284); height: auto; aspect-ratio: 284 / 376; }
+.e04-8 .e04-face { display: flex; flex-direction: column; }
+.e04-8 .e04-face > .i7-pic, .e04-8 .e04-qc > .i7-pic, .e04-8 .e04-opic > .i7-pic { flex: none; width: 100%; height: auto; aspect-ratio: 1; }
+.e04-8 .e04-w { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; direction: rtl; white-space: nowrap;
+  font: 700 calc(var(--u)*60)/1 var(--font-letter); color: var(--bq8-navy); padding-top: calc(var(--u)*10); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.e04-8 .e04-w > span { display: block; line-height: 1.6; }
+.e04-8 .e04-quiz .i7-card.e04-qc { aspect-ratio: auto; height: calc(var(--s) + var(--u)*86); display: flex; flex-direction: column; }
+.e04-8 .e04-qc .e04-w { font-size: calc(var(--u)*54); cursor: inherit; }
+.e04-8 .e04-opic { width: calc(var(--u)*380); height: auto; aspect-ratio: 380 / 490; display: flex; flex-direction: column; }
+.e04-8 .e04-opic .e04-w { font-size: calc(var(--u)*72); }
 @media (prefers-reduced-motion: reduce) { .e04-8 .e04-face { transition: none; } .e04-8 .e04-photo { animation: none; } }`;
 
   function render(stage, ctx) {
@@ -131,14 +147,18 @@
     if (V8) root.append(main); else root.append(top, main);
     const buddy = I.buddy(S, root, 'wave');
     let busy = true, cur = null, judged = null;
+    // owner-late: the written word (exactly I.W, plain navy ink — no coloured meem in E04)
+    const wordEl = (slug) => h('span.e04-w', { lang: 'ar', 'aria-hidden': 'true' }, h('span', null, I.W[slug].w));
     const RING = '<svg class="e04-ring" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36"/></svg>';
     const chip = V8 ? (cls, svg, aria) => h('button.bq8-btn.e04-chip.' + cls + '.bq8-btn--' + cls, { type: 'button', 'aria-label': aria }, I.i8(cls))
       : (cls, svg, aria) => h('span.e04-chip.' + cls, { role: 'img', 'aria-label': aria, html: svg });
 
     async function teach(slug, i) {
       const wid = I.wordId(slug);
-      const photo = h('button.e04-photo', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' },
-        h('span.e04-face.e04-card', null, I.pic(slug)), h('span.e04-face.e04-ctx', null, I.pic(slug, { key: ['ctx_' + slug, 'ctx_mango', 'card_' + slug, 'w_' + slug, 'w_mango'].filter((k) => slug === 'manju' || !/mango/.test(k)) })));
+      const photo = h('button.e04-photo', { type: 'button', 'aria-label': V8 ? I.W[slug].w : 'اِسْمَعِ الكَلِمَةَ' },
+        h('span.e04-face.e04-card', null, I.pic(slug), V8 ? wordEl(slug) : null), h('span.e04-face.e04-ctx', null, I.pic(slug, { key: ['ctx_' + slug, 'ctx_mango', 'card_' + slug, 'w_' + slug, 'w_mango'].filter((k) => slug === 'manju' || !/mango/.test(k)) }), V8 ? wordEl(slug) : null));
+      // owner-late: touching the written word always says the WORD (also on the meaning side of the card)
+      photo.querySelectorAll('.e04-w').forEach((we) => we.addEventListener('click', async (e) => { e.stopPropagation(); if (busy) return; busy = true; photo.classList.add('is-play'); await S.stim(wid); photo.classList.remove('is-play'); busy = false; }));
       const cEar = chip('ear', I.IC.ear, 'اِسْمَعْ'), cSay = chip('mouth', I.IC.mouth, 'قُلْ'), cEye = chip('eye', I.IC.eye, 'المَعْنى');
       const ctl = h('div.e04-ctl');
       if (V8) {
@@ -193,6 +213,7 @@
         const opts = BQ.shuffle([q.t].concat(q.d)).map((slug, i) => {
           const c = I.card(slug, { aria: 'صورة ' + I.AR(i + 1) });
           c.slug = slug; c.classList.add('i7-in'); c.style.animationDelay = (i * 0.08) + 's';
+          if (V8) { c.classList.add('e04-qc'); c.append(wordEl(slug)); c.setAttribute('aria-label', I.W[slug].w); } // the word is part of the card: touching it chooses the card
           wrap.append(c);
           return c;
         });
@@ -237,7 +258,8 @@
       });
       for (const it of ORAL) {
         const qid = I.hasAudio(it.q) ? it.q : null;
-        const pic = h('div.e04-opic', null, I.pic(it.w, { key: ['ctx_' + it.w, 'card_' + it.w] }));
+        const pic = h('div.e04-opic', null, I.pic(it.w, { key: ['ctx_' + it.w, 'card_' + it.w] }), V8 ? wordEl(it.w) : null);
+        const ow = pic.querySelector('.e04-w'); if (ow) ow.addEventListener('click', async () => { if (busy) return; busy = true; await I.playOn(S, pic, I.wordId(it.w)); busy = false; });
         const cSay = V8 ? h('span.bq8-btn.bq8-btn--mouth.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ' }, I.i8('mouth')) : h('span.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ', html: I.IC.mouth });
         main.replaceChildren(h('div.e04-oral', null, pic, cSay));
         I.instr(S, qid || 'bq7_E04_o_say', 'mouth', async () => { if (busy) return; busy = true; await S.say(qid || 'bq7_E04_o_say'); busy = false; });

@@ -5961,29 +5961,27 @@
  {
   "id": "bq7_E13_brq0",
   "speaker": "BRQ",
-  "text": "اُنْظُرْ إِلى رَسْمِ ماجِدٍ! تَعالَ نَعْرِفْ حِكايَتَهُ.",
-  "dur": 3.68,
+  "text": "اُنْظُرْ إِلى رَسْمِ ماجِدْ! تَعالَ نَعْرِفْ حِكايَتَهُ.",
+  "dur": 3.87,
   "file": "media/audio7/bq7_E13_brq0.mp3",
-  "take": "g29_A",
+  "take": "v8names_brq0_A",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     3.56
-    ],
-    "B": [
-     1.0,
-     0,
-     3.45
-    ]
+   "model": "eleven_v4",
+   "voice": "Hrv0GXSKTrxIbeeX8u3r",
+   "takes": 3,
+   "heard": "انظر الى رسم ماجد تعال نعرف حكايته",
+   "name_tail": {
+    "i_after_dj_ms": 110,
+    "i_F1_median_hz": 470,
+    "d_release": "clear unvoiced burst, no vowel after /d/",
+    "old": "i 130 ms, F1 ~600 (open, ≈ a), /d/ release almost inaudible"
    },
-   "heard": "انظراليرسمماجدتعالنعرفحكايته",
    "max_closed_nasal_s": 0,
-   "dur": 3.68,
+   "dur": 3.87,
    "lufs": -17.4,
-   "tp": -1.9
+   "tp": -3.0,
+   "fix_round": "v8 name fixes",
+   "old_file": "v7/voice/old_v7/bq7_E13_brq0_old.mp3"
   }
  },
  {

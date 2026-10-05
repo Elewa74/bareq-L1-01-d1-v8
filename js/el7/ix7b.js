@@ -1008,6 +1008,12 @@
   /* ================= glyph measuring (v8 E11 fix · owner E11_e) ================= */
   /** Ink box of the text inside `el` in client px {top, bottom, left, right}: vertical extents from the font's real ink
    *  (canvas actualBoundingBox*, measured from the DOM baseline of a zero-size probe), plus the v8 sukun rings (.x7-suk::after). */
+  /** client-px per CSS-px of an element (1 unless an ancestor is scaled, e.g. the platform's transform-scaled v8 stage) */
+  X.scaleOf = function (el) {
+    if (!el || !el.offsetWidth) return 1;
+    const k = el.getBoundingClientRect().width / el.offsetWidth;
+    return isFinite(k) && k > 0.05 && k < 20 ? k : 1;
+  };
   X.inkBox = function (el) {
     if (!el || !el.isConnected) return null;
     const raw = (el.dataset && el.dataset.ink) || el.textContent || '';
@@ -1022,8 +1028,9 @@
     const base = probe.getBoundingClientRect().bottom;
     probe.remove();
     const rg = document.createRange(); rg.selectNodeContents(el); const rr = rg.getBoundingClientRect();
-    let top = base - m.actualBoundingBoxAscent, bottom = base + m.actualBoundingBoxDescent;
-    el.querySelectorAll('.x7-suk').forEach((sp) => { const r = sp.getBoundingClientRect(), fs = parseFloat(getComputedStyle(sp).fontSize) || 0; top = Math.min(top, r.top + 0.05 * fs - 1); });
+    const k = X.scaleOf(el); // canvas metrics are CSS px; rects are client px
+    let top = base - m.actualBoundingBoxAscent * k, bottom = base + m.actualBoundingBoxDescent * k;
+    el.querySelectorAll('.x7-suk').forEach((sp) => { const r = sp.getBoundingClientRect(), fs = parseFloat(getComputedStyle(sp).fontSize) || 0; top = Math.min(top, r.top + (0.05 * fs - 1) * k); });
     return { top, bottom, left: rr.left, right: rr.right, base };
   };
   /** Fit the text's ink inside `box` (its border-box minus border, with a margin):
@@ -1035,15 +1042,15 @@
     if (o.shrink) el.style.fontSize = '';
     for (let pass = 0; pass < 6; pass++) {
       const ink = X.inkBox(el); if (!ink) return null;
-      const cs = getComputedStyle(box), r = box.getBoundingClientRect();
+      const cs = getComputedStyle(box), r = box.getBoundingClientRect(), k = X.scaleOf(box); // k: client px per CSS px
       const fs = parseFloat(getComputedStyle(el).fontSize) || 40;
-      const mg = o.margin != null ? o.margin : Math.max(4, fs * 0.06);
-      const inT = r.top + (parseFloat(cs.borderTopWidth) || 0) + mg, inB = r.bottom - (parseFloat(cs.borderBottomWidth) || 0) - mg;
-      const inL = r.left + (parseFloat(cs.borderLeftWidth) || 0) + mg, inR = r.right - (parseFloat(cs.borderRightWidth) || 0) - mg;
+      const mg = (o.margin != null ? o.margin : Math.max(4, fs * 0.06)) * k;
+      const inT = r.top + (parseFloat(cs.borderTopWidth) || 0) * k + mg, inB = r.bottom - (parseFloat(cs.borderBottomWidth) || 0) * k - mg;
+      const inL = r.left + (parseFloat(cs.borderLeftWidth) || 0) * k + mg, inR = r.right - (parseFloat(cs.borderRightWidth) || 0) * k - mg;
       const needT = inT - ink.top, needB = ink.bottom - inB;
       if (o.grow) {
-        if (needT > 0.5) box.style.paddingTop = ((parseFloat(cs.paddingTop) || 0) + needT) + 'px';
-        if (needB > 0.5) box.style.paddingBottom = ((parseFloat(cs.paddingBottom) || 0) + needB) + 'px';
+        if (needT > 0.5) box.style.paddingTop = ((parseFloat(cs.paddingTop) || 0) + needT / k) + 'px';
+        if (needB > 0.5) box.style.paddingBottom = ((parseFloat(cs.paddingBottom) || 0) + needB / k) + 'px';
         if (needT <= 0.5 && needB <= 0.5) return ink;
       } else if (o.shrink) {
         const k = Math.min((inB - inT) / Math.max(1, ink.bottom - ink.top), (inR - inL) / Math.max(1, ink.right - ink.left), 1);

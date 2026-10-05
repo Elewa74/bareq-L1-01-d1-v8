@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261005180938",
+"build": "261005192028",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -3559,9 +3559,9 @@ window.BQ_DATA={
 },
 "bq7_E13_brq0": {
 "sp": "بارق",
-"t": "اُنْظُرْ إِلى رَسْمِ ماجِدٍ! تَعالَ نَعْرِفْ حِكايَتَهُ.",
+"t": "اُنْظُرْ إِلى رَسْمِ ماجِدْ! تَعالَ نَعْرِفْ حِكايَتَهُ.",
 "tag": "[curious, inviting]",
-"use": "E13 cold-open hook (STORY_FINAL_v7.md shot 0)"
+"use": "E13 cold-open hook (STORY_FINAL_v7.md shot 0) · v8 name fix: waqf «ماجِدْ» (DRAFT text — owner approves)"
 },
 "bq7_E13_maj8b": {
 "sp": "ماجد",
@@ -4701,6 +4701,20 @@ window.BQ_DATA={
 "card_mango_cut": "media/img7/w_mango_cut.webp",
 "card_qadam": "media/img7/w_qadam.webp"
 },
+"cov8": [
+"E01",
+"E02",
+"E03",
+"E04",
+"E05",
+"E06",
+"E07",
+"E08",
+"E09",
+"E10",
+"E11",
+"E12"
+],
 "el7": [
 "E01",
 "E03",

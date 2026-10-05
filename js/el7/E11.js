@@ -216,14 +216,21 @@
 .x7p.e11 .e11-blank { width: calc(var(--u)*170); height: calc(var(--u)*170); border-radius: calc(var(--u)*24); border: calc(var(--u)*5) dashed rgba(11,45,79,.35); background: rgba(255,255,255,.7); display: grid; place-items: center; font: 700 calc(var(--u)*80)/1 var(--font-letter); color: rgba(11,45,79,.35); }
 .x7p.e11 .e11-tw { position: relative; display: inline-block; direction: rtl; padding: calc(var(--u)*14) calc(var(--u)*44) calc(var(--u)*14); cursor: pointer; border-radius: calc(var(--u)*34); background: linear-gradient(#FFFDF6, #FFF2D2);
   border: var(--bq8-line) solid var(--bq8-navy); box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); }
-.x7p.e11 .e11-twword { display: block; font: 700 calc(var(--u)*130)/1.2 var(--font-letter); color: var(--bq8-navy); white-space: nowrap; pointer-events: none; }
+.x7p.e11 .e11-twword { display: block; font: 700 calc(var(--u)*130)/1 var(--font-letter); color: var(--bq8-navy); white-space: nowrap; pointer-events: none; } /* tight line box: X.fitInk adds exactly the room the harakat need */
 .x7p.e11 .e11-twhit::before { border-radius: calc(var(--u)*18); }
 .x7p.e11 .e11-twhit.is-pick::before { box-shadow: inset 0 0 0 calc(var(--u)*5) var(--bq8-eye); background: rgba(31,162,242,.14); }
-.x7p.e11 .e11-twhit > .e11-mark { top: auto; bottom: calc(var(--u)*-40); inset-inline-start: auto; inset-inline-end: auto; left: 50%; right: auto; width: calc(var(--u)*56); height: calc(var(--u)*56); margin-left: calc(var(--u)*-28); }
+.x7p.e11 .e11-twhit > .e11-mark { top: auto; bottom: calc(-1 * var(--mb, 0px) - var(--u)*50); inset-inline-start: auto; inset-inline-end: auto; left: 50%; right: auto; width: calc(var(--u)*56); height: calc(var(--u)*56); margin-left: calc(var(--u)*-28); }
 .x7p.e11 .e11-taphint { position: absolute; z-index: 7; left: 50%; top: 50%; width: 1em; height: 1em; font-size: calc(var(--u)*96); margin: -.25em 0 0 -.35em; pointer-events: none; animation: x7Tap .45s ease 3; filter: drop-shadow(0 4px 6px rgba(0,0,0,.25)); }
 .x7p.e11 .e11-wrow { display: flex; direction: rtl; align-items: center; justify-content: center; gap: calc(var(--u)*30); width: 100%; }
 .x7p.e11.is-tall .e11-wrow { flex-direction: column; gap: calc(var(--u)*20); }
-.x7p.e11 .e11-wrow > .e11-wp8 { width: auto; }
+.x7p.e11 .e11-wrow > .e11-wp8 { flex: 1 1 0; min-width: 0; width: auto; }
+.x7p.e11.is-tall .e11-wrow > .e11-wp8 { flex: none; width: 100%; }
+.x7p.e11 .e11-wrow > .e11-wordpic { flex: none; }
+.x7p.e11 .e11-form > .e11-wordpic { width: calc(var(--u)*170); flex: none; }
+.x7p.e11 .e11-formgap { width: calc(var(--u)*30); flex: none; }
+.x7p.e11 .e11-twrow, .x7p.e11.is-tall .e11-twrow { flex-direction: row; gap: calc(var(--u)*30); }
+.x7p.e11 .e11-twrow > .e11-wordpic { width: calc(var(--u)*136); flex: none; }
+.x7p.e11 .e11-twrow > .e11-tw { flex: none; padding-inline: calc(var(--u)*30); }
 /* say (S4 item 2) */
 .x7p.e11 .e11-say { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*22); }
 .x7p.e11 .e11-saybrq { width: calc(var(--u)*230); touch-action: none; -webkit-user-select: none; user-select: none; border-radius: 50%; }
@@ -282,7 +289,7 @@
 .e11-opt.is-no { box-shadow: 0 0 0 6px #E53935, 0 10px 20px var(--shade) !important; opacity: .8 !important; cursor: default; }
 .e11-mark { position: absolute; z-index: 6; top: -18px; inset-inline-start: -18px; width: 52px; height: 52px; pointer-events: none; display: block; animation: e11Pop .4s cubic-bezier(.3,1.6,.5,1) both; }
 .e11-mark svg { width: 100%; height: 100%; display: block; }
-.e11-twhit > .e11-mark { top: auto; bottom: calc(var(--u, 1px) * -40); inset-inline-start: auto; left: 50%; right: auto; width: 44px; height: 44px; margin-left: -22px; }
+.e11-twhit > .e11-mark { top: auto; bottom: calc(-1 * var(--mb, 0px) - 38px); inset-inline-start: auto; left: 50%; right: auto; width: 44px; height: 44px; margin-left: -22px; }
 .e11-wrow { display: flex; direction: rtl; align-items: center; justify-content: center; gap: 24px; width: 100%; }
 .x7-wp.is-no { box-shadow: 0 0 0 6px #E53935 !important; } .x7-wp.is-solved { box-shadow: 0 0 0 6px #22C27A !important; }
 .e11-picq { cursor: pointer; }
@@ -435,10 +442,11 @@
       // «بأيّ حرف تبدأ؟» (owner E11_d): the word's picture sits above the letter choices; touching it says the word again (never answers)
       // (review fix: also on every tap-word and the form item — the global «word picture» rule)
       const wordPic = wordPicEl(it.pic || (it.type === 'tapword' ? it.word : null), () => asking || busy);
-      if (wordPic) body.append(wordPic);
+      // form item: the picture sits in the word row · tap-word: picture BESIDE the word card (the word gets the full height to grow)
+      if (wordPic && !(V8 && it.type === 'form') && it.type !== 'tapword') body.append(wordPic);
       if (V8) {
         if (it.type === 'read') body.append(h('div.e11-word.bq8-tile.bq8-tile--word.x7-in', null, X.markMeem(W[it.word].t)));
-        if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('div.bq8-tile.bq8-tile--syll', null, X.markMeem(it.before)), h('div.e11-blank', { 'aria-hidden': 'true' }, '?')));
+        if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('div.bq8-tile.bq8-tile--syll', null, X.markMeem(it.before)), h('div.e11-blank', { 'aria-hidden': 'true' }, '?'), wordPic ? h('span.e11-formgap', { 'aria-hidden': 'true' }) : null, wordPic));
         // «I say the word twice»: the picture of the word Bariq says sits above his two numbered cards
         if (it.type === 'brq') { const wk = brqWord(it); if (wk) body.append(h('div.bq8-card.bq8-card--sm.e11-wordpic.x7-in', { 'aria-hidden': 'true' }, h('img', { src: ctx.img(W[wk].img), alt: '', draggable: 'false' }))); }
         // the sound to judge (S3 short/long · S5) is a big replay sticker above the options
@@ -461,32 +469,42 @@
           if (!wrapOpts.isConnected) return;
           wordEl.style.fontSize = '';
           let boxes;
-          for (let pass = 0; pass < 4; pass++) {
+          for (let pass = 0; pass < 6; pass++) {
             X.fitInk(wordEl, wrapOpts, { grow: true });
-            boxes = X.charBoxes(wordEl, letters);
+            boxes = X.charBoxes(wordEl, letters); // always measured AFTER the last font change (boxes match the final size)
             const cs = boxes.filter(Boolean).map((r) => (r.left + r.right) / 2).sort((a, b) => a - b);
             let gap = 1e9; for (let j = 1; j < cs.length; j++) gap = Math.min(gap, cs[j] - cs[j - 1]);
-            if (gap >= MIN_GAP - 0.5 || !isFinite(gap) || gap <= 0) break;
+            wrapOpts.dataset.gap = isFinite(gap) ? gap.toFixed(1) : '';
+            if (gap >= MIN_GAP - 0.5 || !isFinite(gap) || gap <= 0 || pass === 5) break;
             // scale the word by 64/gap, capped so the card stays inside the panel width
             const fs = parseFloat(getComputedStyle(wordEl).fontSize) || 100;
             const chrome = wrapOpts.offsetWidth - wordEl.offsetWidth;
-            const kMax = Math.max(1, (body.clientWidth * 0.94 - chrome) / Math.max(1, wordEl.offsetWidth));
+            const row = wrapOpts.parentElement && wrapOpts.parentElement.classList.contains('e11-twrow') ? wrapOpts.parentElement : null;
+            const side = row && wordPic ? wordPic.offsetWidth + (parseFloat(getComputedStyle(row).columnGap) || 0) : 0;
+            // caps: the card stays inside the panel (width beside the picture; height incl. room for the ✓/✗ badge below)
+            const kW = (body.clientWidth * 0.97 - side - chrome) / Math.max(1, wordEl.offsetWidth);
+            const kH = (body.clientHeight - 56) / Math.max(1, wrapOpts.offsetHeight);
+            const kMax = Math.max(1, Math.min(kW, kH));
             const k = Math.min((MIN_GAP / gap) * 1.03, kMax);
             if (k <= 1.002) break;
             wordEl.style.fontSize = (fs * k).toFixed(1) + 'px';
           }
           const wr = wrapOpts.getBoundingClientRect();
+          // the v8 stage may be scaled (transform: scale) — client rects are screen px, style values are local CSS px
+          const sx = wrapOpts.offsetWidth ? (wr.width / wrapOpts.offsetWidth) || 1 : 1;
           const bl = parseFloat(getComputedStyle(wrapOpts).borderLeftWidth) || 0, bt = parseFloat(getComputedStyle(wrapOpts).borderTopWidth) || 0;
           const wy = wordEl.getBoundingClientRect();
           btns.forEach((b, i) => {
             const r = boxes[i]; if (!r) return;
-            const cx = (r.left + r.right) / 2 - wr.left - bl, bw = r.right - r.left, hw = Math.max(64, bw);
-            Object.assign(b.style, { left: (cx - hw / 2) + 'px', width: hw + 'px', top: (wy.top - wr.top - bt + 4) + 'px', height: Math.max(64, wy.height - 8) + 'px' });
+            const cx = ((r.left + r.right) / 2 - wr.left) / sx - bl, bw = (r.right - r.left) / sx, hw = Math.max(64 / sx, bw);
+            const tY = (wy.top - wr.top) / sx - bt + 4, hY = Math.max(64 / sx, wy.height / sx - 8);
+            Object.assign(b.style, { left: (cx - hw / 2) + 'px', width: hw + 'px', top: tY + 'px', height: hY + 'px' });
             b.style.setProperty('--bw', bw.toFixed(1) + 'px');
+            b.style.setProperty('--mb', Math.max(0, wrapOpts.clientHeight - tY - hY).toFixed(1) + 'px'); // ✓/✗ badge goes under the card's ink area (clear of a final م tail)
             b._cx = (r.left + r.right) / 2;
           });
         };
-        body.append(wrapOpts);
+        body.append(wordPic ? h('div.e11-wrow.e11-twrow', null, wordPic, wrapOpts) : wrapOpts);
         layout();
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
         if (window.ResizeObserver) { const ro = new ResizeObserver(() => requestAnimationFrame(layout)); ro.observe(body); ctx.onCleanup(() => ro.disconnect()); }
