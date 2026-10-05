@@ -76,6 +76,46 @@
   .e06 .e06-tile span { font-size: min(64px, calc(var(--i7-h) / 3.6)); }
 }
 @media (prefers-reduced-motion: reduce) { .e06 .e06-board.drawn svg text { animation: none; stroke-dashoffset: 0; } .e06 .e06-ref.is-hint, .e06 .e06-tile.need { animation: none !important; } }`;
+  /* v8 (OWNER_R3-6 · THEME8 D1 · mockup style_v8/BOARD.png): carved wooden board · every letter / syllable / word in Vazirmatn (--font-letter,
+     the familiar closed-head meem) · the big «م» reference tile on the right · syllable tiles with a speaker chip (they are heard when touched) ·
+     the written choices of the «match» step stay SILENT until judged (DECISIONS ج) — so they carry no speaker chip · 3 star slots per part. */
+  const CSS8 = `
+.e06-8 .e06-main { position: relative; flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*56); }
+.e06-8 .e06-mouthw { width: calc(var(--u)*330); }
+.e06-8 .bq8-tile { cursor: pointer; touch-action: manipulation; }
+.e06-8 .bq8-tile > span { position: relative; display: inline-block; line-height: 1.25; }
+.e06-8 .e06-kas { position: absolute; top: 1.2em; right: -.02em; width: .26em; height: .085em; border-radius: .05em; background: currentColor; transform: rotate(-24deg); }
+.e06-8 .bq8-tile .bq8-m, .e06-8 .bq8-tile b { color: var(--bq8-meem); font-weight: 700; }
+.e06-8 .bq8-tile b { position: relative; display: inline-block; line-height: 1.25; }
+.e06-8 .e06-big8 { --w: calc(var(--u)*300); --fs: .66; background: linear-gradient(#FFF6D6, #FFE7A0); cursor: default; }
+.e06-8 .e06-big8 svg { width: 100%; height: 100%; overflow: visible; }
+.e06-8 .e06-big8 svg text { font-family: var(--font-letter); font-weight: 700; font-size: 250px; fill: rgba(226,87,76,0); stroke: var(--bq8-meem); stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 1900; stroke-dashoffset: 1900; }
+.e06-8 .e06-big8.drawn svg text { animation: e06Draw 1.5s ease-out forwards; }
+.e06-8 .e06-big8.lit svg text { fill: var(--bq8-meem); stroke: #F7A08F; filter: drop-shadow(0 0 10px rgba(255,194,26,.7)); transition: fill .5s; }
+.e06-8 .e06-ref { --w: calc(var(--u)*170); --fs: .62; color: var(--bq8-meem); background: linear-gradient(#FFF6D6, #FFE7A0); }
+.e06-8 .e06-ref.is-hint { animation: i7Pulse .8s ease-in-out 3; box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*12) var(--bq8-yellow), 0 0 calc(var(--u)*30) var(--bq8-yellow); }
+.e06-8 .e06-tiles { display: flex; gap: calc(var(--u)*44); align-items: flex-start; justify-content: center; }
+.e06-8 .e06-t8 { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*16); }
+.e06-8 .e06-tile.bq8-tile { --w: calc(var(--u)*170); --fs: .56; }
+.e06-8 .e06-ref.e06-ref-big { --w: calc(var(--u)*250); }
+.e06-8 .e06-tile .e06-spk { position: absolute; bottom: calc(var(--u)*-82); left: 50%; translate: -50% 0; width: calc(var(--u)*70); height: calc(var(--u)*70); border-radius: 50%;
+  display: grid; place-items: center; font-size: calc(var(--u)*50); background: radial-gradient(circle at 38% 30%, #fff, #FFE38A 62%); border: calc(var(--u)*3) solid var(--bq8-navy); box-shadow: 0 0 0 calc(var(--u)*4) #fff; }
+.e06-8 .e06-tile:has(.e06-spk) { margin-bottom: calc(var(--u)*82); overflow: visible; }
+.e06-8 .e06-tile.is-play { transform: translateY(calc(var(--u)*-6)); box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-listen), var(--bq8-sh-2); }
+.e06-8 .e06-tile.is-heard::after { content: ''; position: absolute; top: calc(var(--u)*-16); inset-inline-end: calc(var(--u)*-16); width: calc(var(--u)*50); aspect-ratio: 1; background: url(assets/icons8/check.svg) center / contain no-repeat; }
+.e06-8 .e06-tile.is-ok { box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-ok), var(--bq8-sh-2); }
+.e06-8 .e06-tile.is-soft, .e06-8 .e06-tile.is-glow { box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), 0 0 calc(var(--u)*30) var(--bq8-yellow); }
+.e06-8 .e06-tile.is-dim { opacity: .38; filter: grayscale(.5); }
+.e06-8 .e06-tile.need:not(.is-heard) { animation: i7Pulse 1.6s ease-in-out infinite; }
+.e06-8 .e06-wrow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*40); }
+.e06-8 .e06-wpic.i7-card.i8-card { --s: calc(var(--u)*230); }
+.e06-8 .e06-word { font-family: var(--font-letter); font-weight: 700; font-size: calc(var(--u)*120); line-height: 1.75; padding: 0 calc(var(--u)*40); min-width: max(340px, calc(var(--u)*420)); text-align: center;
+  border-radius: calc(var(--u)*30); background: #fff; border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); color: var(--bq8-navy); }
+.e06-8 .i7-tw-d.is-m { color: var(--bq8-meem); }
+.bq8-stage.is-tall .e06-8 .e06-main { flex-direction: column; gap: calc(var(--u)*40); }
+.bq8-stage.is-tall .e06-8 .e06-wrow { flex-direction: column; }
+.bq8-stage.is-tall .e06-8 .e06-mouthw { width: calc(var(--u)*520); }
+@media (prefers-reduced-motion: reduce) { .e06-8 .e06-big8.drawn svg text { animation: none; stroke-dashoffset: 0; } .e06-8 .e06-ref.is-hint, .e06-8 .e06-tile.need { animation: none !important; } }`;
 
   function render(stage, ctx) {
     lib().then((I) => { if (ctx.alive()) run(I, stage, ctx); })
@@ -85,7 +125,15 @@
   function run(I, stage, ctx) {
     const h = BQ.h;
     if (!document.getElementById('st-e06')) document.head.append(h('style', { id: 'st-e06' }, CSS));
+    if (!document.getElementById('st-e06-8')) document.head.append(h('style', { id: 'st-e06-8' }, CSS8));
     const S = I.session(ctx, { noText: false });
+    const V8 = I.v8();
+    /* v8 element builders */
+    const ref8 = (big) => { const sp = h('span', null, 'م'); const t = h('button.e06-ref.bq8-tile.bq8-tile--letter' + (big ? '.e06-ref-big' : ''), { type: 'button', 'aria-label': 'م', lang: 'ar' }, sp); I.fitGlyph(t, sp, 0.16); return t; };
+    // Vazirmatn draws the kasra of an isolated «مِ» INTO the tail (owner: unreadable) → the letter is set bare and the kasra is drawn
+    // as its own clear stroke under the head (same colour, same size class as the font's kasra). Other marks stay real font marks.
+    const kas8 = (g) => g.replace(/\u0645\u0650/g, '\u0645<i class="e06-kas" aria-hidden="true"></i>');
+    const tile8 = (g, aria, spk) => { const sp = h('span', { html: kas8(g) }); const t = h('button.e06-tile.bq8-tile.bq8-tile--syll', { type: 'button', 'aria-label': aria, lang: 'ar' }, sp); if (spk) t.append(h('span.e06-spk', { 'aria-hidden': 'true' }, I.i8('listen'))); I.fitGlyph(t, sp, 0.13); return t; };
     I.lines({
       bq7_E06_recall: 'سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.', bq7_E06_reveal: 'وَهَذا شَكْلُهُ: م. هَذا حَرْفُ المِيمِ.', bq7_E06_brq_wow: 'حَرْفُ المِيمِ! صَوْتُهُ: مَ!',
       bq7_E06_vowels: 'المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.', bq7_E06_tap_vowels: 'اِلْمِسْ كُلَّ واحِدَةٍ، وَاسْمَعْ.',
@@ -98,25 +146,44 @@
     const sid = (s) => 'bq7_S_' + s;
     const colorM = (g) => (g[0] === 'م' ? '<b>' + g + '</b>' : g);
 
-    const root = I.root(stage, 'e06');
+    const f8 = V8 ? I.frame8(S, 'e06-8', { board: true, pose: 'point' }) : null;
+    const root = V8 ? f8.panel : I.root(stage, 'e06');
     const top = h('div.i7-row');
     const steps = I.stars(top, 2 + WORDS.length + MATCH.length);
     const main = h('div.e06-main');
-    root.append(top, main);
+    if (V8) root.append(main); else root.append(top, main);
     const buddy = I.buddy(S, root, 'wave');
     let busy = true, si = 0;
     const log = [];
 
     async function recall() {
       steps.cur(si);
-      const mw = h('div.e06-mouthw'); const mouth = I.mouth(S); mw.append(mouth.el);
+      const mw = h('div.e06-mouthw'); const mouth = V8 ? I.mouth8(S) : I.mouth(S); mw.append(mouth.el);
       main.replaceChildren(mw);
       I.instr(S, 'bq7_E06_recall', 'ear', async () => { if (busy) return; busy = true; await mouth.sayLine('bq7_E06_recall', 'a', 1.6); busy = false; });
       await S.sleep(400);
       await mouth.sayLine('bq7_E06_recall', 'a', 1.6);
     }
 
+    async function reveal8() {
+      const big = h('div.bq8-tile.e06-big8', { role: 'img', 'aria-label': 'الحَرْفُ م' });
+      big.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 400 400" aria-hidden="true"><text x="200" y="250" text-anchor="middle">م</text></svg>');
+      main.replaceChildren(big);
+      buddy.set('point');
+      I.instr(S, 'bq7_E06_reveal', 'eye', async () => { if (busy) return; busy = true; await S.say('bq7_E06_reveal'); busy = false; });
+      await S.sleep(400);
+      const p = S.say('bq7_E06_reveal');
+      await S.wait(1100);
+      I.sfx('rise'); big.classList.add('drawn');
+      await S.wait(I.reduced() ? 150 : 1400);
+      big.classList.add('lit'); I.sfx('sparkle'); I.burst(root, big, 26);
+      await p;
+      buddy.cheer();
+      await S.say('bq7_E06_brq_wow', { talk: true });
+      steps.on(si++);
+    }
     async function reveal() {
+      if (V8) return reveal8();
       const art = I.hasImg('e06_board');
       const board = h('div.e06-board' + (art ? '.is-art' : ''), { role: 'img', 'aria-label': 'الحَرْفُ م' });
       if (art) board.style.backgroundImage = 'url("' + I.imgSrc('e06_board') + '")';
@@ -141,8 +208,9 @@
     async function vowels() {
       steps.cur(si);
       const wrap = h('div.e06-tiles', { role: 'group', 'aria-label': 'مَ مِ مُ' });
-      const tiles = SYL.map((x, i) => { const t = h('button.e06-tile', { type: 'button', 'aria-label': x.g, lang: 'ar' }, h('span', { html: colorM(x.g) })); t.x = x; t.classList.add('i7-in'); t.style.animationDelay = (i * 0.12) + 's'; wrap.append(t); return t; });
-      main.replaceChildren(wrap);
+      const tiles = SYL.map((x, i) => { const t = V8 ? tile8(colorM(x.g), x.g, true) : h('button.e06-tile', { type: 'button', 'aria-label': x.g, lang: 'ar' }, h('span', { html: colorM(x.g) })); t.x = x; t.classList.add('i7-in'); t.style.animationDelay = (i * 0.12) + 's'; wrap.append(t); return t; });
+      if (V8) { const rb = ref8(true); rb.tabIndex = -1; rb.addEventListener('click', async () => { if (busy) return; busy = true; rb.classList.add('is-hint'); await S.say('bq7_E06_brq_wow', { talk: true }); rb.classList.remove('is-hint'); busy = false; }); main.replaceChildren(rb, wrap); }
+      else main.replaceChildren(wrap);
       const p = S.say('bq7_E06_vowels');
       for (const t of tiles) { await S.wait(900); t.classList.add('is-play'); setTimeout(() => t.classList.remove('is-play'), 600); }
       await p;
@@ -168,14 +236,15 @@
       for (const w of WORDS) {
         steps.cur(si);
         const info = I.W[w.slug];
-        const tw = I.tapWord(info.w, { aria: info.w, minW: 60 }); // تشكيل حقيقيّ + مناطق لمس مقيسة (lib)
+        const tw = I.tapWord(info.w, { aria: info.w, minW: V8 ? 64 : 60 }); // تشكيل حقيقيّ + مناطق لمس مقيسة (lib)
         const word = tw.el; word.classList.add('e06-word');
         const spans = tw.cl.map((c) => c.hit);
         const tIdx = tw.cl.findIndex((c) => c.b === 'م');
         const target = spans[tIdx];
         const pic = I.card(w.slug, { aria: info.w, text: true }); pic.classList.add('e06-wpic', 'i7-in');
-        const refB = h('button.e06-ref', { type: 'button', 'aria-label': 'م', lang: 'ar' }, h('span', null, 'م'));
+        const refB = V8 ? ref8() : h('button.e06-ref', { type: 'button', 'aria-label': 'م', lang: 'ar' }, h('span', null, 'م'));
         main.replaceChildren(refB, h('div.e06-wrow', null, pic, word));
+        if (V8 && w === WORDS[0]) f8.stars(WORDS.length);
         word.classList.add('i7-in');
         const sayWord = () => I.playOn(S, pic, I.wordId(w.slug));
         pic.addEventListener('click', async () => { if (busy) return; busy = true; await sayWord(); busy = false; });
@@ -190,7 +259,7 @@
             busy = true;
             if (s === target) {
               if (first == null) { first = true; I.record(S, 'S5', true, { item: w.slug }); log.push([info.w, true]); }
-              tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer();
+              tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer(); if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
               await S.say('bq7_E06_brq_wow', { talk: true }); // «حَرْفُ المِيمِ! صَوْتُهُ: مَ!» — الاسم مقروناً بالصوت (ok_letter المسجَّل يقول الاسم وحده)
               await I.playOn(S, pic, I.segId(w.slug));
@@ -198,12 +267,13 @@
               return resolve();
             }
             if (first == null) { first = false; I.record(S, 'S5', false, { item: w.slug }); log.push([info.w, false]); }
-            const si2 = s.idx; tw.paint(si2, 'is-try'); I.sfx('soft'); setTimeout(() => tw.unpaint(si2, 'is-try'), 700);
+            // OWNER_R3 ladder: ✗1 the tapped letter turns red + retry line (+ the «م» card pulses — a shape cue, not the answer)
+            const si2 = s.idx; tw.paint(si2, 'is-no'); I.sfx('soft'); setTimeout(() => tw.unpaint(si2, 'is-no'), 1400);
             n++; buddy.think();
-            if (n === 1) { refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); busy = false; return; }
-            if (n === 2) { tw.paint(tIdx, 'is-hint'); await S.say('bq7_G_look_light'); busy = false; return; }
-            tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); buddy.point();
-            await S.say('bq7_G_model'); await I.playOn(S, pic, I.segId(w.slug)); await S.say('bq7_G_next');
+            if (n === 1) { await S.say(I.tryL(), { talk: true }); refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); busy = false; return; }
+            // ✗2 Bariq solves: the meem lights up + the word in parts + an encouraging line
+            tw.paint(tIdx, 'is-m'); buddy.point(); I.helped = true;
+            await I.playOn(S, pic, I.segId(w.slug)); await S.say(I.solveL(), { talk: true });
             return resolve();
           };
           spans.forEach((s) => s.addEventListener('click', () => tap(s)));
@@ -218,9 +288,10 @@
       for (let k = 0; k < MATCH.length; k++) {
         const it = MATCH[k];
         steps.cur(si);
-        const refB = h('button.e06-ref', { type: 'button', 'aria-label': 'م', lang: 'ar', tabindex: '-1' }, h('span', null, 'م'));
+        const refB = V8 ? ref8() : h('button.e06-ref', { type: 'button', 'aria-label': 'م', lang: 'ar', tabindex: '-1' }, h('span', null, 'م'));
+        if (V8) { refB.tabIndex = -1; if (k === 0) f8.stars(MATCH.length); }
         const wrap = h('div.e06-tiles', { role: 'group', 'aria-label': 'مَكْتوبٌ' });
-        const tiles = BQ.shuffle(it.opts).map((g, i) => { const t = h('button.e06-tile', { type: 'button', 'aria-label': g, lang: 'ar' }, h('span', { html: g })); t.g = g; t.classList.add('i7-in'); t.style.animationDelay = (i * 0.1) + 's'; wrap.append(t); return t; });
+        const tiles = BQ.shuffle(it.opts).map((g, i) => { const t = V8 ? tile8(g, g, false) : h('button.e06-tile', { type: 'button', 'aria-label': g, lang: 'ar' }, h('span', { html: g })); t.g = g; t.classList.add('i7-in'); t.style.animationDelay = (i * 0.1) + 's'; wrap.append(t); return t; });
         main.replaceChildren(refB, wrap);
         const right = () => tiles.find((t) => t.g === it.opts[0]);
         const ask = () => S.stim(sid(it.s));
@@ -233,19 +304,19 @@
         });
         await new Promise((resolve) => {
           tiles.forEach((t) => t.addEventListener('click', async () => {
-            if (busy || t.classList.contains('is-dim')) return;
+            if (busy || I.isNo(t)) return;
             busy = true; // الخيار المكتوب صامت حتى الحكم (DECISIONS ج)
             if (t === right()) {
               if (first == null) { first = true; I.record(S, 'S5', true, { item: 'match-' + it.s }); log.push([it.opts[0], true]); }
               t.classList.remove('is-soft'); t.classList.add('is-ok'); I.anim(t, 'i7-pop', 450); I.sfx('ok'); I.burst(root, t, 12); buddy.cheer();
               tiles.forEach((x) => { if (x !== t) x.classList.add('is-dim'); });
+              if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
               await I.playOn(S, t, sid(it.s));
               await S.sleep(350);
               return resolve();
             }
             if (first == null) { first = false; I.record(S, 'S5', false, { item: 'match-' + it.s, picked: t.g }); log.push([it.opts[0], false]); }
-            I.anim(t, 'i7-wob', 550); I.sfx('soft');
             const st = await pol.wrong(t);
             if (st === 'model') return resolve();
             busy = false;

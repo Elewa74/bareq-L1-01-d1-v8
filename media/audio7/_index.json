@@ -5772,34 +5772,6 @@
   }
  },
  {
-  "id": "bq7_E11_s9_q1",
-  "speaker": "HAB",
-  "text": "ماجِدٌ يُريدُ أَنْ يُسَرِّحَ شَعْرَهُ. ماذا يَحْتاجُ؟",
-  "dur": 4.02,
-  "file": "media/audio7/bq7_E11_s9_q1.mp3",
-  "take": "g17_A",
-  "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     3.89
-    ],
-    "B": [
-     1.0,
-     0,
-     3.96
-    ]
-   },
-   "heard": "ماجديريدانيسرحشعرهماذايحتاج",
-   "max_closed_nasal_s": 0,
-   "dur": 4.02,
-   "lufs": -17.4,
-   "tp": -1.7
-  }
- },
- {
   "id": "bq7_E11_s9_q2",
   "speaker": "HAB",
   "text": "ماجِدٌ يُريدُ أَنْ يَفْتَحَ الدُّرْجَ. ماذا يَحْتاجُ؟",
@@ -7683,6 +7655,246 @@
    "outro": "«شُكْرًا يا ماجِدْ!» re-voiced 57.56–59.40 (SAY×2 + BRQ chorus stack, rubberband to the 103.4 BPM grid), ASR «شكراً يا ماجد»",
    "stems": "v7/audio8/song/",
    "cues": "v7/audio8/song/song_v8_cues.json"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_yes1",
+  "speaker": "BRQ",
+  "text": "أَحْسَنْتَ! إِجابَةٌ صَحيحَةٌ!",
+  "dur": 2.69,
+  "file": "media/audio7/bq7_E11_fb_yes1.mp3",
+  "take": "yes1_A",
+  "checks": {
+   "dur": 2.69,
+   "lufs": -17.4,
+   "tp": -2.4,
+   "asr": "أحسنت! إجابة صحيحة",
+   "model": "eleven_v4",
+   "prompt": "[excited] أَحْسَنْتَ! إِجابَةٌ صَحيحَةٌ!",
+   "gen_id": "w8K7z4jbiwGnV16p67D7",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_yes2",
+  "speaker": "BRQ",
+  "text": "رائِعٌ! أَنْتَ بَطَلٌ!",
+  "dur": 2.3,
+  "file": "media/audio7/bq7_E11_fb_yes2.mp3",
+  "take": "yes2_A",
+  "checks": {
+   "dur": 2.3,
+   "lufs": -17.5,
+   "tp": -1.6,
+   "asr": "رائع انت بطل",
+   "model": "eleven_v4",
+   "prompt": "[delighted] رائِعٌ! أَنْتَ بَطَلٌ!",
+   "gen_id": "pr0jFNirF2m5PJpK4CN7",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_yes3",
+  "speaker": "BRQ",
+  "text": "مُمْتازٌ! أَحْسَنْتَ الاخْتِيارَ!",
+  "dur": 2.82,
+  "file": "media/audio7/bq7_E11_fb_yes3.mp3",
+  "take": "yes3n_B",
+  "checks": {
+   "dur": 2.82,
+   "lufs": -17.4,
+   "tp": -2.1,
+   "asr": "ممتاز أحسنت الاختيار",
+   "model": "eleven_v4",
+   "prompt": "[proud] مُمْتازٌ! أَحْسَنْتَ الاخْتِيارَ!",
+   "gen_id": "BYxpA4mCuQzrVZRAxqez",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_yes4",
+  "speaker": "BRQ",
+  "text": "بارَكَ اللهُ فيكَ! صَحيحٌ!",
+  "dur": 2.82,
+  "file": "media/audio7/bq7_E11_fb_yes4.mp3",
+  "take": "yes4_A",
+  "checks": {
+   "dur": 2.82,
+   "lufs": -17.4,
+   "tp": -2.8,
+   "asr": "بارك الله فيك صحيح",
+   "model": "eleven_v4",
+   "prompt": "[warmly] بارَكَ اللهُ فيكَ! صَحيحٌ!",
+   "gen_id": "wn0n2xll3FLykV9WhxP3",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_yes5",
+  "speaker": "BRQ",
+  "text": "هَذا صَحيحٌ! أَنْتَ تَتَعَلَّمُ بِسُرْعَةٍ!",
+  "dur": 3.5,
+  "file": "media/audio7/bq7_E11_fb_yes5.mp3",
+  "take": "yes5_A",
+  "checks": {
+   "dur": 3.5,
+   "lufs": -17.4,
+   "tp": -3.1,
+   "asr": "هذا صحيح, أنت تتعلم بسرعة",
+   "model": "eleven_v4",
+   "prompt": "[cheerful] هَذا صَحيحٌ! أَنْتَ تَتَعَلَّمُ بِسُرْعَةٍ!",
+   "gen_id": "P7KKeqeZFr8Nun9YtzTW",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_try1",
+  "speaker": "BRQ",
+  "text": "حاوِلْ مَرَّةً أُخْرى!",
+  "dur": 1.75,
+  "file": "media/audio7/bq7_E11_fb_try1.mp3",
+  "take": "try1_B",
+  "checks": {
+   "dur": 1.75,
+   "lufs": -17.4,
+   "tp": -4.9,
+   "asr": "حاول مرة أخرى",
+   "model": "eleven_v4",
+   "prompt": "[gently, encouraging] حاوِلْ مَرَّةً أُخْرى!",
+   "gen_id": "GnNfeyq9ntKqQWYX8yz0",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_try2",
+  "speaker": "BRQ",
+  "text": "لا بَأْسَ، جَرِّبْ مِنْ جَديدٍ!",
+  "dur": 2.43,
+  "file": "media/audio7/bq7_E11_fb_try2.mp3",
+  "take": "try2_A",
+  "checks": {
+   "dur": 2.43,
+   "lufs": -17.4,
+   "tp": -3.7,
+   "asr": "لا بأس، جرب من جديد",
+   "model": "eleven_v4",
+   "prompt": "[gently] لا بَأْسَ، جَرِّبْ مِنْ جَديدٍ!",
+   "gen_id": "LysXgcLJ2IUFzWcSDP5y",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_try3",
+  "speaker": "BRQ",
+  "text": "فَكِّرْ قَليلًا، وَحاوِلْ مَرَّةً أُخْرى!",
+  "dur": 3.16,
+  "file": "media/audio7/bq7_E11_fb_try3.mp3",
+  "take": "try3_A",
+  "checks": {
+   "dur": 3.16,
+   "lufs": -17.4,
+   "tp": -2.1,
+   "asr": "فكر قليلاً وحاول مرة أخرى",
+   "model": "eleven_v4",
+   "prompt": "[encouraging] فَكِّرْ قَليلًا، وَحاوِلْ مَرَّةً أُخْرى!",
+   "gen_id": "NsdQldCviVsfJoCYuI5c",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_solve1",
+  "speaker": "BRQ",
+  "text": "هَذا هُوَ الصَّحيحُ. أَكْمِلْ وَرَكِّزْ!",
+  "dur": 3.5,
+  "file": "media/audio7/bq7_E11_fb_solve1.mp3",
+  "take": "solve1_A",
+  "checks": {
+   "dur": 3.5,
+   "lufs": -17.4,
+   "tp": -2.7,
+   "asr": "هذا هو الصحيح أكمل وركز",
+   "model": "eleven_v4",
+   "prompt": "[warmly, encouraging] هَذا هُوَ الصَّحيحُ. أَكْمِلْ وَرَكِّزْ!",
+   "gen_id": "m7dpCrw5HXK93Mpw3Wx0",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_solve2",
+  "speaker": "BRQ",
+  "text": "لا بَأْسَ، نَتَعَلَّمُ مَعًا. هَيّا نُكْمِلْ!",
+  "dur": 3.55,
+  "file": "media/audio7/bq7_E11_fb_solve2.mp3",
+  "take": "solve2_A",
+  "checks": {
+   "dur": 3.55,
+   "lufs": -17.4,
+   "tp": -1.6,
+   "asr": "لا بأس نتعلم معا هيا نكمل",
+   "model": "eleven_v4",
+   "prompt": "[warmly] لا بَأْسَ، نَتَعَلَّمُ مَعًا. هَيّا نُكْمِلْ!",
+   "gen_id": "NlkQvcEBrb2kj0wS23m3",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_fb_solve3",
+  "speaker": "BRQ",
+  "text": "اُنْظُرْ جَيِّدًا. أَنْتَ تَسْتَطيعُ!",
+  "dur": 2.74,
+  "file": "media/audio7/bq7_E11_fb_solve3.mp3",
+  "take": "solve3_A",
+  "checks": {
+   "dur": 2.74,
+   "lufs": -17.5,
+   "tp": -2.1,
+   "asr": "انظر جيدا, انت تستطيع",
+   "model": "eleven_v4",
+   "prompt": "[encouraging] اُنْظُرْ جَيِّدًا. أَنْتَ تَسْتَطيعُ!",
+   "gen_id": "g8Kf2d0Jm73UQApGyYkY",
+   "fix_round": "v8 E11 fix 2026-10-05"
+  }
+ },
+ {
+  "id": "bq7_E11_s9_q1",
+  "speaker": "HAB",
+  "text": "ماجِدٌ يُريدُ أَنْ يُسَرِّحَ شَعْرَهُ. ماذا يَحْتاجُ؟",
+  "dur": 3.76,
+  "file": "media/audio7/bq7_E11_s9_q1.mp3",
+  "take": "s9b_A+psola_u",
+  "checks": {
+   "dur": 3.76,
+   "lufs": -17.5,
+   "tp": -1.4,
+   "asr": "ماجد يريد أن يسرح شعره ماذا يحتاج؟",
+   "model": "eleven_v4",
+   "prompt": "[clearly, natural pace, short vowels] ماجِدٌ يُريدُ أَنْ يُسَرِّحَ شَعْرَهُ. ماذا يَحْتاجُ؟",
+   "gen_id": "Gf19XLi5aAq7HcJabSB2",
+   "fix_round": "v8 E11 fix-2 2026-10-05",
+   "yu_ms": 90,
+   "n_murmur_ms": 75,
+   "old_yu_ms": 105,
+   "calib_long_yu_ms": 220,
+   "asr_old": "يصرح",
+   "note": "owner «يوسرّح»: 15 takes (3 prompt groups ×4 + plain-spelling group ×4, minus the hint group that spoke the hint) ranked by /ju/ duration (end of the «أَنْ» n-murmur → /s/ onset, Praat Burg formants) + ASR «يسرح» with س; calibration take «يوسَرِّح» = 220 ms. Old file: voice/old_v7/e11fix/",
+   "psola": {
+    "tool": "Praat (parselmouth 0.4.7) To Manipulation 0.01/75/600 + DurationTier, overlap-add",
+    "region_s": [
+     1.095,
+     1.175
+    ],
+    "factor": 0.725,
+    "u_ms_before": 80,
+    "u_ms_after": 60,
+    "u_ms_old_rejected": 95,
+    "splice": [
+     1.012,
+     1.29
+    ],
+    "xfade_ms": 12,
+    "script": "voice/raw/e11fb/psola/u_short.py",
+    "note": "Only the back-rounded run (F1<500, F2<1300) before «سَ» was shortened; everything else is the s9b_A take. Owner A/B: voice/old_v7/e11fix/bq7_E11_s9_q1.mp3 (rejected) vs bq7_E11_s9_q1_s9bA_90ms.mp3 (previous) vs this file."
+   }
   }
  }
 ]

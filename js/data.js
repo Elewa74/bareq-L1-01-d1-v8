@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261005135130",
+"build": "261005180938",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -2961,13 +2961,79 @@ window.BQ_DATA={
 "sp": "بارق",
 "t": "شُكْرًا.",
 "tag": "[neutral, calm]",
-"use": "E11 neutral after any answer (rotation 1)"
+"use": "E11 neutral after any answer (rotation 1) — NOT used in E11 since the v8 E11 fix (owner: no «شكراً»; feedback ladder bq7_E11_fb_*)"
 },
 "bq7_E11_ack2": {
 "sp": "بارق",
 "t": "هَيّا إِلى التّالي.",
 "tag": "[neutral, calm]",
-"use": "E11 neutral after any answer (rotation 2)"
+"use": "E11 neutral after any answer (rotation 2) — NOT used in E11 since the v8 E11 fix (owner: no «شكراً»; feedback ladder bq7_E11_fb_*)"
+},
+"bq7_E11_fb_yes1": {
+"sp": "بارق",
+"t": "أَحْسَنْتَ! إِجابَةٌ صَحيحَةٌ!",
+"tag": "[excited]",
+"use": "E11 ✓ praise, rotation 1 (v8 E11 fix · DRAFT text — owner approves)"
+},
+"bq7_E11_fb_yes2": {
+"sp": "بارق",
+"t": "رائِعٌ! أَنْتَ بَطَلٌ!",
+"tag": "[delighted]",
+"use": "E11 ✓ praise, rotation 2 (DRAFT)"
+},
+"bq7_E11_fb_yes3": {
+"sp": "بارق",
+"t": "مُمْتازٌ! أَحْسَنْتَ الاخْتِيارَ!",
+"tag": "[proud]",
+"use": "E11 ✓ praise, rotation 3 (DRAFT)"
+},
+"bq7_E11_fb_yes4": {
+"sp": "بارق",
+"t": "بارَكَ اللهُ فيكَ! صَحيحٌ!",
+"tag": "[warmly]",
+"use": "E11 ✓ praise, rotation 4 (DRAFT)"
+},
+"bq7_E11_fb_yes5": {
+"sp": "بارق",
+"t": "هَذا صَحيحٌ! أَنْتَ تَتَعَلَّمُ بِسُرْعَةٍ!",
+"tag": "[cheerful]",
+"use": "E11 ✓ praise, rotation 5 (DRAFT)"
+},
+"bq7_E11_fb_try1": {
+"sp": "بارق",
+"t": "حاوِلْ مَرَّةً أُخْرى!",
+"tag": "[gently, encouraging]",
+"use": "E11 ✗1 (red mark on the chosen answer; child retries), rotation 1 (DRAFT)"
+},
+"bq7_E11_fb_try2": {
+"sp": "بارق",
+"t": "لا بَأْسَ، جَرِّبْ مِنْ جَديدٍ!",
+"tag": "[gently]",
+"use": "E11 ✗1, rotation 2 (DRAFT)"
+},
+"bq7_E11_fb_try3": {
+"sp": "بارق",
+"t": "فَكِّرْ قَليلًا، وَحاوِلْ مَرَّةً أُخْرى!",
+"tag": "[encouraging]",
+"use": "E11 ✗1, rotation 3 (DRAFT)"
+},
+"bq7_E11_fb_solve1": {
+"sp": "بارق",
+"t": "هَذا هُوَ الصَّحيحُ. أَكْمِلْ وَرَكِّزْ!",
+"tag": "[warmly, encouraging]",
+"use": "E11 ✗2 — Bariq shows the right answer (highlight + model audio), rotation 1 (DRAFT)"
+},
+"bq7_E11_fb_solve2": {
+"sp": "بارق",
+"t": "لا بَأْسَ، نَتَعَلَّمُ مَعًا. هَيّا نُكْمِلْ!",
+"tag": "[warmly]",
+"use": "E11 ✗2, rotation 2 (DRAFT)"
+},
+"bq7_E11_fb_solve3": {
+"sp": "بارق",
+"t": "اُنْظُرْ جَيِّدًا. أَنْتَ تَسْتَطيعُ!",
+"tag": "[encouraging]",
+"use": "E11 ✗2, rotation 3 (DRAFT)"
 },
 "bq7_E11_s1_q": {
 "sp": "حبيبة",
@@ -3377,6 +3443,42 @@ window.BQ_DATA={
 "tag": "[warmly]",
 "use": "E16 lesson close"
 },
+"bq7_E16_pick": {
+"sp": "بارق",
+"t": "اِخْتَرْ مُهِمَّةً، وَالْمِسْ صورَتَها.",
+"tag": "[warmly]",
+"use": "E16 v8 pick screen (4 family missions) | IX1 v8 2026-10-05 · draft_unapproved · eleven_v4 · −17 LUFS"
+},
+"bq7_E16_m1": {
+"sp": "بارق",
+"t": "اِبْحَثْ مَعَ أُسْرَتِكَ في البَيْتِ عَنْ ثَلاثَةِ أَشْياءَ يَبْدَأُ اسْمُها بِصَوْتِ مَ، وَصَوِّرْها، أَوِ ارْسُمْها.",
+"tag": "[warmly]",
+"use": "E16 v8 mission 1 (things at home) | composed: BRQ carrier c_e16 + BRQ «مَ» + BRQ tail | IX1 v8 2026-10-05 · draft_unapproved · eleven_v4 · −17 LUFS"
+},
+"bq7_E16_m2": {
+"sp": "بارق",
+"t": "تَذَوَّقْ مَعَ أُسْرَتِكَ فاكِهَةً يَبْدَأُ اسْمُها بِصَوْتِ مَ: مَوْزٌ أَوْ مانْجو، وَقُلِ اسْمَها!",
+"tag": "[warmly]",
+"use": "E16 v8 mission 2 (taste a fruit) | composed: BRQ carriers + BRQ «مَ» + BRQ «مانْجو» (/dʒ/) | IX1 v8 2026-10-05 · draft_unapproved · eleven_v4 · −17 LUFS"
+},
+"bq7_E16_m3": {
+"sp": "بارق",
+"t": "اِفْتَحْ مَعَ أَحَدٍ مِنْ أُسْرَتِكَ كِتابَ صُوَرٍ أَوْ عُلْبَةً، وَابْحَثا مَعًا عَنْ حَرْفِ المِيمِ، صَوْتُهُ مَ.",
+"tag": "[warmly]",
+"use": "E16 v8 mission 3 (letter hunt in a book/box) | composed: BRQ carrier + BRQ «مَ» | IX1 v8 2026-10-05 · draft_unapproved · eleven_v4 · −17 LUFS"
+},
+"bq7_E16_m4": {
+"sp": "بارق",
+"t": "اُرْسُمْ بِإِصْبَعِكَ حَرْفَ المِيمِ، صَوْتُهُ مَ، عَلى صينِيَّةِ رَمْلٍ أَوْ طَحينٍ، أَوْ عَلى كَفِّ أَحَدٍ مِنْ أُسْرَتِكَ.",
+"tag": "[warmly]",
+"use": "E16 v8 mission 4 (draw م in sand/flour or on a palm) | composed: BRQ carrier + BRQ «مَ» + BRQ tail | IX1 v8 2026-10-05 · draft_unapproved · eleven_v4 · −17 LUFS"
+},
+"bq7_E16_add": {
+"sp": "بارق",
+"t": "صَوِّرْ ما وَجَدْتَ، أَوِ ارْسُمْهُ هُنا.",
+"tag": "[warmly]",
+"use": "E16 v8 mission view: the 3 photo/draw slots | IX1 v8 2026-10-05 · draft_unapproved · eleven_v4 · −17 LUFS"
+},
 "bq7_E12_brq_name": {
 "sp": "بارق",
 "t": "هَذا حَرْفُ المِيمِ…",
@@ -3522,7 +3624,7 @@ window.BQ_DATA={
 "use": "E13 scene 7 — narrator reported speech; replaces bq7_E13_jda7 (before n7)"
 }
 },
-"lines7": 309,
+"lines7": 326,
 "audio": [
 "L1-01_aud-104_mix_v01",
 "L1-01_d1_s1_01",
@@ -3771,6 +3873,17 @@ window.BQ_DATA={
 "bq7_E11_brq_miftah_ok",
 "bq7_E11_brq_qamis_bad",
 "bq7_E11_brq_qamis_ok",
+"bq7_E11_fb_solve1",
+"bq7_E11_fb_solve2",
+"bq7_E11_fb_solve3",
+"bq7_E11_fb_try1",
+"bq7_E11_fb_try2",
+"bq7_E11_fb_try3",
+"bq7_E11_fb_yes1",
+"bq7_E11_fb_yes2",
+"bq7_E11_fb_yes3",
+"bq7_E11_fb_yes4",
+"bq7_E11_fb_yes5",
 "bq7_E11_followup",
 "bq7_E11_intro",
 "bq7_E11_r9_q1",
@@ -3849,7 +3962,13 @@ window.BQ_DATA={
 "bq7_E15_done",
 "bq7_E15_intro",
 "bq7_E15_title",
+"bq7_E16_add",
 "bq7_E16_bye",
+"bq7_E16_m1",
+"bq7_E16_m2",
+"bq7_E16_m3",
+"bq7_E16_m4",
+"bq7_E16_pick",
 "bq7_E16_task",
 "bq7_E16_title",
 "bq7_G_end",

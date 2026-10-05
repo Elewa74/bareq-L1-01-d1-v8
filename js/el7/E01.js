@@ -43,6 +43,27 @@
   .e01 .i7-snd { --sz: 84px; }
 }
 @media (prefers-reduced-motion: reduce) { .e01 .i7-card, .e01 .e01-q .i7-snd.in, .e01 .e01-ear.in { transition: none; } }`;
+  /* v8 (OWNER_R3-1 · mockup style_v8/E01.png): beach scene · big Bariq on the right greets the child · gold-rim panel on the left:
+     4 picture cards land one by one on a «shelf», then a tray of 3 coloured sound stickers (no letters) + the ear sticker (hear them again). */
+  const CSS8 = `
+.bq8-stage.e01s > .bq8-panel { top: calc(var(--u)*150); bottom: calc(var(--u)*64); inset-inline-start: calc(var(--u)*320); inset-inline-end: calc(var(--u)*56); }
+.bq8-stage.e01s > .bq8-bariq { inset-inline-start: calc(var(--u)*18); inset-inline-end: auto; bottom: calc(var(--u)*120); width: calc(var(--u)*300); }
+.bq8-stage.e01s > .bq8-bariq .i8-talk { top: -16%; inset-inline-start: 6%; width: 42%; }
+.e01-8 { justify-content: space-evenly !important; }
+.e01-8 .e01-shelf { display: grid; grid-template-columns: repeat(4, auto); gap: calc(var(--u)*24); }
+.e01-8 .i7-card.i8-card { --s: calc(var(--u)*160); opacity: 0; transform: translateY(calc(var(--u)*18)) scale(.9); transition: opacity .35s, transform .45s cubic-bezier(.3,1.4,.4,1), box-shadow .25s; }
+.e01-8 .i7-card.i8-card.in { opacity: 1; transform: none; }
+.e01-8 .i7-card.i8-card.in.is-play { transform: translateY(calc(var(--u)*-6)); }
+.e01-8 .e01-q { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*40); padding: calc(var(--u)*16) calc(var(--u)*44); border-radius: 999px;
+  background: rgba(214,170,90,.16); box-shadow: inset 0 calc(var(--u)*3) calc(var(--u)*8) rgba(120,80,20,.12); min-height: calc(var(--u)*156); }
+.e01-8 .e01-q .i7-snd, .e01-8 .e01-ear8 { opacity: 0; transform: translateY(calc(var(--u)*14)); pointer-events: none; }
+.e01-8 .e01-q .i7-snd.in, .e01-8 .e01-ear8.in { opacity: 1; transform: none; pointer-events: auto; transition: opacity .35s, transform .45s cubic-bezier(.3,1.4,.4,1); }
+.e01-8 .e01-ear8 { margin-inline-start: calc(var(--u)*6); }
+.bq8-stage.e01s.is-tall > .bq8-panel { inset-inline: calc(var(--u)*40); top: calc(var(--u)*150); bottom: calc(var(--u)*300); }
+.bq8-stage.e01s.is-tall > .bq8-bariq { inset-inline-start: calc(var(--u)*40); bottom: calc(var(--u)*24); width: calc(var(--u)*280); }
+.bq8-stage.e01s.is-tall .e01-shelf { grid-template-columns: repeat(2, auto); gap: calc(var(--u)*34); }
+.bq8-stage.e01s.is-tall .i7-card.i8-card { --s: calc(var(--u)*290); }
+@media (prefers-reduced-motion: reduce) { .e01-8 .i7-card, .e01-8 .e01-q .i7-snd.in, .e01-8 .e01-ear8.in { transition: none; } }`;
 
   function render(stage, ctx) {
     lib().then((I) => { if (ctx.alive()) run(I, stage, ctx); })
@@ -52,7 +73,9 @@
   function run(I, stage, ctx) {
     const h = BQ.h;
     if (!document.getElementById('st-e01')) document.head.append(h('style', { id: 'st-e01' }, CSS));
+    if (!document.getElementById('st-e01-8')) document.head.append(h('style', { id: 'st-e01-8' }, CSS8));
     const S = I.session(ctx, { noText: true });
+    const V8 = I.v8();
     I.lines({
       bq7_E01_hello: 'مَرْحَبًا! أَنا بارِقٌ.', bq7_E01_intro: 'اِسْمَعْ هَذِهِ الكَلِماتِ.', bq7_E01_tap: 'اِلْمِسْ كُلَّ صورَةٍ، وَاسْمَعْ.',
       bq7_E01_question: 'ما الصَّوْتُ الَّذي يَتَكَرَّرُ؟', bq7_E01_ok: 'نَعَمْ! سَمِعْناهُ في كُلِّ كَلِمَةٍ: مَ… ما… مُ… مِ.',
@@ -63,7 +86,8 @@
     const WORDS = ['maktab', 'manju', 'musht', 'miftah'];
     const OPTS = [{ key: 'm', id: 'bq7_S_ma', c: 1 }, { key: 'b', id: 'bq7_S_ba', c: 2 }, { key: 'f', id: 'bq7_S_fa', c: 3 }];
 
-    const root = I.root(stage, 'e01');
+    const f8 = V8 ? I.frame8(S, 'e01-8', { scene: true, pose: 'wave', stageCls: 'e01s' }) : null;
+    const root = V8 ? f8.panel : I.root(stage, 'e01');
     const panel = h('div.e01-panel');
     const shelf = h('div.e01-shelf', { role: 'group', 'aria-label': 'صُوَرٌ' });
     const qrow = h('div.e01-q', { role: 'group', 'aria-label': 'أَصْواتٌ' });
@@ -80,15 +104,17 @@
       return c;
     });
     const btns = BQ.shuffle(OPTS).map((o, i) => { const b = I.sndBtn({ id: o.id, key: o.key, c: o.c, aria: 'صَوْتٌ ' + I.AR(i + 1) }); b.o = o; qrow.append(b); return b; });
-    const earAll = h('button.e01-ear', { type: 'button', 'aria-label': 'أَعِدِ الأَصْواتَ', html: I.IC.ear });
+    const earAll = V8 ? h('button.bq8-btn.bq8-btn--ear.e01-ear8', { type: 'button', 'aria-label': 'أَعِدِ الأَصْواتَ' }, I.i8('ear'))
+      : h('button.e01-ear', { type: 'button', 'aria-label': 'أَعِدِ الأَصْواتَ', html: I.IC.ear });
     qrow.append(earAll);
     const right = () => btns.find((b) => b.o.key === 'm');
+    btns.forEach((b) => I.hoverReplay(b, async () => { busy = true; await I.playOn(S, b, b.sid); busy = false; }, () => !busy && phase === 'q'));
 
     const playOpts = async () => {
       for (const b of btns) { if (!b.classList.contains('in')) { b.classList.add('in'); I.sfx('pop'); await S.sleep(140); } }
       earAll.classList.add('in');
       await S.sleep(200);
-      for (const b of btns) { if (b.classList.contains('is-dim')) continue; await I.playOn(S, b, b.sid); await S.sleep(420); }
+      for (const b of btns) { if (I.isNo(b)) continue; await I.playOn(S, b, b.sid); await S.sleep(420); }
     };
     const ask = async () => { buddy.set('point', 1500); await S.say(L.q); await S.say(L.choose); await playOpts(); };
     earAll.addEventListener('click', async () => { if (busy || phase !== 'q') return; busy = true; await playOpts(); busy = false; });
@@ -103,14 +129,14 @@
     });
 
     btns.forEach((b) => b.addEventListener('click', async () => {
-      if (busy || phase !== 'q' || b.classList.contains('is-dim')) return;
+      if (busy || phase !== 'q' || I.isNo(b)) return;
       busy = true;
       await I.playOn(S, b, b.sid); // اللمس يُسمِع الصوت ثم يُحكم
       if (b.o.key === 'm') {
         if (first == null) { first = true; I.record(S, 'S1', true, { item: 'repeat-sound' }); }
         b.classList.remove('is-soft'); b.classList.add('is-ok'); I.anim(b, 'i7-pop', 450); I.sfx('ok'); I.burst(root, b, 18); buddy.cheer();
         btns.forEach((x) => { if (x !== b) x.classList.add('is-dim'); });
-        await S.say('bq7_G_yes1', { talk: true });
+        await S.say(I.yes(), { talk: true });
         const pl = S.say(L.ok);
         for (const c of cards) { await S.sleep(560); c.classList.add('is-glow'); I.sfx('sparkle'); }
         await pl; await S.sleep(300);
@@ -118,7 +144,6 @@
         return finish();
       }
       if (first == null) { first = false; I.record(S, 'S1', false, { item: 'repeat-sound', picked: b.o.key }); }
-      I.anim(b, 'i7-wob', 550); I.sfx('soft');
       const st = await pol.wrong(b);
       if (st === 'model') return finish();
       busy = false;

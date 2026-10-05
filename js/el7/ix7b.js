@@ -766,7 +766,7 @@
     return { el, set(i) { ds.forEach((d, j) => { d.className = j < i ? 'is-done' : j === i ? 'is-now' : ''; }); } };
   };
   /** E11-style replay: hover (mouse/pen) replays after a short dwell · touch-hold replays WITHOUT answering · the ear chip replays
-   *  (tap) without answering. play() → Promise. canPlay() false while the question is being asked. Returns {holdFired()} */
+   *  (tap) without answering. play() → Promise. canPlay() false while the question is being asked. o.holdMs / o.onHeld optional. Returns {held} */
   X.replayable = function (card, play, o) {
     o = o || {};
     let last = 0, dwell = 0, holdT = 0, held = false;
@@ -775,7 +775,8 @@
     card.classList.add('bq8-card--hoverplay');
     card.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; clearTimeout(dwell); dwell = setTimeout(fire, 180); });
     card.addEventListener('pointerleave', () => clearTimeout(dwell));
-    card.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return; held = false; clearTimeout(holdT); holdT = setTimeout(() => { held = true; last = 0; fire(); }, 480); });
+    // o.holdMs: touch-hold time (default 480 ms, unchanged) · o.onHeld(): called after a held replay (e.g. show «not answered yet — tap»)
+    card.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return; held = false; clearTimeout(holdT); holdT = setTimeout(() => { held = true; last = 0; fire(); if (o.onHeld) o.onHeld(); }, o.holdMs || 480); });
     ['pointerup', 'pointercancel', 'pointerleave'].forEach((t) => card.addEventListener(t, () => clearTimeout(holdT)));
     card.addEventListener('click', (e) => { if (held) { held = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
     card.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -1004,6 +1005,91 @@
   .x7-in, .x7-ear.is-on, .x7-wp .start.pulse, .x7-wp .start-ring.on, .x7-wp-tip.is-in, .fx7-pop, .fx7-wob, .x7-wp.is-retry, .x7-wp-word, .x7-fb > span { animation: none !important; }
   .x7-tile, .x7-zone { transition: none; }
 }`;
+  /* ================= glyph measuring (v8 E11 fix · owner E11_e) ================= */
+  /** Ink box of the text inside `el` in client px {top, bottom, left, right}: vertical extents from the font's real ink
+   *  (canvas actualBoundingBox*, measured from the DOM baseline of a zero-size probe), plus the v8 sukun rings (.x7-suk::after). */
+  X.inkBox = function (el) {
+    if (!el || !el.isConnected) return null;
+    const raw = (el.dataset && el.dataset.ink) || el.textContent || '';
+    if (!raw.replace(/‍/g, '').trim()) return null;
+    const cs = getComputedStyle(el);
+    const cv = X._cv || (X._cv = document.createElement('canvas').getContext('2d'));
+    cv.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+    try { cv.direction = 'rtl'; } catch (e) { /* */ }
+    const m = cv.measureText(raw);
+    const probe = h('i', { 'aria-hidden': 'true', style: { display: 'inline-block', width: '0', height: '0', verticalAlign: 'baseline', padding: '0', margin: '0', border: '0' } });
+    el.insertBefore(probe, el.firstChild);
+    const base = probe.getBoundingClientRect().bottom;
+    probe.remove();
+    const rg = document.createRange(); rg.selectNodeContents(el); const rr = rg.getBoundingClientRect();
+    let top = base - m.actualBoundingBoxAscent, bottom = base + m.actualBoundingBoxDescent;
+    el.querySelectorAll('.x7-suk').forEach((sp) => { const r = sp.getBoundingClientRect(), fs = parseFloat(getComputedStyle(sp).fontSize) || 0; top = Math.min(top, r.top + 0.05 * fs - 1); });
+    return { top, bottom, left: rr.left, right: rr.right, base };
+  };
+  /** Fit the text's ink inside `box` (its border-box minus border, with a margin):
+   *  grow → add padding top/bottom so every haraka sits inside · shrink → scale the font down (fixed tiles). */
+  X.fitInk = function (el, box, o) {
+    o = o || {};
+    if (!el || !box || !el.isConnected) return null;
+    if (o.grow) { box.style.paddingTop = ''; box.style.paddingBottom = ''; }
+    if (o.shrink) el.style.fontSize = '';
+    for (let pass = 0; pass < 6; pass++) {
+      const ink = X.inkBox(el); if (!ink) return null;
+      const cs = getComputedStyle(box), r = box.getBoundingClientRect();
+      const fs = parseFloat(getComputedStyle(el).fontSize) || 40;
+      const mg = o.margin != null ? o.margin : Math.max(4, fs * 0.06);
+      const inT = r.top + (parseFloat(cs.borderTopWidth) || 0) + mg, inB = r.bottom - (parseFloat(cs.borderBottomWidth) || 0) - mg;
+      const inL = r.left + (parseFloat(cs.borderLeftWidth) || 0) + mg, inR = r.right - (parseFloat(cs.borderRightWidth) || 0) - mg;
+      const needT = inT - ink.top, needB = ink.bottom - inB;
+      if (o.grow) {
+        if (needT > 0.5) box.style.paddingTop = ((parseFloat(cs.paddingTop) || 0) + needT) + 'px';
+        if (needB > 0.5) box.style.paddingBottom = ((parseFloat(cs.paddingBottom) || 0) + needB) + 'px';
+        if (needT <= 0.5 && needB <= 0.5) return ink;
+      } else if (o.shrink) {
+        const k = Math.min((inB - inT) / Math.max(1, ink.bottom - ink.top), (inR - inL) / Math.max(1, ink.right - ink.left), 1);
+        if (k >= 0.995 && needT <= 0.5 && needB <= 0.5) return ink;
+        el.style.fontSize = (fs * Math.min(k, 0.97)).toFixed(1) + 'px';
+      } else return ink;
+    }
+    return X.inkBox(el);
+  };
+  /** Client rect of each letter (base char + its harakat) inside ONE shaped text run, via Range.getClientRects per character.
+   *  `letters` = X.letters(word). Works across the .x7-suk spans (the sukun char is drawn as a ring there). */
+  X.charBoxes = function (el, letters) {
+    const chars = [];
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let tn;
+    while ((tn = walk.nextNode())) for (let i = 0; i < tn.nodeValue.length; i++) chars.push({ n: tn, i, c: tn.nodeValue[i] });
+    const isBase = (c) => !/[ً-ْٰـ‍]/.test(c);
+    const starts = []; let p = 0;
+    letters.forEach((L) => { const b = X.bare(L)[0]; while (p < chars.length && !(isBase(chars[p].c) && chars[p].c === b)) p++; starts.push(p < chars.length ? p : -1); p++; });
+    return letters.map((L, k) => {
+      const a = starts[k]; if (a < 0) return null;
+      let e = chars.length; for (let j = k + 1; j < starts.length; j++) if (starts[j] > a) { e = starts[j]; break; }
+      const rg = document.createRange();
+      rg.setStart(chars[a].n, chars[a].i);
+      const last = chars[e - 1]; rg.setEnd(last.n, last.i + 1);
+      const rs = [...rg.getClientRects()].filter((r) => r.width > 0.5);
+      if (!rs.length) return null;
+      // Range gives the glyph's ADVANCE box (pen positions). Arabic glyphs overhang their advance (e.g. initial ق reaches into the next
+      // letter), so the box is moved onto the INK: the same contextual form (ZWJ on the joined sides) is measured on a canvas in the
+      // same font — ink = advance-left − actualBoundingBoxLeft … advance-left + actualBoundingBoxRight.
+      const rb = document.createRange(); rb.setStart(chars[a].n, chars[a].i); rb.setEnd(chars[a].n, chars[a].i + 1);
+      const r0 = [...rb.getClientRects()].filter((r) => r.width > 0.5)[0] || rs[0];
+      const prev = letters[k - 1], next = letters[k + 1], base = X.bare(L)[0];
+      const jp = !!prev && !NOLEFT.includes(X.bare(prev).slice(-1)), jn = !!next && !NOLEFT.includes(base);
+      const cs = getComputedStyle(chars[a].n.parentElement);
+      const cv = X._cv || (X._cv = document.createElement('canvas').getContext('2d'));
+      cv.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+      try { cv.direction = 'ltr'; } catch (e) { /* */ }
+      cv.textAlign = 'left';
+      const m = cv.measureText((jp ? ZWJ : '') + L.replace(/ْ/g, '') + (jn ? ZWJ : ''));
+      const sc = m.width > 0 ? (r0.right - r0.left) / m.width : 1; // tiny rounding between canvas and layout
+      const il = r0.left - m.actualBoundingBoxLeft * sc, ir = r0.left + m.actualBoundingBoxRight * sc;
+      const ok = isFinite(il) && isFinite(ir) && ir - il > 2;
+      return { left: ok ? il : r0.left, right: ok ? ir : r0.right, adv: [r0.left, r0.right], top: Math.min(...rs.map((r) => r.top)), bottom: Math.max(...rs.map((r) => r.bottom)) };
+    });
+  };
+
   X.style = function (id, css) { if (!document.getElementById(id)) document.head.append(h('style', { id }, css)); };
   X.style('st-ix7b', CSS);
 

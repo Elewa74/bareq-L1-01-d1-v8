@@ -46,6 +46,7 @@
 .e03 .e03-bub.is-soft { box-shadow: inset 0 0 0 4px #fff, 0 0 0 6px rgba(251,230,91,.9), 0 0 26px rgba(251,230,91,.9); }
 .e03 .e03-bub.is-glow { box-shadow: inset 0 0 0 4px #fff, 0 0 0 7px var(--sun-soft), 0 0 34px var(--sun-soft); }
 .e03 .e03-bub.is-dim { opacity: .3; filter: saturate(.3); }
+.e03 .e03-bub.is-ok { box-shadow: inset 0 0 0 4px #fff, 0 0 0 7px var(--ok, #1B7F53), 0 10px 22px var(--shade); }
 .e03 .e03-bub.is-fly { opacity: 0; pointer-events: none; animation: none; }
 .e03 .e03-bub.is-mute { filter: grayscale(1); opacity: .55; }
 @keyframes e03Bob { 50% { transform: translateY(-9px); } }
@@ -67,6 +68,19 @@
   .e03 .e03-bub { width: max(96px, calc(var(--i7-h) - 130px)); min-width: 96px; }
 }
 @media (prefers-reduced-motion: reduce) { .e03 .e03-bub { animation: none !important; transition: opacity .3s; } }`;
+  /* v8 (OWNER_R3-3 · mockup style_v8/E03.png): island frame · NO basket — star slots under the panel fill one per right answer
+     (the right card flies into its star) · unified sticker cards with an ear chip (= hear it again, never answers) · level 2 = sound stickers. */
+  const CSS8 = `
+.e03-8 .e03-field { position: relative; width: 100%; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.e03-8 .e03-four { display: flex; gap: calc(var(--u)*34); justify-content: center; align-items: center; }
+.e03-8 .e03-four .i7-card.i8-card { --s: calc(var(--u)*196); }
+.e03-8 .e03-sky { display: flex; gap: calc(var(--u)*64); justify-content: center; align-items: center; }
+.e03-8 .e03-sky .i7-snd.i8-snd { --sz: max(96px, calc(var(--u)*164)); }
+.e03-8 .e03-sky .i7-snd.is-fly { opacity: 0; pointer-events: none; }
+.e03-8 .i7-in { animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
+.bq8-stage.is-tall .e03-8 .e03-four { display: grid; grid-template-columns: repeat(2, auto); gap: calc(var(--u)*60) calc(var(--u)*70); }
+.bq8-stage.is-tall .e03-8 .e03-four .i7-card.i8-card { --s: calc(var(--u)*280); }
+.bq8-stage.is-tall .e03-8 .e03-sky { flex-direction: column; gap: calc(var(--u)*50); }`;
 
   const BASKET = '<svg viewBox="0 0 200 110" aria-hidden="true"><path d="M20 30 Q100 -30 180 30" fill="none" stroke="#9B6A35" stroke-width="9" stroke-linecap="round"/><path d="M10 34 H190 L172 104 Q100 112 28 104 Z" fill="#D9A35C" stroke="#9B6A35" stroke-width="4"/><path d="M16 52 H184 M22 72 H178 M26 90 H174" stroke="#B5793A" stroke-width="5"/><path d="M50 36 L56 106 M100 36 V108 M150 36 L144 106" stroke="#B5793A" stroke-width="5"/><rect x="6" y="28" width="188" height="12" rx="6" fill="#B5793A"/></svg>';
   const BUB_COL = ['#3FB8F0', '#9B7BF0', '#2FC79A', '#F7954D'];
@@ -79,7 +93,9 @@
   function run(I, stage, ctx) {
     const h = BQ.h;
     if (!document.getElementById('st-e03')) document.head.append(h('style', { id: 'st-e03' }, CSS));
+    if (!document.getElementById('st-e03-8')) document.head.append(h('style', { id: 'st-e03-8' }, CSS8));
     const S = I.session(ctx, { noText: true });
+    const V8 = I.v8();
     I.lines({
       bq7_E03_l1_all: 'اِسْمَعْ، وَالْمِسْ كُلَّ كَلِمَةٍ فيها صَوْتُنا: مَ… مِ… مُ.',
       bq7_E03_l2_intro: 'الآنَ نَسْمَعُ أَصْواتًا. اِلْمِسِ الفُقّاعَةَ الَّتي فيها صَوْتُنا.',
@@ -99,7 +115,8 @@
     // سطر تعليمة المستوى ١: الجديد إن سُجِّل، وإلا «اِسْمَعْ، ثُمَّ اخْتَرْ.» + «مَ… مِ… مُ» (لا سطر يقول «كلمتين»)
     const l1Intro = async () => { if (I.hasAudio('bq7_E03_l1_all')) await S.say('bq7_E03_l1_all'); else { await S.say('bq7_G_listen_choose'); await S.stim('bq7_S_chain_short'); } };
 
-    const root = I.root(stage, 'e03');
+    const f8 = V8 ? I.frame8(S, 'e03-8', { pose: 'wave' }) : null;
+    const root = V8 ? f8.panel : I.root(stage, 'e03');
     const top = h('div.i7-row');
     const steps = I.stars(top, nRounds);
     const field = h('div.e03-field');
@@ -107,7 +124,7 @@
     const bin = h('div.e03-in'); basket.append(bin);
     const need = h('div.e03-need', { 'aria-hidden': 'true' }); basket.append(need);
     const bottom = h('div.e03-bottom', null, basket);
-    root.append(top, field, bottom);
+    if (V8) root.append(field); else root.append(top, field, bottom);
     const buddy = I.buddy(S, root, 'wave');
     let busy = true, ri = 0;
     const log = [];
@@ -117,6 +134,7 @@
       const wrap = h('div.e03-four', { role: 'group', 'aria-label': 'أَرْبَعُ صُوَرٍ' });
       const cards = order.map((slug, i) => {
         const c = I.card(slug, { aria: 'صورة ' + I.AR(i + 1), earId: I.wordId(slug), ear: async (e) => { if (busy) return; busy = true; e.classList.add('is-play'); await I.playOn(S, c, I.wordId(slug)); e.classList.remove('is-play'); busy = false; } });
+        I.hoverReplay(c, async () => { busy = true; await I.playOn(S, c, I.wordId(slug)); busy = false; }, () => !busy && !c.classList.contains('is-ok'));
         c.slug = slug; c.yes = R.yes.includes(slug); c.classList.add('i7-in'); c.style.animationDelay = (i * 0.1) + 's';
         wrap.append(c);
         return c;
@@ -124,8 +142,9 @@
       field.replaceChildren(wrap);
       bin.replaceChildren();
       need.replaceChildren(...R.yes.map(() => h('i')));
+      if (V8) f8.stars(R.yes.length); // v8: one star slot per word to find (replaces the basket)
       const left = () => cards.filter((c) => c.yes && !c.classList.contains('is-ok'));
-      const playAll = async (slow) => { for (const c of cards) { if (c.classList.contains('is-dim') || c.classList.contains('is-ok')) continue; await I.playOn(S, c, I.wordId(c.slug), slow ? { rate: 0.85 } : null); await S.sleep(320); } };
+      const playAll = async (slow) => { for (const c of cards) { if (I.isNo(c) || c.classList.contains('is-ok')) continue; await I.playOn(S, c, I.wordId(c.slug), slow ? { rate: 0.85 } : null); await S.sleep(320); } };
       I.instr(S, 'bq7_E03_l1_all', 'hand', async () => { if (busy) return; busy = true; await l1Intro(); await playAll(); busy = false; });
       steps.cur(ri);
       await S.sleep(500);
@@ -135,7 +154,7 @@
       busy = false;
       await new Promise((resolve) => {
         cards.forEach((c) => c.addEventListener('click', async () => {
-          if (busy || c.classList.contains('is-dim') || c.classList.contains('is-ok')) return;
+          if (busy || I.isNo(c) || c.classList.contains('is-ok')) return;
           busy = true;
           if (c.yes) {
             c.classList.remove('is-soft'); c.classList.add('is-ok'); I.anim(c, 'i7-pop', 450); I.sfx('ok'); I.burst(root, c, 12);
@@ -150,20 +169,21 @@
             }
             busy = false; return;
           }
-          // مشتّت: سُلّم التلميح (DECISIONS ح) — الصورة الخاطئة تخفت بعده
+          // مشتّت — OWNER_R3 ladder: ✗1 red mark + retry line + the word heard again slowly (no target is shown) ·
+          // ✗2 Bariq solves: the remaining words turn green one by one and are heard in parts + an encouraging line (no star for them)
           clean = false; wrongN++;
-          I.anim(c, 'i7-wob', 550); I.sfx('soft'); buddy.think();
+          buddy.think(); I.markNo(c);
           if (wrongN === 1) {
-            await S.say('bq7_G_listen_again');
-            await I.playOn(S, c, I.wordId(c.slug), { rate: 0.85 }); await S.sleep(350);
-            const y = left()[0]; if (y) await I.playOn(S, y, I.segId(y.slug));
-          } else {
-            left().forEach((x) => x.classList.add('is-soft'));
-            await S.say('bq7_G_look_light');
-            for (const y of left()) { await I.playOn(S, y, I.wordId(y.slug)); await S.sleep(250); }
+            await S.say(I.tryL(), { talk: true });
+            await I.playOn(S, c, I.wordId(c.slug), { rate: 0.85 });
+            busy = false; return;
           }
-          c.classList.add('is-dim');
-          busy = false;
+          I.helped = true; buddy.point();
+          for (const y of left()) { y.classList.add('is-ok'); await I.playOn(S, y, I.segId(y.slug)); await S.sleep(250); }
+          cards.forEach((x) => { if (!x.yes && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
+          I.record(S, 'S1', false, { item: 'l1-' + (r + 1), kind: 'all' }); I.record(S, 'S2', false, { item: 'l1-' + (r + 1) });
+          await S.say(I.solveL(), { talk: true });
+          return resolve();
         }));
       });
       log.push(['كلمات: ' + R.yes.map((x) => I.W[x].w).join('، ') + ' (مع ' + R.list.filter((x) => !R.yes.includes(x)).map((x) => I.W[x].w).join('، ') + ')', clean]);
@@ -172,6 +192,7 @@
       await S.sleep(450);
     }
     async function toBasket(c, slug) {
+      if (V8) { await I.flyTo(root, c.querySelector('.i7-pic') || c, f8.starAt() || f8.starsEl, 650); f8.star(); I.sfx('pop'); return; }
       await I.flyTo(root, c.querySelector('.i7-pic') || c, basket, 650);
       bin.append(h('span', null, I.pic(slug)));
       basket.classList.remove('is-bump'); void basket.offsetWidth; basket.classList.add('is-bump');
@@ -181,16 +202,19 @@
     async function sylRound(set, r) {
       const yes = set[0];
       const sky = h('div.e03-sky', { role: 'group', 'aria-label': 'فُقّاعاتٌ' });
+      if (V8 && r === 0) f8.stars(L2.length); // v8: one star per sound round
       const bubs = BQ.shuffle(set).map((s, i) => {
+        if (V8) { const b = I.sndBtn({ id: sid(s), c: [2, 1, 3, 4, 5, 6][(i + r) % 6], aria: 'صَوْتٌ ' + I.AR(i + 1) }); b.s = s; b.classList.add('i7-in', 'e03-bub8'); b.style.animationDelay = (i * 0.1) + 's'; sky.append(b); return b; }
         const b = h('button.e03-bub' + (I.hasAudio(sid(s)) ? '' : '.is-mute'), { type: 'button', 'aria-label': 'فُقّاعَةٌ ' + I.AR(i + 1), html: I.IC.snd });
         b.style.setProperty('--c', BUB_COL[(i + r) % BUB_COL.length]);
         b.s = s; b.classList.add('i7-in'); b.style.animationDelay = (i * 0.1) + 's';
         sky.append(b);
         return b;
       });
+      bubs.forEach((b) => I.hoverReplay(b, async () => { busy = true; await I.playOn(S, b, sid(b.s)); busy = false; }, () => !busy));
       field.replaceChildren(sky);
       const right = () => bubs.find((b) => b.s === yes);
-      const playAll = async () => { for (const b of bubs) { if (b.classList.contains('is-dim')) continue; await I.playOn(S, b, sid(b.s)); await S.sleep(420); } };
+      const playAll = async () => { for (const b of bubs) { if (I.isNo(b)) continue; await I.playOn(S, b, sid(b.s)); await S.sleep(420); } };
       // R1-6: سطر «الآنَ أَصْواتٌ قَصيرَةٌ» المسجَّل لا يصدق على جولة ما/با — في الجولة الطويلة تُعاد «اِسْمَعْ، ثُمَّ اخْتَرْ.»
       const longR = yes.length > 2;
       const introId = longR ? 'bq7_G_listen_choose' : 'bq7_E03_l2_intro';
@@ -207,7 +231,7 @@
         async hint1(picked) {
           const c = picked && picked.s ? picked.s[0] : 'b';
           const pair = I.pick(c === 'f' ? 'bq7_S_pair_mf' : c === 'n' ? 'bq7_S_pair_mn' : 'bq7_S_pair_mb', 'bq7_S_pair_mb');
-          await S.say('bq7_E11_r_s2', { talk: true });
+          await S.say('bq7_E11_r_s2', { talk: true }); // «اِسْمَعْ مَعي الفَرْقَ.» — the contrast is heard, no option is lit
           if (longR && picked && picked.s) { await S.stim(sid(yes)); await S.sleep(600); await S.stim(sid(picked.s)); } // R1b-N3: الجولة الطويلة ← زوج طويل ما… با / ما… فا
           else await S.stim(pair);
           await S.sleep(450);
@@ -218,21 +242,20 @@
       busy = false;
       await new Promise((resolve) => {
         bubs.forEach((b) => b.addEventListener('click', async () => {
-          if (busy || b.classList.contains('is-dim')) return;
+          if (busy || I.isNo(b)) return;
           busy = true;
           await I.playOn(S, b, sid(b.s)); // يُسمَع ثم يُحكم
           if (b.s === yes) {
             if (first == null) { first = true; I.record(S, 'S2', true, { item: yes }); }
-            b.classList.remove('is-soft'); b.classList.add('is-glow'); I.sfx('rise'); I.burst(root, b, 14); buddy.cheer();
+            b.classList.add(V8 ? 'is-ok' : 'is-glow'); I.sfx('rise'); I.burst(root, b, 14); buddy.cheer();
             bubs.forEach((x) => { if (x !== b) x.classList.add('is-dim'); });
-            await I.flyTo(root, b, buddy.el, 700);
+            if (V8) { await I.flyTo(root, b, f8.starAt() || buddy.el, 700); f8.star(); } else await I.flyTo(root, b, buddy.el, 700);
             b.classList.add('is-fly');
             await S.say(I.yes(), { talk: true });
             await S.stim(sid(yes));
             return resolve();
           }
           if (first == null) { first = false; I.record(S, 'S2', false, { item: yes, picked: b.s }); }
-          I.anim(b, 'i7-wob', 550); I.sfx('soft');
           const st = await pol.wrong(b);
           if (st === 'model') return resolve();
           busy = false;

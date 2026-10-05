@@ -64,6 +64,39 @@
   .e04 .e04-oral .e04-opic { width: max(140px, calc(var(--i7-h) - 50px)); }
 }
 @media (prefers-reduced-motion: reduce) { .e04 .e04-face { transition: none; } .e04 .e04-photo { animation: none; } }`;
+  /* v8 (OWNER_R3-4 · mockup style_v8/E04.png): one big sticker picture card + a row of three clear stickers that light up in turn —
+     ear (listen) → mouth (say it) → eye (look: what it is for). icons8 ear / mouth / eye in natural colours (a 4-year-old reads them).
+     The stickers are real buttons: ear = hear the word again · mouth = «قُلْ…» again · eye = the meaning again (after it was shown). */
+  const CSS8 = `
+.e04-8 .e04-main { position: relative; flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+.e04-8 .e04-col { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*30); }
+.e04-8 .e04-photo { position: relative; width: calc(var(--u)*330); aspect-ratio: 1; perspective: 1000px; cursor: pointer; border: 0; padding: 0; background: none; animation: bq8-pop .45s cubic-bezier(.3,1.5,.5,1) both; }
+.e04-8 .e04-face { position: absolute; inset: 0; padding: calc(var(--u)*10); border-radius: calc(var(--u)*32); background: #fff; border: var(--bq8-line) solid var(--bq8-navy);
+  box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); backface-visibility: hidden; transition: transform .7s cubic-bezier(.3,.8,.3,1.1); }
+.e04-8 .e04-face .i7-pic { border-radius: calc(var(--u)*22); }
+.e04-8 .e04-ctx { transform: rotateY(180deg); }
+.e04-8 .e04-photo.is-ctx .e04-card { transform: rotateY(-180deg); }
+.e04-8 .e04-photo.is-ctx .e04-ctx { transform: rotateY(0); }
+.e04-8 .e04-photo.is-play .e04-face { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-listen), var(--bq8-sh-2); }
+.e04-8 .bq8-skillrow { gap: calc(var(--u)*46); }
+.e04-8 .e04-chip.is-on { box-shadow: inset 0 calc(var(--u)*-6) 0 color-mix(in srgb, var(--hd) 45%, transparent), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--hd), 0 calc(var(--u)*10) calc(var(--u)*16) rgba(11,45,79,.32); transform: scale(1.08); }
+.e04-8 .e04-chip.is-done::after { content: ''; position: absolute; top: -14%; inset-inline-start: -14%; width: 44%; aspect-ratio: 1; background: url(assets/icons8/check.svg) center / contain no-repeat; animation: bq8-pop .35s cubic-bezier(.3,1.6,.5,1) both; }
+.e04-8 .e04-ring { position: absolute; inset: -14%; width: 128%; height: 128%; transform: rotate(-90deg); pointer-events: none; }
+.e04-8 .e04-ring circle { fill: none; stroke: var(--bq8-mouth); stroke-width: 5; stroke-linecap: round; }
+.e04-8 .e04-ctl { position: absolute; bottom: calc(var(--u)*-8); inset-inline-end: calc(var(--u)*-6); min-height: 0; }
+.e04-8 .e04-quiz { display: flex; gap: calc(var(--u)*44); justify-content: center; }
+.e04-8 .e04-quiz .i7-card.i8-card { --s: calc(var(--u)*250); }
+.e04-8 .e04-oral { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*56); }
+.e04-8 .e04-opic { width: calc(var(--u)*400); aspect-ratio: 1; padding: calc(var(--u)*10); border-radius: calc(var(--u)*32); background: #fff; border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); animation: bq8-pop .45s ease-out both; }
+.e04-8 .e04-opic .i7-pic { border-radius: calc(var(--u)*22); }
+.e04-8 .e04-oral .e04-chip { width: max(80px, calc(var(--u)*130)); height: max(80px, calc(var(--u)*130)); font-size: max(56px, calc(var(--u)*94)); cursor: default; }
+.e04-8 .e04-oral .e04-chip.is-on { animation: i7Pulse 1s ease-in-out infinite; }
+.bq8-stage.is-tall .e04-8 .e04-photo { width: calc(var(--u)*560); }
+.bq8-stage.is-tall .e04-8 .e04-quiz { flex-direction: column; gap: calc(var(--u)*40); }
+.bq8-stage.is-tall .e04-8 .e04-quiz .i7-card.i8-card { --s: calc(var(--u)*300); }
+.bq8-stage.is-tall .e04-8 .e04-oral { flex-direction: column; }
+.bq8-stage.is-tall .e04-8 .e04-opic { width: calc(var(--u)*560); }
+@media (prefers-reduced-motion: reduce) { .e04-8 .e04-face { transition: none; } .e04-8 .e04-photo { animation: none; } }`;
 
   function render(stage, ctx) {
     lib().then((I) => { if (ctx.alive()) run(I, stage, ctx); })
@@ -73,7 +106,9 @@
   function run(I, stage, ctx) {
     const h = BQ.h;
     if (!document.getElementById('st-e04')) document.head.append(h('style', { id: 'st-e04' }, CSS));
+    if (!document.getElementById('st-e04-8')) document.head.append(h('style', { id: 'st-e04-8' }, CSS8));
     const S = I.session(ctx, { noText: true });
+    const V8 = I.v8();
     const WORDS = ['maktab', 'musht', 'miftah', 'timsah', 'manju', 'numur', 'qamis'];
     I.lines({
       bq7_E04_intro: 'هَذِهِ كَلِماتٌ جَديدَةٌ. اُنْظُرْ، وَاسْمَعْ، ثُمَّ قُلْ.', bq7_E04_check_intro: 'الآنَ اسْمَعْ، وَالْمِسِ الصّورَةَ.', bq7_E04_end: 'صارَتْ عِنْدَكَ كَلِماتٌ جَديدَةٌ!',
@@ -88,24 +123,35 @@
     // إن لم يُسجَّل السؤال بعد: الصورة + «قُلْها!» وحدهما (لا بديل من أسطر E11).
     const ORAL = [{ w: 'qamis', q: 'bq7_E04_o_qamis' }, { w: 'numur', q: 'bq7_E04_o_numur' }];
     const JUDGE = { m: 'mastered', n: 'near', x: 'notyet' };
-    const root = I.root(stage, 'e04');
+    const f8 = V8 ? I.frame8(S, 'e04-8', { pose: 'wave' }) : null;
+    const root = V8 ? f8.panel : I.root(stage, 'e04');
     const top = h('div.i7-row');
     const steps = I.stars(top, WORDS.length + QUIZ.length + 1);
     const main = h('div.e04-main');
-    root.append(top, main);
+    if (V8) root.append(main); else root.append(top, main);
     const buddy = I.buddy(S, root, 'wave');
     let busy = true, cur = null, judged = null;
     const RING = '<svg class="e04-ring" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36"/></svg>';
-    const chip = (cls, svg, aria) => h('span.e04-chip.' + cls, { role: 'img', 'aria-label': aria, html: svg });
+    const chip = V8 ? (cls, svg, aria) => h('button.bq8-btn.e04-chip.' + cls + '.bq8-btn--' + cls, { type: 'button', 'aria-label': aria }, I.i8(cls))
+      : (cls, svg, aria) => h('span.e04-chip.' + cls, { role: 'img', 'aria-label': aria, html: svg });
 
     async function teach(slug, i) {
       const wid = I.wordId(slug);
       const photo = h('button.e04-photo', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' },
         h('span.e04-face.e04-card', null, I.pic(slug)), h('span.e04-face.e04-ctx', null, I.pic(slug, { key: ['ctx_' + slug, 'ctx_mango', 'card_' + slug, 'w_' + slug, 'w_mango'].filter((k) => slug === 'manju' || !/mango/.test(k)) })));
       const cEar = chip('ear', I.IC.ear, 'اِسْمَعْ'), cSay = chip('mouth', I.IC.mouth, 'قُلْ'), cEye = chip('eye', I.IC.eye, 'المَعْنى');
-      const slot = h('div.e04-slot', { 'aria-hidden': 'true' }, cEar, h('i.e04-arrow'), cSay, h('i.e04-arrow'), cEye);
       const ctl = h('div.e04-ctl');
-      main.replaceChildren(h('div.e04-spread', null, photo, h('div.e04-page', null, slot, ctl)));
+      if (V8) {
+        const slot = h('div.bq8-skillrow.e04-slot', { role: 'group', 'aria-label': 'اِسْمَعْ · قُلْ · اُنْظُرْ' }, cEar, cSay, cEye);
+        main.replaceChildren(h('div.e04-col', null, photo, slot), ctl);
+        const tapChip = (fn) => async () => { if (busy) return; busy = true; I.sfx('tick'); try { await fn(); } finally { busy = false; } };
+        cEar.onclick = tapChip(async () => { photo.classList.add('is-play'); await S.stim(wid); photo.classList.remove('is-play'); });
+        cSay.onclick = tapChip(() => S.say('bq7_E04_say_' + slug));
+        cEye.onclick = tapChip(async () => { if (photo.classList.contains('is-ctx')) await S.say('bq7_E04_mean_' + slug); });
+      } else {
+        const slot = h('div.e04-slot', { 'aria-hidden': 'true' }, cEar, h('i.e04-arrow'), cSay, h('i.e04-arrow'), cEye);
+        main.replaceChildren(h('div.e04-spread', null, photo, h('div.e04-page', null, slot, ctl)));
+      }
       cur = { slug, photo };
       steps.cur(i);
       photo.addEventListener('click', async () => { if (busy) return; busy = true; photo.classList.add('is-play'); await S.stim(photo.classList.contains('is-ctx') ? 'bq7_E04_mean_' + slug : wid); photo.classList.remove('is-play'); busy = false; });
@@ -156,11 +202,11 @@
         let first = null;
         const pol = I.policy(S, {
           opts, right,
-          async hint1() { await S.say('bq7_G_listen_again'); await S.stim(I.wordId(q.t)); },
+          async hint1() { await S.stim(I.wordId(q.t)); },
           async model() { await I.playOn(S, right(), I.wordId(q.t)); },
         });
         opts.forEach((c) => c.addEventListener('click', async () => {
-          if (busy || c.classList.contains('is-dim')) return;
+          if (busy || I.isNo(c)) return;
           busy = true;
           if (c === right()) {
             if (first == null) { first = true; I.record(S, 'S9', true, { item: q.t }); }
@@ -172,7 +218,6 @@
             return resolve(first);
           }
           if (first == null) { first = false; I.record(S, 'S9', false, { item: q.t, picked: c.slug }); }
-          I.anim(c, 'i7-wob', 550); I.sfx('soft');
           const st = await pol.wrong(c);
           if (st === 'model') { await S.sleep(300); return resolve(false); }
           busy = false;
@@ -193,7 +238,7 @@
       for (const it of ORAL) {
         const qid = I.hasAudio(it.q) ? it.q : null;
         const pic = h('div.e04-opic', null, I.pic(it.w, { key: ['ctx_' + it.w, 'card_' + it.w] }));
-        const cSay = h('span.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ', html: I.IC.mouth });
+        const cSay = V8 ? h('span.bq8-btn.bq8-btn--mouth.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ' }, I.i8('mouth')) : h('span.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ', html: I.IC.mouth });
         main.replaceChildren(h('div.e04-oral', null, pic, cSay));
         I.instr(S, qid || 'bq7_E04_o_say', 'mouth', async () => { if (busy) return; busy = true; await S.say(qid || 'bq7_E04_o_say'); busy = false; });
         await S.sleep(450);

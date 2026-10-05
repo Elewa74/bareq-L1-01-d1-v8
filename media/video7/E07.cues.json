@@ -158,5 +158,35 @@
   }
  ],
  "rule": "تُمْسِكُ يَدَ جارِها… وَفي الآخِرِ تُرْخي ذَيْلَها!",
- "interim": null
+ "placeholders": [
+  {
+   "gid": "V8_E07_M09",
+   "line": "bq7_E07m_sum",
+   "t": 42.056,
+   "end": 48.326,
+   "rect": [
+    815,
+    85,
+    1105,
+    345
+   ],
+   "still": "site_v7/media/img8/brq8_point.webp",
+   "note": "PLACEHOLDER: approved Bariq still (no lip overlay) — the lead drops the aligned Grok speaking clip here"
+  },
+  {
+   "gid": "V8_E07_M10",
+   "line": "bq7_E07m_rule",
+   "t": 50.536,
+   "end": 57.856,
+   "rect": [
+    1330,
+    590,
+    1560,
+    820
+   ],
+   "still": "site_v7/media/img8/brq8_front.webp",
+   "note": "PLACEHOLDER: approved Bariq still (no lip overlay) — the lead drops the aligned Grok speaking clip here"
+  }
+ ],
+ "interim": "Grok motion pending: V8_E07_M09 V8_E07_M10 (start-frame stills with gentle motion)"
 }

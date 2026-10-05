@@ -431,7 +431,7 @@
     parent.append(el);
     let done = -1;
     const set = (i) => { if (st) st.set(Math.min(n - 1, i)); if (st && i >= n) el.querySelectorAll('.bq-step').forEach((d) => { d.className = 'bq-step is-done'; }); };
-    return { el, on(i) { done = Math.max(done, i); set(i + 1); I.sfx('sparkle'); }, cur(i) { set(i); }, all() { set(n); } };
+    return { el, on(i) { done = Math.max(done, i); set(i + 1); if (!I.helped) I.sfx('sparkle'); I.helped = false; }, cur(i) { set(i); }, all() { set(n); } };
   };
 
   /** زرّ دائريّ (ابدأ/التالي) يُحلّ عند اللمس */
@@ -540,44 +540,84 @@
     bq7_G_look_shape: 'اُنْظُرْ إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذا هُوَ. اِسْمَعْ مَعي:', bq7_G_next: 'هَيّا نُكْمِلْ.',
     bq7_G_listen_choose: 'اِسْمَعْ، ثُمَّ اخْتَرْ.', bq7_G_your_turn: 'دَوْرُكَ!', bq7_G_end: 'أَحْسَنْتَ! أَنْهَيْتَ النَّشاطَ.',
   });
-  let yesI = Math.floor(Math.random() * 4);
-  /** مديح بارق القصير بالتناوب (G_yes1..4) */
-  I.yes = () => { yesI = (yesI % 4) + 1; return I.pick('bq7_G_yes' + yesI, 'bq7_G_yes2', 'bq7_fb_yes'); };
+  /* ===== OWNER_R3 GLOBAL feedback ladder (binding, 2026-10-05) =====
+     ✓ green + VARIED praise (never «شكراً») · ✗1 red mark on the chosen option + a motivating retry line, the child tries again ·
+     ✗2 Bariq solves (the right option turns green + its model) + an encouraging line · stars / progress fill only on the child's own right answers
+     · nothing is pre-coloured or glowed before the answer. Lines: G_yes1..4 + E11_fb_yes1..5 · E11_fb_try1..3 · E11_fb_solve1..3 (all BRQ, eleven_v4). */
+  const rot = (ids) => { let k = Math.floor(Math.random() * ids.length); return () => { k = (k + 1) % ids.length; const id = ids[k]; return I.hasAudio(id) ? id : ids.find((x) => I.hasAudio(x)) || ids[0]; }; };
+  I.yes = rot(['bq7_G_yes1', 'bq7_E11_fb_yes2', 'bq7_G_yes2', 'bq7_E11_fb_yes3', 'bq7_G_yes3', 'bq7_E11_fb_yes5', 'bq7_G_yes4', 'bq7_E11_fb_yes1']);
+  I.tryL = rot(['bq7_E11_fb_try1', 'bq7_E11_fb_try2', 'bq7_E11_fb_try3']);
+  I.solveL = rot(['bq7_E11_fb_solve1', 'bq7_E11_fb_solve2', 'bq7_E11_fb_solve3']);
+  /** Bariq solved the current item → the next progress dot is «helped» (not green) */
+  I.helped = false;
+  /** red mark on the chosen option (✗1 / ✗2) — it stays red and can no longer be chosen */
+  I.markNo = function (el) {
+    if (!el || !el.classList) return;
+    el.classList.remove('is-soft', 'is-glow', 'is-play');
+    el.classList.add('is-no');
+    if (!el.querySelector(':scope > .i7-nob')) el.append(h('span.i7-nob', { 'aria-hidden': 'true' }));
+    I.anim(el, 'i7-wob', 550); I.sfx('soft');
+  };
+  /** OWNER_R3: sound choices replay on hover (mouse / pen dwell 180 ms, debounce 1.2 s) — hovering never answers. can() false while busy. */
+  I.hoverReplay = function (el, play, can) {
+    let dwell = 0, last = 0;
+    el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; clearTimeout(dwell);
+      dwell = setTimeout(() => { const n = Date.now(); if (n - last < 1200 || I.isNo(el) || (can && !can())) return; last = n; play(); }, 180); });
+    el.addEventListener('pointerleave', () => clearTimeout(dwell));
+  };
+  /** OWNER_R3 (E09_fatha_out_of_frame): a glyph WITH its marks always fits its frame. Measures the real ink box (canvas measureText:
+   *  actual ascent/descent incl. harakat) and shrinks + centres the text so the ink sits inside the box with padding (pad = share of the box).
+   *  Layout-based (offsetTop / clientHeight), so entry animations and stage scaling do not disturb it; re-runs on resize and when fonts load. */
+  let CV = null;
+  I.fitGlyph = function (box, span, pad) {
+    pad = pad == null ? 0.14 : pad;
+    const go = () => {
+      if (!box.isConnected || !box.clientWidth) return;
+      span.style.transform = 'none'; span.style.fontSize = '';
+      const cs = getComputedStyle(span); CV = CV || document.createElement('canvas').getContext('2d');
+      let fs = parseFloat(cs.fontSize);
+      const meas = () => { CV.font = cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily; return CV.measureText(span.textContent); };
+      let m = meas();
+      const W = box.clientWidth, H = box.clientHeight;
+      const ih = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, iw = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+      const k = Math.min(1, (H * (1 - 2 * pad)) / ih, (W * (1 - 2 * pad)) / iw);
+      if (k < 1) { fs *= k; span.style.fontSize = fs + 'px'; m = meas(); }
+      const fa = m.fontBoundingBoxAscent, fd = m.fontBoundingBoxDescent;
+      const half = (span.offsetHeight - (fa + fd)) / 2;
+      const inkTop = span.offsetTop + half + fa - m.actualBoundingBoxAscent;
+      const inkH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+      span.style.transform = 'translateY(' + ((H - inkH) / 2 - inkTop).toFixed(1) + 'px)';
+    };
+    requestAnimationFrame(go);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(go);
+    try { new ResizeObserver(go).observe(box); } catch (e) { /* */ }
+    return go;
+  };
+  I.isNo = (el) => !!(el && el.classList && (el.classList.contains('is-no') || el.classList.contains('is-dim')));
 
-  /** سُلّم المحاولات (DECISIONS «ح»): opts = عناصر الخيارات (DOM) · right = الصحيح · n = عددها
-   *  ≥٣ خيارات: ١ تلميح يعلّل (hint1) · ٢ يخفت خيار خاطئ ويضيء الصواب بلطف + «اُنْظُرْ إِلى الضَّوْءِ» · ٣ نموذج «هَذا هُوَ. اِسْمَعْ مَعي:» + model ثم «هَيّا نُكْمِلْ»
-   *  خياران: ١ تلميح + إعادة الصوتين · ٢ نموذج. يعيد wrong() → 'hint1' | 'hint2' | 'model' */
+  /** I.policy(S, {opts, right(), hint1(picked)?, model(picked)?, modelLine?}) → wrong(picked): 'hint1' (✗1) | 'model' (✗2, Bariq solved) */
   I.policy = function (S, o) {
     let n = 0;
-    const two = (o.opts || []).length <= 2;
-    const model = async (picked) => {
+    I.helped = false;
+    const solve = async (picked) => {
       const r = o.right();
-      (o.opts || []).forEach((x) => { if (x !== r) x.classList.add('is-dim'); });
-      if (r) { r.classList.remove('is-dim'); r.classList.add('is-glow'); }
+      (o.opts || []).forEach((x) => { if (x !== r && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
+      if (r) { r.classList.remove('is-dim', 'is-soft', 'is-glow'); r.classList.add('is-ok'); }
+      I.helped = true;
       if (S.buddy) S.buddy.point();
-      if (o.modelLine !== false) await S.say(o.modelLine || I.pick('bq7_G_model', 'bq7_fb_show'));
+      if (o.modelLine) await S.say(o.modelLine);
       if (o.model) await o.model(picked);
-      if (r) { r.classList.remove('is-glow'); r.classList.add('is-ok'); }
-      await S.sleep(250);
-      if (o.next !== false) await S.say('bq7_G_next');
+      await S.sleep(200);
+      await S.say(I.solveL(), { talk: true });
     };
     return {
       get n() { return n; },
       async wrong(picked) {
         n++;
         if (S.buddy) S.buddy.think();
-        if (n === 1) { await (o.hint1 ? o.hint1(picked) : S.say('bq7_G_try')); return 'hint1'; }
-        if (n === 2 && !two) {
-          const r = o.right();
-          const wrongs = (o.opts || []).filter((x) => x !== r && !x.classList.contains('is-dim'));
-          const off = wrongs.find((x) => x !== picked) || wrongs[0];
-          if (off) off.classList.add('is-dim');
-          if (r) r.classList.add('is-soft');
-          if (o.lookLine !== false) await S.say(o.lookLine || 'bq7_G_look_light');
-          if (o.hint2) await o.hint2(picked);
-          return 'hint2';
-        }
-        await model(picked);
+        I.markNo(picked);
+        if (n === 1) { await S.say(I.tryL(), { talk: true }); if (o.hint1) await o.hint1(picked); return 'hint1'; }
+        await solve(picked);
         return 'model';
       },
     };
@@ -768,8 +808,304 @@
 .i7-tw-hit { position: absolute; top: 0; bottom: 0; margin: 0; padding: 0; border: 0; border-radius: 14px; background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .i7-tw-hit:active { background: rgba(0,174,237,.08); }
 .i7-tw-hit:focus-visible { outline: 4px solid var(--navy, #00345B); outline-offset: -4px; }
-@media (prefers-reduced-motion: reduce) { .i7-mouth.show-lips .i7-lips { animation: none; } .i7-tw-d { animation: none; } }`;
+@media (prefers-reduced-motion: reduce) { .i7-mouth.show-lips .i7-lips { animation: none; } .i7-tw-d { animation: none; } }
+/* OWNER_R3 GLOBAL ✗ = red mark on the chosen option */
+.is-no { pointer-events: none; box-shadow: 0 0 0 5px #fff, 0 0 0 11px #E2574C, 0 10px 22px rgba(11,45,79,.25) !important; }
+.i7-nob { position: absolute; z-index: 6; top: -14px; inset-inline-end: -14px; width: 46px; height: 46px; border-radius: 50%; pointer-events: none;
+  background: #fff url(assets/icons8/close.svg) center / 100% no-repeat; box-shadow: 0 3px 8px rgba(0,0,0,.25); animation: i7Pop .4s ease-out; }
+.bq8-progress > i.i8-help { background: #9FB6CC; }
+.i7-tw-d.is-no { color: #E2574C; text-shadow: none; }`;
   if (!document.getElementById('st-ix1b')) document.head.append(h('style', { id: 'st-ix1b' }, CSS2));
+
+  /* ================= v8 (THEME8.md · OWNER_R3) — draft_unapproved =================
+     ?theme=8 → <html data-theme="8"> + theme8.css. Then every IX1 element is drawn on a .bq8-stage (island / wooden board):
+     HUD = the platform's own instruction row (speaker + function chip + caption) MOVED into the stage (CC / replay keep working; restored
+     on cleanup) · framed panel = the element root · star slots (replace the basket) · Bariq slot with the approved squircle Bariq (img8/brq8_*).
+     Without theme 8 every element keeps its v7 markup. Shared v7 components (I.card · I.sndBtn · I.ear · I.stars · I.buddy · I.goBtn) restyle
+     themselves under .bq8-stage, so one card / button / chip style runs through E01–E06 and E16. */
+  I.v8 = () => document.documentElement.dataset.theme === '8';
+  // img8 is not indexed by data.js yet (PLATFORM): keys present on 2026-10-05 + BQ.D.img8 when PLATFORM adds it
+  const IMG8 = new Set(('brq8_cheer brq8_front brq8_happy brq8_hi brq8_idle brq8_notebook brq8_point brq8_shy brq8_think brq8_wave brq8_wow ' +
+    'b8_bariq_anchor d8_board_frame d8_island_bg d8_island_map d8_island_scene').split(' '));
+  I.has8 = (k) => !!((D.img8 && D.img8[k]) || IMG8.has(k));
+  I.src8 = (k) => (D.img8 && D.img8[k]) || 'media/img8/' + k + '.webp';
+  const POSE8 = { idle: 'brq8_idle', wave: 'brq8_wave', hi: 'brq8_hi', talk: 'brq8_happy', happy: 'brq8_happy', cheer: 'brq8_cheer', clap: 'brq8_cheer',
+    think: 'brq8_think', point: 'brq8_point', wow: 'brq8_wow', shy: 'brq8_shy', front: 'brq8_front', notebook: 'brq8_notebook', listen: 'brq8_hi' };
+  I.brq8 = (p) => I.src8(POSE8[p] || POSE8.idle);
+  I.i8 = (name, cls) => h('i.bq8-ic.bq8-ic--' + name + (cls ? '.' + cls : ''), { 'aria-hidden': 'true' });
+  const FN8 = { ear: 'ear', hand: 'touch', touch: 'touch', mouth: 'mouth', eye: 'eye', pencil: 'pencil', drag: 'hand_drag', family: 'family', home: 'family' };
+  let F8 = null;
+  I.f8 = () => F8;
+
+  /** I.frame8(S, cls, {board, scene, pose, panel:[mods], nobariq, stageCls}) → api {stage, hud, panel, bariq, stars(n), star(), starAt(k)} */
+  I.frame8 = function (S, cls, opt) {
+    opt = opt || {};
+    const ctx = S.ctx;
+    const wrap = h('div.i8v8', { dir: 'rtl', lang: 'ar' });
+    const st = h('div.bq8-stage.' + (opt.board ? 'bq8-board' : 'bq8-island') + (opt.scene ? '.i8-scene' : '') + (opt.nobariq ? '.bq8-stage--nobariq' : '') + (opt.stageCls ? '.' + opt.stageCls : ''));
+    const hud = h('div.bq8-hud');
+    const panel = h('div.bq8-panel.i8p.' + cls + (opt.panel || []).map((m) => '.bq8-panel--' + m).join(''), { dir: 'rtl', lang: 'ar' });
+    const starsEl = h('div.bq8-stars.i8-stars', { 'aria-hidden': 'true' }); starsEl.hidden = true;
+    const img = h('img', { alt: '', draggable: 'false', decoding: 'async', src: I.brq8(opt.pose || 'wave') });
+    const bq = h('div.bq8-bariq.i8-brq', { 'aria-hidden': 'true' }, img, h('span.i8-talk', null, h('i'), h('i'), h('i')));
+    st.append(hud, panel, starsEl, bq);
+    wrap.append(st);
+    ctx.stage.replaceChildren(wrap);
+    ctx.stage.classList.add('i8-host');
+    // the platform instruction row → HUD (speaker = big listen sticker · function chip = icons8 · caption bubble)
+    const instr = ctx.frame && ctx.frame.querySelector('.elp-instr');
+    if (instr) {
+      const home = instr.parentNode, nextSib = instr.nextSibling;
+      const say = instr.querySelector('.elp-say'), bub = instr.querySelector('.elp-bubble');
+      let ic = null;
+      if (say) { ic = I.i8('listen', 'i8-say8'); say.append(ic); }
+      if (bub) bub.classList.add('i8-bub8');
+      hud.prepend(instr);
+      ctx.onCleanup(() => { if (ic) ic.remove(); if (bub) bub.classList.remove('i8-bub8'); if (home && home.isConnected) home.insertBefore(instr, nextSib && nextSib.parentNode === home ? nextSib : home.firstChild); ctx.stage.classList.remove('i8-host'); });
+      const orig = ctx.instruction;
+      ctx.instruction = function (text, lineId, o) { hud.dataset.fn = FN8[(o && o.icon) || ''] || 'ear'; return orig.call(ctx, text, lineId, o); };
+      ctx.onCleanup(() => { ctx.instruction = orig; });
+    } else ctx.onCleanup(() => ctx.stage.classList.remove('i8-host'));
+    // fit: 1180×820 as large as the play area allows; a tall (portrait) area makes the stage taller (--u stays width-based)
+    const fit = () => {
+      const W = wrap.clientWidth, H = wrap.clientHeight; if (!W || !H) return;
+      let w = W, hh = W * 820 / 1180;
+      if (hh > H) { hh = H; w = H * 1180 / 820; } else if (opt.tall !== false) hh = Math.min(H, W * 1.42);
+      st.style.width = Math.floor(w) + 'px'; st.style.height = Math.floor(hh) + 'px';
+      st.classList.toggle('is-tall', hh / w > 0.86);
+    };
+    fit();
+    if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(wrap); ctx.onCleanup(() => ro.disconnect()); }
+    let starN = 0;
+    const api = {
+      wrap, stage: st, hud, panel, bariq: bq, img, starsEl, fit,
+      /** n star slots (the basket replacement) — n=0 hides them */
+      stars(n) { starN = 0; starsEl.className = 'bq8-stars i8-stars' + (n > 3 ? ' bq8-stars--' + n : ''); starsEl.replaceChildren(...Array.from({ length: n || 0 }, () => h('i.bq8-star'))); starsEl.hidden = !n; },
+      /** light the next star (RTL: the first is the right-most) → the star element */
+      star() { const s = starsEl.children[starN]; if (s) { s.classList.add('is-on'); starN++; I.sfx('sparkle'); } return s || null; },
+      starAt(k) { return starsEl.children[k == null ? starN : k] || null; },
+      get starN() { return starN; },
+    };
+    F8 = api;
+    ctx.onCleanup(() => { if (F8 === api) F8 = null; });
+    return api;
+  };
+
+  /** Bariq in the v8 slot: set(pose) swaps the squircle pose · talk = speech bubble (no mouth flaps) · hop · listen badge */
+  function buddy8(S, f) {
+    const el = f.bariq, img = f.img;
+    let t = 0, pose = 'wave';
+    const apply = (s) => {
+      if (s === 'talk') { el.classList.add('is-talk'); return; }
+      el.classList.remove('is-talk');
+      if (s && s !== pose) { pose = s; img.src = I.brq8(s); }
+    };
+    const api = {
+      el,
+      set(s, ms) { clearTimeout(t); apply(s); if (ms) t = setTimeout(() => apply('idle'), ms); },
+      hop() { if (reduced()) return; el.classList.remove('is-hop'); void el.offsetWidth; el.classList.add('is-hop'); setTimeout(() => el.classList.remove('is-hop'), 520); },
+      cheer() { api.set('cheer', 2200); api.hop(); },
+      think() { api.set('think', 1800); },
+      point() { api.set('point', 1800); },
+    };
+    S.buddy = api;
+    S.ctx.onCleanup(() => clearTimeout(t));
+    return api;
+  }
+  const buddy7 = I.buddy;
+  I.buddy = function (S, parent, state) { if (F8 && F8.panel === parent) { const b = buddy8(S, F8); b.set(state || 'wave'); return b; } return buddy7(S, parent, state); };
+
+  /** HUD progress dots (no numbers) — same API as the v7 I.stars */
+  const stars7 = I.stars;
+  I.stars = function (parent, n) {
+    if (!F8) return stars7(parent, n);
+    const el = h('div.bq8-progress.i8-prog', { 'aria-hidden': 'true' });
+    const ds = Array.from({ length: n }, () => h('i'));
+    el.append(...ds);
+    F8.hud.append(el);
+    const help = new Set();
+    const set = (i) => ds.forEach((d, j) => { d.className = j < i ? (help.has(j) ? 'is-done i8-help' : 'is-done') : j === i ? 'is-now' : ''; });
+    set(0);
+    return { el, on(i) { if (I.helped) help.add(i); else I.sfx('sparkle'); I.helped = false; set(i + 1); }, cur(i) { set(i); }, all() { set(n); } };
+  };
+
+  /** v8 next / start: a round sticker button (next arrow points left in RTL) */
+  const goBtn7 = I.goBtn;
+  I.goBtn = (parent, kind, aria) => {
+    if (!F8) return goBtn7(parent, kind, aria);
+    return new Promise((res) => {
+      const b = h('button.bq8-btn.bq8-btn--lg.i8-go.bq8-btn--' + (kind === 'next' ? 'next' : 'listen') + '.is-pulse', { type: 'button', 'aria-label': aria || (kind === 'next' ? 'التّالي' : 'ابْدَأْ') }, I.i8(kind === 'next' ? 'next' : 'play'));
+      b.onclick = () => { try { BQ.audio.unlock && BQ.audio.unlock(); } catch (e) { /* */ } I.sfx('pop'); b.remove(); res(); };
+      parent.append(b);
+      requestAnimationFrame(() => { try { b.focus({ preventScroll: true }); } catch (e) { /* */ } });
+    });
+  };
+
+  /* ---- v8 mouth sequence (E05 · E06): expressive still pictures shown big, one step at a time, synced to the audio.
+     closed lips → open (مَ) · spread (مِ) · rounded (مُ). No overlay, no flapping: the big picture changes once per sound step and a
+     two-frame strip under it shows the step («lips together» → «this shape»). ART m8_mouth_* when present, else the approved img7 mouth_*. */
+  const M8 = { closed: 'm8_mouth_closed', a: 'm8_mouth_a', i: 'm8_mouth_i', u: 'm8_mouth_u' };
+  I.mouth8 = function (S, cls) {
+    const art = Object.values(M8).every((k) => I.has8(k));
+    const portrait = I.has8('e05_majed_portrait');
+    const src = (v) => { if (v === 'rest') return portrait ? I.src8('e05_majed_portrait') : art ? I.src8(M8.closed) : I.imgSrc('mouth_closed'); return art ? I.src8(M8[v]) : I.imgSrc('mouth_' + v); };
+    const el = h('div.i8-mouth' + (cls ? '.' + cls : '') + (art ? '.is-m8' : '.is-m7'), { role: 'img', 'aria-label': 'فَمُ ماجِدٍ' });
+    const face = h('div.i8-face');
+    const imgs = {};
+    ['rest', 'closed', 'a', 'i', 'u'].forEach((v) => { const im = h('img', { alt: '', src: src(v), decoding: 'async', draggable: 'false' }); if (v === 'rest' && portrait) im.classList.add('is-portrait'); imgs[v] = im; face.append(im); });
+    const th = (v) => { const t = h('span.i8-th', { 'aria-hidden': 'true' }); t.style.backgroundImage = 'url("' + src(v) + '")'; return t; };
+    const s0 = th('closed'), s1 = th('a');
+    const seq = h('div.i8-seq' + (art ? '.is-m8' : '.is-m7'), { 'aria-hidden': 'true' }, s0, I.i8('next', 'i8-arr'), s1);
+    el.append(face, seq);
+    let cur = 'rest'; imgs.rest.classList.add('on');
+    const api = {
+      el,
+      set(v) {
+        if (!imgs[v]) return;
+        if (v !== cur) { imgs[v].classList.add('on'); imgs[cur].classList.remove('on'); cur = v; }
+        s0.classList.toggle('on', v === 'closed'); s1.classList.toggle('on', /^[aiu]$/.test(v));
+      },
+      /** which vowel shape the strip shows next to «lips together» */
+      shape(v) { if (/^[aiu]$/.test(v)) { s1.style.backgroundImage = 'url("' + src(v) + '")'; el.dataset.v = v; } },
+      lips(on) { el.classList.toggle('is-demo', on !== false); seq.classList.toggle('is-demo', on !== false); },
+      async sayLine(id, v, tail) {
+        api.shape(v || 'a');
+        tail = tail || 0.62;
+        let fired = 0; const t0 = performance.now();
+        const est = Math.max(900, I.text(id).length * 80) / 1000;
+        const iv = setInterval(() => {
+          const au = BQ.audio && BQ.audio.cur;
+          const d = au && isFinite(au.duration) && au.duration > 0 ? au.duration : est;
+          const t = au && !au.paused ? au.currentTime : (performance.now() - t0) / 1000;
+          if (!fired && t >= d - tail) { fired = 1; api.set('closed'); setTimeout(() => api.set(v || 'a'), 160); }
+        }, 40);
+        try { await S.say(id); } finally { clearInterval(iv); }
+        await S.wait(450); api.set('rest');
+      },
+      async say(id, v, o) {
+        o = o || {};
+        api.shape(v || 'a');
+        el.classList.toggle('is-mute', !I.hasAudio(id));
+        api.set('closed');
+        if (o.onStart) o.onStart();
+        const p = o.line ? S.say(id) : S.stim(id);
+        await S.wait(o.lead || 150);
+        api.set(v || 'a');
+        await p;
+        await S.wait(420); // the shape stays readable a moment after the sound (still picture, not a flap)
+        api.set('rest');
+      },
+    };
+    return api;
+  };
+
+  /* v8 overrides of the shared components (only inside a v8 stage) */
+  const card7 = I.card;
+  I.card = function (slug, opt) { const b = card7(slug, opt); if (F8) b.classList.add('i8-card'); return b; };
+  const ear7 = I.ear;
+  I.ear = function (id, onTap) { const e = ear7(id, onTap); if (F8) { e.classList.add('i8-ear'); e.replaceChildren(I.i8('ear')); if (id && !I.hasAudio(id)) e.classList.add('is-mute'); } return e; };
+  const snd7 = I.sndBtn;
+  I.sndBtn = function (opt) { const b = snd7(opt); if (F8) { b.classList.add('i8-snd'); b.replaceChildren(I.i8('listen')); } return b; };
+
+  const CSS8 = `
+/* ===== v8 host + HUD (same treatment as IX2: one look for every activity) ===== */
+.i8-host.elp-stage { overflow: hidden !important; padding: 6px 0 10px !important; }
+.i8v8 { position: absolute; inset: 6px 0 10px; display: grid; place-items: center; }
+.i8v8 > .bq8-stage { aspect-ratio: auto; flex: none; width: 100%; }
+.bq8-stage.i8-scene { background: url(media/img8/d8_island_scene.webp) center / cover no-repeat, radial-gradient(120% 90% at 50% 45%, #8EE0F7 0, #3BBDEB 52%, #1890D0 100%); }
+.bq8-stage.is-tall > .bq8-panel { bottom: calc(var(--u)*150); }
+.bq8-stage.is-tall > .bq8-bariq { width: calc(var(--u)*220); }
+.bq8-hud > .elp-instr { flex: 1 1 auto; min-width: 0; min-height: 0; gap: calc(var(--u)*18); }
+.bq8-hud .elp-say { flex: none; position: relative; width: var(--bq8-btn-lg); height: var(--bq8-btn-lg); border-radius: 50%; padding: 0; display: grid; place-items: center;
+  border: var(--bq8-line) solid var(--bq8-navy); color: var(--bq8-navy); font-size: calc(var(--bq8-btn-lg) * .66); background: radial-gradient(circle at 38% 30%, #fff 0, #FFE38A 58%);
+  box-shadow: inset 0 calc(var(--u)*-6) 0 color-mix(in srgb, var(--bq8-star-d) 45%, transparent), 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*8) calc(var(--u)*12) rgba(11,45,79,.28); }
+.bq8-hud .elp-say > svg, .bq8-hud .elp-say > .bq-ic { display: none; }
+.bq8-hud .elp-say:active { transform: translateY(calc(var(--u)*3)) scale(.97); }
+.bq8-hud .elp-fn { flex: none; width: max(56px, calc(var(--u)*78)); height: max(56px, calc(var(--u)*78)); border-radius: 50%; background: #fff center / 76% no-repeat url(assets/icons8/ear.svg);
+  box-shadow: 0 0 0 var(--bq8-line) rgba(11,45,79,.9), 0 0 0 calc(var(--u)*8.5) rgba(255,255,255,.85), var(--bq8-sh-1); }
+.bq8-hud .elp-fn > * { display: none !important; }
+.bq8-hud .elp-fn[hidden] { display: none; }
+.bq8-hud[data-fn="touch"] .elp-fn { background-image: url(assets/icons8/touch.svg); }
+.bq8-hud[data-fn="hand_drag"] .elp-fn { background-image: url(assets/icons8/hand_drag.svg); }
+.bq8-hud[data-fn="mouth"] .elp-fn { background-image: url(assets/icons8/mouth.svg); }
+.bq8-hud[data-fn="eye"] .elp-fn { background-image: url(assets/icons8/eye.svg); }
+.bq8-hud[data-fn="pencil"] .elp-fn { background-image: url(assets/icons8/pencil.svg); }
+.bq8-hud[data-fn="family"] .elp-fn { background-image: url(assets/icons8/family.svg); }
+.bq8-hud .elp-bubble.i8-bub8 { flex: 0 1 auto; min-width: 0; }
+.bq8-hud .i8-bub8:not(:has(> :not([hidden]))) { display: none; }
+.bq8-hud .i8-bub8 > .elp-instr-t, .bq8-hud .i8-bub8 > .elp-cap { background: #fff; border: 0; border-radius: calc(var(--u)*30); padding: calc(var(--u)*8) calc(var(--u)*26) calc(var(--u)*10);
+  font: 700 max(17px, calc(var(--u)*30))/1.9 var(--font-bubble); color: var(--bq8-navy);
+  box-shadow: 0 0 0 var(--bq8-line) rgba(11,45,79,.9), 0 0 0 calc(var(--u)*8.5) rgba(255,255,255,.85), var(--bq8-sh-2); }
+.bq8-hud .i8-bub8 > .elp-cap b { color: var(--bq8-eye-d); }
+.bq8-hud > .bq8-progress { flex: none; }
+.bq8-progress > i { transition: width .3s, background .3s; }
+/* panel = element root */
+.bq8-stage > .bq8-panel.i8p { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u)*22); padding: calc(var(--u)*28); }
+.i8p, .i8p * { -webkit-tap-highlight-color: transparent; }
+.i8p :is(button, [role="button"]) { touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; font-family: inherit; }
+.i8p img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
+.i8p button:focus-visible, .i8p [role="button"]:focus-visible { outline: 4px solid var(--bq8-navy); outline-offset: 4px; }
+.i8-row { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*30); }
+/* Bariq slot: the approved squircle; «talking» = a little speech bubble with dots (never mouth flaps) */
+.i8-brq img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
+.i8-brq.is-hop img { animation: i8Hop .5s cubic-bezier(.3,.7,.4,1); }
+@keyframes i8Hop { 40% { translate: 0 -16%; } }
+.i8-brq .i8-talk { position: absolute; top: 2%; inset-inline-start: 62%; display: flex; gap: 10%; align-items: center; justify-content: center; width: 46%; aspect-ratio: 1.5; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 calc(var(--u)*3) var(--bq8-navy), 0 calc(var(--u)*4) calc(var(--u)*8) rgba(11,45,79,.25); opacity: 0; transform: scale(.4); transition: opacity .2s, transform .25s cubic-bezier(.3,1.6,.5,1); }
+.i8-brq .i8-talk i { width: 14%; aspect-ratio: 1; border-radius: 50%; background: var(--bq8-navy); animation: i8Dot 1s ease-in-out infinite; }
+.i8-brq .i8-talk i:nth-child(2) { animation-delay: .15s; } .i8-brq .i8-talk i:nth-child(3) { animation-delay: .3s; }
+.i8-brq.is-talk .i8-talk { opacity: 1; transform: none; }
+@keyframes i8Dot { 50% { translate: 0 -40%; opacity: .5; } }
+.i8-brq.is-listen::before { content: ''; position: absolute; z-index: 2; top: -4%; inset-inline-start: 64%; width: 40%; aspect-ratio: 1; background: url(assets/icons8/ear.svg) center / contain no-repeat; animation: i7Pulse 1s ease-in-out infinite; }
+/* picture card (unified sticker card) */
+.bq8-stage .i7-card.i8-card { --s: calc(var(--u)*196); min-width: 0; padding: calc(var(--u)*9); border: var(--bq8-line) solid var(--bq8-navy); border-radius: calc(var(--u)*28); background: #fff;
+  box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); }
+.bq8-stage .i7-card.i8-card > .i7-pic { border-radius: calc(var(--u)*18); }
+.bq8-stage .i7-card.i8-card .i7-tick { display: none !important; }
+.bq8-stage .i7-card.i8-card.is-play { transform: translateY(calc(var(--u)*-6)); box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-listen), var(--bq8-sh-2); }
+.bq8-stage .i7-card.i8-card.is-glow, .bq8-stage .i7-card.i8-card.is-soft { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-yellow), 0 0 calc(var(--u)*30) var(--bq8-yellow); }
+.bq8-stage .i7-card.i8-card.is-gold { border-color: var(--bq8-navy); }
+.bq8-stage .i7-card.i8-card.is-ok { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-ok), var(--bq8-sh-2); }
+.bq8-stage .i7-card.i8-card.is-ok::after { content: ''; position: absolute; z-index: 5; top: calc(var(--u)*-24); inset-inline-start: calc(var(--u)*-24); width: max(40px, calc(var(--u)*62)); aspect-ratio: 1;
+  background: url(assets/icons8/check.svg) center / contain no-repeat; animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
+.bq8-stage .i7-card.i8-card.is-dim { opacity: .42; filter: grayscale(.6); }
+/* ear chip on a card: bottom-centre sticker (= «listen again», never answers) */
+.bq8-stage .i7-ear.i8-ear { inset: auto auto calc(var(--u)*-36) 50%; translate: -50% 0; width: max(64px, calc(var(--u)*76)); height: max(64px, calc(var(--u)*76)); padding: 0;
+  border: var(--bq8-line) solid var(--bq8-navy); border-radius: 50%; background: radial-gradient(circle at 38% 30%, #fff 0, var(--bq8-ear-l) 62%);
+  box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*6) calc(var(--u)*10) rgba(11,45,79,.28); display: grid; place-items: center; font-size: max(46px, calc(var(--u)*56)); }
+.bq8-stage .i7-ear.i8-ear:active { transform: scale(.94); }
+.bq8-stage .i7-ear.i8-ear.is-play { animation: bq8-wiggle .6s ease infinite; }
+.bq8-stage .i7-card:has(.i8-ear) { margin-bottom: calc(var(--u)*30); }
+/* sound sticker buttons (no letters) */
+.bq8-stage .i7-snd.i8-snd { --sz: max(72px, calc(var(--u)*124)); border: var(--bq8-line) solid var(--bq8-navy); color: var(--bq8-navy); font-size: calc(var(--sz) * .66);
+  background: radial-gradient(circle at 38% 30%, #fff 0, var(--hl) 60%); box-shadow: inset 0 calc(var(--u)*-7) 0 color-mix(in srgb, var(--hd) 40%, transparent), 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*10) calc(var(--u)*14) rgba(11,45,79,.28); }
+.bq8-stage .i7-snd.i8-snd::before, .bq8-stage .i7-snd.i8-snd::after { border-color: var(--hd); }
+.bq8-stage .i8-snd.i7-c1 { --hl: var(--bq8-touch-l); --hd: var(--bq8-touch); } .bq8-stage .i8-snd.i7-c2 { --hl: var(--bq8-eye-l); --hd: var(--bq8-eye); }
+.bq8-stage .i8-snd.i7-c3 { --hl: #FFE38A; --hd: var(--bq8-star-d); } .bq8-stage .i8-snd.i7-c4 { --hl: var(--bq8-ear-l); --hd: var(--bq8-ear); }
+.bq8-stage .i8-snd.i7-c5 { --hl: var(--bq8-replay-l); --hd: var(--bq8-replay); } .bq8-stage .i8-snd.i7-c6 { --hl: var(--bq8-listen-l); --hd: var(--bq8-listen); }
+.bq8-stage .i7-snd.i8-snd.is-ok { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*12) var(--bq8-ok), var(--bq8-sh-2); }
+.bq8-stage .i7-snd.i8-snd.is-glow, .bq8-stage .i7-snd.i8-snd.is-soft { box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*12) var(--bq8-yellow), 0 0 calc(var(--u)*30) var(--bq8-yellow); }
+.bq8-stage .i7-snd.i8-snd .bq8-ic { position: relative; z-index: 1; }
+.i8-go { animation: bq8-pop .35s cubic-bezier(.3,1.6,.5,1) both; }
+/* the burst + fly layer stay inside the stage */
+.bq8-stage .i7-burst { z-index: 40; }
+/* ===== v8 mouth sequence (E05 · E06) ===== */
+.i8-mouth { position: relative; display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*14); }
+.i8-mouth .i8-face { position: relative; width: 100%; aspect-ratio: 1; border-radius: calc(var(--u)*32); overflow: hidden; background: #C98E6A;
+  border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); }
+.i8-mouth .i8-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .12s linear; }
+.i8-mouth.is-m7 .i8-face img:not(.is-portrait) { inset: auto; left: -113%; top: -32%; width: 320%; height: 180%; object-fit: fill; max-width: none; }
+.i8-mouth .i8-face img.on { opacity: 1; }
+.i8-seq { display: flex; align-items: center; gap: calc(var(--u)*10); padding: calc(var(--u)*8) calc(var(--u)*14); border-radius: 999px; background: rgba(255,255,255,.85); box-shadow: 0 0 0 calc(var(--u)*3) rgba(11,45,79,.12); }
+.i8-seq .i8-th { width: calc(var(--u)*118); aspect-ratio: 1; border-radius: calc(var(--u)*20); background: #C98E6A center / cover no-repeat; border: calc(var(--u)*3) solid var(--bq8-navy);
+  box-shadow: 0 0 0 calc(var(--u)*4) #fff; opacity: .55; transition: opacity .15s, transform .2s, box-shadow .2s; }
+.i8-seq.is-m7 .i8-th { background-size: 889% auto; background-position: 50.7% 59.7%; }
+.i8-seq .i8-th.on { opacity: 1; transform: scale(1.12); box-shadow: 0 0 0 calc(var(--u)*4) #fff, 0 0 0 calc(var(--u)*10) var(--bq8-mouth); }
+.i8-seq .i8-arr { font-size: calc(var(--u)*44); opacity: .7; }
+.i8-seq.is-demo { box-shadow: 0 0 0 calc(var(--u)*5) var(--bq8-yellow); }
+.i8-mouth.is-mute::after { content: ''; position: absolute; top: calc(var(--u)*10); inset-inline-end: calc(var(--u)*10); width: calc(var(--u)*48); aspect-ratio: 1; background: url(assets/icons8/sound_off.svg) center / contain no-repeat; }
+@media (prefers-reduced-motion: reduce) { .i8-brq .i8-talk i, .i8-brq.is-hop img, .i8-brq.is-listen::before { animation: none !important; } }`;
+  if (!document.getElementById('st-ix1-8')) document.head.append(h('style', { id: 'st-ix1-8' }, CSS8));
 
   BQ.ix1 = I;
 })();
