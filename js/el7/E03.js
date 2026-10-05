@@ -72,10 +72,20 @@
      (the right card flies into its star) · unified sticker cards with an ear chip (= hear it again, never answers) · level 2 = sound stickers. */
   const CSS8 = `
 .e03-8 .e03-field { position: relative; width: 100%; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
-.e03-8 .e03-four { display: flex; gap: calc(var(--u)*34); justify-content: center; align-items: center; }
-.e03-8 .e03-four .i7-card.i8-card { --s: calc(var(--u)*196); }
-.e03-8 .e03-sky { display: flex; gap: calc(var(--u)*64); justify-content: center; align-items: center; }
-.e03-8 .e03-sky .i7-snd.i8-snd { --sz: max(96px, calc(var(--u)*164)); }
+/* word rounds: the wide board, 4 big picture cards centred (owner R3 «layout too plain») */
+.e03-8 .e03-four { display: flex; gap: calc(var(--u)*22); justify-content: center; align-items: center; margin-bottom: calc(var(--u)*24); }
+.e03-8 .e03-four .i7-card.i8-card { --s: calc(var(--u)*218); }
+/* sound rounds: Bariq comes INTO the board and listens (right side), the 3 sound stickers sit on a listening tray with an ear chip (= hear all again) */
+.bq8-stage.e03-l2 > .bq8-bariq { inset-inline-end: auto; inset-inline-start: calc(var(--u)*92); bottom: calc(var(--u)*196); width: calc(var(--u)*270);
+  transition: inset-inline-start .5s cubic-bezier(.3,1.2,.4,1), bottom .5s cubic-bezier(.3,1.2,.4,1), width .5s; }
+.bq8-stage.e03-l2 .e03-8 .e03-field { padding-inline-start: calc(var(--u)*290); padding-inline-end: calc(var(--u)*20); }
+.e03-8 .e03-tray8 { display: flex; align-items: center; gap: calc(var(--u)*28); padding: calc(var(--u)*28) calc(var(--u)*36); border-radius: calc(var(--u)*70);
+  background: linear-gradient(#FFF6DC, #F6E2B0); box-shadow: inset 0 calc(var(--u)*-8) 0 rgba(176,122,62,.25), 0 0 0 calc(var(--u)*4) rgba(176,122,62,.35), 0 calc(var(--u)*14) calc(var(--u)*26) calc(var(--u)*-10) rgba(11,45,79,.35); }
+.e03-8 .e03-tray8 .e03-ear8 { width: max(var(--i8-t), calc(var(--u)*96)); height: max(var(--i8-t), calc(var(--u)*96)); min-width: 0; min-height: 0; font-size: calc(var(--i8-t) * .66); }
+.e03-8 .e03-tray8 .e03-ear8.is-play { animation: bq8-wiggle .6s ease infinite; }
+.e03-8 .e03-tray8 .e03-sep { width: calc(var(--u)*4); align-self: stretch; margin-block: calc(var(--u)*10); border-radius: 2px; background: rgba(176,122,62,.35); }
+.e03-8 .e03-sky { display: flex; gap: calc(var(--u)*34); justify-content: center; align-items: center; }
+.e03-8 .e03-sky .i7-snd.i8-snd { --sz: max(var(--i8-t), calc(var(--u)*140)); }
 .e03-8 .e03-sky .i7-snd.is-fly { opacity: 0; pointer-events: none; }
 .e03-8 .i7-in { animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
 .bq8-stage.is-tall .e03-8 .e03-four { display: grid; grid-template-columns: repeat(2, auto); gap: calc(var(--u)*60) calc(var(--u)*70); }
@@ -115,7 +125,7 @@
     // سطر تعليمة المستوى ١: الجديد إن سُجِّل، وإلا «اِسْمَعْ، ثُمَّ اخْتَرْ.» + «مَ… مِ… مُ» (لا سطر يقول «كلمتين»)
     const l1Intro = async () => { if (I.hasAudio('bq7_E03_l1_all')) await S.say('bq7_E03_l1_all'); else { await S.say('bq7_G_listen_choose'); await S.stim('bq7_S_chain_short'); } };
 
-    const f8 = V8 ? I.frame8(S, 'e03-8', { pose: 'wave' }) : null;
+    const f8 = V8 ? I.frame8(S, 'e03-8', { pose: 'wave', panel: ['wide'] }) : null;
     const root = V8 ? f8.panel : I.root(stage, 'e03');
     const top = h('div.i7-row');
     const steps = I.stars(top, nRounds);
@@ -212,9 +222,14 @@
         return b;
       });
       bubs.forEach((b) => I.hoverReplay(b, async () => { busy = true; await I.playOn(S, b, sid(b.s)); busy = false; }, () => !busy));
-      field.replaceChildren(sky);
       const right = () => bubs.find((b) => b.s === yes);
       const playAll = async () => { for (const b of bubs) { if (I.isNo(b)) continue; await I.playOn(S, b, sid(b.s)); await S.sleep(420); } };
+      if (V8) {
+        const ear = h('button.bq8-btn.bq8-btn--ear.e03-ear8', { type: 'button', 'aria-label': 'اِسْمَعِ الأَصْواتَ مَرَّةً أُخْرى' }, I.i8('ear'));
+        ear.addEventListener('click', async () => { if (busy) return; busy = true; ear.classList.add('is-play'); await playAll(); ear.classList.remove('is-play'); busy = false; });
+        field.replaceChildren(h('div.e03-tray8.i7-in', null, ear, h('span.e03-sep', { 'aria-hidden': 'true' }), sky));
+        f8.stage.classList.add('e03-l2'); f8.bariq.classList.add('is-listen'); buddy.set('listen');
+      } else field.replaceChildren(sky);
       // R1-6: سطر «الآنَ أَصْواتٌ قَصيرَةٌ» المسجَّل لا يصدق على جولة ما/با — في الجولة الطويلة تُعاد «اِسْمَعْ، ثُمَّ اخْتَرْ.»
       const longR = yes.length > 2;
       const introId = longR ? 'bq7_G_listen_choose' : 'bq7_E03_l2_intro';
@@ -282,6 +297,7 @@
         '<p>إن تكرّر لمس «بابْ» أو «بَ»: قولا «مَ… بَ» متتاليتين، والمسا الأنف معاً — في /م/ يهتزّ الأنف، وفي /ب/ لا يهتزّ.</p>' +
         (longSet.length < 3 ? '<p>الجولة «ما / با» بخيارين مؤقّتاً حتى يُسجَّل «فا» أو «نا».</p>' : ''));
       field.replaceChildren();
+      if (V8) { f8.stage.classList.remove('e03-l2'); f8.bariq.classList.remove('is-listen'); }
       buddy.set('cheer');
       await S.say('bq7_E03_end', { talk: true });
       I.finish(S, { pose: 'cheer' });

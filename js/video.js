@@ -827,7 +827,8 @@
     if (!document.getElementById('st-video-mp4')) document.head.append(h('style', { id: 'st-video-mp4' },
       '.vp-mp4 video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:var(--c-video-bg);display:block;z-index:0;opacity:.999}' +
       '.vp-mp4 .vp-dim{z-index:4;transform:translateZ(0)}.vp-mp4 .vp-ui{z-index:6;transform:translateZ(0)}.vp-mp4 .vp-big{z-index:7}' +
-      '.vp-mp4 .vp-seg i b{transition:none}' +
+      '.vp-mp4 .vp-seg i b{transition:none;width:100%;transform:scaleX(0);transform-origin:100% 50%}' + /* progress = transform only (no relayout per frame) */
+      '.vp.is-hold .vp-ctl{visibility:hidden}.vp.is-hold .vp-big{display:none!important}' + /* checkpoint question: controls hidden, frame keeps its size */
       '.vp.vp-page{height:auto;flex:none;width:100%;display:block}' +
       '.vp.vp-page .vp-frame{margin-inline:auto;border-radius:var(--r-lg,22px);box-shadow:0 14px 34px var(--shade,rgba(0,52,91,.12))}' +
       '.vp.vp-page .vp-ctl{background:var(--c-video-bg)}' +
@@ -854,6 +855,7 @@
     const base = o.base || ('media/video/' + o.id);
     let alive = true, fell = false, impl = null, cues = null, ended = false, started = false;
     let userPaused = false, inCue = null, lastT = 0, raf = 0, capId = null, capTop = false, idleT = 0, loadT = 0;
+    let hold = false; // checkpoint question open (video7): video paused at that frame, controls + captions hidden, play blocked
     const seen = new Set();   // ثوانٍ شوهدت فعلاً بتشغيل عاديّ (لا بالقفز) — «انتهى المقطع حقّاً» (EL02)
     const handled = new Set();
     let resolveDone; const done = new Promise((r) => { resolveDone = r; });
@@ -885,23 +887,42 @@
     const cap = ctx.frame && ctx.frame.querySelector('.bq-cap');
     const page = !!(ctx.frame && ctx.frame.classList.contains('elp')); // تصميم v2: المشغّل بعرض المسرح والأزرار تحته
     if (page) root.classList.add('vp-page');
+    /* write a style only when it changes (no style churn → no needless relayout of the stage) */
+    function setSt(el, k, v) { if (k[0] === '-') { if (el.style.getPropertyValue(k) !== v) el.style.setProperty(k, v); } else if (el.style[k] !== v) el.style[k] = v; }
+    /* v8 fixed stage: put the frame's top-left corner on the device-pixel grid (the stage itself is snapped by core.js stageFit) — a composited
+       <video> layer at a sub-pixel offset is re-snapped against its rounded clip on repaints and shimmers. translate = sub-layout-px correction. */
+    let snapX = 0, snapY = 0;
+    function snapPos(s) {
+      const dpr = window.devicePixelRatio || 1, r = frameEl.getBoundingClientRect(); if (!r.width) return;
+      const nx = snapX + (Math.round(r.left * dpr) / dpr - r.left) / s, ny = snapY + (Math.round(r.top * dpr) / dpr - r.top) / s;
+      if (Math.abs(nx - snapX) < 1e-3 && Math.abs(ny - snapY) < 1e-3) return;
+      snapX = nx; snapY = ny; frameEl.style.translate = nx.toFixed(3) + 'px ' + ny.toFixed(3) + 'px';
+    }
     function layout() {
       if (!alive) return;
       if (page) {
         let W = root.clientWidth; if (!W) return;
+        /* OWNER R3 «رعشة»: (1) the control-bar height comes from the AVAILABLE width, not from the result W (old: W → ch → avail → W, a 1-px
+           rounding flip of ch could re-layout on every ResizeObserver tick); (2) v8 fixed stage: bar 84 layout px so the 76-px buttons/segments sit
+           INSIDE it (they overflowed a 63–66 bar onto the picture); box/bar sizes and the frame's top-left are snapped to whole device px. */
+        const s8 = BQ.fixedStage && BQ.fixedStage() ? BQ.stageScale() : 0;
+        const ch = s8 ? Math.max(84, Math.ceil(Math.max(76, 64 / s8)) + 8) : Math.round(Math.max(62, Math.min(66, W * 0.065))); // v8: ≥ the in-stage touch size (--bq8-glass64) + 8
         // v0-10: الإطار ثابت الارتفاع ⇒ يُحدّ عرض المشغّل بما يتّسع له ارتفاع المسرح (مع النقاط والزرّ تحته) فلا تمرير ولا قصّ
         const stg = root.closest('.elp-stage');
         if (stg && stg.clientHeight) {
           const cs = getComputedStyle(stg), padV = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
           let other = 0; for (const k of stg.children) { if (!k.contains(root) && k.offsetParent !== null && getComputedStyle(k).position !== 'absolute') other += k.offsetHeight + 20; }
-          const avail = stg.clientHeight - padV - other - (root.style.getPropertyValue('--ctlh') ? parseFloat(root.style.getPropertyValue('--ctlh')) : 56) - 4; // شريط التحكّم وحده: «أَكْمِلْ» فوق الصورة (v0-12)
+          const avail = stg.clientHeight - padV - other - ch - 4; // شريط التحكّم وحده: «أَكْمِلْ» فوق الصورة (v0-12)
           if (avail > 160) W = Math.min(W, Math.floor(avail * 16 / 9));
         }
-        const ch = Math.round(Math.max(62, Math.min(66, W * 0.065))), bh = Math.round(W * 9 / 16);
-        root.classList.remove('overlay'); root.style.setProperty('--ctlh', ch + 'px');
-        box.style.width = W + 'px'; box.style.height = bh + 'px';
-        frameEl.style.width = W + 'px'; frameEl.style.height = (bh + ch) + 'px';
-        box.style.setProperty('--vh', (bh / 100) + 'px'); frameEl.style.setProperty('--vh', (bh / 100) + 'px');
+        let bw = W, bh = Math.round(W * 9 / 16), cb = ch;
+        if (s8) { const dpr = window.devicePixelRatio || 1, px = (v) => Math.round(v * s8 * dpr) / (s8 * dpr); bw = px(W); bh = px(W * 9 / 16); cb = px(ch); }
+        root.classList.remove('overlay');
+        setSt(root, '--ctlh', cb + 'px');
+        setSt(box, 'width', bw + 'px'); setSt(box, 'height', bh + 'px');
+        setSt(frameEl, 'width', bw + 'px'); setSt(frameEl, 'height', (bh + cb) + 'px');
+        setSt(box, '--vh', (bh / 100) + 'px'); setSt(frameEl, '--vh', (bh / 100) + 'px');
+        if (s8) snapPos(s8);
         return;
       }
       const W = root.clientWidth, H = root.clientHeight; if (!W || !H) return;
@@ -928,8 +949,10 @@
       cap.style.fontSize = Math.round(Math.max(14, Math.min(24, br.height * 0.055))) + 'px';
     }
     const ro = window.ResizeObserver ? new ResizeObserver(layout) : null;
-    if (ro) ro.observe(root); else window.addEventListener('resize', layout);
+    if (ro) { ro.observe(root); const stg0 = root.closest('.elp-stage'); if (stg0) ro.observe(stg0); } else window.addEventListener('resize', layout); // the stage too: its height (instruction row) moves the frame
     requestAnimationFrame(layout);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (alive) layout(); });
+    document.addEventListener('bq-stagefit', layout); // v8: the stage scale/position changed without a layout-size change → re-snap
     const wake = () => { root.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => root.classList.add('idle'), 2800); };
     box.addEventListener('pointermove', wake); box.addEventListener('pointerdown', wake); ctl.addEventListener('focusin', wake); wake();
     root.addEventListener('keydown', (e) => { if (e.key === ' ' && e.target === root) { e.preventDefault(); toggle(); } });
@@ -938,8 +961,8 @@
     let idleAtDown = false;
     box.addEventListener('pointerdown', () => { idleAtDown = root.classList.contains('overlay') && root.classList.contains('idle'); }, true);
     box.addEventListener('click', (e) => {
-      if (!alive || fell || inCue || !cues) return;
-      if (e.target.closest('button, .vp-inv, .vp-pick')) return;
+      if (!alive || fell || inCue || hold || !cues) return;
+      if (e.target.closest('button, .vp-inv, .vp-pick, .v7-eq-layer, .v5-end')) return;
       if (idleAtDown) { wake(); return; } // الطبقة كانت مخفيّة: النقرة الأولى تُظهر الأزرار فقط
       toggle();
     });
@@ -960,7 +983,7 @@
       const at = (x) => frac(x) * (video.duration || (cues && cues.duration) || 0);
       segWrap.style.touchAction = 'none';
       segWrap.addEventListener('pointerdown', (e) => {
-        if (!cues || fell || e.button > 0) return;
+        if (!cues || fell || hold || e.button > 0) return;
         drag = { id: e.pointerId, x: e.clientX, moved: false, wasPlaying: !video.paused || !!inCue };
         try { segWrap.setPointerCapture(e.pointerId); } catch (err) {}
         wake();
@@ -1018,21 +1041,30 @@
         if (o.adultExtra) { const x = o.adultExtra(); if (x) { adultP.append(x); adultNodes.push(x); } }
       }
     }
+    /* only what changed is written (old: every frame rewrote 7 widths, toggled classes, aria-current and REPLACED the «n / 7» text node → the
+       control row was re-laid-out 60×/s inside the video frame). Progress = transform scaleX (compositor only). */
+    let pCur = -1, pEnd = null; const pF = [];
     function paint(t) {
       const cur = sceneIdx(t);
+      if (cur !== pCur || ended !== pEnd) {
+        pCur = cur; pEnd = ended;
+        scenes.forEach((sc, j) => {
+          segs[j].classList.toggle('done', ended || j < cur); segs[j].classList.toggle('cur', j === cur);
+          if (j === cur) segs[j].setAttribute('aria-current', 'step'); else segs[j].removeAttribute('aria-current');
+        });
+        stripBtns.forEach((b, j) => b.classList.toggle('cur', j === cur));
+        num.textContent = (cur + 1).toLocaleString('ar-EG') + ' / ' + scenes.length.toLocaleString('ar-EG');
+      }
       scenes.forEach((sc, j) => {
-        const f = j < cur ? 1 : j > cur ? 0 : Math.max(0, Math.min(1, (t - sc.t) / Math.max(0.1, sc.end - sc.t)));
-        const b = segs[j].querySelector('b'); if (b) b.style.width = (ended ? 100 : f * 100).toFixed(1) + '%';
-        segs[j].classList.toggle('done', ended || j < cur); segs[j].classList.toggle('cur', j === cur);
-        if (j === cur) segs[j].setAttribute('aria-current', 'step'); else segs[j].removeAttribute('aria-current');
+        const f = ended || j < cur ? 1 : j > cur ? 0 : Math.max(0, Math.min(1, (t - sc.t) / Math.max(0.1, sc.end - sc.t)));
+        const q = Math.round(f * 1000) / 1000;
+        if (pF[j] !== q) { pF[j] = q; const b = segs[j].querySelector('b'); if (b) b.style.transform = 'scaleX(' + q + ')'; }
       });
-      stripBtns.forEach((b, j) => b.classList.toggle('cur', j === cur));
-      num.textContent = (cur + 1).toLocaleString('ar-EG') + ' / ' + scenes.length.toLocaleString('ar-EG');
     }
     function captions(t) {
       if (!o.captions || !cues.lines) return;
       let id = null, top = false;
-      if (!inCue) for (const l of cues.lines) if (t >= l.t && t <= l.end + 0.15) { id = l.id; top = !!l.capTop; }
+      if (!inCue && !hold) for (const l of cues.lines) if (t >= l.t && t <= l.end + 0.15) { id = l.id; top = !!l.capTop; }
       if (top !== capTop) { capTop = top; placeCap(); }
       if (id !== capId) { capId = id; BQ.audio.caption(id); }
     }
@@ -1096,6 +1128,7 @@
 
     /* ---------- التشغيل والإيقاف ---------- */
     function setPaused(v) {
+      if (hold && !v) return; // a checkpoint question is open: the video stays on its frame
       userPaused = v;
       if (v) video.pause(); else if (!inCue) video.play().catch(() => { userPaused = true; syncUi(); });
       syncUi(); wake();
@@ -1108,10 +1141,10 @@
       big.replaceChildren(BQ.icon(ended ? 'replay' : 'play'));
       big.setAttribute('aria-label', ended ? 'أَعِدِ المَقْطَعَ' : 'تَشْغيل');
     }
-    function toggle() { if (fell) return impl && impl.toggle(); if (ended) { goto(0); return; } setPaused(!userPaused); }
+    function toggle() { if (fell) return impl && impl.toggle(); if (hold) return; if (ended) { goto(0); return; } setPaused(!userPaused); }
     function goto(i) {
       if (fell) return impl && impl.goto(i);
-      if (!cues) return;
+      if (!cues || hold) return;
       clearCue();
       const sc = scenes[Math.max(0, Math.min(scenes.length - 1, i))];
       const t = sc ? sc.t : 0;
@@ -1137,8 +1170,17 @@
     // مهلة التحميل: تُمدَّد ما دامت البيانات تصل؛ البديل فقط عند الخطأ أو التوقّف أكثر من ٢٠ ث (T20)
     const arm = () => { clearTimeout(loadT); if (!started) loadT = setTimeout(() => { if (!started) fallback('stalled'); }, 20000); };
     ['loadstart', 'progress', 'loadedmetadata', 'suspend'].forEach((ev) => video.addEventListener(ev, arm));
-    video.addEventListener('pause', () => { if (!inCue && !ended && !video.seeking && alive && !fell && started && !userPaused && video.currentTime < (video.duration || 1e9) - 0.05) { userPaused = true; syncUi(); } });
-    video.addEventListener('play', () => { if (userPaused) { userPaused = false; syncUi(); } });
+    video.addEventListener('pause', () => { if (!inCue && !hold && !ended && !video.seeking && alive && !fell && started && !userPaused && video.currentTime < (video.duration || 1e9) - 0.05) { userPaused = true; syncUi(); } });
+    video.addEventListener('play', () => { if (hold) { video.pause(); return; } if (userPaused) { userPaused = false; syncUi(); } });
+    /* checkpoint hold (video7 questions): on → pause on this frame, hide captions + controls (CSS .is-hold), block play/seek/tap;
+       off(resume) → controls/captions back and, if it was playing, the video continues from the same frame */
+    function setHold(on, resume) {
+      if (fell) return;
+      on = !!on; if (on === hold) return;
+      hold = on; root.classList.toggle('is-hold', hold);
+      if (hold) { try { video.pause(); } catch (e) {} if (capId) { BQ.audio.caption(null); capId = null; } wake(); }
+      else { syncUi(); wake(); if (resume && !ended && !userPaused) video.play().catch(() => setPaused(true)); }
+    }
 
     /* ---------- التحميل: ملفّ الوقفات ثم الفيديو ---------- */
     arm();
@@ -1174,6 +1216,7 @@
       clearTimeout(loadT); clearTimeout(idleT); cancelAnimationFrame(raf); gen++;
       try { video.pause(); video.removeAttribute('src'); video.load(); } catch (e) {}
       if (ro) ro.disconnect(); else window.removeEventListener('resize', layout);
+      document.removeEventListener('bq-stagefit', layout);
       adultNodes.forEach((n) => n.remove());
       if (capId) BQ.audio.caption(null);
       if (cap) ['left', 'right', 'bottom', 'top', 'fontSize', 'insetInline'].forEach((k) => { cap.style[k] = ''; });
@@ -1191,6 +1234,7 @@
       pause: () => (fell ? impl && impl.pause() : setPaused(true)), play: () => (fell ? impl && impl.play() : setPaused(false)),
       get scene() { return fell && impl ? impl.scene : sceneIdx(); }, get ended() { return fell && impl ? impl.ended : ended; },
       get mode() { return fell ? 'scenes' : 'mp4'; }, video, watched: () => (fell ? 0 : watched()),
+      box, hold: (on, resume) => setHold(on, resume), get held() { return hold; },
     };
   }
 

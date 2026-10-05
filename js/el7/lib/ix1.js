@@ -926,7 +926,8 @@
   I.v8 = () => document.documentElement.dataset.theme === '8';
   // img8 is not indexed by data.js yet (PLATFORM): keys present on 2026-10-05 + BQ.D.img8 when PLATFORM adds it
   const IMG8 = new Set(('brq8_cheer brq8_front brq8_happy brq8_hi brq8_idle brq8_notebook brq8_point brq8_shy brq8_think brq8_wave brq8_wow ' +
-    'b8_bariq_anchor d8_board_frame d8_island_bg d8_island_map d8_island_scene').split(' '));
+    'b8_bariq_anchor d8_board_frame d8_island_bg d8_island_map d8_island_scene ' +
+    'm8_mouth_closed m8_mouth_a m8_mouth_i m8_mouth_u e05_majed_portrait e05_bariq_portrait').split(' '));
   I.has8 = (k) => !!((D.img8 && D.img8[k]) || IMG8.has(k));
   I.src8 = (k) => (D.img8 && D.img8[k]) || 'media/img8/' + k + '.webp';
   const POSE8 = { idle: 'brq8_idle', wave: 'brq8_wave', hi: 'brq8_hi', talk: 'brq8_happy', happy: 'brq8_happy', cheer: 'brq8_cheer', clap: 'brq8_cheer',
@@ -1057,12 +1058,19 @@
     const s0 = th('closed'), s1 = th('a');
     const seq = h('div.i8-seq' + (art ? '.is-m8' : '.is-m7'), { 'aria-hidden': 'true' }, s0, I.i8('next', 'i8-arr'), s1);
     el.append(face, seq);
-    let cur = 'rest'; imgs.rest.classList.add('on');
+    let cur = 'rest', prevT = 0; imgs.rest.classList.add('on');
+    // never an empty face square: the frame stays hidden until the first picture (and the step pictures) are decoded
+    face.classList.add('is-wait'); seq.classList.add('is-wait');
+    const dec = (im) => (im.decode ? im.decode() : Promise.resolve()).catch(() => {});
+    dec(imgs.rest).then(() => face.classList.remove('is-wait'));
+    Promise.all(['closed', 'a', 'i', 'u'].map((v) => dec(imgs[v]))).then(() => seq.classList.remove('is-wait'));
     const api = {
       el,
       set(v) {
         if (!imgs[v]) return;
-        if (v !== cur) { imgs[v].classList.add('on'); imgs[cur].classList.remove('on'); cur = v; }
+        // the old picture stays under the new one until it has painted (never a blank face between two pictures)
+        if (v !== cur) { const old = imgs[cur]; old.classList.add('prev'); old.classList.remove('on'); imgs[v].classList.remove('prev'); imgs[v].classList.add('on'); cur = v;
+          clearTimeout(prevT); prevT = setTimeout(() => Object.values(imgs).forEach((im) => { if (!im.classList.contains('on')) im.classList.remove('prev'); }), 320); }
         s0.classList.toggle('on', v === 'closed'); s1.classList.toggle('on', /^[aiu]$/.test(v));
       },
       /** which vowel shape the strip shows next to «lips together» */
@@ -1139,6 +1147,9 @@
 .bq8-hud .i8-bub8 > .elp-cap b { color: var(--bq8-eye-d); }
 .bq8-hud > .bq8-progress { flex: none; }
 .bq8-progress > i { transition: width .3s, background .3s; }
+/* child touch target ≥ 64 px ON THE GLASS at the current stage scale (--bq-s from core.js: 0.851 iPad landscape → 78 layout px,
+   0.664 iPad portrait → 99 layout px), never below the platform's 76, capped at 104 for phones */
+.bq8-stage { --i8-t: clamp(76px, calc(66px / var(--bq-s, 1)), 104px); }
 /* panel = element root */
 .bq8-stage > .bq8-panel.i8p { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u)*22); padding: calc(var(--u)*28); }
 .i8p, .i8p * { -webkit-tap-highlight-color: transparent; }
@@ -1150,7 +1161,7 @@
 .i8-brq img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
 .i8-brq.is-hop img { animation: i8Hop .5s cubic-bezier(.3,.7,.4,1); }
 @keyframes i8Hop { 40% { translate: 0 -16%; } }
-.i8-brq .i8-talk { position: absolute; top: 2%; inset-inline-start: 62%; display: flex; gap: 10%; align-items: center; justify-content: center; width: 46%; aspect-ratio: 1.5; border-radius: 50%;
+.i8-brq .i8-talk { position: absolute; top: 2%; inset-inline-end: 62%; display: flex; gap: 10%; align-items: center; justify-content: center; width: 46%; aspect-ratio: 1.5; border-radius: 50%;
   background: #fff; box-shadow: 0 0 0 calc(var(--u)*3) var(--bq8-navy), 0 calc(var(--u)*4) calc(var(--u)*8) rgba(11,45,79,.25); opacity: 0; transform: scale(.4); transition: opacity .2s, transform .25s cubic-bezier(.3,1.6,.5,1); }
 .i8-brq .i8-talk i { width: 14%; aspect-ratio: 1; border-radius: 50%; background: var(--bq8-navy); animation: i8Dot 1s ease-in-out infinite; }
 .i8-brq .i8-talk i:nth-child(2) { animation-delay: .15s; } .i8-brq .i8-talk i:nth-child(3) { animation-delay: .3s; }
@@ -1170,9 +1181,9 @@
   background: url(assets/icons8/check.svg) center / contain no-repeat; animation: bq8-pop .4s cubic-bezier(.3,1.6,.5,1) both; }
 .bq8-stage .i7-card.i8-card.is-dim { opacity: .42; filter: grayscale(.6); }
 /* ear chip on a card: bottom-centre sticker (= «listen again», never answers) */
-.bq8-stage .i7-ear.i8-ear { inset: auto auto calc(var(--u)*-36) 50%; translate: -50% 0; width: max(64px, calc(var(--u)*76)); height: max(64px, calc(var(--u)*76)); padding: 0;
+.bq8-stage .i7-ear.i8-ear { inset: auto auto calc(var(--u)*-36) 50%; translate: -50% 0; width: var(--i8-t); height: var(--i8-t); padding: 0;
   border: var(--bq8-line) solid var(--bq8-navy); border-radius: 50%; background: radial-gradient(circle at 38% 30%, #fff 0, var(--bq8-ear-l) 62%);
-  box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*6) calc(var(--u)*10) rgba(11,45,79,.28); display: grid; place-items: center; font-size: max(46px, calc(var(--u)*56)); }
+  box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 calc(var(--u)*6) calc(var(--u)*10) rgba(11,45,79,.28); display: grid; place-items: center; font-size: calc(var(--i8-t) * .72); }
 .bq8-stage .i7-ear.i8-ear:active { transform: scale(.94); }
 .bq8-stage .i7-ear.i8-ear.is-play { animation: bq8-wiggle .6s ease infinite; }
 .bq8-stage .i7-card:has(.i8-ear) { margin-bottom: calc(var(--u)*30); }
@@ -1194,8 +1205,14 @@
 .i8-mouth .i8-face { position: relative; width: 100%; aspect-ratio: 1; border-radius: calc(var(--u)*32); overflow: hidden; background: #C98E6A;
   border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); }
 .i8-mouth .i8-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .12s linear; }
+.i8-mouth .i8-face.is-wait, .i8-seq.is-wait { visibility: hidden; }
+.i8-mouth.is-m8 .i8-face { background: #FBF3E4; }
+.i8-mouth.is-m8 .i8-face img:not(.is-portrait) { transform: scale(1.22); transform-origin: 50% 30%; }
+.i8-mouth .i8-face img.is-portrait { object-position: 50% 0; }
+.i8-seq.is-m8 .i8-th { background-color: #FBF3E4; background-size: auto 150%; background-position: 50% 22%; }
 .i8-mouth.is-m7 .i8-face img:not(.is-portrait) { inset: auto; left: -113%; top: -32%; width: 320%; height: 180%; object-fit: fill; max-width: none; }
-.i8-mouth .i8-face img.on { opacity: 1; }
+.i8-mouth .i8-face img.on { opacity: 1; z-index: 1; }
+.i8-mouth .i8-face img.prev { opacity: 1; transition: none; }
 .i8-seq { display: flex; align-items: center; gap: calc(var(--u)*10); padding: calc(var(--u)*8) calc(var(--u)*14); border-radius: 999px; background: rgba(255,255,255,.85); box-shadow: 0 0 0 calc(var(--u)*3) rgba(11,45,79,.12); }
 .i8-seq .i8-th { width: calc(var(--u)*118); aspect-ratio: 1; border-radius: calc(var(--u)*20); background: #C98E6A center / cover no-repeat; border: calc(var(--u)*3) solid var(--bq8-navy);
   box-shadow: 0 0 0 calc(var(--u)*4) #fff; opacity: .55; transition: opacity .15s, transform .2s, box-shadow .2s; }

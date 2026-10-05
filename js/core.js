@@ -559,26 +559,41 @@
   const fnIcon = (text, line) => { const t = text || ((BQ.line(line) || {}).t) || ''; for (const [re, ic] of FN) if (re.test(t)) return ic; return 'ear'; };
 
   /* ---------- v8 FIXED STAGE (owner R3 «STAGE» 2026-10-05: «مقاس النشاط وشكل عرضه يكون ثابت») · css/stage8.css ----------
-     Theme 8: .elp-play is ALWAYS 1180×740 layout px and is scaled uniformly (transform) to fit .elp-fit, centred and letter-boxed —
+     Theme 8: .elp-play is ALWAYS 1180×820 layout px (THEME8 design units) and is scaled uniformly (transform) to fit .elp-fit, centred and letter-boxed —
      the same composition on every screen (no reflow / no portrait layout). Layout sizes inside the stage never change, so element
      fit() code (clientWidth/clientHeight) always sees the same box; rect-based hit tests (getBoundingClientRect, getScreenCTM) stay right.
      Code that moves an in-stage element by a raw clientX/Y delta must divide it by BQ.stageScale(). */
-  const STAGE = (BQ.STAGE = { w: 1180, h: 740 });
+  const STAGE = (BQ.STAGE = { w: 1180, h: 820 });
   const fixed8 = (BQ.fixedStage = () => document.documentElement.dataset.theme === '8');
   let stageS = 1;
   BQ.stageScale = () => (fixed8() ? stageS : 1);
   function stageFit(box, play) {
     if (!fixed8()) return;
+    /* OWNER R3 «رعشة في الفريم» (2026-10-05): the stage is placed on WHOLE DEVICE PIXELS. Before, «left/top 50% + translate(-50%,-50%) scale(s)»
+       put the stage (and so the composited <video> layer inside it) at sub-pixel offsets (e.g. video at x 109.06 / y 196.01, 961.88 × 541.38 px);
+       the compositor snaps such a layer differently from its rounded clip on every repaint → the whole video box shimmered while playing.
+       Now: scale floored so the drawn width is whole device px, top-left corner rounded to the device grid (--bq-tx/--bq-ty, origin 0 0).
+       Writes only when a value changes (no style churn) and tells in-stage code (video player) to re-snap: document event «bq-stagefit». */
+    let last = '';
     const fit = () => {
       const W = box.clientWidth, H = box.clientHeight; if (!W || !H) return;
-      stageS = Math.min(W / STAGE.w, H / STAGE.h);
-      const s = String(+stageS.toFixed(5));
+      const dpr = window.devicePixelRatio || 1;
+      const s0 = Math.min(W / STAGE.w, H / STAGE.h);
+      stageS = Math.floor(s0 * STAGE.w * dpr + 1e-6) / (STAGE.w * dpr);
+      const r = box.getBoundingClientRect(), snap = (v) => Math.round(v * dpr) / dpr;
+      const tx = snap(r.left + (W - STAGE.w * stageS) / 2) - r.left, ty = snap(r.top + (H - STAGE.h * stageS) / 2) - r.top;
+      const s = String(+stageS.toFixed(6)), key = s + '|' + tx.toFixed(3) + '|' + ty.toFixed(3);
+      if (key === last) return;
+      last = key;
       play.style.setProperty('--bq-s', s); document.documentElement.style.setProperty('--bq-stage-s', s);
+      play.style.setProperty('--bq-tx', tx.toFixed(3) + 'px'); play.style.setProperty('--bq-ty', ty.toFixed(3) + 'px');
       box.classList.add('is-fit');
+      document.dispatchEvent(new CustomEvent('bq-stagefit', { detail: { s: stageS } }));
     };
     fit();
+    requestAnimationFrame(fit); // position settles after the element head / fonts lay out
     if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(box); cleanups.push(() => ro.disconnect()); }
-    else { window.addEventListener('resize', fit); cleanups.push(() => window.removeEventListener('resize', fit)); }
+    window.addEventListener('resize', fit); cleanups.push(() => window.removeEventListener('resize', fit)); // position-only moves (no size change)
   }
   /* element <style> blocks (theme 8): viewport @media (width/height/orientation/aspect) are switched off and vw/vh/vmin/vmax become px
      of the 1180×820 reference screen, so nothing inside the stage reacts to the window. Teacher pages / print styles are left alone. */
@@ -850,35 +865,20 @@
   const COVER = {};
   function designedCover(id) { const m = BQ.meta(id) || {}; return Promise.resolve(m.cover_file || null); }
   BQ.coverInfo = (id) => { const m = BQ.meta(id) || {}; const c = COVER[id] || []; return { title: m.cover_title || c[0] || cleanName(m.name), child: m.cover_child || c[1] || '', pose: m.cover_pose || c[2] || 'wave' }; };
-  /* v8 (COVERS · THEME8 §D6 · قالبا المالك 2026-10-05): نشاط = شارة «نَشاطٌ تَفاعُلِيٌّ» + العنوان + «اِبْدَأِ النَّشاطَ» ·
-     فيديو = تشغيل كبير فوق الصورة + شارة المدّة + «فيديو» + العنوان + المدّة (حقيقية من ملفّ الفيديو).
-     الصورة media/img8/cov8_<ID>.webp (GPT)، وإن غابت فالغلاف القديم cover_file. COV8_PLAY = مركز البقعة الهادئة لزرّ التشغيل [x,y] ٪ من صورة الغلاف نفسها؛ يُحوَّل إلى موضع داخل إطار الصورة بعد القصّ (object-position) في كلّ مقاس. */
-  const COV8_PLAY = { E02: [53, 15], E07: [36, 24], E12: [52, 16], E13: [42, 20] };
-  function cov8Play(card, img, p) {
-    const art = img.parentNode;
-    const place = () => {
-      const aw = art.clientWidth, ah = art.clientHeight, nw = img.naturalWidth, nh = img.naturalHeight;
-      if (!aw || !ah || !nw || !nh || !/img8\/cov8_/.test(img.currentSrc || img.src)) return;
-      const sc = Math.max(aw / nw, ah / nh), dw = nw * sc, dh = nh * sc;
-      const op = (getComputedStyle(img).objectPosition || '50% 50%').split(' ').map((v) => parseFloat(v) / 100);
-      const cl = (v) => Math.min(86, Math.max(14, v)).toFixed(1) + '%';
-      const x = cl((p[0] / 100 * dw - (dw - aw) * (op[0] || 0)) / aw * 100), y = cl((p[1] / 100 * dh - (dh - ah) * (isNaN(op[1]) ? .5 : op[1])) / ah * 100);
-      card.style.setProperty('--bq8-play-x', x); card.style.setProperty('--bq8-play-y', y); card.style.setProperty('--bq8-play-px', x); card.style.setProperty('--bq8-play-py', y);
-    };
-    if (img.complete) place(); img.addEventListener('load', place);
-    if (window.ResizeObserver) { const ro = new ResizeObserver(place); ro.observe(art); }
-  }
+  /* v8 (COVERS · THEME8 §D6 · قالبا المالك 2026-10-05) · OWNER R3 «الأغلفة» (2026-10-05، مُلزِم): كلّ غلاف = صورة + عنوان + زرّ واحد فقط —
+     بلا شارة «نَشاطٌ تَفاعُلِيٌّ» / «فيديو» وبلا مدّة. غلاف الفيديو بتخطيط غلاف النشاط نفسه حرفيّاً (الصورة يساراً بحافّتها المنحنية، العنوان والزرّ يميناً)؛
+     الفرق الوحيد: مكان «اِبْدَأِ النَّشاطَ» زرّ تشغيل دائريّ أصفر كبير (‎≥ 88 بكسل على الشاشة) — لا زرّ فوق الصورة.
+     الصورة media/img8/cov8_<ID>.webp (GPT)، وإن غابت فالغلاف القديم cover_file. البطاقة كلّها تبدأ العنصر. */
   const BLANK8 = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-  const COV8_POS = { E06: '3% 50%' }; // قصّ خاصّ لصورة غلاف (الشخصية قريبة من الحافة)
-  const COV8_DUR = { E02: 72, E07: 61, E12: 63, E13: 88 };
-  const mmss = (s) => { s = Math.max(0, Math.round(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  const COV8_POS = { E06: '3% 50%', E15: '2% 50%', E16: '3% 50%' }; // قصّ خاصّ لصورة غلاف (الشخصية قريبة من الحافة)
   function cover8(ctx, onStart) {
     const meta = ctx.meta, id = meta.id, info = BQ.coverInfo(id), isVid = meta.kind === 'video';
     const play = ctx.frame.querySelector('.elp-play');
     if (play) play.classList.add('has-cover');
     ctx.frame.classList.add('has-cover');
     let c = null;
-    const go = () => { A.unlock(); if (play) play.classList.remove('has-cover'); ctx.frame.classList.remove('has-cover'); if (c) c.remove(); onStart(); };
+    let started = false; // the whole card is one tap target (≥ 64 px at every stage scale) → start only once
+    const go = () => { if (started) return; started = true; A.unlock(); if (play) play.classList.remove('has-cover'); ctx.frame.classList.remove('has-cover'); if (c) c.remove(); onStart(); };
     /* known v8 covers (data.js «cov8», scanned by build_data_v7.py) → never request a missing file (no 404); old data without the list → try + fallback */
     const has8 = !Array.isArray(D.cov8) || D.cov8.includes(id);
     const img = h('img', { src: has8 ? 'media/img8/cov8_' + id + '.webp' : (meta.cover_file || BLANK8), alt: '', decoding: 'async', draggable: 'false' });
@@ -886,28 +886,29 @@
     img.addEventListener('error', () => { img.style.objectPosition = ''; if (meta.cover_file) img.src = meta.cover_file; }, { once: true });
     const tid = 'elp-cv-t';
     const title = h('h3.bq8-cover__title', { id: tid }, info.title);
-    let card;
-    if (isVid) {
-      const dur = h('span.bq8-cover__dur'), time = h('span.bq8-cover__time');
-      const setDur = (s) => { const t = mmss(s); dur.textContent = t; time.textContent = t; time.setAttribute('aria-label', 'المُدَّةُ ' + t); };
-      if (COV8_DUR[id]) setDur(COV8_DUR[id]); else { dur.hidden = true; time.hidden = true; }
-      try { // المدّة الحقيقية من ملفّ الفيديو (البيانات الوصفية فقط)
-        const v = document.createElement('video'); v.preload = 'metadata'; v.muted = true;
-        v.addEventListener('loadedmetadata', () => { if (isFinite(v.duration) && v.duration > 0) { setDur(v.duration); dur.hidden = false; time.hidden = false; } v.removeAttribute('src'); v.load(); }, { once: true });
-        v.src = 'media/video7/' + (meta.video || id) + (meta.video_720 ? '_720' : '') + '.mp4';
-      } catch (e) { /* */ }
-      card = h('div.bq8-cover.bq8-cover--video', { role: 'group', 'aria-labelledby': tid },
-        h('div.bq8-cover__art', { onclick: go }, img, h('button.bq8-cover__play', { type: 'button', 'aria-label': 'شاهِدْ: ' + info.title, onclick: (e) => { e.stopPropagation(); go(); } }), dur),
-        h('div.bq8-cover__side', null, h('span.bq8-cover__chip', null, h('i.bq8-ic.bq8-ic--play', { 'aria-hidden': 'true' }), 'فيديو'), title, time));
-      if (COV8_PLAY[id]) cov8Play(card, img, COV8_PLAY[id]);
-    } else {
-      card = h('div.bq8-cover.bq8-cover--activity', { role: 'group', 'aria-labelledby': tid },
-        h('div.bq8-cover__art', { onclick: go }, img),
-        h('div.bq8-cover__side', null, h('span.bq8-cover__chip', null, h('i.bq8-ic.bq8-ic--game', { 'aria-hidden': 'true' }), 'نَشاطٌ تَفاعُلِيٌّ'), title,
-          h('button.bq8-cover__go', { type: 'button', onclick: go }, 'اِبْدَأِ النَّشاطَ', h('i.bq8-ic.bq8-ic--next', { 'aria-hidden': 'true' }))));
-    }
+    const stop = (e) => { e.stopPropagation(); go(); };
+    const btn = isVid
+      ? h('button.bq8-cover__playbtn', { type: 'button', 'aria-label': 'شَغِّلِ الفيديو', onclick: stop })
+      : h('button.bq8-cover__go', { type: 'button', onclick: stop }, 'اِبْدَأِ النَّشاطَ', h('i.bq8-ic.bq8-ic--next', { 'aria-hidden': 'true' }));
+    const card = h('div.bq8-cover.bq8-cover--' + (isVid ? 'video' : 'activity'), { role: 'group', 'aria-labelledby': tid, onclick: go },
+      h('div.bq8-cover__art', null, img),
+      h('div.bq8-cover__side', null, title, btn));
     c = h('div.elp-start.elp-cover', { dataset: { el: id } }, card);
     (play || ctx.stage).append(c);
+    cov8FitTitle(title);
+  }
+  /* العنوان سطرٌ واحد دائماً (عيب المالك E16: حركات «الأُ» في فراغ السطرين تصطدم بالسطر الأوّل) — يُصغَّر الخطّ حتى يتّسع؛
+     المسرح ثابت 1180×820 فالقياس بوحدات التخطيط نفسها في كلّ مقاس. */
+  function cov8FitTitle(t) {
+    const fit = () => {
+      if (!t.isConnected) return;
+      t.style.fontSize = '';
+      const side = t.parentNode, ss = getComputedStyle(side);
+      const avail = side.clientWidth - parseFloat(ss.paddingLeft) - parseFloat(ss.paddingRight), need = t.scrollWidth;
+      if (avail > 0 && need > avail) t.style.fontSize = Math.max(30, parseFloat(getComputedStyle(t).fontSize) * avail / need * 0.97).toFixed(1) + 'px';
+    };
+    requestAnimationFrame(fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
   function cover(ctx, def, onStart) {
     if (document.documentElement.dataset.theme === '8') return cover8(ctx, onStart);

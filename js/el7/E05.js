@@ -125,6 +125,7 @@
 .e05-8 .e05-lb.is-dim { opacity: .4; filter: grayscale(.5); }
 .e05-8 .e05-pb { display: grid; place-items: center; }
 .e05-8 .e05-pb img { width: calc(var(--u)*150); aspect-ratio: 1; object-fit: contain; }
+.e05-8 .e05-pb img.is-pt { object-fit: cover; object-position: 50% 40%; border-radius: calc(var(--u)*24); transform: scale(1); }
 .e05-8 .e05-pb.is-play img { animation: e05Talk8 .5s ease-in-out infinite; }
 .e05-8 .e05-badge { position: absolute; top: calc(var(--u)*-18); inset-inline-end: calc(var(--u)*-18); width: calc(var(--u)*58); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-size: calc(var(--u)*42);
   background: radial-gradient(circle at 38% 30%, #fff, #FFE38A 62%); border: calc(var(--u)*3) solid var(--bq8-navy); box-shadow: 0 0 0 calc(var(--u)*4) #fff; }
@@ -338,7 +339,7 @@
         const vs = BQ.shuffle([{ id: it.ok, ok: true }, { id: it.bad, ok: false }]);
         const btns = vs.map((v, i) => {
           const b = V8 ? h('button.e05-lb.e05-pb', { type: 'button', 'aria-label': 'بارِقٌ يَقولُ ' + I.AR(i + 1) },
-            h('img', { alt: '', draggable: 'false', src: I.has8('e05_bariq_portrait') ? I.src8('e05_bariq_portrait') : I.brq8(i ? 'front' : 'happy') }), h('span.e05-badge', { 'aria-hidden': 'true' }, I.i8('listen')))
+            h('img', { alt: '', draggable: 'false', class: I.has8('e05_bariq_portrait') ? 'is-pt' : null, src: I.has8('e05_bariq_portrait') ? I.src8('e05_bariq_portrait') : I.brq8(i ? 'front' : 'happy') }), h('span.e05-badge', { 'aria-hidden': 'true' }, I.i8('listen')))
             : h('button.e05-lb.e05-pb', { type: 'button', 'aria-label': 'بارِقٌ يَقولُ ' + I.AR(i + 1) }, BQ.ui.brq('talk'), h('span.e05-badge', { 'aria-hidden': 'true', html: I.IC.snd }));
           b.v = v; return b;
         });

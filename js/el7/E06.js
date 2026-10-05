@@ -109,6 +109,16 @@
 .e06-8 .e06-tile.need:not(.is-heard) { animation: i7Pulse 1.6s ease-in-out infinite; }
 .e06-8 .e06-wrow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*40); }
 .e06-8 .e06-wpic.i7-card.i8-card { --s: calc(var(--u)*230); }
+/* step 4 «find the م»: the word card takes the board width — font 180 u so the narrowest «م» zone (medial, «نُمورْ») is ≥ 64 px on a portrait iPad (scale 0.664) */
+.e06-8 .e06-main.is-words { gap: calc(var(--u)*26); }
+.e06-8 .e06-main.is-words .e06-wrow { gap: calc(var(--u)*26); }
+.e06-8 .e06-main.is-words .e06-ref { --w: calc(var(--u)*130); }
+.e06-8 .e06-main.is-words .e06-wpic.i7-card.i8-card { --s: calc(var(--u)*184); }
+.e06-8 .e06-main.is-words .e06-word { font-size: calc(var(--u)*180); line-height: 1.62; padding: 0 calc(var(--u)*30); min-width: calc(var(--u)*500); }
+.bq8-stage .e06-8 .i7-tw-d.is-no { color: var(--bq8-no); text-shadow: none; }
+.bq8-stage .e06-8 .i7-tw-hit.is-no { border-radius: calc(var(--u)*18); box-shadow: 0 0 0 calc(var(--u)*5) var(--bq8-no) !important; }
+.bq8-stage .e06-8 .i7-tw-hit.i8-x::after { content: ''; position: absolute; top: calc(var(--u)*4); left: 50%; translate: -50% 0; width: calc(var(--u)*46); aspect-ratio: 1;
+  background: #fff url(assets/icons8/close.svg) center / 100% no-repeat; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,.25); animation: i7Pop .4s ease-out; }
 .e06-8 .e06-word { font-family: var(--font-letter); font-weight: 700; font-size: calc(var(--u)*120); line-height: 1.75; padding: 0 calc(var(--u)*40); min-width: max(340px, calc(var(--u)*420)); text-align: center;
   border-radius: calc(var(--u)*30); background: #fff; border: var(--bq8-line) solid var(--bq8-navy); box-shadow: 0 0 0 var(--bq8-rim) #fff, var(--bq8-sh-2); color: var(--bq8-navy); }
 .e06-8 .i7-tw-d.is-m { color: var(--bq8-meem); }
@@ -243,7 +253,7 @@
         const target = spans[tIdx];
         const pic = I.card(w.slug, { aria: info.w, text: true }); pic.classList.add('e06-wpic', 'i7-in');
         const refB = V8 ? ref8() : h('button.e06-ref', { type: 'button', 'aria-label': 'م', lang: 'ar' }, h('span', null, 'م'));
-        main.replaceChildren(refB, h('div.e06-wrow', null, pic, word));
+        main.replaceChildren(refB, h('div.e06-wrow', null, pic, word)); main.classList.add('is-words');
         if (V8 && w === WORDS[0]) f8.stars(WORDS.length);
         word.classList.add('i7-in');
         const sayWord = () => I.playOn(S, pic, I.wordId(w.slug));
@@ -268,7 +278,7 @@
             }
             if (first == null) { first = false; I.record(S, 'S5', false, { item: w.slug }); log.push([info.w, false]); }
             // OWNER_R3 ladder: ✗1 the tapped letter turns red + retry line (+ the «م» card pulses — a shape cue, not the answer)
-            const si2 = s.idx; tw.paint(si2, 'is-no'); I.sfx('soft'); setTimeout(() => tw.unpaint(si2, 'is-no'), 1400);
+            const si2 = s.idx; tw.paint(si2, 'is-no'); s.classList.add('i8-x'); I.sfx('soft'); setTimeout(() => { tw.unpaint(si2, 'is-no'); s.classList.remove('i8-x'); }, 1400);
             n++; buddy.think();
             if (n === 1) { await S.say(I.tryL(), { talk: true }); refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); busy = false; return; }
             // ✗2 Bariq solves: the meem lights up + the word in parts + an encouraging line
@@ -292,7 +302,7 @@
         if (V8) { refB.tabIndex = -1; if (k === 0) f8.stars(MATCH.length); }
         const wrap = h('div.e06-tiles', { role: 'group', 'aria-label': 'مَكْتوبٌ' });
         const tiles = BQ.shuffle(it.opts).map((g, i) => { const t = V8 ? tile8(g, g, false) : h('button.e06-tile', { type: 'button', 'aria-label': g, lang: 'ar' }, h('span', { html: g })); t.g = g; t.classList.add('i7-in'); t.style.animationDelay = (i * 0.1) + 's'; wrap.append(t); return t; });
-        main.replaceChildren(refB, wrap);
+        main.replaceChildren(refB, wrap); main.classList.remove('is-words');
         const right = () => tiles.find((t) => t.g === it.opts[0]);
         const ask = () => S.stim(sid(it.s));
         I.instr(S, 'bq7_E06_match_intro', 'ear', async () => { if (busy) return; busy = true; await ask(); busy = false; });

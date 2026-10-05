@@ -6,7 +6,7 @@
  "poster": "media/video7/E07.jpg",
  "duration": 60.875,
  "status": "draft_unapproved",
- "source": "video_src/build_v7_videos.py · 1920×1080 24 fps",
+ "source": "video_src/e07_v8.py · v8 r4 (E07-v8-r4-2026-10-05) · 1920×1080 24 fps",
  "scenes": [
   {
    "t": 0,
@@ -188,5 +188,18 @@
    "note": "PLACEHOLDER: approved Bariq still (no lip overlay) — the lead drops the aligned Grok speaking clip here"
   }
  ],
- "interim": "Grok motion pending: V8_E07_M09 V8_E07_M10 (start-frame stills with gentle motion)"
+ "interim": "Grok motion pending: V8_E07_M09 V8_E07_M10 (start-frame stills with gentle motion)",
+ "build": "E07-v8-r4-2026-10-05",
+ "rail_clearance": {
+  "limit": 784,
+  "bottoms": {
+   "plaque مـ": 720,
+   "plaque ـمـ": 720,
+   "plaque ـم": 776,
+   "shelf مـ": 710,
+   "shelf ـمـ": 710,
+   "shelf ـم": 779,
+   "shelf م": 773
+  }
+ }
 }

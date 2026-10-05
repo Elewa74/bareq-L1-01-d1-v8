@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261005192028",
+"build": "261005211317",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -235,42 +235,56 @@ window.BQ_DATA={
 "prompt_text": "قَمَرْ. اِلْمِسْ حَرْفَ المِيمِ في الكَلِمَةِ.",
 "skill": "S6",
 "img": "card_qamar",
-"word": true,
-"options": [
+"attempts": 2,
+"word": "قَمَرْ",
+"parts": [
 {
 "id": "q",
-"glyph": "قَـ"
+"a": 0,
+"b": 2
 },
 {
 "id": "m",
-"glyph": "ـمَـ"
+"a": 2,
+"b": 4,
+"aria": "المِيمُ"
 },
 {
 "id": "r",
-"glyph": "ـرْ"
+"a": 4,
+"b": 6
 }
 ],
 "correct": "m",
 "fb_yes": [
 [
+"bq7_G_yes2",
+"bq7_G_pos_mid"
+],
+[
+"bq7_G_yes4",
+"bq7_G_pos_mid"
+],
+[
 "bq7_G_yes1",
 "bq7_G_pos_mid"
 ],
 [
-"bq7_G_yes2",
+"bq7_G_yes3",
 "bq7_G_pos_mid"
 ]
 ],
-"fb_retry": "bq7_G_look_shape",
-"fb_glow": "bq7_G_look_light",
+"fb_retry": "bq7_G_try",
 "fb_show": "bq7_G_model",
-"model": "bq7_G_pos_mid"
+"model": "bq7_G_pos_mid",
+"fb_end": "bq7_E11_fb_solve2"
 },
 {
 "prompt": "bq7_E07_q2",
 "prompt_text": "مَوْزْ. أَيُّ شَكْلٍ لِلْمِيمِ هُنا؟",
 "skill": "S6",
 "img": "card_mawz",
+"attempts": 2,
 "options": [
 {
 "id": "first",
@@ -287,14 +301,34 @@ window.BQ_DATA={
 ],
 "correct": "first",
 "fb_yes": [
+[
 "bq7_G_yes3",
 "bq7_G_pos_first",
 "bq7_W_mawz"
 ],
-"fb_retry": "bq7_G_look_shape",
-"fb_glow": "bq7_G_look_light",
+[
+"bq7_G_yes1",
+"bq7_G_pos_first",
+"bq7_W_mawz"
+],
+[
+"bq7_G_yes4",
+"bq7_G_pos_first",
+"bq7_W_mawz"
+],
+[
+"bq7_G_yes2",
+"bq7_G_pos_first",
+"bq7_W_mawz"
+]
+],
+"fb_retry": "bq7_G_try",
 "fb_show": "bq7_G_model",
-"model": "bq7_W_mawz"
+"model": [
+"bq7_G_pos_first",
+"bq7_W_mawz"
+],
+"fb_end": "bq7_E11_fb_solve2"
 }
 ],
 "menu": 7,
@@ -4713,8 +4747,22 @@ window.BQ_DATA={
 "E09",
 "E10",
 "E11",
-"E12"
+"E12",
+"E13",
+"E14",
+"E15",
+"E16"
 ],
+"vdur7": {
+"E02": 71.96,
+"E02_720": 71.98,
+"E07": 60.88,
+"E07_720": 60.88,
+"E12": 62.75,
+"E12_720": 62.76,
+"E13": 87.5,
+"E13_720": 87.51
+},
 "el7": [
 "E01",
 "E03",

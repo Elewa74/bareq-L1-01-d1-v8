@@ -76,6 +76,19 @@
 .e16-pad .pc.on { box-shadow: 0 0 0 3px #0B2D4F, 0 0 0 9px #FFC21A; }
 .e16-pad .pt { width: 72px; height: 72px; border-radius: 50%; border: 3px solid #0B2D4F; background: #fff; display: grid; place-items: center; font-size: 52px; cursor: pointer; padding: 0; box-shadow: 0 0 0 4px #fff; }
 .e16-pad .pt.ok { background: radial-gradient(circle at 38% 30%, #fff, #CFF5E2 62%); }
+/* v8 mission view (fixed 1180×820 stage): text on top (2 lines), picture + 3 slots below · every button ≥ 64 px ON THE GLASS at the
+   current stage scale (--i8-t from lib/ix1.js: 66 px / --bq-s, 76–104 layout px) → camera + pen side by side in a wider slot */
+.bq8-panel.e16w .e16-mv.is-v8 { flex-direction: column; gap: calc(var(--k)*26); }
+.bq8-panel.e16w .e16-mv.is-v8 .e16-text { max-width: calc(var(--k)*880); margin-inline-end: calc(var(--k)*84); font-size: calc(var(--k)*29); line-height: 2.05; padding-inline: calc(var(--k)*30); }
+.bq8-panel.e16w .e16-row { display: flex; align-items: center; justify-content: center; gap: calc(var(--k)*30); }
+.bq8-panel.e16w .e16-mv.is-v8 .e16-mc { width: calc(var(--k)*200); }
+.bq8-panel.e16w .e16-mv.is-v8 .e16-mc .e16-lbl { font-size: calc(var(--k)*23); }
+.bq8-panel.e16w .e16-slots { gap: calc(var(--k)*20); }
+.bq8-panel.e16w .e16-slot { width: calc(var(--i8-t) * 2 + var(--k)*30); height: calc(var(--k)*210); aspect-ratio: auto; gap: calc(var(--k)*6); }
+.bq8-panel.e16w .e16-slot .e16-sb, .bq8-panel.e16w .e16-slot.is-filled .e16-sb { width: var(--i8-t); height: var(--i8-t); padding: calc(var(--i8-t) * .1); font-size: calc(var(--i8-t) * .62); }
+.bq8-panel.e16w .e16-slot.is-filled .e16-star { width: calc(var(--k)*44); height: calc(var(--k)*44); }
+.bq8-stage .e16-pad .pc { width: var(--i8-t); height: var(--i8-t); }
+.bq8-stage .e16-pad .pt { width: var(--i8-t); height: var(--i8-t); font-size: calc(var(--i8-t) * .7); }
 /* tall (portrait) */
 .bq8-stage.is-tall .e16w .e16-grid { grid-template-columns: repeat(2, auto); gap: calc(var(--k)*44) calc(var(--k)*50); }
 .bq8-stage.is-tall .e16w .e16-mc { width: calc(var(--k)*290); }
@@ -170,12 +183,16 @@
     /* ---------- 2 · one mission ---------- */
     function open(m) {
       const card = h('div.e16-mc', { role: 'img', 'aria-label': m.label }, pic(m), h('span.e16-lbl', null, m.label));
-      const text = h('p.e16-text', { lang: 'ar' }, m.text);
+      // «صَوْتُهُ مَ» / «بِصَوْتِ مَ» never break apart (no-break space); the spoken line (LINES) is unchanged
+      const text = h('p.e16-text', { lang: 'ar' }, m.text.replace(/(صَوْتُهُ|بِصَوْتِ) مَ/g, '$1\u00A0مَ'));
       const slots = [0, 1, 2].map((i) => slot(m, i));
       const back = V8 ? h('button.bq8-btn.bq8-btn--back.bq8-btn--lg.e16-back', { type: 'button', 'aria-label': 'المُهِمّاتُ' }, I.i8('back'))
         : h('button.bq-btn.ghost.e16-back', { type: 'button', 'aria-label': 'المُهِمّاتُ' }, '→');
       back.addEventListener('click', () => { if (busy) return; S.stop(); I.sfx('flip'); pick(false); });
-      root.replaceChildren(h('div.e16-mv', null, card, h('div.e16-side', null, text, h('div.e16-slots', { role: 'group', 'aria-label': 'صُوَرُكَ وَرُسومُكَ' }, slots.map((s) => s.el)))), back);
+      const slotsEl = h('div.e16-slots', { role: 'group', 'aria-label': 'صُوَرُكَ وَرُسومُكَ' }, slots.map((s) => s.el));
+      // v8: the line runs across the board (≤ 2 lines), the mission picture and the 3 slots sit in one row under it
+      if (V8) root.replaceChildren(h('div.e16-mv.is-v8', null, text, h('div.e16-row', null, card, slotsEl)), back);
+      else root.replaceChildren(h('div.e16-mv', null, card, h('div.e16-side', null, text, slotsEl)), back);
       I.instr(S, m.line, 'family', async () => { if (busy) return; busy = true; await say(m.line, null, { talk: true }); busy = false; });
       (async () => { busy = true; await S.sleep(350); await S.say('bq7_E16_add', { talk: true }); busy = false; })();
     }

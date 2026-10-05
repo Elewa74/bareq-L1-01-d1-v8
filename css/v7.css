@@ -287,3 +287,37 @@
 }
 /* v8 fixed stage (owner R3 STAGE): the stage wrapper is layout-neutral outside theme 8 */
 .elp-fit { display: contents; }
+/* OWNER R3 E07 «تداخل»: while a video checkpoint/end question is open (frame .is-vq) the caption bubble is hidden (the card carries the prompt) */
+.is-vq .elp-cap { visibility: hidden !important; }
+
+/* VIDEO_E07 r4 · end question (owner R3 GLOBAL ladder + «words always connected») — video7.js endQuestion */
+.v7-eq { position: relative; }
+.v7-eq-pick.is-wrong, .v7-eq-hit.is-wrong { border-color: #E5484D; box-shadow: 0 0 0 5px #E5484D, 0 12px 24px rgba(0, 52, 91, .14); }
+.v7-eq-x { position: absolute; top: -10px; inset-inline-start: -10px; width: 34px; height: 34px; border-radius: 50%; background: #E5484D; color: #fff;
+  font: 900 20px/34px var(--ff-ui, sans-serif); text-align: center; display: none; pointer-events: none; }
+.v7-eq-pick.is-wrong .v7-eq-x, .v7-eq-hit.is-wrong .v7-eq-x { display: block; }
+.v7-eq-pick.is-wrong.is-ok .v7-eq-x { display: none; }
+/* Bariq solves (✗2): he pops in pointing at the answer */
+.v7-eq-brq { position: absolute; inset-inline-end: -10px; bottom: -6px; width: 150px; height: auto; opacity: 0; transform: translateY(18px) scale(.9);
+  transition: opacity .35s, transform .35s; pointer-events: none; filter: drop-shadow(0 6px 10px rgba(0, 52, 91, .2)); }
+.v7-eq.is-solve .v7-eq-brq { opacity: 1; transform: none; }
+/* ONE connected word (q.word): drawn once, invisible hit boxes measured on the glyphs; the outline marks exactly the glyph's ink */
+.v7-eq-opts.is-word1 { justify-content: center; }
+.v7-eq-word { position: relative; display: inline-block; direction: rtl; padding: 0 40px; border-radius: 26px; background: var(--white, #fff);
+  box-shadow: 0 6px 0 var(--sky-line, #B9DDF1), 0 12px 24px rgba(0, 52, 91, .14); }
+.v7-eq-wt { display: block; font: 700 184px/1.5 var(--ff-child); color: var(--navy, #00345B); white-space: nowrap; pointer-events: none; }
+:root[data-theme="8"] .v7-eq-wt { font-family: var(--font-letter); }
+.v7-eq-hit { position: absolute; top: 0; height: 100%; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; touch-action: manipulation; border-radius: 22px; }
+.v7-eq-hit::after { content: ''; position: absolute; top: 8px; bottom: 8px; left: calc(var(--ink-l, 0px) - 2px); width: calc(var(--ink-w, 100%) + 4px);
+  border-radius: 20px; border: 5px solid transparent; transition: border-color .2s, background .2s; }
+.v7-eq-hit.is-wrong { box-shadow: none; }
+.v7-eq-hit.is-wrong::after { border-color: #E5484D; background: rgba(229, 72, 77, .08); }
+.v7-eq-hit.is-ok::after, .v7-eq-hit.is-glow::after { border-color: var(--c-status-done, #2E9E5B); background: rgba(46, 158, 91, .1); }
+.v7-eq-hit .bq-tick { position: absolute; top: -8px; left: calc(var(--ink-l, 0px) + var(--ink-w, 0px) - 18px); width: 34px; height: 34px; border-radius: 50%;
+  background: var(--c-status-done); color: #fff; padding: 6px; display: none; }
+.v7-eq-hit.is-ok .bq-tick { display: block; }
+.v7-eq-hit .v7-eq-x { left: calc(var(--ink-l, 0px) - 16px); top: -8px; inset-inline-start: auto; }
+.v7-eq-hit:focus-visible { outline: 4px solid var(--c-focus-ring); outline-offset: -4px; }
+/* owner-approved Vazirmatn meem on the form tiles (v8), marks kept inside the tile */
+:root[data-theme="8"] .v7-eq-g { font-family: var(--font-letter); line-height: 1.6; }
+

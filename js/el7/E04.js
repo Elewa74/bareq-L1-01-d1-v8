@@ -153,7 +153,7 @@
     const chip = V8 ? (cls, svg, aria) => h('button.bq8-btn.e04-chip.' + cls + '.bq8-btn--' + cls, { type: 'button', 'aria-label': aria }, I.i8(cls))
       : (cls, svg, aria) => h('span.e04-chip.' + cls, { role: 'img', 'aria-label': aria, html: svg });
 
-    async function teach(slug, i) {
+    async function teach(slug, i, pre) {
       const wid = I.wordId(slug);
       const photo = h('button.e04-photo', { type: 'button', 'aria-label': V8 ? I.W[slug].w : 'اِسْمَعِ الكَلِمَةَ' },
         h('span.e04-face.e04-card', null, I.pic(slug), V8 ? wordEl(slug) : null), h('span.e04-face.e04-ctx', null, I.pic(slug, { key: ['ctx_' + slug, 'ctx_mango', 'card_' + slug, 'w_' + slug, 'w_mango'].filter((k) => slug === 'manju' || !/mango/.test(k)) }), V8 ? wordEl(slug) : null));
@@ -175,6 +175,7 @@
       cur = { slug, photo };
       steps.cur(i);
       photo.addEventListener('click', async () => { if (busy) return; busy = true; photo.classList.add('is-play'); await S.stim(photo.classList.contains('is-ctx') ? 'bq7_E04_mean_' + slug : wid); photo.classList.remove('is-play'); busy = false; });
+      if (pre) await pre(); // the intro line plays over the first card (no empty board while it is heard)
       await S.sleep(450);
       // ٢ الاستماع
       cEar.classList.add('is-on'); photo.classList.add('is-play');
@@ -287,13 +288,13 @@
 
     (async () => {
       await S.sleep(400);
-      await S.say('bq7_E04_intro');
       const onlyOral = ctx.step === 'oral';
       const start = ctx.step === 'check' || ctx.step === 'quiz' || onlyOral ? WORDS.length : 0;
       // مراجعة موجّهة (S9): تُعاد الكلمات الثلاث المسؤول عنها فقط ثم التحقّق
       const teachList = ctx.review && !start ? WORDS.map((w, i) => [w, i]).filter(([w]) => QUIZ.some((q) => q.t === w)) : WORDS.map((w, i) => [w, i]).slice(start);
       if (ctx.review) WORDS.forEach((w, i) => { if (!teachList.some((x) => x[1] === i)) steps.on(i); });
-      for (const [w, i] of teachList) await teach(w, i);
+      if (!teachList.length) await S.say('bq7_E04_intro');
+      for (const [w, i] of teachList) await teach(w, i, w === teachList[0][0] ? () => S.say('bq7_E04_intro') : null);
       if (onlyOral) WORDS.forEach((w, i) => steps.on(i));
       const res = [];
       if (!onlyOral) for (let q = 0; q < QUIZ.length; q++) { res.push(await quizRound(QUIZ[q], q)); steps.on(WORDS.length + q); }
