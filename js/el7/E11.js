@@ -319,6 +319,9 @@
     const dots = X.dots(top, nItems);
     const body = h('div.e11-body');
     root.append(top, body);
+    // fix 2: the entrance animation (.x7-in) must not replay after a pop / shake / tap hint on the same card
+    // (animation-name went x7Pop → x7In again: the card blinked out and slid back in for ≈ 0.4 s)
+    ['animationend', 'animationcancel'].forEach((t) => body.addEventListener(t, (e) => { if (e.animationName === 'x7In' && e.target.classList) e.target.classList.remove('x7-in'); }));
     const buddy = X.buddy(root);
     const fitH = () => { const H = stage.clientHeight || 600; root.style.setProperty('--H', H + 'px'); root.classList.toggle('is-short', H < 420); };
     if (!V8) {
@@ -494,10 +497,15 @@
           const sx = wrapOpts.offsetWidth ? (wr.width / wrapOpts.offsetWidth) || 1 : 1;
           const bl = parseFloat(getComputedStyle(wrapOpts).borderLeftWidth) || 0, bt = parseFloat(getComputedStyle(wrapOpts).borderTopWidth) || 0;
           const wy = wordEl.getBoundingClientRect();
+          // fix 2 (owner «التشكيل داخل المربع»): the letter box spans the word's real ink (harakat, dots, sukun rings) + 6 px, inside the card
+          const ink = X.inkBox(wordEl), ch = wrapOpts.clientHeight;
+          let iT = ink ? (ink.top - wr.top) / sx - bt - 6 : (wy.top - wr.top) / sx - bt + 4;
+          let iB = ink ? (ink.bottom - wr.top) / sx - bt + 6 : (wy.bottom - wr.top) / sx - bt - 4;
+          iT = Math.max(2, iT); iB = Math.min(ch - 2, Math.max(iB, iT + 64 / sx));
           btns.forEach((b, i) => {
             const r = boxes[i]; if (!r) return;
             const cx = ((r.left + r.right) / 2 - wr.left) / sx - bl, bw = (r.right - r.left) / sx, hw = Math.max(64 / sx, bw);
-            const tY = (wy.top - wr.top) / sx - bt + 4, hY = Math.max(64 / sx, wy.height / sx - 8);
+            const tY = iT, hY = iB - iT;
             Object.assign(b.style, { left: (cx - hw / 2) + 'px', width: hw + 'px', top: tY + 'px', height: hY + 'px' });
             b.style.setProperty('--bw', bw.toFixed(1) + 'px');
             b.style.setProperty('--mb', Math.max(0, wrapOpts.clientHeight - tY - hY).toFixed(1) + 'px'); // ✓/✗ badge goes under the card's ink area (clear of a final م tail)

@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261005211317",
+"build": "261006035017",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -2985,6 +2985,114 @@ window.BQ_DATA={
 "tag": "[delighted]",
 "use": "E10 win"
 },
+"bq7_W_tuffaha": {
+"sp": "حبيبة",
+"t": "تُفّاحَةْ",
+"tag": "[clearly]",
+"use": "word model — E10 v8 C (lunch bag no-م distractor: apple) · DRAFT"
+},
+"bq7_E10c_intro": {
+"sp": "بارق",
+"t": "غَدًا يَوْمُ المَدْرَسَةِ! هَيّا نُجَهِّزْ حَقيبَةَ ماجِدْ.",
+"tag": "[warm, excited]",
+"use": "E10 v8 concept C «مِصْباحُ بارِقٍ» — opening (master shot) · DRAFT"
+},
+"bq7_E10c_light": {
+"sp": "بارق",
+"t": "أَنا أُضيءُ لَكَ المَكانَ.",
+"tag": "[warm, playful]",
+"use": "E10 C — Bariq glows brighter (opening) · DRAFT"
+},
+"bq7_E10c_rule": {
+"sp": "حبيبة",
+"t": "نَضَعُ في الحَقيبَةِ ما يَبْدَأُ بِصَوْتِ: مَ.",
+"tag": "[clearly]",
+"use": "E10 C — the task, heard clearly at the start; COMPOSED: carrier «…بِصَوْتِ» + bq7_S_ma · DRAFT"
+},
+"bq7_E10c_turn": {
+"sp": "بارق",
+"t": "وَالآنَ دَوْرُكَ!",
+"tag": "[encouraging]",
+"use": "E10 C — after Bariq's banana demo in the lunch bag · DRAFT"
+},
+"bq7_E10c_pick_thing": {
+"sp": "حبيبة",
+"t": "اِلْمِسْ ما يَبْدَأُ بِصَوْتِ: مَ.",
+"tag": "[clearly]",
+"use": "E10 C — in every opened place (ear button repeats it); COMPOSED: carrier + bq7_S_ma · DRAFT"
+},
+"bq7_E10c_pick_place": {
+"sp": "حبيبة",
+"t": "اِلْمِسْ مَكانًا مُضيئًا لِنَفْتَحَهُ.",
+"tag": "[clearly, warm]",
+"use": "E10 C — master shot: choose a glowing closed place · DRAFT"
+},
+"bq7_E10c_bag": {
+"sp": "بارق",
+"t": "إِلى الحَقيبَةِ!",
+"tag": "[cheerful]",
+"use": "E10 C — a found thing flies into Majed's backpack (after the praise line) · DRAFT"
+},
+"bq7_E10c_mid_yes": {
+"sp": "بارق",
+"t": "أَحْسَنْتَ! سَمِعْتَ صَوْتَ المِيمِ!",
+"tag": "[warmly, delighted]",
+"use": "E10 C — middle/last-م item (قَميص قَلَم قَمَر): gold, never an error (OWNER 2026-10-05) · DRAFT"
+},
+"bq7_E10c_mid_rule": {
+"sp": "بارق",
+"t": "لَكِنَّنا نَبْحَثُ عَمّا يَبْدَأُ بِصَوْتِ: مَ.",
+"tag": "[warmly, clearly]",
+"use": "E10 C — after the word chip of a middle/last-م item (first time); COMPOSED: BRQ carrier + BRQ «مَ» (carriers/brq_ma) · DRAFT"
+},
+"bq7_E10c_help": {
+"sp": "بارق",
+"t": "أَكْمِلْ وَرَكِّزْ… اُنْظُرْ أَيْنَ أُضيءُ!",
+"tag": "[warmly, encouraging]",
+"use": "E10 C — ✗2: Bariq floats beside the answer and lights it · DRAFT"
+},
+"bq7_E10c_moon": {
+"sp": "بارق",
+"t": "ما أَجْمَلَ القَمَرَ!",
+"tag": "[in wonder]",
+"use": "E10 C — window curtain opens (wonder beat before the moon is touched) · DRAFT"
+},
+"bq7_E10c_final": {
+"sp": "حبيبة",
+"t": "اِلْمِسْ شَيْئًا كَبيرًا يَبْدَأُ بِصَوْتِ: مَ.",
+"tag": "[clearly]",
+"use": "E10 C — last decision in the desk shot (مَكْتَب vs كِتاب); COMPOSED: carrier + bq7_S_ma · DRAFT"
+},
+"bq7_E10c_desk_ok": {
+"sp": "بارق",
+"t": "نَضَعُ الحَقيبَةَ عَلى المَكْتَبِ لِلصَّباحِ.",
+"tag": "[cheerful]",
+"use": "E10 C — after مَكْتَب is found: the backpack goes onto the desk · DRAFT"
+},
+"bq7_E10c_l2_intro": {
+"sp": "بارق",
+"t": "صُنْدوقُ ماجِدٍ لَهُ أَقْفالٌ عَجيبَةٌ! يُفْتَحُ بِالحَرْفِ الصَّحيحِ.",
+"tag": "[mysterious, playful]",
+"use": "E10 C level 2 «سِرُّ الصُّنْدوقِ» intro (then approved bq7_E10_r2_task) · DRAFT"
+},
+"bq7_E10c_box_open": {
+"sp": "بارق",
+"t": "اِنْفَتَحَ الصُّنْدوقُ! اُنْظُرْ إِلى النُّجومِ!",
+"tag": "[amazed, delighted]",
+"use": "E10 C — box opens, star night-light shines on the ceiling · DRAFT"
+},
+"bq7_E10c_win_maj": {
+"sp": "ماجد",
+"t": "حَقيبَتي جاهِزَةٌ لِلْمَدْرَسَةِ! تُصْبِحُ عَلى خَيْرٍ يا بارِقْ.",
+"tag": "[happy, sleepy]",
+"use": "E10 C win — Majed (story line, no «شُكْرًا») · DRAFT"
+},
+"bq7_E10c_win_brq": {
+"sp": "بارق",
+"t": "وَأَنْتَ مِنْ أَهْلِهِ يا ماجِدْ!",
+"tag": "[softly, warm]",
+"use": "E10 C win — Bariq answers, dims to a night-light · DRAFT"
+},
 "bq7_E11_intro": {
 "sp": "بارق",
 "t": "هَيّا نَرى ماذا تَعَلَّمْنا! أَجِبْ وَحْدَكَ.",
@@ -3658,7 +3766,7 @@ window.BQ_DATA={
 "use": "E13 scene 7 — narrator reported speech; replaces bq7_E13_jda7 (before n7)"
 }
 },
-"lines7": 326,
+"lines7": 344,
 "audio": [
 "L1-01_aud-104_mix_v01",
 "L1-01_d1_s1_01",
@@ -3900,6 +4008,23 @@ window.BQ_DATA={
 "bq7_E10_r2_task",
 "bq7_E10_title",
 "bq7_E10_win",
+"bq7_E10c_bag",
+"bq7_E10c_box_open",
+"bq7_E10c_desk_ok",
+"bq7_E10c_final",
+"bq7_E10c_help",
+"bq7_E10c_intro",
+"bq7_E10c_l2_intro",
+"bq7_E10c_light",
+"bq7_E10c_mid_rule",
+"bq7_E10c_mid_yes",
+"bq7_E10c_moon",
+"bq7_E10c_pick_place",
+"bq7_E10c_pick_thing",
+"bq7_E10c_rule",
+"bq7_E10c_turn",
+"bq7_E10c_win_brq",
+"bq7_E10c_win_maj",
 "bq7_E11_ack1",
 "bq7_E11_ack2",
 "bq7_E11_all",
@@ -4092,6 +4217,7 @@ window.BQ_DATA={
 "bq7_W_timsah",
 "bq7_W_timsah_emph",
 "bq7_W_timsah_seg",
+"bq7_W_tuffaha",
 "bq7_song",
 "bq7_song_bed",
 "bq7_song_v8"
