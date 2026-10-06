@@ -127,10 +127,10 @@
     const V8 = I.v8();
     const WORDS = ['maktab', 'musht', 'miftah', 'timsah', 'manju', 'numur', 'qamis'];
     I.lines({
-      bq7_E04_intro: 'هَذِهِ كَلِماتٌ جَديدَةٌ. اُنْظُرْ، وَاسْمَعْ، ثُمَّ قُلْ.', bq7_E04_check_intro: 'الآنَ اسْمَعْ، وَالْمِسِ الصّورَةَ.', bq7_E04_end: 'صارَتْ عِنْدَكَ كَلِماتٌ جَديدَةٌ!',
+      bq7_E04_intro: 'هَذِهِ كَلِماتٌ جَديدَةٌ. اُنْظُر، وَاسْمَع، ثُمَّ قُل.', bq7_E04_check_intro: 'الآنَ اسْمَع، وَالْمِسِ الصّورَةَ.', bq7_E04_end: 'صارَت عِنْدَكَ كَلِماتٌ جَديدَةٌ!',
       bq7_E04_q_maktab: 'أَيْنَ المَكْتَبُ؟', bq7_E04_q_miftah: 'أَيْنَ المِفْتاحُ؟', bq7_E04_q_numur: 'أَيْنَ النُّمورُ؟',
-      bq7_E04_say_maktab: 'قُلْ: مَكْتَبْ.', bq7_E04_say_musht: 'قُلْ: مُشْطْ.', bq7_E04_say_miftah: 'قُلْ: مِفْتاحْ.', bq7_E04_say_timsah: 'قُلْ: تِمْساحْ.',
-      bq7_E04_say_manju: 'قُلْ: مانْجو.', bq7_E04_say_numur: 'قُلْ: نُمورْ.', bq7_E04_say_qamis: 'قُلْ: قَميصْ.',
+      bq7_E04_say_maktab: 'قُل: مَكْتَب.', bq7_E04_say_musht: 'قُل: مُشْط.', bq7_E04_say_miftah: 'قُل: مِفْتاح.', bq7_E04_say_timsah: 'قُل: تِمْساح.',
+      bq7_E04_say_manju: 'قُل: مانْجو.', bq7_E04_say_numur: 'قُل: نُمور.', bq7_E04_say_qamis: 'قُل: قَميص.',
       bq7_E04_mean_maktab: 'أَجْلِسُ إِلى المَكْتَبِ، وَأَرْسُمُ.', bq7_E04_mean_musht: 'أُسَرِّحُ شَعْري بِالمُشْطِ.', bq7_E04_mean_miftah: 'أَفْتَحُ الدُّرْجَ بِالمِفْتاحِ.',
       bq7_E04_mean_timsah: 'التِّمْساحُ يَعيشُ في النَّهْرِ.', bq7_E04_mean_manju: 'المانْجو فاكِهَةٌ حُلْوَةٌ.', bq7_E04_mean_numur: 'النُّمورُ في حَديقَةِ الحَيَوانِ.', bq7_E04_mean_qamis: 'أَلْبَسُ قَميصي الأَصْفَرَ.',
     });
@@ -159,10 +159,10 @@
         h('span.e04-face.e04-card', null, I.pic(slug), V8 ? wordEl(slug) : null), h('span.e04-face.e04-ctx', null, I.pic(slug, { key: ['ctx_' + slug, 'ctx_mango', 'card_' + slug, 'w_' + slug, 'w_mango'].filter((k) => slug === 'manju' || !/mango/.test(k)) }), V8 ? wordEl(slug) : null));
       // owner-late: touching the written word always says the WORD (also on the meaning side of the card)
       photo.querySelectorAll('.e04-w').forEach((we) => we.addEventListener('click', async (e) => { e.stopPropagation(); if (busy) return; busy = true; photo.classList.add('is-play'); await S.stim(wid); photo.classList.remove('is-play'); busy = false; }));
-      const cEar = chip('ear', I.IC.ear, 'اِسْمَعْ'), cSay = chip('mouth', I.IC.mouth, 'قُلْ'), cEye = chip('eye', I.IC.eye, 'المَعْنى');
+      const cEar = chip('ear', I.IC.ear, 'اِسْمَع'), cSay = chip('mouth', I.IC.mouth, 'قُل'), cEye = chip('eye', I.IC.eye, 'المَعْنى');
       const ctl = h('div.e04-ctl');
       if (V8) {
-        const slot = h('div.bq8-skillrow.e04-slot', { role: 'group', 'aria-label': 'اِسْمَعْ · قُلْ · اُنْظُرْ' }, cEar, cSay, cEye);
+        const slot = h('div.bq8-skillrow.e04-slot', { role: 'group', 'aria-label': 'اِسْمَع · قُل · اُنْظُر' }, cEar, cSay, cEye);
         main.replaceChildren(h('div.e04-col', null, photo, slot), ctl);
         const tapChip = (fn) => async () => { if (busy) return; busy = true; I.sfx('tick'); try { await fn(); } finally { busy = false; } };
         cEar.onclick = tapChip(async () => { photo.classList.add('is-play'); await S.stim(wid); photo.classList.remove('is-play'); });
@@ -261,7 +261,7 @@
         const qid = I.hasAudio(it.q) ? it.q : null;
         const pic = h('div.e04-opic', null, I.pic(it.w, { key: ['ctx_' + it.w, 'card_' + it.w] }), V8 ? wordEl(it.w) : null);
         const ow = pic.querySelector('.e04-w'); if (ow) ow.addEventListener('click', async () => { if (busy) return; busy = true; await I.playOn(S, pic, I.wordId(it.w)); busy = false; });
-        const cSay = V8 ? h('span.bq8-btn.bq8-btn--mouth.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ' }, I.i8('mouth')) : h('span.e04-chip.mouth', { role: 'img', 'aria-label': 'قُلْ', html: I.IC.mouth });
+        const cSay = V8 ? h('span.bq8-btn.bq8-btn--mouth.e04-chip.mouth', { role: 'img', 'aria-label': 'قُل' }, I.i8('mouth')) : h('span.e04-chip.mouth', { role: 'img', 'aria-label': 'قُل', html: I.IC.mouth });
         main.replaceChildren(h('div.e04-oral', null, pic, cSay));
         I.instr(S, qid || 'bq7_E04_o_say', 'mouth', async () => { if (busy) return; busy = true; await S.say(qid || 'bq7_E04_o_say'); busy = false; });
         await S.sleep(450);
@@ -303,7 +303,7 @@
       I.note(S, '<p><b>«قُلْها!» (S9 — استعمال الكلمة):</b> بعد التحقّق يسأل ماجد سؤالين (القَميص ثم النُّمور) ويتوقّف ٣ ث ليقول الطفل الكلمة، ثم يُسمَع النموذج في جملة. ' +
         '<b>احكم أنت:</b> اضغط مطوّلاً ١٫٥ ث على زاوية بارق ← «أتقن · قريب · ليس بعد» (أو من صفحة «دليل الإتقان»). ' + (judged ? 'سُجِّل حكمك.' : 'بلا حكم = لا تسجيل.') + '</p>' +
         (res.length ? '<p><b>نتيجة «كلماتي» (S9):</b> ' + QUIZ.map((q, i) => I.W[q.t].w + ' ' + (res[i] ? '✓ من الأولى' : '— بعد تلميح')).join(' · ') + ' (النجاح: ٣/٣، منها ٢ من الأولى).</p>' : '') +
-        '<p>وقفة «قُلْ» بلا ميكروفون: استمع أنت إلى ترديد الطفل، واربط الكلمة بشيء حقيقيّ في الغرفة إن أمكن. في الحصّة التالية: جملة من كلّ طفل عن شيء أحضره («هَذا مِفْتاحٌ»).</p>');
+        '<p>وقفة «قُل» بلا ميكروفون: استمع أنت إلى ترديد الطفل، واربط الكلمة بشيء حقيقيّ في الغرفة إن أمكن. في الحصّة التالية: جملة من كلّ طفل عن شيء أحضره («هَذا مِفْتاحٌ»).</p>');
       main.replaceChildren();
       buddy.set('cheer');
       await S.say('bq7_E04_end', { talk: true });

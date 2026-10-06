@@ -15,15 +15,15 @@
 
   const MISSIONS = [
     { id: 'm1', img: 'family_card', label: 'أَشْياءُ في البَيْتِ', line: 'bq7_E16_m1',
-      text: 'اِبْحَثْ مَعَ أُسْرَتِكَ في البَيْتِ عَنْ ثَلاثَةِ أَشْياءَ يَبْدَأُ اسْمُها بِصَوْتِ مَ، وَصَوِّرْها، أَوِ ارْسُمْها.' },
+      text: 'اِبْحَث مَعَ أُسْرَتِكَ في البَيْتِ عَن ثَلاثَةِ أَشْياءَ يَبْدَأُ اسْمُها بِصَوْتِ مَ، وَصَوِّرْها، أَوِ ارْسُمْها.' },
     { id: 'm2', img: 'ctx_manju', label: 'فاكِهَةٌ لَذيذَةٌ', line: 'bq7_E16_m2',
-      text: 'تَذَوَّقْ مَعَ أُسْرَتِكَ فاكِهَةً يَبْدَأُ اسْمُها بِصَوْتِ مَ: مَوْزٌ أَوْ مانْجو، وَقُلِ اسْمَها!' },
-    { id: 'm3', img: 'card_kitab', label: 'كِتابٌ أَوْ عُلْبَةٌ', line: 'bq7_E16_m3',
-      text: 'اِفْتَحْ مَعَ أَحَدٍ مِنْ أُسْرَتِكَ كِتابَ صُوَرٍ أَوْ عُلْبَةً، وَابْحَثا مَعًا عَنْ حَرْفِ المِيمِ، صَوْتُهُ مَ.' },
-    { id: 'm4', img: null, label: 'اُرْسُمْ بِإِصْبَعِكَ', line: 'bq7_E16_m4',   // ART need: e16_sand_tray (child's finger drawing «م» in a sand tray, parent's hand near)
-      text: 'اُرْسُمْ بِإِصْبَعِكَ حَرْفَ المِيمِ، صَوْتُهُ مَ، عَلى صينِيَّةِ رَمْلٍ أَوْ طَحينٍ، أَوْ عَلى كَفِّ أَحَدٍ مِنْ أُسْرَتِكَ.' },
+      text: 'تَذَوَّق مَعَ أُسْرَتِكَ فاكِهَةً يَبْدَأُ اسْمُها بِصَوْتِ مَ: مَوْزٌ أَو مانْجو، وَقُلِ اسْمَها!' },
+    { id: 'm3', img: 'card_kitab', label: 'كِتابٌ أَو عُلْبَةٌ', line: 'bq7_E16_m3',
+      text: 'اِفْتَح مَعَ أَحَدٍ مِن أُسْرَتِكَ كِتابَ صُوَرٍ أَو عُلْبَةً، وَابْحَثا مَعًا عَن حَرْفِ المِيمِ، صَوْتُهُ مَ.' },
+    { id: 'm4', img: null, label: 'اُرْسُم بِإِصْبَعِكَ', line: 'bq7_E16_m4',   // ART need: e16_sand_tray (child's finger drawing «م» in a sand tray, parent's hand near)
+      text: 'اُرْسُم بِإِصْبَعِكَ حَرْفَ المِيمِ، صَوْتُهُ مَ، عَلى صينِيَّةِ رَمْلٍ أَو طَحينٍ، أَو عَلى كَفِّ أَحَدٍ مِن أُسْرَتِكَ.' },
   ];
-  const LINES = { bq7_E16_pick: 'اِخْتَرْ مُهِمَّةً، وَالْمِسْ صورَتَها.', bq7_E16_add: 'صَوِّرْ ما وَجَدْتَ، أَوِ ارْسُمْهُ هُنا.', bq7_E16_bye: 'إِلى اللِّقاءِ يا صَديقي!' };
+  const LINES = { bq7_E16_pick: 'اِخْتَر مُهِمَّةً، وَالْمِس صورَتَها.', bq7_E16_add: 'صَوِّر ما وَجَدْتَ، أَوِ ارْسُمْهُ هُنا.', bq7_E16_bye: 'إِلى اللِّقاءِ يا صَديقي!' };
   MISSIONS.forEach((m) => { LINES[m.line] = m.text; });
 
   const CAM = '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="14" y="34" width="92" height="66" rx="16" fill="#3D7BF0" stroke="#0B2D4F" stroke-width="5"/><path d="M42 34l7-12h22l7 12" fill="#D6E4FF" stroke="#0B2D4F" stroke-width="5" stroke-linejoin="round"/><circle cx="60" cy="66" r="21" fill="#fff" stroke="#0B2D4F" stroke-width="5"/><circle cx="60" cy="66" r="10" fill="#0B2D4F"/><circle cx="91" cy="48" r="5" fill="#FFC21A"/></svg>';
@@ -200,8 +200,8 @@
     function slot(m, i) {
       const el = h('div.e16-slot', { role: 'group', 'aria-label': 'خانَةٌ ' + I.AR(i + 1) });
       const file = h('input', { type: 'file', accept: 'image/*', capture: 'environment', tabindex: '-1', 'aria-hidden': 'true' });
-      const cam = h('button.e16-sb.cam', { type: 'button', 'aria-label': 'صَوِّرْ', html: CAM });
-      const pen = h('button.e16-sb.pen', { type: 'button', 'aria-label': 'اُرْسُمْ' }, V8 ? I.i8('pencil') : '✏️');
+      const cam = h('button.e16-sb.cam', { type: 'button', 'aria-label': 'صَوِّر', html: CAM });
+      const pen = h('button.e16-sb.pen', { type: 'button', 'aria-label': 'اُرْسُم' }, V8 ? I.i8('pencil') : '✏️');
       const show = (src) => {
         el.querySelectorAll(':scope > img, :scope > .e16-star').forEach((x) => x.remove());
         if (src) { el.prepend(h('img', { src, alt: '' }), h('span.e16-star', { 'aria-hidden': 'true' })); el.classList.add('is-filled'); }
@@ -234,15 +234,15 @@
       ['pointerup', 'pointercancel'].forEach((t) => cv.addEventListener(t, () => { down = false; }));
       const close = () => pad.remove();
       const ok = h('button.pt.ok', { type: 'button', 'aria-label': 'تَمَّ' }, V8 ? I.i8('check') : '✓');
-      const clr = h('button.pt', { type: 'button', 'aria-label': 'اِمْسَحْ' }, V8 ? I.i8('replay') : '↺');
-      const x = h('button.pt', { type: 'button', 'aria-label': 'أَغْلِقْ' }, V8 ? I.i8('close') : '×');
+      const clr = h('button.pt', { type: 'button', 'aria-label': 'اِمْسَح' }, V8 ? I.i8('replay') : '↺');
+      const x = h('button.pt', { type: 'button', 'aria-label': 'أَغْلِق' }, V8 ? I.i8('close') : '×');
       ok.onclick = () => { const src = drew ? cv.toDataURL('image/jpeg', 0.7) : null; close(); if (src) { const c2 = document.createElement('canvas'); c2.width = 320; c2.height = 240; c2.getContext('2d').drawImage(cv, 0, 0, 320, 240); done(c2.toDataURL('image/jpeg', 0.75)); } };
       clr.onclick = () => { g.fillStyle = '#fff'; g.fillRect(0, 0, 800, 600); drew = false; };
       x.onclick = close;
       // tap-robust: the pad buttons also answer pointerup (the first tap right after a stroke can lose its synthetic click)
       [ok, clr, x, ...cBtns].forEach((b) => { const f = b.onclick; b.onclick = null; let t = 0; const go = () => { const n = Date.now(); if (n - t < 400) return; t = n; f(); };
         b.addEventListener('pointerup', go); b.addEventListener('click', go); });
-      const pad = h('div.e16-pad', { role: 'dialog', 'aria-label': 'اُرْسُمْ' }, h('div.pbox', null, cv, h('div.prow', null, ...cBtns, clr, x, ok)));
+      const pad = h('div.e16-pad', { role: 'dialog', 'aria-label': 'اُرْسُم' }, h('div.pbox', null, cv, h('div.prow', null, ...cBtns, clr, x, ok)));
       host.append(pad);
       ctx.onCleanup(() => pad.remove());
     }
@@ -265,7 +265,7 @@
       p = h('div.e16-print', { dir: 'rtl', lang: 'ar' });
       const ul = (a) => '<ul>' + a.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>';
       const box = '<div class="p-box"></div>';
-      p.innerHTML = '<p class="p-h">' + esc(title) + ' — اِخْتَرْ مُهِمَّةً</p>' +
+      p.innerHTML = '<p class="p-h">' + esc(title) + ' — اِخْتَر مُهِمَّةً</p>' +
         MISSIONS.map((m) => '<div class="p-m">' + (m.img && BQ.hasImg7 && BQ.hasImg7(m.img) ? '<img src="' + BQ.img7(m.img) + '" alt="">' : '<div class="p-sand"></div>') +
           '<p class="p-k">' + esc(m.text) + '</p><div class="p-boxes">' + box + box + box + '</div></div>').join('') +
         '<hr class="p-cut"><h2>' + esc(role.title) + '</h2><p><b>هدف اليوم:</b> ' + esc(role.goal) + '</p>' +

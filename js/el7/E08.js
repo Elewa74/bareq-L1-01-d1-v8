@@ -22,11 +22,11 @@
   ];
   const BUILD = [
     { w: 'manju', parts: ['ما', 'نْجو'], dis: 'با' },
-    { w: 'musht', parts: ['مُ', 'شْطْ'], dis: 'بُ' },
-    { w: 'maktab', parts: ['مَكْ', 'تَبْ'], dis: 'فَ' },
-    { w: 'miftah', parts: ['مِفْ', 'تاحْ'], dis: 'بِ' },
-    { w: 'qamis', parts: ['قَ', 'ميصْ'], dis: 'بيصْ' },
-    { w: 'timsah', parts: ['تِمْ', 'ساحْ'], dis: 'تِبْ' },
+    { w: 'musht', parts: ['مُ', 'شْط'], dis: 'بُ' },
+    { w: 'maktab', parts: ['مَكْ', 'تَب'], dis: 'فَ' },
+    { w: 'miftah', parts: ['مِفْ', 'تاح'], dis: 'بِ' },
+    { w: 'qamis', parts: ['قَ', 'ميص'], dis: 'بيص' },
+    { w: 'timsah', parts: ['تِمْ', 'ساح'], dis: 'تِبْ' },
   ];
   const READ = [
     { w: 'musht', opts: ['musht', 'miftah', 'maktab'] },
@@ -163,7 +163,7 @@
     let okN = 0; const SCORED = BUILD.length + READ.length + ANALYZE.length;
     const scored = (ok) => { if (ok) okN++; if (F8) F8.starsTo(Math.floor(okN * 5 / SCORED)); };
     const top = h('div.e08-top');
-    const ph = X.phase(top, ['اِقْرَأْ وَرَكِّبْ', 'حَلِّلْ']);
+    const ph = X.phase(top, ['اِقْرَأ وَرَكِّب', 'حَلِّل']);
     const total = CHAINS.length + BUILD.length + READ.length + ANALYZE.length;
     const dots = X.dots(top, total);
     const body = h('div.e08-body');
@@ -220,8 +220,8 @@
         if (i) row.append(V8 ? X.i8('next', 'e08-arr8.x7-in') : h('span.e08-arrow.x7-in', { 'aria-hidden': 'true', html: ARROW }));
         const it = items[i];
         const b = V8
-          ? h('button.e08-link.bq8-tile.x7-in.is-wait' + (it.word ? '.bq8-tile--word' : '.bq8-tile--syll'), { type: 'button', 'aria-label': 'اِلْمِسْ وَاسْمَعْ' }, X.markMeem(it.text), X.i8('ear', 'e08-ear8'))
-          : h('button.e08-link.x7-in.is-wait', { type: 'button', 'aria-label': 'اِلْمِسْ وَاسْمَعْ' }, X.markMeem(it.text), h('span.e08-ear', { 'aria-hidden': 'true' }, X.icon('ear')));
+          ? h('button.e08-link.bq8-tile.x7-in.is-wait' + (it.word ? '.bq8-tile--word' : '.bq8-tile--syll'), { type: 'button', 'aria-label': 'اِلْمِس وَاسْمَع' }, X.markMeem(it.text), X.i8('ear', 'e08-ear8'))
+          : h('button.e08-link.x7-in.is-wait', { type: 'button', 'aria-label': 'اِلْمِس وَاسْمَع' }, X.markMeem(it.text), h('span.e08-ear', { 'aria-hidden': 'true' }, X.icon('ear')));
         row.append(b);
         await S.sleep(it.word ? 900 : 600); // وقت ليقرأ بصوته أوّلاً
         await new Promise((res) => {
@@ -492,11 +492,11 @@
       const okN = (a) => a.filter((r) => r.ok).length;
       X.note(ctx, '<p><b>ما يجري:</b> أ١ سلسلتا قراءة (مَ ← ما ← مانْجو · مُ ← مو ← نُمور): يقرأ الطفل بصوته أوّلاً ثم يلمس ليتحقّق. ' +
         'أ٢ يركّب ٦ كلمات بسحب المقاطع (قطعة مشتِّتة في كلّ بند). أ٣ يقرأ ٣ كلمات وحده ويلمس صورتها (لا صوت قبل الجواب). ' +
-        'ب «حَلِّلْ»: تتفكّك الكلمة (مَوْز · قَمَر · فَم) ويضع الطفل الميم في خانة موضعها.</p>' +
-        '<p><b>للمعلّم:</b> القطعة الأولى في التركيب = الميم وحركتها (مُ + شْطْ، ما + نْجو)؛ هذا تركيب للقراءة لا تقطيع عروضيّ.</p>' +
+        'ب «حَلِّل»: تتفكّك الكلمة (مَوْز · قَمَر · فَم) ويضع الطفل الميم في خانة موضعها.</p>' +
+        '<p><b>للمعلّم:</b> القطعة الأولى في التركيب = الميم وحركتها (مُ + شْط، ما + نْجو)؛ هذا تركيب للقراءة لا تقطيع عروضيّ.</p>' +
         '<p><b>المحاولات:</b> الأولى تلميح يعلّل (ابدأ من اليمين / الكلمة مقطّعة) · الثانية ضوء على الصواب · الثالثة يُعرض الجواب بهدوء. قرائن S7 (أ٢، أ٣) وS6 (ب) — الحكم في E11.</p>' +
         '<p><b>النجاح:</b> أ٣ ٢ من ٣ من المحاولة الأولى على الأقلّ + ب ٢ من ٣.' + (log.read.length ? ' الآن: أ٣ ' + AR(okN(log.read)) + '/' + AR(log.read.length) : '') + (log.analyze.length ? ' · ب ' + AR(okN(log.analyze)) + '/' + AR(log.analyze.length) : '') + '</p>' +
-        tbl('التركيب', log.build) + tbl('القراءة المستقلّة', log.read) + tbl('حَلِّلْ', log.analyze));
+        tbl('التركيب', log.build) + tbl('القراءة المستقلّة', log.read) + tbl('حَلِّل', log.analyze));
     }
   }
 

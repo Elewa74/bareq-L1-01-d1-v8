@@ -28,21 +28,21 @@
   X.G = { try: 'bq7_G_try', listen: 'bq7_G_listen_again', hintStart: 'bq7_G_hint_start', light: 'bq7_G_look_light', shape: 'bq7_G_look_shape', model: 'bq7_G_model', next: 'bq7_G_next', choose: 'bq7_G_listen_choose', end: 'bq7_G_end', pos: { ini: 'bq7_G_pos_first', mid: 'bq7_G_pos_mid', fin: 'bq7_G_pos_last' } };
 
   /* ================= المفردات والمقاطع (SPEC v7 · DECISIONS و) ================= */
-  /* الكلمة تُكتب وتُنطق بالوقف · img: card_<k> · au: bq7_W_<k> · seg: bq7_W_<k>_seg */
+  /* الكلمة تُنطق بالوقف وتُكتب بلا سكون على آخر حرف (OWNER_R3 2026-10-06 · nosukun.js) · img: card_<k> · au: bq7_W_<k> · seg: bq7_W_<k>_seg */
   const W = (X.W = {
-    maktab: { t: 'مَكْتَبْ', syl: ['مَكْ', 'تَبْ'], pos: 'ini' },
-    musht: { t: 'مُشْطْ', syl: ['مُ', 'شْطْ'], pos: 'ini' },
-    miftah: { t: 'مِفْتاحْ', syl: ['مِفْ', 'تاحْ'], pos: 'ini' },
-    timsah: { t: 'تِمْساحْ', syl: ['تِمْ', 'ساحْ'], pos: 'mid' },
+    maktab: { t: 'مَكْتَب', syl: ['مَكْ', 'تَب'], pos: 'ini' },
+    musht: { t: 'مُشْط', syl: ['مُ', 'شْط'], pos: 'ini' },
+    miftah: { t: 'مِفْتاح', syl: ['مِفْ', 'تاح'], pos: 'ini' },
+    timsah: { t: 'تِمْساح', syl: ['تِمْ', 'ساح'], pos: 'mid' },
     manju: { t: 'مانْجو', syl: ['ما', 'نْجو'], pos: 'ini' },
-    numur: { t: 'نُمورْ', syl: ['نُ', 'مورْ'], pos: 'mid' },
-    qamis: { t: 'قَميصْ', syl: ['قَ', 'ميصْ'], pos: 'mid' },
-    mawz: { t: 'مَوْزْ', letters: ['مَ', 'وْ', 'زْ'], pos: 'ini' },
-    qamar: { t: 'قَمَرْ', letters: ['قَ', 'مَ', 'رْ'], pos: 'mid' },
-    fam: { t: 'فَمْ', letters: ['فَ', 'مْ'], pos: 'fin' },
-    qalam: { t: 'قَلَمْ', letters: ['قَ', 'لَ', 'مْ'], pos: 'fin' },
+    numur: { t: 'نُمور', syl: ['نُ', 'مور'], pos: 'mid' },
+    qamis: { t: 'قَميص', syl: ['قَ', 'ميص'], pos: 'mid' },
+    mawz: { t: 'مَوْز', letters: ['مَ', 'وْ', 'ز'], pos: 'ini' },
+    qamar: { t: 'قَمَر', letters: ['قَ', 'مَ', 'ر'], pos: 'mid' },
+    fam: { t: 'فَم', letters: ['فَ', 'م'], pos: 'fin' },
+    qalam: { t: 'قَلَم', letters: ['قَ', 'لَ', 'م'], pos: 'fin' },
     // مشتِّتات سمعية/صورية فقط (لا تُكتب على شاشة الطفل — قرار أ)
-    bab: { t: 'بابْ', dis: true }, fil: { t: 'فيلْ', dis: true }, batta: { t: 'بَطَّةْ', dis: true }, farasha: { t: 'فَراشَةْ', dis: true }, kura: { t: 'كُرَةْ', dis: true },
+    bab: { t: 'باب', dis: true }, fil: { t: 'فيل', dis: true }, batta: { t: 'بَطَّة', dis: true }, farasha: { t: 'فَراشَة', dis: true }, kura: { t: 'كُرَة', dis: true },
   });
   Object.keys(W).forEach((k) => { const w = W[k]; w.key = k; w.img = 'card_' + k; w.au = 'bq7_W_' + k; w.seg = 'bq7_W_' + k + '_seg'; T[w.au] = ['HAB', w.t]; });
   /** المقاطع ← ملفّ الصوت (LINES_v7: bq7_S_*) */
@@ -277,11 +277,56 @@
       tile.classList.remove('is-lifted');
       return ok;
     }
+    /* drag ghost (OWNER_R3 2026-10-06 E14 iPad «الصورة بحجمها الأصليّ بعرض الشاشة»): the ghost used to be a clone in <body>, outside the
+       element root → element-scoped rules («.e14 .e14-wt img { width: … }») no longer matched and a word card's <img> was drawn at its
+       NATURAL size (1024 px webp) across the screen. Now (theme 8) the clone is placed INSIDE the element root (same CSS scope, same --u),
+       sized in stage layout px (offsetWidth/Height) and positioned/moved in layout px (client deltas ÷ BQ.stageScale()); every media child
+       (img/svg/canvas/video) is pinned to its measured box. No native HTML5 drag image is ever used (pointer events only). */
+    function ghostOf(el) {
+      const r = el.getBoundingClientRect();
+      const g = el.cloneNode(true);
+      g.classList.add('x7-ghost'); g.classList.remove('is-sel', 'is-lifted');
+      g.removeAttribute('id'); g.setAttribute('aria-hidden', 'true'); g.tabIndex = -1;
+      // pin every media child to its on-stage box (layout px) — never natural size
+      const src = el.querySelectorAll('img, svg, canvas, video, picture'), dst = g.querySelectorAll('img, svg, canvas, video, picture');
+      src.forEach((m, i) => {
+        const d = dst[i]; if (!d) return;
+        const w = m.offsetWidth != null ? m.offsetWidth : (m.getBoundingClientRect().width / (BQ.stageScale ? BQ.stageScale() : 1));
+        const hh = m.offsetHeight != null ? m.offsetHeight : (m.getBoundingClientRect().height / (BQ.stageScale ? BQ.stageScale() : 1));
+        const cs = getComputedStyle(m);
+        Object.assign(d.style, { width: w + 'px', height: hh + 'px', maxWidth: w + 'px', maxHeight: hh + 'px', minWidth: '0', minHeight: '0', objectFit: cs.objectFit || 'contain', flex: 'none' });
+        if (d.tagName === 'IMG') { d.setAttribute('width', String(Math.round(w))); d.setAttribute('height', String(Math.round(hh))); d.draggable = false; }
+      });
+      const st8 = el.closest('.bq8-stage');
+      const host = st8 ? (el.closest('.x7p') || root) : null;
+      if (host && host !== el && host.contains(el)) {
+        const s = (BQ.stageScale && BQ.stageScale()) || 1;
+        const w = el.offsetWidth, hh = el.offsetHeight;
+        g.classList.add('x7-ghost8', 'x7-ghost-in');
+        g.style.rotate = getComputedStyle(el).rotate;
+        Object.assign(g.style, { left: '0px', top: '0px', width: w + 'px', height: hh + 'px', maxWidth: 'none', maxHeight: 'none' });
+        host.append(g);
+        const g0 = g.getBoundingClientRect();
+        const k = (g0.width && w) ? g0.width / w : s; // the real visual scale of the host (== stage scale)
+        g._s = k;
+        g.style.left = ((r.left + r.width / 2 - (g0.left + g0.width / 2)) / k) + 'px';
+        g.style.top = ((r.top + r.height / 2 - (g0.top + g0.height / 2)) / k) + 'px';
+        return g;
+      }
+      Object.assign(g.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+      if (st8) { g.style.setProperty('--u', (st8.clientWidth / 1180) + 'px'); g.style.rotate = getComputedStyle(el).rotate; g.classList.add('x7-ghost8'); }
+      document.body.append(g);
+      g._s = 1;
+      return g;
+    }
     function back(tile, ghost, shake) {
       const go = () => {
-        const tr = tile.getBoundingClientRect(), gr = ghost.getBoundingClientRect();
+        const tr = tile.getBoundingClientRect(), gr = ghost.getBoundingClientRect(), gs = ghost._s || 1;
+        const cur = (ghost.style.transform.match(/translate\(([-\d.e]+)px, *([-\d.e]+)px\)/) || [0, 0, 0]).slice(1).map(Number);
         ghost.style.transition = reduced() ? 'none' : 'transform .28s cubic-bezier(.3,1.4,.5,1)';
-        ghost.style.transform = `translate(${tr.left - gr.left}px, ${tr.top - gr.top}px)`;
+        // home = the tile's centre (the ghost is drawn at 1.08 around its own centre)
+        const dx = (tr.left + tr.width / 2 - (gr.left + gr.width / 2)) / gs + cur[0], dy = (tr.top + tr.height / 2 - (gr.top + gr.height / 2)) / gs + cur[1];
+        ghost.style.transform = `translate(${dx}px, ${dy}px)`;
         setTimeout(() => { ghost.remove(); tile.classList.remove('is-lifted'); }, reduced() ? 0 : 300);
       };
       // wrong drop: a gentle shake where it was dropped, then it slides home
@@ -306,20 +351,12 @@
         if (!drag.moved && Math.hypot(dx, dy) < 8) return;
         if (!drag.moved) {
           drag.moved = true;
-          const r = el.getBoundingClientRect();
-          const g = el.cloneNode(true);
-          g.classList.add('x7-ghost'); g.classList.remove('is-sel');
-          g.removeAttribute('id'); g.setAttribute('aria-hidden', 'true');
-          Object.assign(g.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-          // v8: the ghost lives in <body>, outside the stage — carry the stage unit so its glyph keeps the same size
-          const st8 = el.closest('.bq8-stage');
-          if (st8) { g.style.setProperty('--u', (st8.clientWidth / 1180) + 'px'); g.style.rotate = getComputedStyle(el).rotate; g.classList.add('x7-ghost8'); }
-          document.body.append(g);
-          drag.ghost = g; drag.r = r;
+          drag.ghost = ghostOf(el);
           el.classList.add('is-lifted');
           setSel(null);
         }
-        drag.ghost.style.transform = `translate(${dx}px, ${dy}px) scale(1.08)`;
+        const gs = drag.ghost._s || 1; // visual → ghost-layout px (the v8 ghost lives INSIDE the scaled stage)
+        drag.ghost.style.transform = `translate(${dx / gs}px, ${dy / gs}px)`; // exactly the card's on-screen size (owner 2026-10-06)
         const z = zoneAt(e.clientX, e.clientY);
         if (z !== drag.over) { if (drag.over) drag.over.classList.remove('is-over'); if (z) z.classList.add('is-over'); drag.over = z; }
       });
@@ -386,7 +423,7 @@
     const V8 = !!(X.v8 && X.v8());
     const F = (V8 ? FORMS8 : FORMS)[opt.form || 'iso'];
     const id = 'x7w' + (++mkN);
-    const el = h('div.x7-wp' + (opt.cls ? '.' + opt.cls : ''), { role: 'img', 'aria-label': 'لَوْحَةُ الكِتابَةِ: اُكْتُبْ بِإِصْبَعِكَ' });
+    const el = h('div.x7-wp' + (opt.cls ? '.' + opt.cls : ''), { role: 'img', 'aria-label': 'لَوْحَةُ الكِتابَةِ: اُكْتُب بِإِصْبَعِكَ' });
     const svg = svgEl('svg', { class: 'x7-wp-svg' });
     svg.innerHTML = '<defs><marker id="' + id + 'a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#E4553F"/></marker></defs>';
     el.append(svg);
@@ -409,7 +446,7 @@
     const nextp = svgEl('circle', { class: 'nextp', r: 3, cx: -9999, cy: -9999 }, svg);
     const startRing = svgEl('circle', { class: 'start-ring', r: 6, cx: 0, cy: 0 }, svg);
     const start = svgEl('circle', { class: 'start pulse', r: 3.2, cx: 0, cy: 0 }, svg);
-    const tip = h('div.x7-wp-tip', { hidden: true }, 'اِبْدَأْ مِنْ هُنا');
+    const tip = h('div.x7-wp-tip', { hidden: true }, 'اِبْدَأ مِن هُنا');
     el.append(tip);
     const Ltot = ghost.getTotalLength();
     const N = 160;
@@ -840,6 +877,9 @@
 .x7-tile:not(.x7-8).is-glow { box-shadow: 0 0 0 6px var(--sun), 0 0 26px var(--sun); }
 .x7-tile.is-dim { opacity: .35; pointer-events: none; }
 .x7-ghost { position: fixed !important; z-index: 9999; pointer-events: none; margin: 0 !important; box-shadow: 0 16px 30px rgba(0,52,91,.28) !important; opacity: .96; }
+.x7-ghost.x7-ghost-in { position: absolute !important; z-index: 60; inset: auto; transform-origin: 50% 50%; }
+.x7-ghost img, .x7-ghost video, .x7-ghost canvas { max-width: 100%; -webkit-user-drag: none; -webkit-touch-callout: none; }
+.x7-tile img { -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
 .x7-zone { transition: box-shadow .15s, background .15s, transform .15s; }
 .x7-zone:not(.x7-8).is-over, .x7-has-sel .x7-zone:not(.x7-8):not(.is-full):not(.x7-off) { box-shadow: 0 0 0 4px rgba(0,174,237,.45); }
 .x7-zone:not(.x7-8).is-over { transform: scale(1.04); background: #E3F5FD; }

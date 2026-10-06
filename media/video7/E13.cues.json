@@ -4,211 +4,211 @@
  "title": "قِصَّةٌ",
  "src": "media/video7/E13.mp4",
  "poster": "media/video7/E13.jpg",
- "duration": 87.5,
+ "duration": 106.935,
  "status": "draft_unapproved",
- "source": "video_src/build_v7_videos.py · 1920×1080 24 fps",
+ "source": "video_src/build_v8_videos.py · v8pipe-g10-2026-10-06 · 1920×1080 24 fps · DIRECTION_v8",
  "scenes": [
   {
-   "t": 0.3,
+   "t": 0.0,
    "title": "رَسْمُ ماجِدٍ"
   },
   {
-   "t": 4.775,
+   "t": 7.5,
    "title": "الصَّباحُ"
   },
   {
-   "t": 14.575,
+   "t": 17.1,
    "title": "الحَقيبَةُ"
   },
   {
-   "t": 21.175,
+   "t": 23.7,
    "title": "حَديقَةُ الحَيَوانِ"
   },
   {
-   "t": 30.56,
+   "t": 35.3,
    "title": "النُّمورُ"
   },
   {
-   "t": 36.655,
+   "t": 41.7,
    "title": "التِّمْساحُ"
   },
   {
-   "t": 47.22,
+   "t": 54.1,
    "title": "المانْجو"
   },
   {
-   "t": 57.03,
+   "t": 63.535,
    "title": "القَمَرُ"
   },
   {
-   "t": 67.94,
+   "t": 77.535,
    "title": "المِيمُ في يَوْمي"
   },
   {
-   "t": 80.31,
+   "t": 100.535,
    "title": "تُصْبِحُ عَلى خَيْرٍ"
   }
  ],
  "cues": [],
+ "marks": [],
  "lines": [
   {
    "id": "bq7_E13_brq0",
-   "t": 0.65,
-   "end": 4.275,
+   "t": 2.59,
+   "end": 6.4,
    "sp": "BRQ",
-   "text": "اُنْظُرْ إِلى رَسْمِ ماجِدٍ! تَعالَ نَعْرِفْ حِكايَتَهُ."
+   "text": "اُنْظُر إِلى رَسْمِ ماجِد! تَعالَ نَعْرِف حِكايَتَهُ."
   },
   {
    "id": "bq7_E13_n1",
-   "t": 5.125,
-   "end": 10.84,
+   "t": 7.695,
+   "end": 13.305,
    "sp": "HAB",
    "text": "اِسْتَيْقَظَ ماجِدٌ مُبَكِّرًا. لَبِسَ قَميصَهُ، وَسَرَّحَ شَعْرَهُ بِالمُشْطِ."
   },
   {
    "id": "bq7_E13_maj1",
-   "t": 11.34,
-   "end": 14.025,
+   "t": 14.095,
+   "end": 16.785,
    "sp": "MAJ",
    "text": "اليَوْمَ نَزورُ حَديقَةَ الحَيَوانِ!"
   },
   {
    "id": "bq7_E13_n2",
-   "t": 14.925,
-   "end": 18.335,
+   "t": 17.28,
+   "end": 20.71,
    "sp": "HAB",
    "text": "وَضَعَ ماجِدٌ مانْجو وَمَوْزًا في حَقيبَتِهِ."
   },
   {
    "id": "bq7_E13_brq2",
-   "t": 18.835,
-   "end": 20.625,
+   "t": 21.3,
+   "end": 23.09,
    "sp": "BRQ",
    "text": "وَأَنا أَحْمِلُ القَلَمَ!"
   },
   {
    "id": "bq7_E13_n3b",
-   "t": 21.525,
-   "end": 25.555,
+   "t": 23.89,
+   "end": 27.93,
    "sp": "HAB",
    "text": "أَخَذَتِ الجَدَّةُ ماجِدًا وَسَيْفًا إِلى حَديقَةِ الحَيَوانِ."
   },
   {
-   "id": "bq7_E13_n_jda3",
-   "t": 26.005,
-   "end": 30.16,
-   "sp": "HAB",
-   "text": "قالَتِ الجَدَّةُ: أَمْسِكا يَدي يا وَلَدَيَّ… هَيّا نَدْخُلْ!"
+   "id": "bq7_E13_jda3",
+   "t": 28.495,
+   "end": 31.455,
+   "sp": "JDA",
+   "text": "أَمْسِكا يَدي يا وَلَدَيَّ… هَيّا نَدْخُل!"
   },
   {
    "id": "bq7_E13_n4",
-   "t": 30.91,
-   "end": 33.38,
+   "t": 35.59,
+   "end": 38.07,
    "sp": "HAB",
    "text": "رَأَوُا النُّمورَ تَلْعَبُ تَحْتَ الشَّجَرَةِ."
   },
   {
    "id": "bq7_E13_say4",
-   "t": 33.83,
-   "end": 36.255,
+   "t": 38.895,
+   "end": 41.325,
    "sp": "SAY",
    "text": "اُنْظُرا! نُمورٌ كَبيرَةٌ!"
   },
   {
    "id": "bq7_E13_n5",
-   "t": 37.005,
-   "end": 40.375,
+   "t": 41.7,
+   "end": 45.07,
    "sp": "HAB",
    "text": "وَعِنْدَ البُحَيْرَةِ، فَتَحَ التِّمْساحُ فَمَهُ."
   },
   {
    "id": "bq7_E13_brq5",
-   "t": 40.825,
-   "end": 42.83,
+   "t": 47.495,
+   "end": 49.505,
    "sp": "BRQ",
-   "text": "يا لَهُ مِنْ فَمٍ كَبيرٍ!"
+   "text": "يا لَهُ مِن فَمٍ كَبيرٍ!"
   },
   {
    "id": "bq7_E13_maj5",
-   "t": 43.28,
-   "end": 46.67,
+   "t": 50.3,
+   "end": 53.69,
    "sp": "MAJ",
-   "text": "لا تَخَفْ يا بارِقُ! نَحْنُ بَعيدونَ."
+   "text": "لا تَخَف يا بارِقُ! نَحْنُ بَعيدونَ."
   },
   {
    "id": "bq7_E13_n6",
-   "t": 47.57,
-   "end": 51.385,
+   "t": 54.295,
+   "end": 58.115,
    "sp": "HAB",
    "text": "جَلَسوا تَحْتَ الظِّلِّ، وَأَكَلُوا المانْجو وَالمَوْزَ."
   },
   {
-   "id": "bq7_E13_n_jda6",
-   "t": 51.835,
-   "end": 54.65,
-   "sp": "HAB",
-   "text": "قالَتِ الجَدَّةُ: تَفَضَّلا يا وَلَدَيَّ!"
+   "id": "bq7_E13_jda6",
+   "t": 58.685,
+   "end": 60.635,
+   "sp": "JDA",
+   "text": "تَفَضَّلا يا وَلَدَيَّ!"
   },
   {
    "id": "bq7_E13_say6",
-   "t": 55.15,
-   "end": 56.48,
+   "t": 61.325,
+   "end": 62.665,
    "sp": "SAY",
    "text": "المانْجو حُلْوَةٌ!"
   },
   {
-   "id": "bq7_E13_n_jda7",
-   "t": 57.38,
-   "end": 61.605,
-   "sp": "HAB",
-   "text": "قالَتِ الجَدَّةُ: اِرْبِطا الحِزامَ… سَنَعودُ إِلى البَيْتِ."
+   "id": "bq7_E13_jda7",
+   "t": 63.92,
+   "end": 66.75,
+   "sp": "JDA",
+   "text": "اِرْبِطا الحِزامَ… سَنَعودُ إِلى البَيْتِ."
   },
   {
    "id": "bq7_E13_n7",
-   "t": 62.055,
-   "end": 65.125,
+   "t": 69.335,
+   "end": 72.405,
    "sp": "HAB",
    "text": "في المَساءِ، ظَهَرَ القَمَرُ في السَّماءِ."
   },
   {
    "id": "bq7_E13_maj7",
-   "t": 65.625,
-   "end": 67.39,
+   "t": 75.33,
+   "end": 77.1,
    "sp": "MAJ",
    "text": "القَمَرُ جَميلٌ!"
   },
   {
    "id": "bq7_E13_n8",
-   "t": 68.29,
-   "end": 72.095,
+   "t": 77.83,
+   "end": 81.64,
    "sp": "HAB",
    "text": "جَلَسَ ماجِدٌ إِلى مَكْتَبِهِ، وَرَسَمَ يَوْمَهُ بِالقَلَمِ."
   },
   {
    "id": "bq7_E13_brq8",
-   "t": 72.595,
-   "end": 74.44,
+   "t": 87.335,
+   "end": 89.18,
    "sp": "BRQ",
    "text": "وَكَتَبْتَ حَرْفَ المِيمِ!"
   },
   {
    "id": "bq7_E13_maj8b",
-   "t": 74.89,
-   "end": 79.76,
+   "t": 91.935,
+   "end": 96.805,
    "sp": "MAJ",
    "text": "حَرْفُ المِيمِ… صَوْتُهُ مَ! وَهُوَ في يَوْمي كُلِّهِ!"
   },
   {
    "id": "bq7_E13_brq9",
-   "t": 80.76,
-   "end": 83.045,
+   "t": 100.93,
+   "end": 103.22,
    "sp": "BRQ",
    "text": "تُصْبِحُ عَلى خَيْرٍ يا ماجِدُ!"
   }
  ],
- "marks": [],
  "endq": {
-  "t": 87.495,
+  "t": 106.934,
   "lines": [
    "bq7_E13_q_intro",
    "bq7_E13_q1",
@@ -218,5 +218,502 @@
   "note": "platform end questions (picture cards, S9)"
  },
  "endq_note": "the platform shows the interactive end-question card after the video (media/video7/E13.endq.json or element data)",
- "interim": null
+ "shots": [
+  {
+   "id": "T01",
+   "t": 0.0,
+   "end": 2.2,
+   "target": [
+    0.0,
+    2.2
+   ],
+   "src": "freeze",
+   "gid": "V8_E13_draw",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T02",
+   "t": 2.2,
+   "end": 6.7,
+   "target": [
+    2.2,
+    6.6
+   ],
+   "src": "take",
+   "gid": "V8_E13_T27",
+   "take": "b",
+   "animatic": null,
+   "interim": "vo"
+  },
+  {
+   "id": "T03",
+   "t": 6.7,
+   "end": 7.5,
+   "target": [
+    6.6,
+    7.4
+   ],
+   "src": "code",
+   "gid": null,
+   "take": null,
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T04",
+   "t": 7.5,
+   "end": 10.1,
+   "target": [
+    7.4,
+    10.0
+   ],
+   "src": "clip",
+   "gid": null,
+   "take": null,
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T05",
+   "t": 10.1,
+   "end": 11.9,
+   "target": [
+    10.0,
+    11.8
+   ],
+   "src": "take",
+   "gid": "V8_E02_A05",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T06",
+   "t": 11.9,
+   "end": 13.7,
+   "target": [
+    11.8,
+    13.6
+   ],
+   "src": "take",
+   "gid": "V8_E02_A08",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T07",
+   "t": 13.7,
+   "end": 17.1,
+   "target": [
+    13.6,
+    17.0
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T07",
+   "take": "c",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T08",
+   "t": 17.1,
+   "end": 20.9,
+   "target": [
+    17.0,
+    20.8
+   ],
+   "src": "clip",
+   "gid": null,
+   "take": null,
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T09",
+   "t": 20.9,
+   "end": 23.7,
+   "target": [
+    20.8,
+    23.6
+   ],
+   "src": "take",
+   "gid": "G7_E13_s2",
+   "take": "g7",
+   "animatic": null,
+   "interim": "vo"
+  },
+  {
+   "id": "T10",
+   "t": 23.7,
+   "end": 28.1,
+   "target": [
+    23.6,
+    28.0
+   ],
+   "src": "still",
+   "gid": "V8_E13_T10",
+   "take": null,
+   "animatic": "eye-check FAIL: Bariq has two yellow LEGS/FEET for the whole take (zoom stri",
+   "interim": null
+  },
+  {
+   "id": "T11",
+   "t": 28.1,
+   "end": 31.9,
+   "target": [
+    28.0,
+    31.8
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T11",
+   "take": "d",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T12",
+   "t": 31.9,
+   "end": 35.3,
+   "target": [
+    31.8,
+    35.2
+   ],
+   "src": "still",
+   "gid": "V8_E13_T12",
+   "take": null,
+   "animatic": "takes rejected → regenerate",
+   "interim": null
+  },
+  {
+   "id": "T13",
+   "t": 35.3,
+   "end": 38.5,
+   "target": [
+    35.2,
+    38.4
+   ],
+   "src": "clip",
+   "gid": null,
+   "take": null,
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T14",
+   "t": 38.5,
+   "end": 41.7,
+   "target": [
+    38.4,
+    41.6
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T14",
+   "take": "b",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T15",
+   "t": 41.7,
+   "end": 45.1,
+   "target": [
+    41.6,
+    45.0
+   ],
+   "src": "take",
+   "gid": "V8_E13_T15",
+   "take": "b",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T16",
+   "t": 45.1,
+   "end": 47.1,
+   "target": [
+    45.0,
+    47.0
+   ],
+   "src": "clip",
+   "gid": null,
+   "take": null,
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T17",
+   "t": 47.1,
+   "end": 49.9,
+   "target": [
+    47.0,
+    49.8
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T17",
+   "take": "e",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T18",
+   "t": 49.9,
+   "end": 54.1,
+   "target": [
+    49.8,
+    54.0
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T18",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T19",
+   "t": 54.1,
+   "end": 58.3,
+   "target": [
+    54.0,
+    58.2
+   ],
+   "src": "clip",
+   "gid": null,
+   "take": null,
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T20",
+   "t": 58.3,
+   "end": 60.935,
+   "target": [
+    58.2,
+    60.8
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T20",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T21",
+   "t": 60.935,
+   "end": 63.535,
+   "target": [
+    60.8,
+    63.4
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T21",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T22",
+   "t": 63.535,
+   "end": 67.135,
+   "target": [
+    63.4,
+    67.0
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T22",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T23",
+   "t": 67.135,
+   "end": 69.135,
+   "target": [
+    67.0,
+    69.0
+   ],
+   "src": "take",
+   "gid": "V8_E13_T23",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T24",
+   "t": 69.135,
+   "end": 72.335,
+   "target": [
+    69.0,
+    72.2
+   ],
+   "src": "take",
+   "gid": "V8_E13_T24",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T25",
+   "t": 72.335,
+   "end": 74.935,
+   "target": [
+    72.2,
+    74.8
+   ],
+   "src": "take",
+   "gid": "V8_E13_T25",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T26",
+   "t": 74.935,
+   "end": 77.535,
+   "target": [
+    74.8,
+    77.4
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T26",
+   "take": "b",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T27",
+   "t": 77.535,
+   "end": 81.935,
+   "target": [
+    77.4,
+    81.8
+   ],
+   "src": "take",
+   "gid": "V8_E13_T27",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T28",
+   "t": 81.935,
+   "end": 84.135,
+   "target": [
+    81.8,
+    84.0
+   ],
+   "src": "take",
+   "gid": "V8_E13_draw",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T29",
+   "t": 84.135,
+   "end": 86.935,
+   "target": [
+    84.0,
+    86.8
+   ],
+   "src": "take",
+   "gid": "V8_E13_T29",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T30",
+   "t": 86.935,
+   "end": 89.535,
+   "target": [
+    86.8,
+    89.4
+   ],
+   "src": "take",
+   "gid": "V8_E13_T29",
+   "take": "a",
+   "animatic": null,
+   "interim": "vo"
+  },
+  {
+   "id": "T31",
+   "t": 89.535,
+   "end": 91.535,
+   "target": [
+    89.4,
+    91.4
+   ],
+   "src": "take",
+   "gid": "V8_E13_draw",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T32",
+   "t": 91.535,
+   "end": 97.335,
+   "target": [
+    91.4,
+    97.2
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T32",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T33",
+   "t": 97.335,
+   "end": 100.535,
+   "target": [
+    97.2,
+    100.4
+   ],
+   "src": "take",
+   "gid": "V8_E13_T27",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T34",
+   "t": 100.535,
+   "end": 103.535,
+   "target": [
+    100.4,
+    103.4
+   ],
+   "src": "aligned",
+   "gid": "V8_E13_T34",
+   "take": "c",
+   "animatic": null,
+   "interim": null
+  },
+  {
+   "id": "T35",
+   "t": 103.535,
+   "end": 106.935,
+   "target": [
+    103.4,
+    106.8
+   ],
+   "src": "freeze",
+   "gid": "V8_E13_draw",
+   "take": "a",
+   "animatic": null,
+   "interim": null
+  }
+ ],
+ "loudness": {
+  "I": -16.0,
+  "TP": -1.5
+ },
+ "interim": "ANIMATIC (Grok clip pending/rejected/unreviewed): V8_E13_T10 V8_E13_T12",
+ "interim_g9": "VO over a closed-mouth window / stand-in take until Grok regenerates (grok9_overrides.json): T02=vo:V8_E13_T27_b T09=vo:G7_E13_s2_g7 T30=vo:V8_E13_T29_a"
 }

@@ -16,7 +16,10 @@
   'use strict';
   const D = window.BQ_DATA;
   const AGES = ['4-6', '7-9', '10-12'];
-  const BQ = (window.BQ = { D, defs: {}, state: { current: null, done: new Set(), seqPos: -1, cc: false, age: '4-6' } });
+  const BQ = (window.BQ = { D, defs: {}, state: { current: null, done: new Set(), seqPos: -1, cc: false, age: '4-6', vcc: (() => { try { return sessionStorage.getItem('bq_vcc') !== '0'; } catch (e) { return true; } })() } });
+  /* v8 (OWNER_R3 2026-10-06 «CC»): captions live INSIDE the video player only (BQ.state.vcc · default ON · per session, js/video.js).
+     BQ.state.cc (spoken-line captions in activity bubbles) is always false — no setting shows/hides anything in activities, and the
+     instruction text of an activity is ALWAYS shown (renderInstr). The header «النص المصاحب» button is gone. */
 
   /* ---------- أدوات عامة ---------- */
   BQ.sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -254,7 +257,7 @@
   function showUnlock(retry) {
     hideUnlock();
     const host = $('.elp-play') || $('#content'); if (!host) return;
-    unlockBtn = h('button.bq-unlock', { type: 'button', onclick: () => { hideUnlock(); A.unlock(); retry(); } }, BQ.icon('speaker'), 'اضْغَطْ لِلاسْتِماعِ');
+    unlockBtn = h('button.bq-unlock', { type: 'button', onclick: () => { hideUnlock(); A.unlock(); retry(); } }, BQ.icon('speaker'), 'اضْغَط لِلاسْتِماعِ');
     host.prepend(unlockBtn);
   }
 
@@ -338,7 +341,7 @@
       const num = BQ.state.age === '10-12';
       txt.hidden = !num;
       txt.textContent = (opt.label ? opt.label + ' ' : '') + AR(cur + 1) + ' / ' + AR(n);
-      el.setAttribute('aria-label', (opt.label || 'الخُطْوَةُ') + ' ' + AR(cur + 1) + ' مِنْ ' + AR(n));
+      el.setAttribute('aria-label', (opt.label || 'الخُطْوَةُ') + ' ' + AR(cur + 1) + ' مِن ' + AR(n));
     };
     set(0);
     return { el, set, get i() { return cur; }, n };
@@ -448,7 +451,7 @@
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
     // مسار بديل للوحة المفاتيح/المفاتيح الخاصّة: ضغطة مطوّلة من المعلّم تُتمّ التتبّع «بمساعدة» (T25)
     let hold = 0;
-    const adultBtn = h('button.bq-trace-adult', { type: 'button', title: 'اضغط مطوّلاً', 'aria-label': 'للمعلّم: اضغط مطوّلاً لإتمام التتبّع بمساعدة' }, 'للمعلّم: أتمِمْ');
+    const adultBtn = h('button.bq-trace-adult', { type: 'button', title: 'اضغط مطوّلاً', 'aria-label': 'للمعلّم: اضغط مطوّلاً لإتمام التتبّع بمساعدة' }, 'للمعلّم: أتمِم');
     const hs = () => { clearTimeout(hold); adultBtn.classList.add('is-hold'); hold = setTimeout(() => { adultBtn.classList.remove('is-hold'); finish({ assisted: true }); }, 900); };
     const he = () => { clearTimeout(hold); adultBtn.classList.remove('is-hold'); };
     adultBtn.addEventListener('pointerdown', hs); adultBtn.addEventListener('pointerup', he); adultBtn.addEventListener('pointerleave', he);
@@ -649,7 +652,7 @@
     const instr = h('div.bq-instr.elp-instr.is-empty', null, sayBtn, fnChip, h('div.elp-bubble', null, instrText, cap));
     function renderInstr() {
       const has = !!(ins.text || ins.line);
-      const showText = !!ins.text && (BQ.state.cc || BQ.state.age === '10-12');
+      const showText = !!ins.text; // v8: never hidden by a setting (owner: «من الخطأ أن يخفي التعليمات في النشاط»)
       instr.classList.toggle('is-empty', !has);
       instrText.textContent = ins.text || '';
       instrText.hidden = !showText;
@@ -728,19 +731,13 @@
     }
     cleanups.push(() => { if (!adultPanel.hidden) { inertEls.forEach((e) => { e.inert = false; }); document.removeEventListener('keydown', drawerKeys, true); } });
     scrim.addEventListener('click', () => toggleAdult(false));
-    const ccBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'النص المصاحب', title: 'النص المصاحب', 'aria-pressed': String(BQ.state.cc), onclick: (e) => {
-      BQ.state.cc = !BQ.state.cc; store.set('cc', BQ.state.cc);
-      e.currentTarget.setAttribute('aria-pressed', String(BQ.state.cc));
-      if (!BQ.state.cc) cap.hidden = true; else if (cap.textContent) cap.hidden = false;
-      renderInstr();
-    } }, BQ.icon('cc'), toolLbl('النص المصاحب', 'النص'));
     const restartBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'من البداية', title: 'من البداية', onclick: () => BQ.open(meta.id, { pos: posOf(meta.id), history: 'replace' }) }, BQ.icon('replay'), toolLbl('من البداية', 'إعادة'));
     const head = h('header.elp-head', null,
       h('div.elp-ic', null, h('img', { src: meta.icon, alt: '' })),
       h('div.elp-titles', null,
         h('p.elp-kicker', null, h('span', null, kicker(meta.id)), typeBadge(meta.id, 'is-sm')),
         h('h2.elp-title', { id: 'elp-t', tabindex: '-1' }, cleanName(meta.name))),
-      h('div.elp-tools', { role: 'group', 'aria-label': 'أدوات المعلّم' }, adultBtn, ccBtn, restartBtn));
+      h('div.elp-tools', { role: 'group', 'aria-label': 'أدوات المعلّم' }, adultBtn, restartBtn)); // v8: the CC toggle lives in the video player controls
     const nav = navBar(meta.id);
     const f = h('section.bq-frame.elp', { dataset: { el: meta.id }, 'aria-labelledby': 'elp-t' }, head, fitBox, nav, scrim, adultPanel);
     content.replaceChildren(f);
@@ -943,15 +940,15 @@
     if (early) {
       action = h('button.bq-btn.ghost.elp-preview.cv-preview', { type: 'button', onclick: () => { A.unlock(); go(); } }, BQ.icon('adult'), 'معاينة الآن (للمعلّم)');
     } else {
-      action = h('button.bq-start.cv-start', { type: 'button', 'aria-label': 'ابْدَأْ: ' + info.title, onclick: () => { A.unlock(); go(); } },
+      action = h('button.bq-start.cv-start', { type: 'button', 'aria-label': 'ابْدَأ: ' + info.title, onclick: () => { A.unlock(); go(); } },
         h('span.cv-start-disc', { 'aria-hidden': 'true' }, h('span.bq-start-ic', { html: I.play })),
-        h('span.cv-start-l', null, 'ابْدَأْ'));
+        h('span.cv-start-l', null, 'ابْدَأ'));
     }
     const c = h('div.elp-start.elp-cover', { role: 'group', 'aria-labelledby': tid, dataset: { el: id } }, h('div.cv-in', null,
       art,
       h('div.cv-shade', { 'aria-hidden': 'true' }),
       h('div.cv-text', null,
-        h('p.cv-kicker', { 'aria-label': kicker(id) }, h('span.cv-num', { 'aria-hidden': 'true' }, AR(meta.menu || '')), h('span', { 'aria-hidden': 'true' }, 'مِنْ ' + AR(D.elements.length)), typeBadge(id, 'cv-type')),
+        h('p.cv-kicker', { 'aria-label': kicker(id) }, h('span.cv-num', { 'aria-hidden': 'true' }, AR(meta.menu || '')), h('span', { 'aria-hidden': 'true' }, 'مِن ' + AR(D.elements.length)), typeBadge(id, 'cv-type')),
         h('h3.cv-title', { id: tid }, info.title),
         info.child ? h('p.cv-child', { lang: 'ar' }, info.child) : null),
       h('div.cv-go', null, brq, action)));
@@ -1150,7 +1147,7 @@
     const p0 = BQ.path()[0];
     const fresh = !BQ.state.done.size && (!!r.fresh || (p0 && r.id === p0.id));
     if (b) {
-      b.querySelector('.lh-resume-l').textContent = fresh ? 'ابْدَأِ الدَّرْسَ' : 'تابِعْ';
+      b.querySelector('.lh-resume-l').textContent = fresh ? 'ابْدَأِ الدَّرْسَ' : 'تابِع';
       b.querySelector('.lh-resume-n').textContent = nameOf(r.id);
       b.setAttribute('aria-label', (fresh ? 'ابدأ الدرس: ' : 'تابع من حيث توقّفت: ') + nameOf(r.id));
     }
@@ -1187,8 +1184,7 @@
     pendingAge = null;
     if (!AGES.includes(a)) return;
     BQ.state.age = a;
-    const cc = store.get('cc', null);
-    BQ.state.cc = typeof cc === 'boolean' ? cc : a === '10-12';
+    BQ.state.cc = false; // v8: no caption setting for activities (video captions: BQ.state.vcc in the player)
     const root = $('.page-root'); if (root) root.dataset.age = a;
     $$('#ageSeg input').forEach((r) => { r.checked = r.value === a; });
     buildMenu();

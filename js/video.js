@@ -842,7 +842,27 @@
       '.vp-below .bq-btn.vp-go2{min-width:120px;min-height:64px;font-size:20px;padding:0 1.4em}' +
       '.vp-below .bq-btn.vp-go2 .bq-ic{transform:scaleX(-1)}' +
       '.vp-mp4 .vp-go{min-width:120px;min-height:64px}' +
-      '.vp-mp4 .vp-box{cursor:pointer}.vp-mp4 .vp-segs{touch-action:none;min-height:44px}.vp-mp4.is-scrub .vp-seg i{height:max(12px,1.6cqh)}.vp-mp4 .vp-ctl>button{min-width:44px;min-height:44px;touch-action:manipulation}' +
+      '.vp-mp4 .vp-box{cursor:pointer}.vp-mp4 .vp-ctl>button{min-width:44px;min-height:44px;touch-action:manipulation}' +
+      /* v8 player: one continuous bar (hit area = the whole bar height), yellow elapsed fill, white thumb with a yellow ring */
+      '.vp-mp4 .vp-track{flex:1 1 auto;min-width:0;align-self:stretch;min-height:44px;display:flex;align-items:center;padding:0 16px;cursor:pointer;touch-action:none;outline:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}' +
+      '.vp-mp4 .vp-rail{position:relative;display:block;width:100%;height:10px;border-radius:999px;background:color-mix(in srgb,var(--c-topbar-fg) 28%,transparent)}' +
+      '.vp-mp4 .vp-fill{position:absolute;inset:0;border-radius:inherit;background:var(--btn,#FEBA02);transform-origin:100% 50%;transform:scaleX(0)}' +
+      '.vp-mp4 .vp-thumb{position:absolute;top:50%;right:-14px;width:28px;height:28px;margin-top:-14px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px var(--btn,#FEBA02),0 2px 8px rgba(0,0,0,.45);transition:scale .12s}' +
+      '.vp-mp4.is-scrub .vp-thumb{scale:1.25}.vp-mp4 .vp-track:focus-visible .vp-rail{outline:4px solid var(--c-brq);outline-offset:8px}' +
+      '.vp-mp4 .vp-ctl>button.vp-fsb>svg{width:44%;height:44%}' +
+      '.vp-mp4 .vp-ctl>button.vp-ccb[aria-pressed="true"]{color:var(--btn,#FEBA02)}' +
+      '.vp-mp4 .vp-ctl>button.vp-ccb[aria-pressed="false"]{color:color-mix(in srgb,var(--c-topbar-fg) 60%,transparent);position:relative}' +
+      '.vp-mp4 .vp-ctl>button.vp-ccb[aria-pressed="false"]::after{content:"";position:absolute;left:24%;right:24%;top:50%;height:4px;margin-top:-2px;border-radius:2px;background:currentColor;transform:rotate(-38deg)}' +
+      '.vp-mp4 .vp-ctl>button[hidden]{display:none}' +
+      /* captions INSIDE the picture (also in fullscreen) */
+      '.vp-mp4 .vp-cc{position:absolute;left:50%;bottom:4.5%;transform:translateX(-50%);z-index:5;margin:0;width:max-content;max-width:72%;box-sizing:border-box;padding:.08em .8em .22em;border-radius:.6em;background:rgba(11,45,79,.78);color:#fff;font:700 1px/1.65 var(--ff-child);font-size:max(16px,calc(var(--vh,6px)*4.6));text-align:center;text-wrap:balance;pointer-events:none;direction:rtl}' +
+      '.vp-mp4 .vp-cc[hidden]{display:none}.vp-mp4.cc-top .vp-cc{bottom:auto;top:4.5%}' +
+      /* the paused-state play button: small, semi-transparent, in the picture corner (never on the board word in the middle) */
+      '.vp-mp4 .vp-big{left:auto;top:auto;right:2.6%;bottom:4.5%;transform:none;width:max(var(--bq8-glass64,76px),calc(var(--vh,6px)*15));border-width:3px;border-color:rgba(255,255,255,.85);background:color-mix(in srgb,var(--btn,#FEBA02) 72%,transparent);box-shadow:0 4px 14px rgba(0,0,0,.3)}' +
+      /* fullscreen (requestFullscreen on the player): black, 16:9 letter-boxed, control bar under the picture */
+      '.vp-mp4.is-fs{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;padding:0!important;background:#000;display:flex!important;flex-direction:column;align-items:center;justify-content:center;--bq8-glass64:72px;z-index:2147483000}' +
+      '.vp-mp4.is-fs .vp-frame{border-radius:0!important;box-shadow:none!important;margin:0!important;translate:none!important}' +
+      '.vp-mp4:fullscreen::backdrop{background:#000}' +
       '.vp-page .vp-inv .bq-btn.vp-go2.vp-go-ov{position:absolute;z-index:9;bottom:max(12px,3cqh);inset-inline-end:max(12px,2.4cqw);min-width:132px;min-height:64px;font-size:20px;padding:0 1.4em;box-shadow:0 5px 0 var(--sun-edge),0 10px 26px rgba(0,0,0,.35);animation:vpGoIn .35s cubic-bezier(.2,.9,.3,1.2) both}' +
       '.vp-page .vp-inv .bq-btn.vp-go2.vp-go-ov .bq-ic{transform:scaleX(-1)}' +
       '.vp-page .vp-inv:has(.vp-go-ov) .vp-pick{padding-inline-end:170px!important}' +
@@ -870,14 +890,26 @@
     const ui = h('div.vp-ui');
     const big = h('button.vp-big', { type: 'button', 'aria-label': 'تَشْغيل', onclick: () => toggle() }, BQ.icon('play'));
     const ppBtn = h('button.pp', { type: 'button', 'aria-label': 'إيقاف مؤقّت', onclick: () => toggle() }, BQ.icon('pause'));
-    const segWrap = h('div.vp-segs', { role: 'group', 'aria-label': 'مَشاهِدُ المَقْطَعِ' });
-    const num = h('span.vp-num', { 'aria-hidden': 'true' });
+    /* v8 player (OWNER_R3 2026-10-06 «لماذا يظهر عليه التقطيعات في شريط التشغيل؟ أريد إضافة زر الـ FULL SCREEN» · CC inside the player):
+       ONE continuous progress bar (no chapter cuts, no «n / 7» counter — chapters stay internal for ↻ / the teacher strip), a clean thumb,
+       tap or drag anywhere on the bar to seek (hit area = the whole control-bar height); a CC toggle (only when the video has caption lines;
+       captions drawn INSIDE the picture, default ON, remembered for the session) and a fullscreen toggle. */
+    const fill = h('i.vp-fill'), thumb = h('i.vp-thumb');
+    const segWrap = h('div.vp-track', { role: 'slider', tabindex: '0', 'aria-label': 'شَريطُ التَّشْغيلِ', 'aria-valuemin': '0', 'aria-valuemax': '0', 'aria-valuenow': '0' }, h('span.vp-rail', null, fill, thumb));
     const rpBtn = h('button', { type: 'button', 'aria-label': 'أَعِدِ المَشْهَدَ', title: 'أعد المشهد', onclick: () => goto(sceneIdx()) }, BQ.icon('replay'));
     // ٠٫٧٥× لـ١٠–١٢ (يتحكّم فيه الطفل — QA-22)
     const rateBtn = o.slow ? h('button.rate', { type: 'button', 'aria-pressed': 'false', 'aria-label': 'إبطاء المقطع', title: 'إبطاء المقطع', onclick: () => { const on = video.playbackRate === 1; video.playbackRate = on ? 0.75 : 1; rateBtn.setAttribute('aria-pressed', String(on)); } }, h('bdi', { dir: 'ltr' }, '٠٫٧٥×')) : null;
-    const ctl = h('div.vp-ctl', null, ppBtn, segWrap, num, rateBtn, rpBtn);
+    const ccOn = () => BQ.state.vcc !== false;
+    const ccBtn = o.captions ? h('button.vp-ccb', { type: 'button', hidden: true, 'aria-label': 'النَّصُّ المُصاحِبُ', title: 'النَّصُّ المُصاحِبُ', 'aria-pressed': String(ccOn()), onclick: () => setCc(!ccOn()) }, BQ.icon('cc')) : null;
+    const FS_IN = '<svg viewBox="18 20 64 64" aria-hidden="true"><path d="M24 40V28h12M64 28h12v12M76 64v12H64M36 76H24V64" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const FS_OUT = '<svg viewBox="18 20 64 64" aria-hidden="true"><path d="M24 40h12V28M64 28v12h12M76 64H64v12M36 76V64H24" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const fsApi = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled || video.webkitSupportsFullscreen || typeof video.webkitEnterFullscreen === 'function');
+    const fsBtn = h('button.vp-fsb', { type: 'button', 'aria-label': 'مِلْءُ الشّاشَةِ', title: 'مِلْءُ الشّاشَةِ', html: FS_IN, onclick: () => toggleFs() });
+    if (!fsApi) fsBtn.hidden = true;
+    const ctl = h('div.vp-ctl', null, ppBtn, segWrap, rateBtn, ccBtn, fsBtn, rpBtn);
     const below = h('div.vp-below');
-    box.append(video, dim, ui, big);
+    const ccEl = h('p.vp-cc', { hidden: true, 'aria-live': 'polite', lang: 'ar', dir: 'rtl' });
+    box.append(video, dim, ui, ccEl, big);
     frameEl.append(box, ctl);
     root.append(frameEl, below);
     stage.append(root);
@@ -898,8 +930,23 @@
       if (Math.abs(nx - snapX) < 1e-3 && Math.abs(ny - snapY) < 1e-3) return;
       snapX = nx; snapY = ny; frameEl.style.translate = nx.toFixed(3) + 'px ' + ny.toFixed(3) + 'px';
     }
+    let fsOn = false, railW = 0;
     function layout() {
       if (!alive) return;
+      if (fsOn) { // fullscreen: 16:9 letter-boxed in the screen, the control bar under the picture (overlaid only when the screen is too short)
+        const W = root.clientWidth || window.innerWidth, H = root.clientHeight || window.innerHeight; if (!W || !H) return;
+        const ch = 84; let bw = W, bh = Math.round(W * 9 / 16), over = false;
+        if (bh + ch > H) { bh = Math.max(120, H - ch); bw = Math.min(W, Math.round(bh * 16 / 9)); bh = Math.round(bw * 9 / 16); if (bh + ch > H) over = true; }
+        root.classList.toggle('overlay', over);
+        setSt(root, '--ctlh', ch + 'px');
+        setSt(box, 'width', bw + 'px'); setSt(box, 'height', bh + 'px');
+        setSt(frameEl, 'width', bw + 'px'); setSt(frameEl, 'height', (over ? bh : bh + ch) + 'px');
+        setSt(box, '--vh', (bh / 100) + 'px'); setSt(frameEl, '--vh', (bh / 100) + 'px');
+        if (snapX || snapY) { snapX = snapY = 0; frameEl.style.translate = ''; }
+        railW = 0; paintThumb(true);
+        return;
+      }
+      railW = 0;
       if (page) {
         let W = root.clientWidth; if (!W) return;
         /* OWNER R3 «رعشة»: (1) the control-bar height comes from the AVAILABLE width, not from the result W (old: W → ch → avail → W, a 1-px
@@ -923,6 +970,7 @@
         setSt(frameEl, 'width', bw + 'px'); setSt(frameEl, 'height', (bh + cb) + 'px');
         setSt(box, '--vh', (bh / 100) + 'px'); setSt(frameEl, '--vh', (bh / 100) + 'px');
         if (s8) snapPos(s8);
+        paintThumb(true);
         return;
       }
       const W = root.clientWidth, H = root.clientHeight; if (!W || !H) return;
@@ -935,7 +983,7 @@
       box.style.width = bw + 'px'; box.style.height = bh + 'px';
       frameEl.style.width = (over ? W : bw) + 'px'; frameEl.style.height = (over ? bh : bh + ch) + 'px';
       box.style.setProperty('--vh', (bh / 100) + 'px'); frameEl.style.setProperty('--vh', (bh / 100) + 'px');
-      placeCap();
+      placeCap(); paintThumb(true);
     }
     function placeCap() {
       if (!cap || !alive || page) return;
@@ -974,33 +1022,110 @@
       ended = false; root.classList.remove('is-ended');
       try { video.currentTime = t; } catch (err) {}
       lastT = t; paint(t);
-      if (resume) { userPaused = false; video.play().catch(() => setPaused(true)); }
+      if (resume) { userPaused = false; video.play().catch(() => setPaused(true)); } else if (video.paused) userPaused = true;
       syncUi();
     }
+    /* v8: one continuous bar — a tap anywhere seeks there, a drag scrubs (picture follows on release); keys ← → ±5 s, Home / End */
+    const dur = () => video.duration || (cues && cues.duration) || 0;
     (function scrub() {
       let drag = null;
-      const frac = (x) => { const r = segWrap.getBoundingClientRect(); return Math.max(0, Math.min(1, (r.right - x) / (r.width || 1))); }; // RTL: البداية يميناً
-      const at = (x) => frac(x) * (video.duration || (cues && cues.duration) || 0);
+      const rail = segWrap.firstChild;
+      const frac = (x) => { const r = rail.getBoundingClientRect(); return Math.max(0, Math.min(1, (r.right - x) / (r.width || 1))); }; // RTL: البداية يميناً
+      const at = (x) => frac(x) * dur();
       segWrap.style.touchAction = 'none';
       segWrap.addEventListener('pointerdown', (e) => {
         if (!cues || fell || hold || e.button > 0) return;
-        drag = { id: e.pointerId, x: e.clientX, moved: false, wasPlaying: !video.paused || !!inCue };
+        e.preventDefault();
+        drag = { id: e.pointerId, x: e.clientX, moved: false, wasPlaying: (!video.paused || !!inCue) && !ended };
         try { segWrap.setPointerCapture(e.pointerId); } catch (err) {}
-        wake();
+        root.classList.add('is-scrub'); paint(at(e.clientX)); wake();
       });
       segWrap.addEventListener('pointermove', (e) => {
         if (!drag || e.pointerId !== drag.id) return;
-        if (!drag.moved && Math.abs(e.clientX - drag.x) < 8) return;
-        if (!drag.moved) { drag.moved = true; root.classList.add('is-scrub'); video.pause(); }
+        if (!drag.moved && Math.abs(e.clientX - drag.x) < 6) return;
+        if (!drag.moved) { drag.moved = true; video.pause(); }
         paint(at(e.clientX)); wake();
       });
       const end = (e) => {
         if (!drag || e.pointerId !== drag.id) return;
         const d = drag; drag = null; root.classList.remove('is-scrub');
-        if (d.moved) { e.preventDefault(); seekTo(at(e.clientX), d.wasPlaying); segWrap.addEventListener('click', (ev) => { ev.stopPropagation(); ev.preventDefault(); }, { capture: true, once: true }); }
+        e.preventDefault(); seekTo(at(e.clientX), d.wasPlaying);
       };
-      segWrap.addEventListener('pointerup', end); segWrap.addEventListener('pointercancel', (e) => { if (drag && e.pointerId === drag.id) { drag = null; root.classList.remove('is-scrub'); } });
+      segWrap.addEventListener('pointerup', end);
+      segWrap.addEventListener('pointercancel', (e) => { if (drag && e.pointerId === drag.id) { drag = null; root.classList.remove('is-scrub'); paint(video.currentTime || 0); } });
+      segWrap.addEventListener('keydown', (e) => {
+        if (!cues || fell || hold) return;
+        const t = video.currentTime || 0, D = dur();
+        const k = { ArrowLeft: t + 5, ArrowRight: t - 5, ArrowUp: t + 5, ArrowDown: t - 5, Home: 0, End: D - 0.1, PageUp: t + 15, PageDown: t - 15 }[e.key];
+        if (k == null) return;
+        e.preventDefault(); e.stopPropagation(); seekTo(k, !video.paused || !!inCue); wake();
+      });
     })();
+
+    /* ---------- النصّ المصاحب داخل المشغّل (CC) ---------- */
+    function capText(id) {
+      const L = BQ.line(id); let t = L && L.t;
+      if (!t && cues && cues.lines) { const l = cues.lines.find((x) => x.id === id); t = l && l.text; }
+      if (!t || (L && (L.sp === 'مؤثّر' || L.sp === 'واجهة'))) return '';
+      return t.replace(/⏸\S*/g, ' ').replace(/\s*[(\[][^)\]]*[)\]]/g, '').replace(/\s{2,}/g, ' ').trim();
+    }
+    function showCap(id) {
+      const t = id ? capText(id) : '';
+      if (ccEl.textContent !== t) ccEl.textContent = t;
+      ccEl.hidden = !t || !ccOn() || hold || !!inCue;
+    }
+    function setCc(on) {
+      BQ.state.vcc = !!on;
+      try { sessionStorage.setItem('bq_vcc', on ? '1' : '0'); } catch (e) { /* */ }
+      if (ccBtn) ccBtn.setAttribute('aria-pressed', String(!!on));
+      root.classList.toggle('cc-off', !on);
+      showCap(capId); syncTrack(); wake();
+    }
+
+    /* ---------- ملء الشاشة ---------- */
+    const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+    function toggleFs() {
+      wake();
+      try {
+        if (fsEl() === root) { const x = document.exitFullscreen || document.webkitExitFullscreen; if (x) { const p = x.call(document); if (p && p.catch) p.catch(() => {}); } return; }
+        if (video.webkitDisplayingFullscreen && video.webkitExitFullscreen) { video.webkitExitFullscreen(); return; }
+        const rq = (document.fullscreenEnabled || document.webkitFullscreenEnabled) && (root.requestFullscreen || root.webkitRequestFullscreen);
+        if (rq) { const p = rq.call(root); if (p && p.catch) p.catch(() => nativeFs()); return; }
+        nativeFs();
+      } catch (e) { nativeFs(); }
+    }
+    /* iPhone / older iPadOS: only the <video> can go fullscreen (native player) → the captions ride along as a WebVTT text track */
+    let track = null;
+    function nativeFs() {
+      if (typeof video.webkitEnterFullscreen !== 'function') return;
+      try { video.webkitEnterFullscreen(); } catch (e) { /* not allowed now */ }
+    }
+    function vttTrack() {
+      if (track || !cues || !(cues.lines || []).length) return;
+      const ts = (s) => { s = Math.max(0, s); const hh = Math.floor(s / 3600), mm = Math.floor(s / 60) % 60, ss = (s % 60).toFixed(3); return String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0') + ':' + ss.padStart(6, '0'); };
+      const body = cues.lines.map((l, i) => { const t = capText(l.id); return t ? (i + 1) + '\n' + ts(l.t) + ' --> ' + ts(l.end + 0.15) + '\n' + t + '\n' : ''; }).filter(Boolean).join('\n');
+      if (!body) return;
+      try {
+        track = h('track', { kind: 'captions', srclang: 'ar', label: 'العربية', src: 'data:text/vtt;charset=utf-8,' + encodeURIComponent('WEBVTT\n\n' + body) });
+        video.append(track);
+        const hide = () => { try { if (video.textTracks[0]) video.textTracks[0].mode = 'hidden'; } catch (e) { /* */ } };
+        hide(); track.addEventListener('load', hide);
+      } catch (e) { track = null; }
+    }
+    function syncTrack() { try { const tt = video.textTracks && video.textTracks[0]; if (tt) tt.mode = video.webkitDisplayingFullscreen && ccOn() ? 'showing' : 'hidden'; } catch (e) { /* */ } }
+    video.addEventListener('webkitbeginfullscreen', syncTrack);
+    video.addEventListener('durationchange', () => { if (isFinite(video.duration)) segWrap.setAttribute('aria-valuemax', String(Math.round(video.duration))); });
+    video.addEventListener('webkitendfullscreen', () => { syncTrack(); setTimeout(() => { if (!alive) return; if (video.paused && !userPaused && !ended && !hold && !inCue) { userPaused = true; syncUi(); } }, 50); });
+    function onFsChange() {
+      const on = fsEl() === root;
+      if (on === fsOn) return;
+      fsOn = on; root.classList.toggle('is-fs', on);
+      fsBtn.innerHTML = on ? FS_OUT : FS_IN;
+      const lbl = on ? 'اُخْرُج مِن مِلْءِ الشّاشَةِ' : 'مِلْءُ الشّاشَةِ';
+      fsBtn.setAttribute('aria-label', lbl); fsBtn.title = lbl;
+      layout(); requestAnimationFrame(layout); setTimeout(layout, 350); setTimeout(layout, 900); wake(); // + after the browser's fullscreen animation
+    }
+    document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
 
     /* ---------- البديل التلقائي: مشغّل المشاهد ---------- */
     function fallback(why) {
@@ -1021,17 +1146,10 @@
     function sceneIdx(t) { t = t == null ? video.currentTime : t; let i = 0; scenes.forEach((s, j) => { if (t >= s.t - 0.05) i = j; }); return i; }
     function buildScenes() {
       scenes = (cues.scenes || [{ t: 0, title: '' }]).map((s, i, a) => Object.assign({}, s, { end: i + 1 < a.length ? a[i + 1].t : cues.duration }));
-      scenes.forEach((sc, i) => {
-        const b = h('button.vp-seg', { type: 'button', 'aria-label': 'المَشْهَدُ ' + AR(i + 1) + (sc.title ? ': ' + sc.title : ''), title: sc.title || '', onclick: () => goto(i) }, h('i', null, h('b')));
-        segs.push(b); segWrap.append(b);
-      });
-      /* v5: مواضع «ردِّدْ» ✋ علامات صغيرة للمعلّم على شريط المشاهد (لا توقف المقطع — المعلّم يوقفه) */
-      (cues.marks || []).forEach((m) => {
-        const t = typeof m === 'number' ? m : m.t; if (!(t >= 0)) return;
-        const k = sceneIdx(t), sc = scenes[k], b = segs[k]; if (!b || !sc) return;
-        const f = Math.max(0, Math.min(1, (t - sc.t) / Math.max(0.1, sc.end - sc.t)));
-        b.append(h('span.vp-hand', { 'aria-hidden': 'true', title: 'ردِّدْ ✋', style: { insetInlineStart: (f * 100).toFixed(1) + '%' } }));
-      });
+      /* v8: chapters stay internal (↻ «أعد المشهد», the teacher's strip); the child's bar is ONE continuous track — no cuts, no ✋ marks */
+      segWrap.setAttribute('aria-valuemax', String(Math.round(dur())));
+      if (ccBtn) ccBtn.hidden = !(cues.lines || []).some((l) => l && capText(l.id));
+      vttTrack();
       const adultP = ctx.frame && (ctx.frame.querySelector('.elp-adult-body') || ctx.frame.querySelector('.bq-adult'));
       if (adultP) {
         const strip = h('div.vp-strip');
@@ -1043,30 +1161,29 @@
     }
     /* only what changed is written (old: every frame rewrote 7 widths, toggled classes, aria-current and REPLACED the «n / 7» text node → the
        control row was re-laid-out 60×/s inside the video frame). Progress = transform scaleX (compositor only). */
-    let pCur = -1, pEnd = null; const pF = [];
+    let pCur = -1, pEnd = null, pF = -1, pSec = -1;
     function paint(t) {
       const cur = sceneIdx(t);
-      if (cur !== pCur || ended !== pEnd) {
-        pCur = cur; pEnd = ended;
-        scenes.forEach((sc, j) => {
-          segs[j].classList.toggle('done', ended || j < cur); segs[j].classList.toggle('cur', j === cur);
-          if (j === cur) segs[j].setAttribute('aria-current', 'step'); else segs[j].removeAttribute('aria-current');
-        });
-        stripBtns.forEach((b, j) => b.classList.toggle('cur', j === cur));
-        num.textContent = (cur + 1).toLocaleString('ar-EG') + ' / ' + scenes.length.toLocaleString('ar-EG');
-      }
-      scenes.forEach((sc, j) => {
-        const f = ended || j < cur ? 1 : j > cur ? 0 : Math.max(0, Math.min(1, (t - sc.t) / Math.max(0.1, sc.end - sc.t)));
-        const q = Math.round(f * 1000) / 1000;
-        if (pF[j] !== q) { pF[j] = q; const b = segs[j].querySelector('b'); if (b) b.style.transform = 'scaleX(' + q + ')'; }
-      });
+      if (cur !== pCur || ended !== pEnd) { pCur = cur; pEnd = ended; stripBtns.forEach((b, j) => b.classList.toggle('cur', j === cur)); }
+      const D = dur(), f = ended ? 1 : D ? Math.max(0, Math.min(1, t / D)) : 0;
+      const q = Math.round(f * 2000) / 2000;
+      if (q !== pF) { pF = q; fill.style.transform = 'scaleX(' + q + ')'; paintThumb(); }
+      const sec = Math.round(f * D);
+      if (sec !== pSec) { pSec = sec; segWrap.setAttribute('aria-valuenow', String(sec)); segWrap.setAttribute('aria-valuetext', AR(Math.floor(sec / 60)) + ':' + AR(String(sec % 60).padStart(2, '0'))); }
+    }
+    /* the thumb rides on the rail with a transform only (rail width cached; re-measured after every layout) */
+    function paintThumb(force) {
+      if (force || !railW) railW = segWrap.firstChild.offsetWidth || 0;
+      const x = -Math.max(0, pF) * railW;
+      const v = 'translateX(' + x.toFixed(2) + 'px)';
+      if (thumb.style.transform !== v) thumb.style.transform = v;
     }
     function captions(t) {
       if (!o.captions || !cues.lines) return;
       let id = null, top = false;
       if (!inCue && !hold) for (const l of cues.lines) if (t >= l.t && t <= l.end + 0.15) { id = l.id; top = !!l.capTop; }
-      if (top !== capTop) { capTop = top; placeCap(); }
-      if (id !== capId) { capId = id; BQ.audio.caption(id); }
+      if (top !== capTop) { capTop = top; root.classList.toggle('cc-top', top); }
+      if (id !== capId) { capId = id; showCap(id); }
     }
 
     /* ---------- الساعة ---------- */
@@ -1079,7 +1196,8 @@
         for (const c of cues.cues) if (!handled.has(c.id) && t >= c.t - 0.04 && t < c.resume) { runCue(c); break; }
       }
       lastT = t;
-      paint(t); captions(t);
+      if (!root.classList.contains('is-scrub')) paint(t);
+      captions(t);
       raf = requestAnimationFrame(tick);
     }
 
@@ -1103,7 +1221,7 @@
       inCue = c; handled.add(c.id);
       video.pause();
       try { if (Math.abs(video.currentTime - c.t) > 0.08 && canSeek(c.t)) video.currentTime = c.t; } catch (e) {}
-      BQ.audio.caption(null); capId = null;
+      showCap(null); capId = null;
       dim.classList.toggle('soft', c.kind === 'phrase'); dim.classList.add('on');
       const lay = h('div.vp-inv.vp-inv-' + c.kind); ui.append(lay);
       const age = BQ.state.age || '4-6';
@@ -1157,7 +1275,8 @@
 
     video.addEventListener('ended', () => {
       if (!alive || fell) return;
-      ended = true; root.classList.add('is-ended'); clearCue(); BQ.audio.caption(null); capId = null;
+      ended = true; root.classList.add('is-ended'); clearCue(); showCap(null); capId = null;
+      if (video.webkitDisplayingFullscreen && video.webkitExitFullscreen) try { video.webkitExitFullscreen(); } catch (e) { /* */ } // native (iPhone) fullscreen: back to the page for the end row / question
       syncUi(); paint(video.duration || cues.duration);
       if (!o.requireFull || watched() >= 0.85) resolveDone(true);
       else if (o.onPartial) o.onPartial(watched());
@@ -1178,7 +1297,11 @@
       if (fell) return;
       on = !!on; if (on === hold) return;
       hold = on; root.classList.toggle('is-hold', hold);
-      if (hold) { try { video.pause(); } catch (e) {} if (capId) { BQ.audio.caption(null); capId = null; } wake(); }
+      if (hold) {
+        try { video.pause(); } catch (e) {} showCap(null); capId = null; wake();
+        if (video.webkitDisplayingFullscreen && video.webkitExitFullscreen) try { video.webkitExitFullscreen(); } catch (e) { /* */ }
+        else if (fsOn && !(BQ.fixedStage && BQ.fixedStage())) toggleFs(); // v7 theme: the question layer sits outside the player → leave fullscreen
+      }
       else { syncUi(); wake(); if (resume && !ended && !userPaused) video.play().catch(() => setPaused(true)); }
     }
 
@@ -1218,7 +1341,9 @@
       if (ro) ro.disconnect(); else window.removeEventListener('resize', layout);
       document.removeEventListener('bq-stagefit', layout);
       adultNodes.forEach((n) => n.remove());
-      if (capId) BQ.audio.caption(null);
+      showCap(null);
+      document.removeEventListener('fullscreenchange', onFsChange); document.removeEventListener('webkitfullscreenchange', onFsChange);
+      if (fsEl() === root) { try { const x = document.exitFullscreen || document.webkitExitFullscreen; if (x) { const p = x.call(document); if (p && p.catch) p.catch(() => {}); } } catch (e) { /* */ } }
       if (cap) ['left', 'right', 'bottom', 'top', 'fontSize', 'insetInline'].forEach((k) => { cap.style[k] = ''; });
     }
     function destroy() {

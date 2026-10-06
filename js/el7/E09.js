@@ -19,20 +19,20 @@
   };
   /* البنود (SPEC §E09) — form: شكل الميم · before/after: بقيّة الكلمة حول الخانة (قبل = يمين) · word: الكلمة بعد النجاح · wk: صوت الكلمة */
   const STAGES = [
-    { key: 'trace', label: 'تَتَبَّعْ', line: L.trace, items: [
+    { key: 'trace', label: 'تَتَبَّع', line: L.trace, items: [
       { form: 'iso', guide: 'road', arrows: true, start: true, lenient: true, demo: true, scored: false },
       { form: 'iso', guide: 'road', arrows: true, start: true, lenient: true, scored: false },
     ] },
-    { key: 'copy', label: 'اُنْسَخْ', line: L.copy, items: [{ form: 'iso', guide: 'none', arrows: false, start: true, model: true, scored: false }] },
-    { key: 'guided', label: 'أَكْمِلْ', line: L.guided, items: [
-      { form: 'ini', after: 'ـوْزْ', word: 'مَوْزْ', img: 'card_mawz', wk: 'mawz', guide: 'dots', arrows: 'faint', start: true, scored: true },
-      { form: 'med', before: 'قَـ', after: 'ـرْ', word: 'قَمَرْ', img: 'card_qamar', wk: 'qamar', guide: 'dots', arrows: 'faint', start: true, scored: true },
-      { form: 'fin', before: 'فَـ', word: 'فَمْ', img: 'card_fam', wk: 'fam', guide: 'dots', arrows: 'faint', start: true, scored: true },
+    { key: 'copy', label: 'اُنْسَخ', line: L.copy, items: [{ form: 'iso', guide: 'none', arrows: false, start: true, model: true, scored: false }] },
+    { key: 'guided', label: 'أَكْمِل', line: L.guided, items: [
+      { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', guide: 'dots', arrows: 'faint', start: true, scored: true },
+      { form: 'med', before: 'قَـ', after: 'ـر', word: 'قَمَر', img: 'card_qamar', wk: 'qamar', guide: 'dots', arrows: 'faint', start: true, scored: true },
+      { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', guide: 'dots', arrows: 'faint', start: true, scored: true },
     ] },
-    { key: 'indep', label: 'اُكْتُبْ', line: L.indep, items: [
-      { form: 'ini', after: 'ـوْزْ', word: 'مَوْزْ', img: 'card_mawz', wk: 'mawz', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
-      { form: 'med', before: 'قَـ', after: 'ـرْ', word: 'قَمَرْ', img: 'card_qamar', wk: 'qamar', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
-      { form: 'fin', before: 'فَـ', word: 'فَمْ', img: 'card_fam', wk: 'fam', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+    { key: 'indep', label: 'اُكْتُب', line: L.indep, items: [
+      { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+      { form: 'med', before: 'قَـ', after: 'ـر', word: 'قَمَر', img: 'card_qamar', wk: 'qamar', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+      { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
     ] },
   ];
 
@@ -218,8 +218,8 @@
         };
         const d = document.createElement('div');
         d.setAttribute('dir', 'rtl'); d.style.cssText = 'width:100%;align-self:flex-start';
-        d.innerHTML = '<h2 style="font:700 24px Scheherazade New;margin:0 0 4mm">اُكْتُبِ المِيمَ — اِبْدَأْ مِنَ النُّقْطَةِ الخَضْراءِ</h2>' +
-          row('iso', 7) + row('iso', 7) + row('ini', 3, null, 'ـوْزْ', 'مَوْزْ') + row('med', 3, 'قَـ', 'ـرْ', 'قَمَرْ') + row('fin', 4, 'فَـ', null, 'فَمْ') +
+        d.innerHTML = '<h2 style="font:700 24px Scheherazade New;margin:0 0 4mm">اُكْتُبِ المِيمَ — اِبْدَأ مِنَ النُّقْطَةِ الخَضْراءِ</h2>' +
+          row('iso', 7) + row('iso', 7) + row('ini', 3, null, 'ـوْز', 'مَوْز') + row('med', 3, 'قَـ', 'ـر', 'قَمَر') + row('fin', 4, 'فَـ', null, 'فَم') +
           '<p style="font:16px Scheherazade New;margin-top:6mm">الاسم: ……………………………</p>';
         return d;
       };

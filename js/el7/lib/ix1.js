@@ -19,22 +19,22 @@
   /* ================= المفردات ================= */
   /** slug ← {w: الكلمة مشكولة (بالوقف كما في DECISIONS «و»), e: رمز البديل, alias: أسماء ملفّات بديلة} */
   const W = (I.W = {
-    maktab: { w: 'مَكْتَبْ', e: '🪑' },
-    musht: { w: 'مُشْطْ', e: '🪮' },
-    miftah: { w: 'مِفْتاحْ', e: '🔑' },
-    timsah: { w: 'تِمْساحْ', e: '🐊' },
+    maktab: { w: 'مَكْتَب', e: '🪑' },
+    musht: { w: 'مُشْط', e: '🪮' },
+    miftah: { w: 'مِفْتاح', e: '🔑' },
+    timsah: { w: 'تِمْساح', e: '🐊' },
     manju: { w: 'مانْجو', e: '🥭', alias: ['mango'] },
-    numur: { w: 'نُمورْ', e: '🐅' },
-    qamis: { w: 'قَميصْ', e: '👕' },
-    mawz: { w: 'مَوْزْ', e: '🍌' },
-    qamar: { w: 'قَمَرْ', e: '🌙' },
-    fam: { w: 'فَمْ', e: '👄' },
-    qalam: { w: 'قَلَمْ', e: '✏️' },
-    bab: { w: 'بابْ', e: '🚪' },
-    fil: { w: 'فيلْ', e: '🐘' },
-    batta: { w: 'بَطَّةْ', e: '🦆' },
-    farasha: { w: 'فَراشَةْ', e: '🦋' },
-    kura: { w: 'كُرَةْ', e: '⚽' },
+    numur: { w: 'نُمور', e: '🐅' },
+    qamis: { w: 'قَميص', e: '👕' },
+    mawz: { w: 'مَوْز', e: '🍌' },
+    qamar: { w: 'قَمَر', e: '🌙' },
+    fam: { w: 'فَم', e: '👄' },
+    qalam: { w: 'قَلَم', e: '✏️' },
+    bab: { w: 'باب', e: '🚪' },
+    fil: { w: 'فيل', e: '🐘' },
+    batta: { w: 'بَطَّة', e: '🦆' },
+    farasha: { w: 'فَراشَة', e: '🦋' },
+    kura: { w: 'كُرَة', e: '⚽' },
   });
   const names = (slug) => [slug].concat((W[slug] && W[slug].alias) || []);
   /** ملفّ نطق الكلمة (bq7_W_<slug>، أو اسمه البديل إن كان هو الموجود) · suffix: '_seg' للمقطّعة */
@@ -362,7 +362,7 @@
   /** زرّ أذن صغير (يُسمع ولا يختار) */
   I.ear = function (id, onTap) {
     const mute = id && !I.hasAudio(id);
-    const e = h('span.i7-ear' + (mute ? '.is-mute' : ''), { role: 'button', tabindex: '0', 'aria-label': 'اِسْمَعْ', html: IC.ear });
+    const e = h('span.i7-ear' + (mute ? '.is-mute' : ''), { role: 'button', tabindex: '0', 'aria-label': 'اِسْمَع', html: IC.ear });
     if (mute) e.append(h('span.i7-mute-ic', { 'aria-hidden': 'true' }, '🔈'));
     const go = (ev) => { ev.stopPropagation(); if (ev.cancelable) ev.preventDefault(); if (!mute && onTap) onTap(e); };
     e.addEventListener('click', go);
@@ -438,7 +438,7 @@
   I.goBtn = (parent, kind, aria) => new Promise((res) => {
     const b = kind === 'next'
       ? h('button.bq-btn.kx-cont.i7-next', { type: 'button', 'aria-label': aria || 'التّالي' }, 'التّالي', BQ.icon ? BQ.icon('next') : '')
-      : h('button.i7-go', { type: 'button', 'aria-label': aria || 'ابْدَأْ', html: IC.play });
+      : h('button.i7-go', { type: 'button', 'aria-label': aria || 'ابْدَأ', html: IC.play });
     b.onclick = () => { try { BQ.audio.unlock && BQ.audio.unlock(); } catch (e) { /* */ } I.sfx('pop'); b.remove(); res(); };
     parent.append(b);
     requestAnimationFrame(() => { try { b.focus({ preventScroll: true }); } catch (e) { /* */ } });
@@ -472,7 +472,7 @@
       ins.classList.remove('is-empty');
       const btn = ins.querySelector('.elp-say');
       const fn = ins.querySelector('.elp-fn');
-      if (fn) { fn.hidden = !!text && (BQ.state.cc || BQ.state.age === '10-12'); if (BQ.icons && BQ.icons[icon || 'ear']) fn.innerHTML = BQ.icons[icon || 'ear']; }
+      if (fn) { fn.hidden = !!text; /* v8: the instruction text is always shown → the function icon only when there is no text */ if (BQ.icons && BQ.icons[icon || 'ear']) fn.innerHTML = BQ.icons[icon || 'ear']; }
       if (btn) { const mute = id && !I.hasAudio(id) && !replay; btn.classList.toggle('i7-say-mute', !!mute); btn.style.opacity = mute ? '.45' : ''; btn.setAttribute('aria-disabled', mute ? 'true' : 'false'); }
     }
   };
@@ -534,11 +534,11 @@
 
   /* ================= أسطر عامّة (LINES_v7: bq7_G_*) ================= */
   I.lines({
-    bq7_G_yes1: 'نَعَمْ! هَذا هُوَ!', bq7_G_yes2: 'أَحْسَنْتَ!', bq7_G_yes3: 'رائِعٌ!', bq7_G_yes4: 'مُمْتازٌ!',
-    bq7_G_try: 'جَرِّبْ مَرَّةً أُخْرى.', bq7_G_listen_again: 'اِسْمَعْ مَرَّةً أُخْرى.', bq7_G_hint_start: 'اِسْمَعْ أَوَّلَ الكَلِمَةِ.',
-    bq7_G_hint_lips: 'الشَّفَتانِ تَلْتَقِيانِ، ثُمَّ تَنْفَتِحانِ: مَ.', bq7_G_look_light: 'اُنْظُرْ إِلى الضَّوْءِ.',
-    bq7_G_look_shape: 'اُنْظُرْ إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذا هُوَ. اِسْمَعْ مَعي:', bq7_G_next: 'هَيّا نُكْمِلْ.',
-    bq7_G_listen_choose: 'اِسْمَعْ، ثُمَّ اخْتَرْ.', bq7_G_your_turn: 'دَوْرُكَ!', bq7_G_end: 'أَحْسَنْتَ! أَنْهَيْتَ النَّشاطَ.',
+    bq7_G_yes1: 'نَعَم! هَذا هُوَ!', bq7_G_yes2: 'أَحْسَنْتَ!', bq7_G_yes3: 'رائِعٌ!', bq7_G_yes4: 'مُمْتازٌ!',
+    bq7_G_try: 'جَرِّب مَرَّةً أُخْرى.', bq7_G_listen_again: 'اِسْمَع مَرَّةً أُخْرى.', bq7_G_hint_start: 'اِسْمَع أَوَّلَ الكَلِمَةِ.',
+    bq7_G_hint_lips: 'الشَّفَتانِ تَلْتَقِيانِ، ثُمَّ تَنْفَتِحانِ: مَ.', bq7_G_look_light: 'اُنْظُر إِلى الضَّوْءِ.',
+    bq7_G_look_shape: 'اُنْظُر إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذا هُوَ. اِسْمَع مَعي:', bq7_G_next: 'هَيّا نُكْمِل.',
+    bq7_G_listen_choose: 'اِسْمَع، ثُمَّ اخْتَر.', bq7_G_your_turn: 'دَوْرُكَ!', bq7_G_end: 'أَحْسَنْتَ! أَنْهَيْتَ النَّشاطَ.',
   });
   /* ===== OWNER_R3 GLOBAL feedback ladder (binding, 2026-10-05) =====
      ✓ green + VARIED praise (never «شكراً») · ✗1 red mark on the chosen option + a motivating retry line, the child tries again ·
@@ -1035,7 +1035,7 @@
   I.goBtn = (parent, kind, aria) => {
     if (!F8) return goBtn7(parent, kind, aria);
     return new Promise((res) => {
-      const b = h('button.bq8-btn.bq8-btn--lg.i8-go.bq8-btn--' + (kind === 'next' ? 'next' : 'listen') + '.is-pulse', { type: 'button', 'aria-label': aria || (kind === 'next' ? 'التّالي' : 'ابْدَأْ') }, I.i8(kind === 'next' ? 'next' : 'play'));
+      const b = h('button.bq8-btn.bq8-btn--lg.i8-go.bq8-btn--' + (kind === 'next' ? 'next' : 'listen') + '.is-pulse', { type: 'button', 'aria-label': aria || (kind === 'next' ? 'التّالي' : 'ابْدَأ') }, I.i8(kind === 'next' ? 'next' : 'play'));
       b.onclick = () => { try { BQ.audio.unlock && BQ.audio.unlock(); } catch (e) { /* */ } I.sfx('pop'); b.remove(); res(); };
       parent.append(b);
       requestAnimationFrame(() => { try { b.focus({ preventScroll: true }); } catch (e) { /* */ } });

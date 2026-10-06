@@ -147,12 +147,12 @@
     const V8 = I.v8();
     const turnIcon = () => (V8 ? h('span.bq8-btn.bq8-btn--mouth.e05-turn', { 'aria-hidden': 'true' }, I.i8('mouth')) : null);
     I.lines({
-      bq7_E05_intro: 'اُنْظُرْ إِلى الفَمِ، وَقُلْ مَعي.', bq7_E05_demo_lips: 'الشَّفَتانِ مُغْلَقَتانِ: مْ… ثُمَّ تَنْفَتِحانِ: مَ.',
+      bq7_E05_intro: 'اُنْظُر إِلى الفَمِ، وَقُل مَعي.', bq7_E05_demo_lips: 'الشَّفَتانِ مُغْلَقَتانِ: مْ… ثُمَّ تَنْفَتِحانِ: مَ.',
       bq7_E05_short_intro: 'صَوْتٌ قَصيرٌ، مِثْلُ قَفْزَةِ بارِقٍ.', bq7_E05_long_intro: 'صَوْتٌ طَويلٌ، مِثْلُ انْزِلاقِ بارِقٍ.',
-      bq7_E05_say_ma: 'قُلْ مَعي: مَ.', bq7_E05_say_mi: 'قُلْ مَعي: مِ.', bq7_E05_say_mu: 'قُلْ مَعي: مُ.',
-      bq7_E05_say_maa: 'قُلْ مَعي: ما.', bq7_E05_say_mii: 'قُلْ مَعي: مي.', bq7_E05_say_muu: 'قُلْ مَعي: مو.',
-      bq7_E05_pairs_intro: 'اِسْمَعِ الفَرْقَ: قَصيرٌ… طَويلٌ.', bq7_E05_tim_intro: 'وَفي هَذِهِ الكَلِمَةِ، اِسْمَعْ جَيِّدًا:',
-      bq7_E05_q_len: 'قَصيرٌ أَمْ طَويلٌ؟', bq7_E05_is_short: 'قَصيرٌ.', bq7_E05_is_long: 'طَويلٌ.',
+      bq7_E05_say_ma: 'قُل مَعي: مَ.', bq7_E05_say_mi: 'قُل مَعي: مِ.', bq7_E05_say_mu: 'قُل مَعي: مُ.',
+      bq7_E05_say_maa: 'قُل مَعي: ما.', bq7_E05_say_mii: 'قُل مَعي: مي.', bq7_E05_say_muu: 'قُل مَعي: مو.',
+      bq7_E05_pairs_intro: 'اِسْمَعِ الفَرْقَ: قَصيرٌ… طَويلٌ.', bq7_E05_tim_intro: 'وَفي هَذِهِ الكَلِمَةِ، اِسْمَع جَيِّدًا:',
+      bq7_E05_q_len: 'قَصيرٌ أَم طَويلٌ؟', bq7_E05_is_short: 'قَصيرٌ.', bq7_E05_is_long: 'طَويلٌ.',
       bq7_E05_puppet_intro: 'أَنا أَقولُ الكَلِمَةَ مَرَّتَيْنِ. أَيُّهُما صَحيحَةٌ؟', bq7_E05_puppet_ok: 'شُكْرًا! الآنَ أَقولُها صَحيحَةً.', bq7_E05_end: 'أَحْسَنْتَ! نَطَقْتَ جَيِّدًا.',
     });
     const SHORT = [{ s: 'ma', v: 'a', w: 'maktab', p: 'a' }, { s: 'mi', v: 'i', w: 'miftah', p: 'i' }, { s: 'mu', v: 'u', w: 'musht', p: 'u' }];
@@ -392,7 +392,7 @@
       if (rv !== 'S4') { await teach(LONG, true, 2); await pairs(); if (!rv) await sukun(); else steps.on(4); lens = await lenCheck(); } else { [2, 3, 4, 5].forEach((k) => steps.on(k)); }
       if (rv !== 'S3') pup = await puppet(); else steps.on(6);
       const okL = lens.filter((x) => x[1]).length, okP = pup.filter((x) => x[1]).length;
-      I.note(S, '<p><b>نتيجة «انطق معي»:</b> قصير/طويل (S3) ' + I.AR(okL) + ' من ' + I.AR(lens.length) + ' · «ساعِدْ بارِقًا» (S4 قرينة) ' + I.AR(okP) + ' من ' + I.AR(pup.length) + ' (النجاح: ٣/٤ + ٢/٢).</p>' +
+      I.note(S, '<p><b>نتيجة «انطق معي»:</b> قصير/طويل (S3) ' + I.AR(okL) + ' من ' + I.AR(lens.length) + ' · «ساعِد بارِقًا» (S4 قرينة) ' + I.AR(okP) + ' من ' + I.AR(pup.length) + ' (النجاح: ٣/٤ + ٢/٢).</p>' +
         '<p><b>حكمك على النطق (S4):</b> اضغط مطوّلاً ١٫٥ ث على بارق في زاوية النشاط ← «أتقن · قريب · ليس بعد». ' + (judged ? 'سُجِّل حكمك.' : 'بلا حكم = لا تسجيل (لا يُعدّ إخفاقاً).') + '</p><p>لا ميكروفون: استمع أنت في وقفات «دَوْرُكَ!». الطويل يُمدّ قليلاً فقط.</p>');
       side.replaceChildren();
       buddy.set('cheer');

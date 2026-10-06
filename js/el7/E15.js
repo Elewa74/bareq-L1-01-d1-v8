@@ -28,7 +28,7 @@
   const CSS = `
 .e15 { flex-direction: row; align-items: stretch; justify-content: center; gap: clamp(10px, 2.4cqi, 24px); }
 .e15-pagewrap { position: relative; flex: 0 1 auto; display: flex; align-items: center; justify-content: center; min-width: 0; }
-.e15-page { position: relative; height: calc(var(--H, 600px) - 28px); aspect-ratio: 1600 / 2263; max-width: 100%; border-radius: 16px; background: #fff; box-shadow: 0 6px 0 var(--sky-line), 0 14px 28px var(--shade); overflow: hidden; touch-action: none; }
+.e15-page { position: relative; height: calc(var(--H, 600px) - 28px); width: calc((var(--H, 600px) - 28px) * 0.7071); aspect-ratio: 1600 / 2263; max-width: 100%; border-radius: 16px; background: #fff; box-shadow: 0 6px 0 var(--sky-line), 0 14px 28px var(--shade); overflow: hidden; touch-action: none; }
 .e15-page canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: pointer; }
 .e15-side { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
 .e15-pal { display: grid; grid-template-columns: repeat(2, auto); gap: 10px; }
@@ -52,7 +52,7 @@
 @container stage (max-width: 620px) {
   .e15 .x7-buddy { display: none; }
   .e15 { flex-direction: column; align-items: center; }
-  .e15-page { height: calc(var(--H, 600px) - 150px); }
+  .e15-page { height: calc(var(--H, 600px) - 150px); width: calc((var(--H, 600px) - 150px) * 0.7071); }
   .e15-side { flex-direction: row; flex-wrap: nowrap; gap: 8px; }
   .e15-pal { grid-template-columns: repeat(4, auto); gap: 6px; }
   .e15-tools { flex-direction: column; gap: 6px; }
@@ -89,6 +89,23 @@
 .x7p.e15.is-tall .e15-finbtn { min-width: max(64px, calc(var(--u)*110)); min-height: max(64px, calc(var(--u)*110)); }
 @container stage (max-width: 620px) { .e15:not(.x7p) .e15-fin { order: 3; } }
 @media (prefers-reduced-motion: reduce) { .e15-dot { animation: none; opacity: 0; } .e15-sw { transition: none; } .x7p.e15 .e15-finbtn.is-pulse { animation: none; } }
+/* ---------- v8 iPad fix (OWNER_R3 2026-10-06 «لا يعرض الصورة للتلوين — المقاس به مشكلة») ----------
+   iPad Safari / WebKit collapsed the page to its 5-px border: «height + aspect-ratio + max-width:100%» inside a shrink-to-fit flex item
+   (.e15-pagewrap flex 0 1 auto) gave the wrapper a 0 max-content width → the canvas was drawn but 0 px wide (only the palette showed).
+   Now the page has an EXPLICIT width AND height in stage units (no aspect-ratio, no % max-width), the wrapper never shrinks, and the board
+   is filled: page (480 u tall) | palette 4×2 + tools row (undo · other page · «التّالي»). The fixed 1180×820 stage keeps this in portrait too. */
+.x7p.e15 { gap: calc(var(--u)*56); padding: calc(var(--u)*6) calc(var(--u)*24); }
+.x7p.e15 .e15-pagewrap { flex: none; }
+.x7p.e15 .e15-page, .x7p.e15.is-tall .e15-page { height: calc(var(--u)*480); width: calc(var(--u)*339.4); aspect-ratio: auto; max-width: none; min-width: 0; flex: none; }
+.x7p.e15 .e15-page > canvas, .x7p.e15 .e15-page > img.e15-img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: fill; }
+.x7p.e15 .e15-side, .x7p.e15.is-tall .e15-side { flex-direction: column; gap: calc(var(--u)*30); }
+.x7p.e15 .e15-pal, .x7p.e15.is-tall .e15-pal { grid-template-columns: repeat(4, auto); gap: calc(var(--u)*22) calc(var(--u)*20); }
+.x7p.e15 .e15-sw { width: calc(var(--u)*86); height: calc(var(--u)*86); }
+.x7p.e15 .e15-tools { flex-direction: row; gap: calc(var(--u)*28); }
+.x7p.e15 .e15-undo8 { width: calc(var(--u)*96); height: calc(var(--u)*96); }
+.x7p.e15 .e15-sw2 { width: calc(var(--u)*86); height: calc(var(--u)*120); }
+.x7p.e15 .e15-tools > .e15-fin { margin-inline-start: calc(var(--u)*10); }
+.x7p.e15 .e15-finbtn, .x7p.e15.is-tall .e15-finbtn { min-width: calc(var(--u)*132); min-height: calc(var(--u)*132); }
 `;
 
   function run(stage, ctx) {
@@ -122,24 +139,47 @@
     const finBtn = V8 ? h('button.bq8-pill.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, X.i8('next'), finLbl)
       : h('button.x7-btn.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, finLbl, X.icon('next'));
     const fin = h('div.e15-fin', { hidden: true }, finBtn);
-    root.append(pageWrap, side, fin);
+    if (V8) { side.lastChild.append(fin); root.append(pageWrap, side); } // v8: «التّالي» sits in the tools row under the palette
+    else root.append(pageWrap, side, fin);
     const buddy = X.buddy(root);
 
     const state = PAGES.map(() => null); // لكلّ صفحة: {cv, g, w, h, lab, color(ImageData), line(img), fills:Map, undo:[], named:Set, n}
     let pi = 0, ready = false, ended = false;
-    async function load(i) {
-      if (state[i]) return state[i];
+    /* iPad-safe load (OWNER_R3 2026-10-06): decode the page with img.decode() (falls back to onload), draw it on a SMALL 2D canvas
+       (backing store PW × ≈1.41 PW ≈ 0.8 Mpx ≤ the 4 Mpx cap — never × devicePixelRatio, never OffscreenCanvas/createImageBitmap/ImageDecoder).
+       If the canvas cannot be read (context lost, memory limit, tainted) the plain <img> is shown instead so the picture is never blank. */
+    const MAXPX = 4e6;
+    async function decodeImg(src) {
       const img = new Image();
       img.decoding = 'async';
-      img.src = srcOf(i);
-      await new Promise((r) => { img.onload = r; img.onerror = r; });
-      if (!img.naturalWidth) return null;
-      const w = PW, hh = Math.round(PW * img.naturalHeight / img.naturalWidth);
+      const loaded = new Promise((r) => { img.onload = () => r(true); img.onerror = () => r(false); });
+      img.src = src;
+      let ok = false;
+      if (img.decode) { try { await img.decode(); ok = true; } catch (e) { ok = await loaded; } } else ok = await loaded;
+      if (!ok && !img.complete) ok = await loaded;
+      return img.naturalWidth ? img : null;
+    }
+    function fallback(i, img) {
+      const el = h('img.e15-img', { src: img ? img.src : srcOf(i), alt: '', draggable: 'false', width: 1600, height: 2263 });
+      return { fallback: true, cv: el, undo: [], fills: new Map(), named: new Set() };
+    }
+    async function load(i) {
+      if (state[i]) return state[i];
+      const img = await decodeImg(srcOf(i));
+      if (!img) return null;
+      let w = PW, hh = Math.round(PW * img.naturalHeight / img.naturalWidth);
+      if (w * hh > MAXPX) { const k = Math.sqrt(MAXPX / (w * hh)); w = Math.floor(w * k); hh = Math.floor(hh * k); }
       const cv = h('canvas', { width: w, height: hh });
-      const g = cv.getContext('2d', { willReadFrequently: true });
-      g.fillStyle = '#fff'; g.fillRect(0, 0, w, hh);
-      g.drawImage(img, 0, 0, w, hh);
-      const src = g.getImageData(0, 0, w, hh).data;
+      let g = null, src = null;
+      try {
+        g = cv.getContext('2d', { willReadFrequently: true }) || cv.getContext('2d');
+        if (g) {
+          g.fillStyle = '#fff'; g.fillRect(0, 0, w, hh);
+          g.drawImage(img, 0, 0, w, hh);
+          src = g.getImageData(0, 0, w, hh).data;
+        }
+      } catch (e) { console.warn('[E15] canvas ' + e.message); src = null; }
+      if (!g || !src || cv.width !== w) { state[i] = fallback(i, img); return state[i]; }
       // قناع المناطق: فاتح = قابل للتلوين · ثمّ تسمية المكوّنات المتّصلة (٤-جوار)
       const N = w * hh, lab = new Int32Array(N).fill(-1);
       const light = new Uint8Array(N);
@@ -174,7 +214,7 @@
       const hole = PAGES[i].hole ? lab[Math.round(PAGES[i].hole[1] * hh) * w + Math.round(PAGES[i].hole[0] * w)] : -1;
       if (hole >= 0 && hole === letter) letter = -1; // الفراغ ليس جسم الحرف
       const st = { cv, g, w, h: hh, lab, sizes, color, line: img, fills: new Map(), undo: [], named: new Set(), blocked, letter, hole, bg: lab[w * 2 + 2] };
-      draw(st);
+      try { draw(st); } catch (e) { console.warn('[E15] draw ' + e.message); state[i] = fallback(i, img); return state[i]; }
       cv.addEventListener('pointerdown', (e) => tap(st, e));
       cv.addEventListener('contextmenu', (e) => e.preventDefault());
       state[i] = st;
@@ -209,7 +249,7 @@
       return -1;
     }
     function tap(st, e) {
-      if (e.button && e.button !== 0) return;
+      if (st.fallback || (e.button && e.button !== 0)) return;
       if (e.cancelable) e.preventDefault();
       const rc = st.cv.getBoundingClientRect();
       const fx = (e.clientX - rc.left) / rc.width, fy = (e.clientY - rc.top) / rc.height;
@@ -284,6 +324,14 @@
       if (st) glowOther();
     }
 
+    /* iOS may drop a canvas backing store while the tab is hidden or the stage is re-scaled → repaint the current page from its data */
+    const repaint = () => { const st = state[pi]; if (st && !st.fallback && S.live) { try { draw(st); } catch (e) { /* */ } } };
+    const onVis = () => { if (document.visibilityState === 'visible') requestAnimationFrame(repaint); };
+    document.addEventListener('visibilitychange', onVis);
+    document.addEventListener('bq-stagefit', repaint);
+    window.addEventListener('pageshow', repaint);
+    ctx.onCleanup(() => { document.removeEventListener('visibilitychange', onVis); document.removeEventListener('bq-stagefit', repaint); window.removeEventListener('pageshow', repaint); });
+
     note();
     (async () => {
       await show(0);
@@ -294,7 +342,7 @@
 
     function note() {
       const b1 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print([{ img: srcOf(0) }, { img: srcOf(1) }], { title: 'لوّن — صوت الميم' }) }, 'اطبع الصفحتين للتلوين (A4)');
-      const b2 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => { const pgs = state.filter(Boolean).map((st) => ({ img: st.cv.toDataURL('image/png') })); if (pgs.length) X.print(pgs, { title: 'تلوين الطفل' }); } }, 'اطبع ما لوّنه الطفل');
+      const b2 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => { const pgs = state.filter((st) => st && !st.fallback).map((st) => ({ img: st.cv.toDataURL('image/png') })); if (pgs.length) X.print(pgs, { title: 'تلوين الطفل' }); } }, 'اطبع ما لوّنه الطفل');
       X.note(ctx, h('div', null,
         h('div', { html: '<p><b>ما يجري:</b> يختار الطفل لوناً ثم يلمس منطقة فتتلوّن (الصفحة ١: «م» كبيرة مع بارق · الصفحة ٢: مانجو، موز، قمر، مشط، مفتاح، تمساح — لمس الشيء أوّل مرّة يُسمِع اسمه). «تراجع» يلغي آخر تلوين. خلفية الصفحة لا تتلوّن. بعد ٣ مناطق أو تلوين الحرف يظهر «التّالي» ويُسجَّل النشاط منجزاً، ويمكن للطفل أن يكمل التلوين.</p>' +
           '<p><b>اسأله أثناء التلوين:</b> «ما هذا؟ أين الميم في اسمه؟» — دون ضغط؛ هذا نشاط تعزيز غير مسجَّل.</p>' }),

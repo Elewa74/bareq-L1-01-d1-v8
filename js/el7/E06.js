@@ -146,9 +146,9 @@
     const tile8 = (g, aria, spk) => { const sp = h('span', { html: kas8(g) }); const t = h('button.e06-tile.bq8-tile.bq8-tile--syll', { type: 'button', 'aria-label': aria, lang: 'ar' }, sp); if (spk) t.append(h('span.e06-spk', { 'aria-hidden': 'true' }, I.i8('listen'))); I.fitGlyph(t, sp, 0.13); return t; };
     I.lines({
       bq7_E06_recall: 'سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.', bq7_E06_reveal: 'وَهَذا شَكْلُهُ: م. هَذا حَرْفُ المِيمِ.', bq7_E06_brq_wow: 'حَرْفُ المِيمِ! صَوْتُهُ: مَ!',
-      bq7_E06_vowels: 'المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.', bq7_E06_tap_vowels: 'اِلْمِسْ كُلَّ واحِدَةٍ، وَاسْمَعْ.',
+      bq7_E06_vowels: 'المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.', bq7_E06_tap_vowels: 'اِلْمِس كُلَّ واحِدَةٍ، وَاسْمَع.',
       bq7_E06_find_intro: 'اِسْمَعِ الكَلِمَةَ، وَالْمِسِ المِيمَ — صَوْتُها مَ — فيها.', bq7_E06_ok_letter: 'هَذا حَرْفُ المِيمِ، صَوْتُهُ مَ.',
-      bq7_E06_match_intro: 'اِسْمَعْ، وَالْمِسِ المَكْتوبَ الَّذي سَمِعْتَهُ.', bq7_E06_end: 'الآنَ نَعْرِفُ شَكْلَ صَوْتِنا: م!',
+      bq7_E06_match_intro: 'اِسْمَع، وَالْمِسِ المَكْتوبَ الَّذي سَمِعْتَهُ.', bq7_E06_end: 'الآنَ نَعْرِفُ شَكْلَ صَوْتِنا: م!',
     });
     const SYL = [{ s: 'ma', g: 'مَ' }, { s: 'mi', g: 'مِ' }, { s: 'mu', g: 'مُ' }];
     const WORDS = [{ slug: 'musht' }, { slug: 'miftah' }, { slug: 'numur' }];

@@ -41,7 +41,7 @@
     S7: [{ type: 'read', q: 'bq7_E08_read_intro', word: 'mawz', opts: ['mawz', 'qamar', 'fam'].map(P) },
          { type: 'read', q: 'bq7_E08_read_intro', word: 'miftah', opts: ['miftah', 'musht', 'maktab'].map(P) }],
     S8: [{ type: 'write', q: 'bq7_E11_s8_q1', form: 'iso' },
-         { type: 'write', q: 'bq7_E11_s8_q2', form: 'med', before: 'قَـ', after: 'ـرْ', word: 'قَمَرْ', pic: 'qamar' }],
+         { type: 'write', q: 'bq7_E11_s8_q2', form: 'med', before: 'قَـ', after: 'ـر', word: 'قَمَر', pic: 'qamar' }],
     S9: [{ type: 'pic', q: 'bq7_E11_s9_q1', opts: ['musht', 'miftah', 'manju'].map(P) },
          { type: 'pic', q: 'bq7_E11_s9_q2', opts: ['miftah', 'musht', 'mawz'].map(P) }],
   };
@@ -653,7 +653,7 @@
     }
 
     /** v8 options. Cards are div[role=button] so the ear chip inside can be a real button. */
-    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْمَعْ مَرَّةً أُخْرى' }, X.i8('ear'))); }
+    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْمَع مَرَّةً أُخْرى' }, X.i8('ear'))); }
     function optEl8(it, o, n, aria) {
       const card = (cls, kids) => h('div.e11-opt.x7-in' + cls, { role: 'button', tabindex: '0', 'aria-label': aria }, kids);
       if (it.type === 'pic' || it.type === 'read') {
@@ -853,7 +853,7 @@
       }).join('');
       const node = h('div', null,
         h('div', { html: '<p><b>التحقّق:</b> يُحتسب للإتقان صواب <b>المحاولة الأولى</b> فقط. يرى الطفل التغذية: ✓ مدح وعلامة خضراء · ✗ أولى علامة حمراء و«حاول مرة أخرى» · ✗ ثانية يُظهر بارق الإجابة ويشجّعه. لا تساعده أثناء البنود. بعدها نتيجة بالأيقونات ومراجعة قصيرة من بارق لما لم يُتقَن ثم بند إعادة واحد.</p>' +
-          '<p><b>النطق (S4):</b> بعد «قُلْ: مَ، مِ، مُ، ما، مي، مو» احكم أنت: اضغط مطوّلاً (١٫٥ ث) على بارق في شاشة البند، أو من هنا:</p>' }),
+          '<p><b>النطق (S4):</b> بعد «قُل: مَ، مِ، مُ، ما، مي، مو» احكم أنت: اضغط مطوّلاً (١٫٥ ث) على بارق في شاشة البند، أو من هنا:</p>' }),
         h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '6px 0 10px' } },
           [['mastered', 'أتقن'], ['near', 'قريب'], ['notyet', 'ليس بعد']].map(([k, a]) => h('button', { type: 'button', class: 'bq-btn ghost', 'aria-pressed': String((g.S4 && g.S4.judge) === k), onclick: () => { try { M().judge('S4', k); } catch (e) { /* */ } log.S4.judge = k; note(); } }, a))),
         h('div', { html: '<table class="x7-log"><thead><tr><th>المهارة</th><th>البندان</th><th>الإعادة</th><th>الحالة</th></tr></thead><tbody>' + rows + '</tbody></table>' +

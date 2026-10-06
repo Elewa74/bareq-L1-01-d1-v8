@@ -61,7 +61,7 @@
 .elp-fit .bq-godot-fs { width: 76px; height: 76px; }
 .elp-fit .bq-godot-fs svg { width: 30px; height: 30px; }
 .elp-fit .vp-mp4 .vp-ctl > button, .elp-fit .vp-mp4 .vp-ctl > button.pp { min-width: 76px !important; min-height: 76px !important; flex-basis: 76px; }
-.elp-fit .vp-mp4 .vp-seg { min-height: 76px; }
+.elp-fit .vp-mp4 .vp-track { min-height: 76px; }
 
 /* R4 #1 · E10 board (GAME's fitBoard mixes window height with layout px): inside the fixed stage the board size is a constant of the
    1180×820 stage (values = fitBoard computed from the stage alone: 1130 / 1130 layout px). Applies only until E10 sizes itself from the
@@ -88,7 +88,25 @@
 .elp-fit { --bq8-glass64: max(76px, calc(64px / var(--bq-stage-s, 1))); }
 .elp-fit .vp-mp4 .vp-ctl > button, .elp-fit .vp-mp4 .vp-ctl > button.pp { min-width: var(--bq8-glass64) !important; min-height: var(--bq8-glass64) !important; flex-basis: var(--bq8-glass64); }
 .elp-fit .vp-mp4 .vp-ctl { height: auto; min-height: var(--bq8-glass64); }
-.elp-fit .vp-mp4 .vp-seg { min-height: var(--bq8-glass64); }
+.elp-fit .vp-mp4 .vp-track { min-height: var(--bq8-glass64); }
 .elp-fit .v7-eq-say, .elp-fit .v7-eq-ear { width: var(--bq8-glass64); height: var(--bq8-glass64); }
 .elp-fit .elp-say { width: var(--bq8-glass64); height: var(--bq8-glass64); }
 .elp-fit .v7-eq-pick { min-width: var(--bq8-glass64); min-height: var(--bq8-glass64); }   /* word hit boxes: sized by the glyphs (word ≥ 180 px), never overlapping */
+
+/* v8 owner iPad + menu fixes (OWNER_R3 2026-10-06 «احذف من القائمة تفاعلي وفيديو، وفي تداخل في العنوان») · theme 8 only (theme 0 keeps its chips)
+   1) no element-type chips («تفاعلي» «فيديو» «لعبة» «طباعة») in the lesson list or in the element head (numbers + done ticks stay).
+   2) element head = ONE row: [icon] [title] [«العنصر n من ١٦»] [tools]. The two-line head (kicker 18 px + title 25×1.95 = 49 px) needed
+      67 px inside a 50 px head, so the title's line box (and its stacked marks) rode up over the kicker and the chip. One row: the kicker
+      sits beside the title. Measured ink of all 16 titles (WebKit + Chromium, pixel scan): the union of the highest mark (ـأُ in «الأُسْرَةِ»)
+      and the lowest (kasra of «اِقْرَأْ») is ≈ 2.35 em → title 22 px (≈ 52 px) in a 54 px head; nothing clips (overflow visible).
+      Head 50 → 54 px costs 4 px of stage height: iPad 1180×820 stage scale 0.851 → 0.846, so a 76-px in-stage target is still ≥ 64 px. */
+:root[data-theme="8"] .menu .bq-type, :root[data-theme="8"] .elp-kicker .bq-type { display: none !important; }
+@media (min-height: 501px) { :root[data-theme="8"] { --head-h: 54px; } }
+:root[data-theme="8"] .elp-titles { display: flex; flex-direction: row; align-items: center; gap: 14px; min-width: 0; overflow: visible; height: 100%; }
+:root[data-theme="8"] .elp-title { order: 1; flex: 0 1 auto; min-width: 0; margin: 0; font-size: 22px; line-height: 2.3; padding: 0 10px; overflow: visible; text-overflow: clip; } /* 10 px side room: end marks (ـةُ ، اِ) ink up to 7 px past the advance */
+:root[data-theme="8"] .elp-kicker { order: 2; flex: 0 100 auto; min-width: 0; margin: 0; font: 600 14px/1.5 var(--ff-ui); color: var(--sky-ink); white-space: nowrap; padding-top: 2px; }
+:root[data-theme="8"] .elp-kicker > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 640px) { :root[data-theme="8"] .elp-title { font-size: 20px; } :root[data-theme="8"] .elp-kicker { font-size: 12.5px; } }
+/* 3) iPad portrait (owner photo E14_ipad_drag_huge.jpg: the stage sat at the top with ~half the screen empty below): the element head +
+      the fixed stage are centred as ONE block in the free height (head stays attached to the stage; landscape already fills the height). */
+@media (orientation: portrait) and (min-height: 501px) { :root[data-theme="8"] .bq-frame.elp { justify-content: center; } }

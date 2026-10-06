@@ -37,12 +37,12 @@
     { s: 'kura' }, { s: 'bab' }, { s: 'kitab' }, { s: 'qalam', m: 'last' }, { s: 'qamis', m: 'mid' },
   ];
   // the middle/last-م word chip (owner 2026-10-05: «قميص/قلم ليست خطأ» — show where the م sits)
-  const MIDW = { qalam: { word: 'قَلَمْ', m: 2 }, qamis: { word: 'قَميصْ', m: 1 } };
+  const MIDW = { qalam: { word: 'قَلَم', m: 2 }, qamis: { word: 'قَميص', m: 1 } };
   const WORDS = [
-    { s: 'mawz', word: 'مَوْزْ', m: 0, parts: ['#', 'ـوْزْ'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5' },
-    { s: 'musht', word: 'مُشْطْ', m: 0, parts: ['#', 'ـشْطْ'], right: 'مُـ', wrong: ['بُـ', 'فُـ'], skill: 'S5' },
-    { s: 'qamar', word: 'قَمَرْ', m: 1, parts: ['قَـ', '#', 'ـرْ'], right: 'ـمَـ', wrong: ['ـبَـ', 'ـفَـ'], skill: 'S6' },
-    { s: 'fam', word: 'فَمْ', m: 1, parts: ['فَـ', '#'], right: 'ـمْ', wrong: ['ـبْ', 'ـفْ'], skill: 'S6' },
+    { s: 'mawz', word: 'مَوْز', m: 0, parts: ['#', 'ـوْز'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5' },
+    { s: 'musht', word: 'مُشْط', m: 0, parts: ['#', 'ـشْط'], right: 'مُـ', wrong: ['بُـ', 'فُـ'], skill: 'S5' },
+    { s: 'qamar', word: 'قَمَر', m: 1, parts: ['قَـ', '#', 'ـر'], right: 'ـمَـ', wrong: ['ـبَـ', 'ـفَـ'], skill: 'S6' },
+    { s: 'fam', word: 'فَم', m: 1, parts: ['فَـ', '#'], right: 'ـم', wrong: ['ـب', 'ـف'], skill: 'S6' },
   ];
   const v8 = () => document.documentElement.dataset.theme === '8';
   const lib = () => (BQ.ix1 ? Promise.resolve(BQ.ix1) : BQ.loadScript('js/el7/lib/ix1.js').then(() => BQ.ix1));
@@ -399,7 +399,7 @@
       await bqTo(cur.near._home); if (!ok()) return;
       layoutHits();
       setLock(false);
-      await ctx.instruction('اِلْمِسْ كُلَّ شَيْءٍ يَبْدَأُ بِصَوْتِ المِيمِ.', L.r1, { icon: 'hand' });
+      await ctx.instruction('اِلْمِس كُلَّ شَيْءٍ يَبْدَأُ بِصَوْتِ المِيمِ.', L.r1, { icon: 'hand' });
     }
     // R3-F7: phone portrait → the platform's «أَدِرِ الجِهازَ» card (icon + Bariq, no text) until the phone turns or «تابِعْ»
     const mq = window.matchMedia ? matchMedia('(orientation: portrait) and (max-width: 599.98px)') : null;
@@ -410,7 +410,7 @@
       const onMq = () => { if (!mq.matches) go(); };
       const card = h('div.bq-rot7', { role: 'dialog', 'aria-label': 'أَدِرِ الجِهازَ' }, h('span.bq-rot7-ic', { html: ROT }),
         BQ.ui.brq ? BQ.ui.brq('point', 'bq-rot7-brq') : null,
-        h('button.bq-rot7-go', { type: 'button', 'aria-label': 'تابِعْ', onclick: go }, BQ.icon('next')));
+        h('button.bq-rot7-go', { type: 'button', 'aria-label': 'تابِع', onclick: go }, BQ.icon('next')));
       stage.style.position = stage.style.position || 'relative';
       stage.append(card);
       if (mq.addEventListener) mq.addEventListener('change', onMq);
@@ -529,7 +529,7 @@
         bindPieces(pcs, gap, judgeLadder(w, pcs, gap, done, true));
         (async () => {
           await wait(ctx, 300); if (!ok()) return;
-          if (k === 0) await ctx.instruction('اُنْظُرْ إِلى الصّورَةِ، وَضَعِ القِطْعَةَ النّاقِصَةَ.', L.r2t, { icon: 'hand' });
+          if (k === 0) await ctx.instruction('اُنْظُر إِلى الصّورَةِ، وَضَعِ القِطْعَةَ النّاقِصَةَ.', L.r2t, { icon: 'hand' });
           if (!ok()) return;
           await say('bq7_W_' + w.s);
         })();
@@ -555,7 +555,7 @@
         bindPieces(pcs, gap, judgeLadder(w, pcs, gap, done, false));
         (async () => {
           await wait(ctx, 300); if (!ok()) return;
-          if (first) await ctx.instruction('اُنْظُرْ إِلى الصّورَةِ، وَضَعِ القِطْعَةَ النّاقِصَةَ.', L.r2t, { icon: 'hand' });
+          if (first) await ctx.instruction('اُنْظُر إِلى الصّورَةِ، وَضَعِ القِطْعَةَ النّاقِصَةَ.', L.r2t, { icon: 'hand' });
           if (!ok()) return;
           await say('bq7_W_' + w.s);
         })();
@@ -585,7 +585,7 @@
     const pk = (r.picks || []).map((p) => ({ maktab: 'مَكْتَب', musht: 'مُشْط', miftah: 'مِفْتاح', manju: 'مانْجو' }[p.slug] || p.slug) + (p.how === 'shown' ? ' (أخذه بارق بعد لمستين)' : p.how === 'hint' ? ' (بعد أن أضاءه بارق)' : p.ok ? ' ✓' : ' (بعد لمسة في غير موضعها)')).join(' · ');
     const md = (r.mid_heard || []).map((m) => ({ qalam: 'قَلَم (آخرها)', qamis: 'قَميص (وسطها)', qamar: 'قَمَر (وسطها)' }[m.slug] || m.slug)).join(' · ');
     const wd = (r.words || []).map((w) => ({ mawz: 'مَوْز', musht: 'مُشْط', qamar: 'قَمَر', fam: 'فَم' }[w.slug] || w.slug) + ': ' + (w.how === 'first' ? 'من المحاولة الأولى' : w.how === 'shown' ? 'عُرض النموذج' : 'بعد تلميح')).join(' · ');
-    ctx.adultNote('<p class="goal"><b>نتيجة «اِلْعَبْ» (قرائن لا درجة):</b> وجد ' + AR(r.found || 0) + ' من ' + AR(r.targets || 4) + ' أشياء تبدأ بصوت الميم · لمسات في غير موضعها: ' + AR(r.wrong || 0) + '.</p>' +
+    ctx.adultNote('<p class="goal"><b>نتيجة «اِلْعَب» (قرائن لا درجة):</b> وجد ' + AR(r.found || 0) + ' من ' + AR(r.targets || 4) + ' أشياء تبدأ بصوت الميم · لمسات في غير موضعها: ' + AR(r.wrong || 0) + '.</p>' +
       (pk ? '<p>الجولة ١ (S1): ' + pk + '</p>' : '') + (md ? '<p>سمع الميم في غير أوّل الكلمة (قرينة S6، ليست خطأ): ' + md + '</p>' : '') + (wd ? '<p>الجولة ٢ (S5 أوّل الكلمة · S6 وسطها وآخرها): ' + wd + '</p>' : '') +
       '<p class="lp-muted">لاحظ: هل يعتمد على الصوت (يستمع قبل أن يقرّر) أم على التخمين بالصورة؟ قَلَم وقَميص فيهما ميم ليست في الأوّل.</p>');
   }
@@ -626,7 +626,7 @@
   const G9_BASE = 'games/g9/';
   function runG9(stage, ctx, onFail) {
     const h = BQ.h;
-    if (!document.getElementById('st-e10g9')) document.head.append(h('style', { id: 'st-e10g9' }, '.e10.e10-g9 { padding: 0 !important; display: block !important; } .e10-g9host { position: relative; width: 100%; height: 100%; } .e10-g9host .elp-instr { position: static !important; margin: 0 !important; } .e10-g9host .elp-fn { display: none !important; } .e10-g9host .elp-say > svg { display: none !important; }'));
+    if (!document.getElementById('st-e10g9')) document.head.append(h('style', { id: 'st-e10g9' }, '.e10.e10-g9 { padding: 0 !important; display: block !important; } .e10-g9host { position: relative; width: 100%; height: 100%; } .e10-g9host .elp-instr { position: static !important; margin: 0 !important; } .e10-g9host .elp-fn { display: none !important; } .e10-g9host .elp-say > svg, .e10-g9host .elp-say > .bq-ic { display: none !important; }'));
     stage.classList.add('e10', 'e10-g9'); stage.dataset.fixed8 = '1';
     const host = h('div.e10-g9host'); stage.replaceChildren(host);
     const res = newRes();
@@ -709,7 +709,7 @@
     const alt = h('p', null, h('button.bq-btn.ghost', { type: 'button', onclick: () => { g.destroy(); alt.remove(); note.textContent = 'تعمل الآن النسخة الخفيفة.'; runHtml(); } }, 'تشغيل النسخة الخفيفة (تعمل في أيّ متصفّح)'));
     ctx.adultNote(h('div', null, note, alt));
     let r1done = false;
-    const g = BQ.ui.godot(stage, { src: GAME_SRC, station: ID, age: ctx.age(), title: 'لعبة: ساعِدْ بارِقًا',
+    const g = BQ.ui.godot(stage, { src: GAME_SRC, station: ID, age: ctx.age(), title: 'لعبة: ساعِد بارِقًا',
       onFail() {
         if (!ctx.alive() || r1done) return;
         g.destroy(); alt.remove(); note.textContent = 'تعذّر تحميل اللعبة على هذا الجهاز، فشُغّلت النسخة الخفيفة تلقائياً.';

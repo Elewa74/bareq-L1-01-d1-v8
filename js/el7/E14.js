@@ -7,7 +7,9 @@
    الطباعة للمعلّم فقط (زرّ في دليل المعلّم).
    v8 (?theme=8 · OWNER_R3-14): (١) الإفلات يستقرّ مباشرة في الفرع (البطاقة نفسها تنتقل إلى جسم الفرع بارتداد قصير) — لا عودة ثم هبوط؛
    الخطأ = اهتزاز لطيف ثمّ تعود · (٢) كلّ حرف داخل بطاقته (Vazirmatn، الحجم من عرض البطاقة، فُحص «مِ» و«مُ» آليّاً) · (٣) كلّ فرع يقول
-   ما يوضع فيه: صورة الفرع + شكل الحرف الذي يخصّه (مـ ـمـ ـم · مَ مِ مُ · بطاقات بصور) + سمّاعة؛ ٣ نجوم = فرع اكتمل. */
+   ما يوضع فيه: صورة الفرع + شكل الحرف الذي يخصّه (مـ ـمـ ـم · مَ مِ مُ · بطاقات بصور) + سمّاعة؛ ٣ نجوم = فرع اكتمل.
+   v8 E14 fixed slots (المالك 2026-10-06 «ثبّت مقاس مربعات الإجابة»): لكلّ فرع خانات ثابتة فارغة ظاهرة بعدد إجاباته (٤ · ٦ · ٣)،
+   القطعة تستقرّ في وسط أوّل خانة فارغة وتصغر إن لزم؛ الفروع والدرج بمقاسات ثابتة على مسرح 1180×820 فلا تداخل ولا خروج عن الإطار. */
 (function () {
   'use strict';
   const ID = 'E14';
@@ -80,46 +82,69 @@
   .e14-tray { gap: 8px; padding: 8px; }
   .e14-tray .x7-tile { min-width: 60px; min-height: 60px; }
 }
+.e14 img, .x7-ghost img { max-width: 100%; -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
 `;
 
   /* ---------- v8 ---------- */
   const LBL8 = { forms: ['مـ', 'ـمـ', 'ـم'], vowels: ['مَ', 'مِ', 'مُ'], words: null };
+  /* v8 · OWNER 2026-10-06 (E14_slots_overflow.png «تداخل وخروج الإجابات خارج الإطار … ثبّت مقاس مربعات الإجابة»): FIXED answer slots.
+     Every branch shows one empty slot frame per expected answer (forms 4 · vowels 6 · words 3), all sizes are constants of the fixed
+     1180×820 stage (layout px = --u), so nothing can grow: the map is 310u high, the tray 204u, slots never move, the tray is never covered.
+       slot 84u (inner 78u) ← letter tile 76u · word slot 160×84u ← picture card 76u high (shrink-to-fit by `scale` if a card is wider)
+       columns (RTL): vowels 3×2 = 286u · forms 4×1 under the centre «م» = 376u · words 2+1 = 348u · gaps 16u → 1042u ≤ 1058u panel content
+       heights: centre 104u + 16u + forms branch 190u = 310u; vowels / words branches 280u stretched to 310u; + 14u + tray 204u = 528u ≤ 550u
+     Touch: tray tiles 84u, placed tiles 76u (≥ 64 px on the glass at the iPad-landscape scale 0.85). */
+  const SLOT = { forms: 4, vowels: 3, words: 2 }; // slot columns per branch
   const CSS8 = `
-.x7p.e14 { padding: calc(var(--u)*22) calc(var(--u)*26); gap: calc(var(--u)*14); justify-content: space-between; }
-.e14-map8 { position: relative; width: 100%; flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto minmax(0, 1fr); column-gap: calc(var(--u)*22); row-gap: calc(var(--u)*34); }
+.x7p.e14 { padding: calc(var(--u)*16) calc(var(--u)*18); gap: calc(var(--u)*14); justify-content: center; }
+.e14-map8 { --S: calc(var(--u)*84); --SW: calc(var(--u)*160); --SG: calc(var(--u)*6); --bp: calc(var(--u)*8); --bw: calc(var(--u)*3);
+  position: relative; flex: none; width: 100%; height: calc(var(--u)*310); display: grid; justify-content: center;
+  grid-template-columns: calc(var(--u)*286) calc(var(--u)*376) calc(var(--u)*348); grid-template-rows: calc(var(--u)*104) calc(var(--u)*190);
+  column-gap: calc(var(--u)*16); row-gap: calc(var(--u)*16); }
 .e14-lines8 { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 0; }
 .e14-lines8 path { fill: none; stroke: rgba(11,45,79,.28); stroke-width: calc(var(--u)*6); stroke-linecap: round; stroke-dasharray: 0 calc(var(--u)*16); transition: stroke .3s; }
 .e14-lines8 path.on { stroke: var(--bq8-yellow); }
-.e14-c8 { grid-column: 1 / -1; justify-self: center; position: relative; z-index: 1; --w: calc(var(--u)*104); color: var(--bq8-meem); cursor: default; }
+.e14-c8 { grid-column: 2; grid-row: 1; justify-self: center; align-self: start; position: relative; z-index: 1; --w: calc(var(--u)*104); color: var(--bq8-meem); cursor: default; }
 .e14-c8.bq8-tile { --fs: .62; }
-.e14 .bq8-slot { position: relative; z-index: 1; justify-content: flex-start; min-width: 0; padding: calc(var(--u)*10) calc(var(--u)*10) calc(var(--u)*12); background: rgba(255,255,255,.72); }
+.e14 .bq8-slot { position: relative; z-index: 1; box-sizing: border-box; justify-content: flex-start; align-items: center; gap: calc(var(--u)*8); min-width: 0; min-height: 0; overflow: visible;
+  padding: var(--bp); border-width: var(--bw); background: rgba(255,255,255,.72); }
+.e14 .bq8-slot[data-br="vowels"] { grid-column: 1; grid-row: 1 / span 2; }
+.e14 .bq8-slot[data-br="forms"] { grid-column: 2; grid-row: 2; }
+.e14 .bq8-slot[data-br="words"] { grid-column: 3; grid-row: 1 / span 2; }
 .e14 .bq8-slot[data-br="forms"] { --slot-c: var(--bq8-eye); } .e14 .bq8-slot[data-br="vowels"] { --slot-c: var(--bq8-mouth); } .e14 .bq8-slot[data-br="words"] { --slot-c: var(--bq8-ear); }
-.e14 .bq8-slot__label { border: 0; cursor: pointer; min-height: max(64px, calc(var(--u)*72)); padding: calc(var(--u)*6) calc(var(--u)*16) calc(var(--u)*6) calc(var(--u)*8); gap: calc(var(--u)*10); }
+.e14 .bq8-slot__label { flex: none; border: 0; cursor: pointer; height: calc(var(--u)*76); min-height: max(64px, calc(var(--u)*76)); padding: calc(var(--u)*4) calc(var(--u)*16) calc(var(--u)*4) calc(var(--u)*8); gap: calc(var(--u)*10); }
 .e14 .bq8-slot__label img { width: calc(var(--u)*58); height: calc(var(--u)*58); object-fit: contain; border-radius: 0; }
 .e14 .e14-ex { display: inline-flex; gap: calc(var(--u)*8); font: 700 calc(var(--u)*34)/1.5 var(--font-letter); color: var(--bq8-meem); white-space: nowrap; }
 .e14 .e14-ex.is-pics { gap: calc(var(--u)*4); }
 .e14 .e14-ex.is-pics img { width: calc(var(--u)*44); height: calc(var(--u)*44); border-radius: calc(var(--u)*8); object-fit: cover; box-shadow: 0 0 0 calc(var(--u)*2) #fff, var(--bq8-sh-1); }
 .e14 .e14-say8 { font-size: calc(var(--u)*34); }
-.e14 .bq8-slot__body { width: 100%; flex: 1 1 auto; min-height: calc(var(--u)*120); align-content: center; gap: calc(var(--u)*8); }
-.e14 .bq8-slot.is-lit { border-style: solid; border-color: var(--bq8-yellow); box-shadow: 0 0 0 calc(var(--u)*6) rgba(255,194,26,.45); }
-.e14-tray8 { flex: none; width: 100%; display: flex; direction: rtl; flex-wrap: wrap; justify-content: center; align-content: center; gap: calc(var(--u)*12); padding: calc(var(--u)*12); min-height: calc(var(--u)*100);
+/* the slot grid: fixed columns, fixed slots, centred in what is left of the branch under its label */
+.e14 .bq8-slot__body { flex: 1 1 auto; min-height: 0; min-width: 0; width: calc(var(--n) * var(--S) + (var(--n) - 1) * var(--SG)); max-width: 100%;
+  display: flex; flex-wrap: wrap; justify-content: center; align-content: center; align-items: center; gap: var(--SG); }
+.e14 .bq8-slot[data-br="words"] .bq8-slot__body { width: calc(var(--n) * var(--SW) + (var(--n) - 1) * var(--SG)); }
+.e14-slot { position: relative; box-sizing: border-box; flex: none; width: var(--S); height: var(--S); display: grid; place-items: center;
+  border-radius: calc(var(--u)*18); border: var(--bw) dashed rgba(11,45,79,.3); background: rgba(255,255,255,.55); }
+.e14-slot.is-word { width: var(--SW); }
+.e14-slot.is-full { border-style: solid; border-color: rgba(31,157,99,.45); background: rgba(207,245,226,.55); }
+.e14 .bq8-slot.is-over .e14-slot:not(.is-full) { border-color: var(--bq8-star-d); background: rgba(255,240,184,.9); }
+.e14-tray8 { flex: none; box-sizing: border-box; width: 100%; height: calc(var(--u)*204); display: flex; direction: rtl; flex-wrap: wrap; justify-content: center; align-content: center;
+  gap: calc(var(--u)*10) calc(var(--u)*12); padding: calc(var(--u)*10);
   border-radius: calc(var(--u)*28); background: rgba(255,255,255,.55); border: calc(var(--u)*3) dashed rgba(11,45,79,.18); }
-.e14-tray8:empty { display: none; }
+.e14-tray8:empty { visibility: hidden; }
 .e14 .bq8-tile.e14-t8 { --w: max(64px, calc(var(--u)*84)); --fs: .6; }
 .e14 .bq8-tile.e14-t8.is-syll { --fs: .54; }
-.e14 .e14-wt.bq8-tile { width: auto; aspect-ratio: auto; height: max(64px, calc(var(--u)*84)); --w: max(64px, calc(var(--u)*84)); display: inline-flex; gap: calc(var(--u)*8); padding: 0 calc(var(--u)*14) 0 calc(var(--u)*8); }
+.e14 .e14-wt.bq8-tile { width: auto; aspect-ratio: auto; height: var(--w); --w: max(64px, calc(var(--u)*84)); display: inline-flex; gap: calc(var(--u)*8); padding: 0 calc(var(--u)*14) 0 calc(var(--u)*8); }
 .e14 .e14-wt img { width: calc(var(--w) * .72); height: calc(var(--w) * .72); border-radius: calc(var(--u)*12); object-fit: cover; pointer-events: none; }
 .e14 .e14-wt > span { font-size: calc(var(--w) * .34); }
-.e14 .bq8-slot__body .bq8-tile.e14-t8 { --w: max(64px, calc(var(--u)*76)); }
-.e14 .bq8-slot__body .e14-wt.bq8-tile { --w: max(64px, calc(var(--u)*72)); }
-.e14 .bq8-slot__body .bq8-tile { cursor: pointer; }
-.e14 .bq8-tile.is-in { animation: bq8-snap .3s cubic-bezier(.3,1.6,.5,1) both; }
-/* tall (portrait): branches become full-width rows */
-.x7p.e14.is-tall .e14-map8 { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto repeat(3, minmax(0, 1fr)); row-gap: calc(var(--u)*20); }
-.x7p.e14.is-tall .e14-lines8 { display: none; }
-.x7p.e14.is-tall .bq8-slot { flex-direction: row; align-items: center; }
-.x7p.e14.is-tall .bq8-slot__label { flex-direction: column; border-radius: calc(var(--u)*24); padding: calc(var(--u)*8); min-width: max(64px, calc(var(--u)*100)); }
-.x7p.e14.is-tall .bq8-slot__body { justify-content: flex-start; min-height: 0; }
+/* a placed piece: centred in its slot, 76u (inner slot 78u), no outer white rim (it would cover the slot frame) */
+.e14 .e14-slot > .bq8-tile { --w: max(64px, calc(var(--u)*76)); margin: 0; cursor: pointer; box-shadow: inset 0 calc(var(--u)*-5) 0 rgba(31,157,99,.18), 0 calc(var(--u)*3) calc(var(--u)*6) rgba(11,45,79,.22); }
+.e14 .e14-slot > .e14-wt.bq8-tile { padding: 0 calc(var(--u)*10) 0 calc(var(--u)*6); gap: calc(var(--u)*6); max-width: none; }
+.e14 .bq8-tile.is-in { animation: e14-snap .3s cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes e14-snap { 0% { transform: scale(1.06); } 100% { transform: scale(1); } } /* the settle bounce stays inside the slot frame */
+/* OWNER_R3 2026-10-06 (iPad: «الصورة بحجمها الأصليّ بعرض الشاشة»): no picture in E14 may ever fall back to its natural size (1024 px webp) —
+   every <img> is capped by its box and never starts a native iOS image drag/callout (the drag ghost is built by X.dnd, pointer events only) */
+.e14 img, .x7-ghost img { max-width: 100%; -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+.e14 .e14-wt img { flex: none; }
 `;
 
   function run8(stage, ctx) {
@@ -139,10 +164,13 @@
         ? h('span.e14-ex', { 'aria-hidden': 'true' }, LBL8[b.id].map((t) => h('span', null, t)))
         : h('span.e14-ex.is-pics', { 'aria-hidden': 'true' }, ['mawz', 'qamar'].map((k) => h('img', { src: ctx.img(W[k].img), alt: '', draggable: 'false' })));
       const label = h('button.bq8-slot__label', { type: 'button', 'aria-label': b.label, onclick: () => S.say(b.line) }, h('img', { src: ctx.img(b.icon), alt: '', draggable: 'false' }), ex, X.i8('listen', 'e14-say8'));
-      const bb = h('div.bq8-slot__body');
+      need[b.id] = PIECES.filter((p) => p.br === b.id).length; got[b.id] = 0;
+      // fixed answer slots: one empty frame per expected piece (never more, never resized)
+      const bb = h('div.bq8-slot__body.e14-slots', null,
+        Array.from({ length: need[b.id] }, () => h('div.e14-slot' + (b.id === 'words' ? '.is-word' : ''), { 'aria-hidden': 'true' })));
+      bb.style.setProperty('--n', String(SLOT[b.id]));
       const el = h('div.bq8-slot.x7-8.x7-in', { role: 'group', 'aria-label': b.label, dataset: { br: b.id } }, label, bb);
       brEl[b.id] = el; bodyEl[b.id] = bb;
-      need[b.id] = PIECES.filter((p) => p.br === b.id).length; got[b.id] = 0;
       paths[b.id] = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       svg.append(paths[b.id]);
       map.append(el);
@@ -150,20 +178,27 @@
     const tray = h('div.e14-tray8', { role: 'group', 'aria-label': 'القِطَعُ' });
     root.append(map, tray);
     const buddy = X.buddy(root);
+    // lines in the map's own layout px (client rects ÷ the stage's visual scale): centre → forms (down), centre → vowels / words (sideways)
     function lines() {
-      const mr = map.getBoundingClientRect(), cr = center.getBoundingClientRect(); if (!mr.width) return;
-      const cx = cr.left + cr.width / 2 - mr.left, cy = cr.bottom - mr.top;
+      const mr = map.getBoundingClientRect(); if (!mr.width || !map.offsetWidth) return;
+      const k = mr.width / map.offsetWidth;
+      const L = (e) => { const r = e.getBoundingClientRect(); return { l: (r.left - mr.left) / k, t: (r.top - mr.top) / k, r: (r.right - mr.left) / k, b: (r.bottom - mr.top) / k }; };
+      const c = L(center), cx = (c.l + c.r) / 2, cy = (c.t + c.b) / 2, f = (n) => n.toFixed(1);
       BR.forEach((b) => {
-        const r = brEl[b.id].getBoundingClientRect();
-        const x = r.left + r.width / 2 - mr.left, y = r.top - mr.top;
-        paths[b.id].setAttribute('d', `M${cx.toFixed(1)} ${cy.toFixed(1)} C ${cx.toFixed(1)} ${((cy + y) / 2).toFixed(1)}, ${x.toFixed(1)} ${((cy + y) / 2).toFixed(1)}, ${x.toFixed(1)} ${y.toFixed(1)}`);
+        const r = L(brEl[b.id]);
+        let d;
+        if (b.id === 'forms') d = `M${f(cx)} ${f(c.b)} L ${f(cx)} ${f(r.t)}`;
+        else if (r.l >= c.r) d = `M${f(c.r)} ${f(cy)} L ${f(r.l)} ${f(cy)}`;
+        else d = `M${f(c.l)} ${f(cy)} L ${f(r.r)} ${f(cy)}`;
+        paths[b.id].setAttribute('d', d);
       });
     }
     requestAnimationFrame(lines);
     if (window.ResizeObserver) { const ro = new ResizeObserver(() => lines()); ro.observe(map); ctx.onCleanup(() => ro.disconnect()); }
 
     const errs = new Map();
-    let placed = 0, busy = false;
+    let placed = 0, busy = false, lastUp = null;
+    root.addEventListener('pointerup', (e) => { lastUp = { x: e.clientX, y: e.clientY, t: performance.now() }; }, true);
     const dnd = X.dnd({
       root,
       onPick: (t) => { if (t._d.w) S.say(t._d.au, { stim: true }); },
@@ -196,7 +231,23 @@
       const tc = t.cloneNode(true); // fresh node: drops the drag listeners → in the branch it only plays its sound
       tc.addEventListener('click', () => S.say(p.au, { stim: !/_G_|_E14_/.test(p.au) }));
       t.replaceWith(tc);
-      bodyEl[p.br].append(tc);
+      // into the next empty FIXED slot of its branch, centred; a card wider than the slot shrinks to fit (never the slot grows)
+      // review: the EMPTY slot nearest to where the finger let go (tap-then-tap / keyboard → the first empty slot)
+      const free = [...bodyEl[p.br].querySelectorAll('.e14-slot:not(.is-full)')];
+      let slot = free[0] || bodyEl[p.br].lastElementChild;
+      if (free.length > 1 && lastUp && performance.now() - lastUp.t < 400) {
+        let bd = 1e9;
+        free.forEach((s) => { const r = s.getBoundingClientRect(), d = Math.hypot(lastUp.x - (r.left + r.width / 2), lastUp.y - (r.top + r.height / 2)); if (d < bd) { bd = d; slot = s; } });
+      }
+      slot.classList.add('is-full'); slot.append(tc);
+      const fit = () => {
+        tc.style.scale = '';
+        const iw = slot.clientWidth - 2, ih = slot.clientHeight - 2, w = tc.offsetWidth, hh = tc.offsetHeight;
+        const k = Math.min(1, iw / (w || 1), ih / (hh || 1));
+        if (k < 1) tc.style.scale = k.toFixed(3);
+      };
+      fit();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
       brEl[p.br].classList.add('is-filled');
       S.fx(X.sfx.snap, 0.5);
       X.burst(tc, 8);

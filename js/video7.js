@@ -34,7 +34,8 @@
     const alive = () => !ctx || !ctx.alive || ctx.alive();
     const say = async (id) => { if (!id) return; if (Array.isArray(id)) { for (const x of id) { if (!alive()) return; await say(x); } return; } if (!lineOk(id)) return; await BQ.audio.play(id); };
     const yesLine = () => { const y = q.fb_yes; if (Array.isArray(y) && y.length && Array.isArray(y[0])) return y[(praiseN++) % y.length]; return y; };
-    const showText = BQ.state.cc || BQ.state.age === '10-12';
+    /* v8: the question text is part of the question (no CC setting hides it); before E06 no Arabic text on the child's screen (lesson rule) */
+    const showText = BQ.state.age === '10-12' || !(ctx && ctx.meta && /^E0[1-5]$/.test(ctx.meta.id));
     const picks = [];
     const card = h('div.v7-eq' + (isWord ? '.is-wordq' : ''), { role: 'group', 'aria-label': q.prompt_text || 'سُؤالٌ' });
     const replay = h('button.v7-eq-say', { type: 'button', 'aria-label': 'أَعِدِ السُّؤالَ', onclick: () => { BQ.audio.unlock(); intro(); } }, BQ.icon('speaker'));
