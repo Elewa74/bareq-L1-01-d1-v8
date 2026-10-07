@@ -59,7 +59,7 @@
         '<td><button type="button" class="lp7-open" data-open="' + e.id + '">افتح</button></td></tr>').join('') + '</tbody></table></div>';
     const mx = '<div class="lp7-wrap"><table class="lp7-mx"><thead><tr><th class="lp7-oh">الناتج</th>' + ELS.map((e) => '<th title="' + esc(e.name) + '">' + AR(e.menu) + '</th>').join('') + '</tr></thead><tbody>' +
       (D.outcomes || []).map((t, i) => '<tr><th class="lp7-oh" scope="row">' + AR(i + 1) + '. ' + esc(t) + '</th>' + ELS.map((e) => '<td>' + ((e.outcomes || []).includes(i + 1) ? '<span class="lp7-dot" role="img" aria-label="نعم"></span>' : '') + '</td>').join('') + '</tr>').join('') +
-      '</tbody></table></div><p class="lp-note">الأعمدة بأرقام العناصر كما في القائمة (١ = «تَهَيَّأْ لِلدَّرْسِ» … ١٦ = «مُهِمَّةٌ مَعَ الأُسْرَةِ»).</p>';
+      '</tbody></table></div><p class="lp-note">الأعمدة بأرقام العناصر كما في القائمة (١ = «تَهَيَّأ لِلدَّرْسِ» … ١٦ = «مُهِمَّةٌ مَعَ الأُسْرَةِ»).</p>';
     const ms = '<p>تُسجَّل المحاولة الأولى في كلّ بند مرصود. «أتقن» = محاولتان على الأقلّ و٨٠٪ من آخر خمس صحيحة؛ وإلا «يحتاج مراجعة»، ويقدّم بارق مراجعة قصيرة موجّهة إلى الجزء المناسب.</p>' +
       '<div class="lp7-wrap"><table><thead><tr><th>#</th><th>المهارة</th><th>تُقاس في</th><th>المراجعة الموجّهة</th></tr></thead><tbody>' +
       (D.skills || []).map((s, i) => '<tr><td class="lp7-n">' + AR(i + 1) + '</td><td>' + esc(s.label) + ' <small>(' + s.id + ')</small></td><td>' +

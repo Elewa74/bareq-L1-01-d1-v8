@@ -318,7 +318,7 @@
   UI.reset = (el) => el.classList.remove('is-ok', 'is-dim', 'is-glow', 'is-hidden', 'is-picked');
 
   /** زرّ المثير (اسمع الصوت) — هويّة مختلفة عن سمّاعة التعليمة (تصميم D12) */
-  UI.listenBtn = (onClick, label) => h('button.bq-listen.bq-hear', { type: 'button', 'aria-label': label || 'اِسْتَمِعْ إِلَى الصَّوْتِ', onclick: onClick }, BQ.icon('ear'));
+  UI.listenBtn = (onClick, label) => h('button.bq-listen.bq-hear', { type: 'button', 'aria-label': label || 'اِسْتَمِع إِلَى الصَّوْتِ', onclick: onClick }, BQ.icon('ear'));
 
   /** بطاقات اختيار — items: [{id, img, label, icon, aria}] */
   UI.choices = function (parent, opt) {
@@ -429,7 +429,7 @@
   UI.trace = function (parent, opt) {
     opt = opt || {};
     const box = h('div.bq-trace');
-    const cv = h('canvas', { width: 800, height: 800, 'aria-label': 'سِرْ مَعَ النِّقَاطِ', role: 'img' });
+    const cv = h('canvas', { width: 800, height: 800, 'aria-label': 'سِر مَعَ النِّقَاطِ', role: 'img' });
     box.append(h('span.bq-trace-glyph', { 'aria-hidden': 'true' }, opt.glyph || 'م'), cv);
     parent.append(box);
     const g = cv.getContext('2d');

@@ -159,7 +159,7 @@
       if (on && !rot && !api._rotSkip) {
         rot = h('div.bq-rot7', { role: 'dialog', 'aria-label': 'أَدِرِ الجِهازَ' },
           h('span.bq-rot7-ic', { html: ROT }), BQ.ui.brq ? BQ.ui.brq('point', 'bq-rot7-brq') : null,
-          h('button.bq-rot7-go', { type: 'button', 'aria-label': 'تابِعْ', title: 'تابِعْ', onclick: () => { api._rotSkip = true; rot.remove(); rot = null; } }, BQ.icon('next')));
+          h('button.bq-rot7-go', { type: 'button', 'aria-label': 'تابِع', title: 'تابِع', onclick: () => { api._rotSkip = true; rot.remove(); rot = null; } }, BQ.icon('next')));
         el.append(rot);
       } else if (!on && rot) { rot.remove(); rot = null; }
     };
@@ -179,7 +179,7 @@
       const alt = r.alt_first_try != null ? ' · الإعادة بتسجيل ثانٍ للصوت نفسه: ' + AR(r.alt_first_try) + ' من ' + AR(r.alt_rounds || 5) + ' من المحاولة الأولى' : '';
       return { line: '',
         html: '<p class="goal"><b>نتيجة «تدرّب» (النشاط المرصود):</b> ' + n('first_try') + ' من ' + rounds + ' من المحاولة الأولى — ' + pass + '</p>' +
-          '<p>يقيس هذا النشاط أنّ الطفل <b>يربط «مْـ»/«ماءْ» بصورته ويميّز مصادر الأصوات</b>.</p>' +
+          '<p>يقيس هذا النشاط أنّ الطفل <b>يربط «مْـ»/«ماء» بصورته ويميّز مصادر الأصوات</b>.</p>' +
           '<p>بعد محاولة ثانية: ' + n('after_retry') + ' · عُرض الصواب: ' + n('missed') + (r.assisted != null ? ' · بمساعدة: ' + n('assisted') : '') + alt +
           ' · جولة الحرف «م»: ' + (r.reading_first_try ? 'من أوّل لمسة' : 'بعد محاولة') + ' · جولات مراجعة غير محتسبة: ' + n('review') + ' · إعادات الصوت: ' + n('replays') + '.</p>' };
     }

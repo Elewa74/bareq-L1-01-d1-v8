@@ -368,7 +368,7 @@
   /** زرّ أذن صغير (يُسمع ولا يختار) */
   I.ear = function (id, onTap) {
     const mute = id && !I.hasAudio(id);
-    const e = h('span.i7-ear' + (mute ? '.is-mute' : ''), { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِعْ', html: IC.ear });
+    const e = h('span.i7-ear' + (mute ? '.is-mute' : ''), { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِع', html: IC.ear });
     if (mute) e.append(h('span.i7-mute-ic', { 'aria-hidden': 'true' }, '🔈'));
     const go = (ev) => { ev.stopPropagation(); if (ev.cancelable) ev.preventDefault(); if (!mute && onTap) onTap(e); };
     e.addEventListener('click', go);
@@ -541,10 +541,10 @@
   /* ================= أسطر عامّة (LINES_v7: bq7_G_*) ================= */
   I.lines({
     bq7_G_yes1: 'نَعَم، هَذا هُوَ.', bq7_G_yes2: 'أَحْسَنْتَ.', bq7_G_yes3: 'رائِعٌ.', bq7_G_yes4: 'مُمْتازٌ.',
-    bq7_G_try: 'جَرِّب مَرَّةً أُخْرى.', bq7_G_listen_again: 'اِسْتَمِعْ مَرَّةً أُخْرَى.', bq7_G_hint_start: 'اِسْتَمِعْ إِلَى أَوَّلِ الْكَلِمَةِ.',
+    bq7_G_try: 'جَرِّب مَرَّةً أُخْرى.', bq7_G_listen_again: 'اِسْتَمِع مَرَّةً أُخْرَى.', bq7_G_hint_start: 'اِسْتَمِع إِلَى أَوَّلِ الْكَلِمَةِ.',
     bq7_G_hint_lips: 'الشَّفَتانِ تَلْتَقِيانِ، ثُمَّ تَنْفَتِحانِ: مَ.', bq7_G_look_light: 'اُنْظُر إِلى الضَّوْءِ.',
-    bq7_G_look_shape: 'اُنْظُر إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذَا هُوَ. اِسْتَمِعْ مَعِي:', bq7_G_next: 'هَيّا نُكْمِل.',
-    bq7_G_listen_choose: 'اِسْتَمِعْ، ثُمَّ اخْتَرْ.', bq7_G_your_turn: 'دَوْرُكَ.', bq7_G_end: 'أَحْسَنْتَ، أَنْهَيْتَ النَّشاطَ.',
+    bq7_G_look_shape: 'اُنْظُر إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذَا هُوَ. اِسْتَمِع مَعِي:', bq7_G_next: 'هَيّا نُكْمِل.',
+    bq7_G_listen_choose: 'اِسْتَمِع، ثُمَّ اخْتَر.', bq7_G_your_turn: 'دَوْرُكَ.', bq7_G_end: 'أَحْسَنْتَ، أَنْهَيْتَ النَّشاطَ.',
   });
   /* ===== OWNER_R3 GLOBAL feedback ladder (binding, 2026-10-05) =====
      ✓ green + VARIED praise (never «شكراً») · ✗1 red mark on the chosen option + a motivating retry line, the child tries again ·

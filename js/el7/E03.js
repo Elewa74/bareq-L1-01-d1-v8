@@ -229,7 +229,7 @@
       const right = () => bubs.find((b) => b.s === yes);
       const playAll = async () => { for (const b of bubs) { if (I.isNo(b)) continue; await I.playOn(S, b, sid(b.s)); await S.sleep(420); } };
       if (V8) {
-        const ear = h('button.bq8-btn.bq8-btn--ear.e03-ear8', { type: 'button', 'aria-label': 'اِسْتَمِعْ إِلَى الْأَصْوَاتِ مَرَّةً أُخْرَى' }, I.i8('ear'));
+        const ear = h('button.bq8-btn.bq8-btn--ear.e03-ear8', { type: 'button', 'aria-label': 'اِسْتَمِع إِلَى الْأَصْوَاتِ مَرَّةً أُخْرَى' }, I.i8('ear'));
         ear.addEventListener('click', async () => { if (busy) return; busy = true; ear.classList.add('is-play'); await playAll(); ear.classList.remove('is-play'); busy = false; });
         field.replaceChildren(h('div.e03-tray8.i7-in', null, ear, h('span.e03-sep', { 'aria-hidden': 'true' }), sky));
         f8.stage.classList.add('e03-l2'); f8.bariq.classList.add('is-listen'); buddy.set('listen');

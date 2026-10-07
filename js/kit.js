@@ -267,7 +267,7 @@
         dots.forEach((d, k) => { d.className = k < i ? 'done' : k === i ? 'on' : ''; });
         lab.textContent = BQ.state.age === '10-12' ? K.AR(i + 1) + ' / ' + K.AR(n) : '';  // الأرقام لـ١٠–١٢ وحدها
         lab.hidden = BQ.state.age !== '10-12';
-        el.setAttribute('aria-label', 'الخُطْوَةُ ' + K.AR(i + 1) + ' مِنْ ' + K.AR(n));
+        el.setAttribute('aria-label', 'الخُطْوَةُ ' + K.AR(i + 1) + ' مِن ' + K.AR(n));
       },
     };
   }
@@ -296,7 +296,7 @@
   /* ---------- أزرار (الزرّ الموحَّد .bq-btn) ---------- */
   K.goBtn = function (parent, label) {
     return new Promise((res) => {
-      const b = h('button.bq-btn.kx-cont', { type: 'button', onclick: () => { b.remove(); res(); } }, label || 'أَكْمِلْ', BQ.icon('next'));
+      const b = h('button.bq-btn.kx-cont', { type: 'button', onclick: () => { b.remove(); res(); } }, label || 'أَكْمِل', BQ.icon('next'));
       parent.append(b);
       requestAnimationFrame(() => b.focus({ preventScroll: true }));
     });
@@ -313,7 +313,7 @@
     return new Promise((res) => {
       let t = null;
       const open = () => { box.remove(); res('open'); };
-      const btn = h('button.kx-gate-open', { type: 'button', 'aria-label': opt.label || 'لِلْمُعَلِّمِ: افْتَحْ' }, h('span.kx-gate-fill'), BQ.icon('adult'), h('span', null, opt.label || 'لِلْمُعَلِّمِ: اضْغَطْ مُطَوَّلاً لِلْفَتْحِ'));
+      const btn = h('button.kx-gate-open', { type: 'button', 'aria-label': opt.label || 'لِلْمُعَلِّمِ: افْتَح' }, h('span.kx-gate-fill'), BQ.icon('adult'), h('span', null, opt.label || 'لِلْمُعَلِّمِ: اضْغَط مُطَوَّلاً لِلْفَتْحِ'));
       btn.addEventListener('pointerdown', () => { btn.classList.add('is-hold'); t = setTimeout(open, 800); });
       const cancel = () => { btn.classList.remove('is-hold'); clearTimeout(t); };
       btn.addEventListener('pointerup', cancel); btn.addEventListener('pointerleave', cancel); btn.addEventListener('pointercancel', cancel);
@@ -444,7 +444,7 @@ ${SC} .kx-pin { background: var(--paper); border-inline-start: 4px solid var(--c
     hand.classList.remove('in'); await S.sleep(320); hand.remove();
   };
   /** الكلمة المفردة بصيغة الوقف «ماءْ» وميمها الأولى «مـ» قابلة للإضاءة بالمرجانيّ */
-  K.MAA = '<span class="m">م</span>اءْ';
+  K.MAA = '<span class="m">م</span>اء';
   K.FLIP_IC = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 20a14 14 0 0 1 25-6l3 3M38 28a14 14 0 0 1-25 6l-3-3" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="M39 8v10H29M9 40V30h10" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   BQ.kit = K;

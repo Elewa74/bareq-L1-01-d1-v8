@@ -1019,8 +1019,8 @@
 .bq8-hud .elp-bubble.x7-bub8 { flex: 0 1 auto; min-width: 0; }
 .bq8-hud .x7-bub8:not(:has(> :not([hidden]))) { display: none; }
 .bq8-hud .x7-bub8 > .elp-instr-t, .bq8-hud .x7-bub8 > .elp-cap { background: #fff; border: 0; border-radius: calc(var(--u)*30); padding: calc(var(--u)*8) calc(var(--u)*26) calc(var(--u)*10);
-  font: 700 max(17px, calc(var(--u)*30))/1.7 var(--font-bubble); color: var(--bq8-navy);
-  box-shadow: 0 0 0 var(--bq8-line) rgba(11,45,79,.9), 0 0 0 calc(var(--u)*8.5) rgba(255,255,255,.85), var(--bq8-sh-2); }
+  font: 700 max(17px, calc(var(--u)*30))/1.9 var(--font-bubble); color: var(--bq8-navy);
+  box-shadow: 0 0 0 var(--bq8-line) rgba(11,45,79,.9), 0 0 0 calc(var(--u)*8.5) rgba(255,255,255,.85), var(--bq8-sh-2); } /* FIX-10: 1.7 → 1.9 (= ix1 bubble): TX E11 820×1180 two-line bubble, line-2 marks touched line 1 (−2 px) */
 .bq8-hud .x7-bub8 > .elp-cap b { color: var(--bq8-eye-d); }
 .bq8-hud > .bq8-progress { flex: none; }
 .bq8-progress > i { transition: width .3s, background .3s; }

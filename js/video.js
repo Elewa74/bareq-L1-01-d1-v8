@@ -675,7 +675,7 @@
       const finish = () => { lay.remove(); freeze(false); bedHold = false; syncBed(); };
       try {
         if (kind === 'where' || kind === 'say' || kind === 'what') {
-          lay.append(h('div.vp-badge', { role: 'img', 'aria-label': kind === 'where' ? 'أَيْنَ؟' : kind === 'say' ? 'قُلْ' : 'ما؟', html: SV[kind] }));
+          lay.append(h('div.vp-badge', { role: 'img', 'aria-label': kind === 'where' ? 'أَيْنَ؟' : kind === 'say' ? 'قُل' : 'ما؟', html: SV[kind] }));
           await wait(r, o.ms || BQ.silence(kind === 'say' ? 'say' : 'invite'));
           if (o.model) { await gate(r); lay.remove(); freeze(false); bedHold = false; syncBed(); await o.model(); return { picked }; }
         } else if (kind === 'phrase') {
@@ -811,7 +811,7 @@
         BQ.ui && BQ.ui.brq ? BQ.ui.brq('think', 'vp-fail-brq') : null, // R3-F8: للطفل بارق «يفكّر» وزرّان فقط — الجملة في دليل المعلّم
         h('div', null,
           h('button.bq-btn', { type: 'button', onclick: () => BQ.open(ctx.meta.id, { skipCover: true }) }, BQ.icon('replay'), 'أَعِدِ المُحاوَلَةَ'),
-          h('button.bq-btn.ghost', { type: 'button', onclick: () => { A_unlock(); res(false); } }, o.failNext || 'تابِعْ', BQ.icon('next')))));
+          h('button.bq-btn.ghost', { type: 'button', onclick: () => { A_unlock(); res(false); } }, o.failNext || 'تابِع', BQ.icon('next')))));
     const frameEl = h('div.vp-frame', null, box);
     root.append(frameEl); stage.append(root);
     if (ctx.adultNote) ctx.adultNote('<p class="pause"><b>تعذّر تشغيل المقطع</b> على هذا الجهاز أو المتصفّح (' + String(why).replace(/</g, '&lt;') + '). جرّب «أَعِدِ المُحاوَلَةَ»، أو تابِع إلى العنصر التالي. على iPad استعمل Safari وشبكة أسرع، أو افتح الدرس من الرابط المنشور.</p>');
@@ -1067,6 +1067,7 @@
       const L = BQ.line(id); let t = L && L.t;
       if (!t && cues && cues.lines) { const l = cues.lines.find((x) => x.id === id); t = l && l.text; }
       if (!t || (L && (L.sp === 'مؤثّر' || L.sp === 'واجهة'))) return '';
+      if (typeof window.BQ_NS === 'function') t = window.BQ_NS(t); // FIX-10: display form (no final sukun, no «!», full tashkeel) — also for the WebVTT track
       return t.replace(/⏸\S*/g, ' ').replace(/\s*[(\[][^)\]]*[)\]]/g, '').replace(/\s{2,}/g, ' ').trim();
     }
     function showCap(id) {
@@ -1227,7 +1228,7 @@
       const age = BQ.state.age || '4-6';
       try {
         if (c.kind === 'say' || c.kind === 'what' || c.kind === 'where') {
-          lay.append(h('div.vp-badge', { role: 'img', 'aria-label': c.kind === 'where' ? 'أَيْنَ؟' : c.kind === 'say' ? 'قُلْ' : 'ما؟', html: SV[c.kind] }));
+          lay.append(h('div.vp-badge', { role: 'img', 'aria-label': c.kind === 'where' ? 'أَيْنَ؟' : c.kind === 'say' ? 'قُل' : 'ما؟', html: SV[c.kind] }));
           await wait(c.ms || BQ.silence(c.kind === 'say' ? 'say' : 'invite'));
         } else if (c.kind === 'phrase') {
           lay.append(h('div.vp-banner', { lang: 'ar' }, c.text || 'سَمِعْتُ فَرْقاً!'));
@@ -1315,6 +1316,13 @@
       cues = j; cues.cues = (cues.cues || []).slice().sort((a, b) => a.t - b.t);
       // v5: أسطر المقطع بنصّها في ملفّ الوقفات (أسطر جديدة لم تدخل البيانات بعد) ⇒ نصّ مصاحب لها أيضاً
       (cues.lines || []).forEach((l) => { if (l && l.id && l.text && !BQ.line(l.id)) BQ.D.lines[l.id] = { sp: ({ HAB: 'حبيبة', SAY: 'سيف', MAJ: 'ماجد', BRQ: 'بارق' })[l.sp] || l.sp || '', t: l.text }; });
+      /* FIX-10 (owner «ضيف الـ CC في الفيديو اللي بدون CC»): song videos — the SUNG lyrics (cues.karaoke: text + window, no LINES id) are
+         captions too. They join cues.lines with a local id ('~k<n>', never an audio id); each window ends before the next sung line starts. */
+      if (Array.isArray(cues.karaoke) && cues.karaoke.length) {
+        const kar = cues.karaoke.filter((k) => k && k.text && isFinite(k.t)).sort((a, b) => a.t - b.t);
+        const kl = kar.map((k, i) => ({ id: '~k' + i, t: k.t, end: Math.min(isFinite(k.end) ? k.end : k.t + 2.5, i + 1 < kar.length ? kar[i + 1].t - 0.16 : Infinity), text: k.text, sung: true }));
+        cues.lines = (cues.lines || []).filter((l) => l && !l.sung).concat(kl).sort((a, b) => a.t - b.t);
+      }
       if (o.handMarks !== false && !cues.marks) cues.marks = (cues.cues || []).filter((c) => /^(say|hand|mark|repeat)$/.test(c.kind)).map((c) => c.t);
       if (o.noCues) cues.cues = []; // v0-12 r3: «المقطع مقطع» — بلا وقفات ولا طبقات داخل الفيديو (EL02)
       buildScenes(); paint(video.currentTime || 0);

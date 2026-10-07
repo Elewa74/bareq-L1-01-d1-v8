@@ -402,8 +402,8 @@
     function wordPicEl(key, isBusy) {
       if (!key || !W[key]) return null;
       const el = V8
-        ? h('div.bq8-card.bq8-card--sm.e11-wordpic.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِعْ إِلَى الْكَلِمَةِ' }, h('img', { src: X.wimg(ctx, key), alt: '', draggable: 'false' }))
-        : h('div.e11-card.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِعْ إِلَى الْكَلِمَةِ' }, X.pic(ctx, W[key].img));
+        ? h('div.bq8-card.bq8-card--sm.e11-wordpic.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِع إِلَى الْكَلِمَةِ' }, h('img', { src: X.wimg(ctx, key), alt: '', draggable: 'false' }))
+        : h('div.e11-card.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِع إِلَى الْكَلِمَةِ' }, X.pic(ctx, W[key].img));
       el.addEventListener('click', () => { if (!isBusy()) S.say(X.wordId(key), { stim: true }); });
       return el;
     }
@@ -478,7 +478,7 @@
         // «I say the word twice»: the picture of the word Bariq says sits above his two numbered cards
         if (it.type === 'brq') { const wk = brqWord(it); if (wk) body.append(h('div.bq8-card.bq8-card--sm.e11-wordpic.x7-in', { 'aria-hidden': 'true' }, h('img', { src: X.wimg(ctx, wk), alt: '', draggable: 'false' }))); }
         // the sound to judge (S3 short/long · S5) is a big replay sticker above the options
-        if (it.stim && it.type !== 'tapword') body.append(h('div.e11-stim.x7-in', null, X.btn8('listen', { size: 'lg', label: 'اِسْتَمِعْ إِلَى الصَّوْتِ', cls: 'e11-stimbtn', onclick: () => { if (!asking && !busy) S.say(it.stim, { stim: true }); } })));
+        if (it.stim && it.type !== 'tapword') body.append(h('div.e11-stim.x7-in', null, X.btn8('listen', { size: 'lg', label: 'اِسْتَمِع إِلَى الصَّوْتِ', cls: 'e11-stimbtn', onclick: () => { if (!asking && !busy) S.say(it.stim, { stim: true }); } })));
       } else {
         if (it.type === 'read') body.append(h('div.e11-word.x7-w.x7-in', null, X.markMeem(W[it.word].t)));
         if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('span.x7-w', null, it.before), h('div.e11-blank', null, h('span.x7-w', null, '?'))));
@@ -679,7 +679,7 @@
     }
 
     /** v8 options. Cards are div[role=button] so the ear chip inside can be a real button. */
-    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْتَمِعْ مَرَّةً أُخْرَى' }, X.i8('ear'))); }
+    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْتَمِع مَرَّةً أُخْرَى' }, X.i8('ear'))); }
     function optEl8(it, o, n, aria) {
       const card = (cls, kids) => h('div.e11-opt.x7-in' + cls, { role: 'button', tabindex: '0', 'aria-label': aria }, kids);
       if (it.type === 'pic' || it.type === 'read') {

@@ -84,6 +84,8 @@
 .e06-8 .e06-mouthw { width: calc(var(--u)*330); }
 .e06-8 .bq8-tile { cursor: pointer; touch-action: manipulation; }
 .e06-8 .bq8-tile > span { position: relative; display: inline-block; line-height: 1.25; }
+/* FIX-10: the ✗/✓ marks (ix1 .i7-nob, fb.js .fb-badge) are spans too — keep them OUT of the grid flow so the glyph stays centred in every state */
+.e06-8 .bq8-tile > span.i7-nob, .e06-8 .bq8-tile > span.fb-badge { position: absolute; display: block; line-height: 0; }
 .e06-8 .e06-kas { position: absolute; top: 1.2em; right: -.02em; width: .26em; height: .085em; border-radius: .05em; background: currentColor; transform: rotate(-24deg); }
 .e06-8 .bq8-tile .bq8-m, .e06-8 .bq8-tile b { color: var(--bq8-meem); font-weight: 700; }
 .e06-8 .bq8-tile b { position: relative; display: inline-block; line-height: 1.25; }
@@ -109,7 +111,7 @@
 .e06-8 .e06-tile.need:not(.is-heard) { animation: i7Pulse 1.6s ease-in-out infinite; }
 .e06-8 .e06-wrow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u)*40); }
 .e06-8 .e06-wpic.i7-card.i8-card { --s: calc(var(--u)*230); }
-/* step 4 «find the م»: the word card takes the board width — font 180 u so the narrowest «م» zone (medial, «نُمورْ») is ≥ 64 px on a portrait iPad (scale 0.664) */
+/* step 4 «find the م»: the word card takes the board width — font 180 u so the narrowest «م» zone (medial, «نُمور») is ≥ 64 px on a portrait iPad (scale 0.664) */
 .e06-8 .e06-main.is-words { gap: calc(var(--u)*26); }
 .e06-8 .e06-main.is-words .e06-wrow { gap: calc(var(--u)*26); }
 .e06-8 .e06-main.is-words .e06-ref { --w: calc(var(--u)*130); }
@@ -150,9 +152,9 @@
     const tile8 = (g, aria, spk) => { const sp = h('span', { html: kas8(g) }); const t = h('button.e06-tile.bq8-tile.bq8-tile--syll', { type: 'button', 'aria-label': aria, lang: 'ar' }, sp); if (spk) t.append(h('span.e06-spk', { 'aria-hidden': 'true' }, I.i8('listen'))); I.fitGlyph(t, sp, 0.13); return t; };
     I.lines({
       bq7_E06_recall: 'سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.', bq7_E06_reveal: 'وَهَذا شَكْلُهُ: م. هَذا حَرْفُ المِيمِ.', bq7_E06_brq_wow: 'حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.',
-      bq7_E06_vowels: 'المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.', bq7_E06_tap_vowels: 'اِخْتَرْ كُلَّ وَاحِدَةٍ، وَاسْتَمِعْ.',
-      bq7_E06_find_intro: 'اِسْتَمِعْ إِلَى الْكَلِمَةِ، وَحَدِّدْ حَرْفَ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.', bq7_E06_ok_letter: 'هَذَا حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.',
-      bq7_E06_match_intro: 'اِسْتَمِعْ، ثُمَّ اخْتَرِ الْمَكْتُوبَ الَّذِي سَمِعْتَهُ.', bq7_E06_end: 'الآنَ نَعْرِفُ شَكْلَ صَوْتِنا: م.',
+      bq7_E06_vowels: 'المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.', bq7_E06_tap_vowels: 'اِخْتَر كُلَّ وَاحِدَةٍ، وَاسْتَمِع.',
+      bq7_E06_find_intro: 'اِسْتَمِع إِلَى الْكَلِمَةِ، وَحَدِّد حَرْفَ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.', bq7_E06_ok_letter: 'هَذَا حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.',
+      bq7_E06_match_intro: 'اِسْتَمِع، ثُمَّ اخْتَرِ الْمَكْتُوبَ الَّذِي سَمِعْتَهُ.', bq7_E06_end: 'الآنَ نَعْرِفُ شَكْلَ صَوْتِنا: م.',
     });
     const SYL = [{ s: 'ma', g: 'مَ' }, { s: 'mi', g: 'مِ' }, { s: 'mu', g: 'مُ' }];
     const WORDS = [{ slug: 'musht' }, { slug: 'miftah' }, { slug: 'numur' }];
