@@ -4,9 +4,9 @@
  "title": "اِسْتَمِع وَاكْتَشِف",
  "src": "media/video7/E02.mp4",
  "poster": "media/video7/E02.jpg",
- "duration": 70.64,
+ "duration": 70.67,
  "status": "draft_unapproved",
- "source": "video_src/build_v8_videos.py · v8pipe-video10-2026-10-07 · 1920×1080 24 fps · DIRECTION_v8",
+ "source": "video_src/build_v8_videos.py · v8pipe-video10b-2026-10-08 · 1920×1080 24 fps · DIRECTION_v8",
  "scenes": [
   {
    "t": 0.0,
@@ -29,7 +29,7 @@
    "title": "نَسْتَعِدُّ"
   },
   {
-   "t": 66.64,
+   "t": 66.67,
    "title": "سُؤَالٌ"
   }
  ],
@@ -80,8 +80,8 @@
   },
   {
    "id": "bq7_E02_maj_maktab",
-   "t": 26.08,
-   "end": 27.65,
+   "t": 26.085,
+   "end": 27.45,
    "sp": "MAJ",
    "text": "هَذَا مَكْتَبِي."
   },
@@ -150,22 +150,22 @@
   },
   {
    "id": "bq7_E02_maj_manju",
-   "t": 61.725,
-   "end": 64.14,
+   "t": 61.73,
+   "end": 64.17,
    "sp": "MAJ",
    "text": "وَآخُذُ مَانْجُو مَعِي."
   },
   {
    "id": "bq7_W_manju_emph",
-   "t": 64.9,
-   "end": 66.32,
+   "t": 64.93,
+   "end": 66.35,
    "sp": "HAB",
    "text": "مَانْجُو"
   },
   {
    "id": "bq7_E02_brq_noticed",
-   "t": 67.085,
-   "end": 69.295,
+   "t": 67.115,
+   "end": 69.325,
    "sp": "BRQ",
    "text": "سَمِعْتُ صَوْتًا يَتَكَرَّرُ."
   }
@@ -173,7 +173,7 @@
  "captions": true,
  "captions_note": "OWNER 2026-10-07: «ال CC مش موجودة في كل الفيديوهات» → captions ON in E02 too.",
  "endq": {
-  "t": 70.639,
+  "t": 70.669,
   "line": "bq7_E02_question",
   "note": "the platform asks «ما الصَّوْتُ الَّذي تَسْمَعُهُ مُكَرَّرًا في الكَلِماتِ؟» and shows the 3 sound buttons (مَ / بَ / فَ, shuffled) — not repeated inside the video"
  },
@@ -462,7 +462,7 @@
   {
    "id": "A21",
    "t": 61.26,
-   "end": 64.44,
+   "end": 64.47,
    "target": [
     59.4,
     62.4
@@ -475,8 +475,8 @@
   },
   {
    "id": "A22",
-   "t": 64.44,
-   "end": 66.64,
+   "t": 64.47,
+   "end": 66.67,
    "target": [
     62.4,
     64.6
@@ -489,8 +489,8 @@
   },
   {
    "id": "A23",
-   "t": 66.64,
-   "end": 70.64,
+   "t": 66.67,
+   "end": 70.67,
    "target": [
     64.6,
     70.6

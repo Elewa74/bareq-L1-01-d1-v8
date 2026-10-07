@@ -6,7 +6,7 @@
  "poster": "media/video7/E12.jpg",
  "duration": 63.142,
  "status": "draft_unapproved",
- "source": "video_src/build_v8_videos.py · v8pipe-video10-2026-10-07 · 1920×1080 24 fps · DIRECTION_v8",
+ "source": "video_src/build_v8_videos.py · v8pipe-video10b-2026-10-08 · 1920×1080 24 fps · DIRECTION_v8",
  "scenes": [
   {
    "t": 0.0,
@@ -61,8 +61,8 @@
   },
   {
    "id": "bq7_E12_brq_name",
-   "t": 47.85,
-   "end": 50.165,
+   "t": 47.835,
+   "end": 49.795,
    "sp": "BRQ",
    "text": "هَذَا حَرْفُ الْمِيمِ…"
   }
@@ -768,7 +768,7 @@
  ],
  "loudness": {
   "I": -16.1,
-  "TP": -2.9
+  "TP": -2.8
  },
  "interim": null,
  "interim_g9": "VO over a closed-mouth window / stand-in take until Grok regenerates (grok9_overrides.json): K02=vo:V8_E12_K02_i K07=vo:V8_E12_K07_j K18=vo:V8_E12_K02_k",
