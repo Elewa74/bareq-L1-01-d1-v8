@@ -1,4 +1,4 @@
-/* E16 · مُهِمَّةٌ مَعَ الأُسْرَةِ — IX1 · v8 (owner R3-16) · draft_unapproved · SPEC_v7 §E16 (pedagogy unchanged: take the sound /م/ home)
+/* E16 · مَهَمَّةٌ مَعَ الأُسْرَةِ — IX1 → SCI-1 T3 (owner of this file from 2026-10-07) · v8 (owner R3-16) · draft_unapproved · SPEC_v7 §E16 (pedagogy unchanged: take the sound /م/ home)
    OWNER_R3-16: «في تداخل في النص + النشاط مع الأسرة محتاج يكون فيه أكتر من فكرة، مش سؤال واحد فقط» →
    ١ the child PICKS one of 4 family missions (picture cards; each card reads its mission aloud — Bariq):
       m1 find 3 things at home whose name starts with «مَ» → photograph or draw them · m2 taste a «مَ» fruit (مَوْز / مانْجو) and say its name ·
@@ -7,23 +7,26 @@
       (camera / photo picker) or draw (finger drawing pad). Photos stay on THIS device only (localStorage, downscaled) — nothing is uploaded.
    ٣ any mission with 3 filled slots → the element is done (ctx.done) + bq7_E16_bye. The child may do more missions.
    No «/م/» on the child screen (the line says «بِصَوْتِ مَ»). No adult text on the child screen: the parent note + print are in the teacher drawer.
-   theme 8 → island frame (THEME8); otherwise the same content in the v7 frame. Lines: bq7_E16_pick · bq7_E16_m1..m4 · bq7_E16_add · bq7_E16_bye. */
+   theme 8 → island frame (THEME8); otherwise the same content in the v7 frame. Lines: bq7_E16_pick · bq7_E16_m1..m4 · bq7_E16_add · bq7_E16_bye.
+   → superseded by SCI-1 T3 (see MISSIONS): k1 مِ · k2 مَ · k3 مُ · k4 ما مي مو · bq7_E16_pick8 · bq7_E16_k1..k4. */
 (function () {
   'use strict';
   const ID = 'E16';
   const lib = () => (BQ.ix1 ? Promise.resolve(BQ.ix1) : BQ.loadScript('js/el7/lib/ix1.js').then(() => BQ.ix1));
 
+  /* SCI-1 T3 (2026-10-07, binding): «نصحّح مُهمة → مَهَمَّة … داخل العنصر: اِخْتَرْ مَهَمَّةً، وَحَدِّدْ صورَتَها» · «التركيز على صوت مَ فقط، وأهملنا باقي
+     الحركات (مِ – مُ – ما – مو – مي)» · «عناوين المهام طويلة جدّاً، مع تغيير صوت مَ إلى حركات مختلفة قصيرة أو طويلة» →
+     4 missions, short titles, each on a DIFFERENT vowel sound: k1 مِ (مِفْتاح · مِلْعَقَة · مِرْآة) · k2 مَ (مَوْز) · k3 مُ (مُثَلَّث · مُرَبَّع · مُسْتَطيل) ·
+     k4 the long sounds ما · مي · مو (draw «م» in the sand and say them). Lines bq7_E16_pick8 · bq7_E16_k1..k4 (BRQ, eleven_v4, −17 LUFS). */
+  const HAVE8 = new Set(['e16_sand_tray', 'w8_muthallath']); // img8 keys known to exist (T5 art, 2026-10-07)
+  const SHAPES = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#FFF7E6"/><path d="M78 36 136 136H20z" fill="#FFC21A" stroke="#0B2D4F" stroke-width="9" stroke-linejoin="round"/><rect x="162" y="44" width="96" height="96" rx="6" fill="#3D7BF0" stroke="#0B2D4F" stroke-width="9"/><rect x="48" y="178" width="204" height="86" rx="6" fill="#22C27A" stroke="#0B2D4F" stroke-width="9"/></svg>';
   const MISSIONS = [
-    { id: 'm1', img: 'family_card', label: 'أَشْياءُ في البَيْتِ', line: 'bq7_E16_m1',
-      text: 'اِبْحَث مَعَ أُسْرَتِكَ في البَيْتِ عَن ثَلاثَةِ أَشْياءَ يَبْدَأُ اسْمُها بِصَوْتِ مَ، وَصَوِّرْها، أَوِ ارْسُمْها.' },
-    { id: 'm2', img: 'ctx_manju', label: 'فاكِهَةٌ لَذيذَةٌ', line: 'bq7_E16_m2',
-      text: 'تَذَوَّق مَعَ أُسْرَتِكَ فاكِهَةً يَبْدَأُ اسْمُها بِصَوْتِ مَ: مَوْزٌ أَو مانْجو، وَقُلِ اسْمَها!' },
-    { id: 'm3', img: 'card_kitab', label: 'كِتابٌ أَو عُلْبَةٌ', line: 'bq7_E16_m3',
-      text: 'اِفْتَح مَعَ أَحَدٍ مِن أُسْرَتِكَ كِتابَ صُوَرٍ أَو عُلْبَةً، وَابْحَثا مَعًا عَن حَرْفِ المِيمِ، صَوْتُهُ مَ.' },
-    { id: 'm4', img: null, label: 'اُرْسُم بِإِصْبَعِكَ', line: 'bq7_E16_m4',   // ART need: e16_sand_tray (child's finger drawing «م» in a sand tray, parent's hand near)
-      text: 'اُرْسُم بِإِصْبَعِكَ حَرْفَ المِيمِ، صَوْتُهُ مَ، عَلى صينِيَّةِ رَمْلٍ أَو طَحينٍ، أَو عَلى كَفِّ أَحَدٍ مِن أُسْرَتِكَ.' },
+    { id: 'k1', img: 'card_miftah', label: 'مِفْتاحٌ وَمِرْآةٌ', line: 'bq7_E16_k1', text: 'اِبْحَث مَعَ أُسْرَتِكَ عَن: مِفْتاحٍ، وَمِلْعَقَةٍ، وَمِرْآةٍ.' },
+    { id: 'k2', img: 'card_mawz', label: 'مَوْزٌ لَذيذٌ', line: 'bq7_E16_k2', text: 'تَذَوَّق مَعَ أُسْرَتِكَ مَوْزًا، وَقُلِ اسْمَهُ.' },
+    { id: 'k3', img8: 'w8_muthallath', svg: SHAPES, label: 'مُثَلَّثٌ وَمُرَبَّعٌ', line: 'bq7_E16_k3', text: 'اُرْسُم مَعَ أُسْرَتِكَ: مُثَلَّثًا، وَمُرَبَّعًا، وَمُسْتَطيلًا.' },
+    { id: 'k4', img8: 'e16_sand_tray', label: 'مَا، مِي، مُو', line: 'bq7_E16_k4', text: 'اُرْسُم حَرْفَ المِيمِ عَلى الرَّمْلِ، وَقُل: مَا، مِي، مُو.' },
   ];
-  const LINES = { bq7_E16_pick: 'اِخْتَر مُهِمَّةً، وَالْمِس صورَتَها.', bq7_E16_add: 'صَوِّر ما وَجَدْتَ، أَوِ ارْسُمْهُ هُنا.', bq7_E16_bye: 'إِلى اللِّقاءِ يا صَديقي!' };
+  const LINES = { bq7_E16_pick8: 'اِخْتَر مَهَمَّةً، وَحَدِّد صورَتَها.', bq7_E16_add: 'صَوِّر ما وَجَدْتَ، أَوِ ارْسُمْهُ هُنا.', bq7_E16_bye: 'إِلى اللِّقاءِ يا صَديقي.' };
   MISSIONS.forEach((m) => { LINES[m.line] = m.text; });
 
   const CAM = '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="14" y="34" width="92" height="66" rx="16" fill="#3D7BF0" stroke="#0B2D4F" stroke-width="5"/><path d="M42 34l7-12h22l7 12" fill="#D6E4FF" stroke="#0B2D4F" stroke-width="5" stroke-linejoin="round"/><circle cx="60" cy="66" r="21" fill="#fff" stroke="#0B2D4F" stroke-width="5"/><circle cx="60" cy="66" r="10" fill="#0B2D4F"/><circle cx="91" cy="48" r="5" fill="#FFC21A"/></svg>';
@@ -153,12 +156,15 @@
     const f8 = V8 ? I.frame8(S, 'e16w', { pose: 'wave' }) : null;
     const root = V8 ? f8.panel : I.root(stage, 'e16w');
     const buddy = I.buddy(S, root, 'wave');
-    const title = D.family_title || 'مُهِمَّتي مَعَ أُسْرَتي';
+    // SCI-1: «مُهمة» → «مَهَمَّة» (the data title still says «مُهِمَّتي»; T1 owns the element titles)
+    const title = (D.family_title || 'مَهَمَّتي مَعَ أُسْرَتي').replace(/مُهِمَّت/g, 'مَهَمَّت');
     let busy = false, finished = false;
 
     const pic = (m) => {
       const box = h('span.e16-pic', { 'aria-hidden': 'true' });
-      if (m.img && BQ.hasImg7 && BQ.hasImg7(m.img)) box.append(h('img', { src: BQ.img7(m.img), alt: '', draggable: 'false', decoding: 'async' }));
+      if (m.img8 && HAVE8.has(m.img8)) box.append(h('img', { src: 'media/img8/' + m.img8 + '.webp', alt: '', draggable: 'false', decoding: 'async' }));
+      else if (m.svg) box.append(h('img', { src: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(m.svg), alt: '', draggable: 'false' }));
+      else if (m.img && BQ.hasImg7 && BQ.hasImg7(m.img)) box.append(h('img', { src: BQ.img7(m.img), alt: '', draggable: 'false', decoding: 'async' }));
       else box.append(h('span.e16-sand', null, h('span', null, 'م')));
       return box;
     };
@@ -168,7 +174,7 @@
     /* ---------- 1 · pick a mission ---------- */
     function pick(first) {
       const head = h('p.e16-title', { lang: 'ar' }, V8 ? I.i8('family') : BQ.icon('home'), h('span', null, title));
-      const grid = h('div.e16-grid', { role: 'group', 'aria-label': 'المُهِمّاتُ' });
+      const grid = h('div.e16-grid', { role: 'group', 'aria-label': 'المَهَمّاتُ' });
       MISSIONS.forEach((m, i) => {
         const c = h('button.e16-mc' + (filled(m) >= 3 ? '.is-done' : ''), { type: 'button', 'aria-label': m.label, lang: 'ar', dataset: { m: m.id } }, pic(m), h('span.e16-lbl', null, m.label));
         c.style.animationDelay = (i * 0.08) + 's';
@@ -176,18 +182,18 @@
         grid.append(c);
       });
       root.replaceChildren(head, grid);
-      I.instr(S, 'bq7_E16_pick', 'hand', async () => { if (busy) return; busy = true; await S.say('bq7_E16_pick', { talk: true }); busy = false; });
-      if (first) (async () => { busy = true; await S.sleep(400); await S.say('bq7_E16_pick', { talk: true }); busy = false; })();
+      I.instr(S, 'bq7_E16_pick8', 'hand', async () => { if (busy) return; busy = true; await S.say('bq7_E16_pick8', { talk: true }); busy = false; });
+      if (first) (async () => { busy = true; await S.sleep(400); await S.say('bq7_E16_pick8', { talk: true }); busy = false; })();
     }
 
     /* ---------- 2 · one mission ---------- */
     function open(m) {
       const card = h('div.e16-mc', { role: 'img', 'aria-label': m.label }, pic(m), h('span.e16-lbl', null, m.label));
       // «صَوْتُهُ مَ» / «بِصَوْتِ مَ» never break apart (no-break space); the spoken line (LINES) is unchanged
-      const text = h('p.e16-text', { lang: 'ar' }, m.text.replace(/(صَوْتُهُ|بِصَوْتِ) مَ/g, '$1\u00A0مَ'));
+      const text = h('p.e16-text', { lang: 'ar' }, m.text);
       const slots = [0, 1, 2].map((i) => slot(m, i));
-      const back = V8 ? h('button.bq8-btn.bq8-btn--back.bq8-btn--lg.e16-back', { type: 'button', 'aria-label': 'المُهِمّاتُ' }, I.i8('back'))
-        : h('button.bq-btn.ghost.e16-back', { type: 'button', 'aria-label': 'المُهِمّاتُ' }, '→');
+      const back = V8 ? h('button.bq8-btn.bq8-btn--back.bq8-btn--lg.e16-back', { type: 'button', 'aria-label': 'المَهَمّاتُ' }, I.i8('back'))
+        : h('button.bq-btn.ghost.e16-back', { type: 'button', 'aria-label': 'المَهَمّاتُ' }, '→');
       back.addEventListener('click', () => { if (busy) return; S.stop(); I.sfx('flip'); pick(false); });
       const slotsEl = h('div.e16-slots', { role: 'group', 'aria-label': 'صُوَرُكَ وَرُسومُكَ' }, slots.map((s) => s.el));
       // v8: the line runs across the board (≤ 2 lines), the mission picture and the 3 slots sit in one row under it
@@ -251,10 +257,9 @@
     const role = parentRole();
     const pbtn = h('button.bq-btn', { type: 'button', onclick: () => doPrint() }, 'اطبع المهمّات ودور وليّ الأمر ودليل الإتقان (A4)');
     ctx.adultNote(h('div', null, h('div', { html:
-      '<p><b>المهمّة مع الأسرة (٤ اختيارات):</b> يختار الطفل مهمّة ويسمعها من بارق: (١) ثلاثة أشياء في البيت يبدأ اسمها بصوت «مَ» — يصوّرها أو يرسمها · ' +
-      '(٢) فاكهة يبدأ اسمها بصوت «مَ» (مَوْز، مانْجو) يتذوّقها ويقول اسمها · (٣) البحث عن حرف «م» في كتاب صور أو على علبة مع فرد من الأسرة · ' +
-      '(٤) رسم «م» بالإصبع على صينيّة رمل أو طحين أو على كفّ أحد أفراد الأسرة.</p>' +
-      '<p><b>دور الأسرة:</b> اقرأ المهمّة مع طفلك، وساعده في التصوير أو الرسم في الخانات الثلاث. قل الاسم مع طفلك بوضوح وابدأ بصوت «مَ» (مَوْز) — لا تقل «مِيم» بدل الصوت. اقبل أيّ شيء صحيح يبدأ بصوت «مَ» ولو لم يكن من كلمات الدرس.</p>' +
+      '<p><b>المَهَمَّة مع الأسرة (٤ اختيارات، كلّ واحدة بحركة مختلفة):</b> يختار الطفل مَهَمَّة ويسمعها من بارق: (١) «مِ»: البحث في البيت عن مِفْتاح ومِلْعَقة ومِرْآة وتصويرها · ' +
+      '(٢) «مَ»: تذوّق مَوْز وقول اسمه · (٣) «مُ»: رسم مُثَلَّث ومُرَبَّع ومُسْتَطيل · (٤) «ما، مي، مو»: رسم حرف الميم بالإصبع على الرمل (أو الطحين) وقول الأصوات الطويلة.</p>' +
+      '<p><b>دور الأسرة:</b> اقرأ المَهَمَّة مع طفلك، وساعده في التصوير أو الرسم في الخانات الثلاث. قل الاسم مع طفلك بوضوح وأطِل الصوت الأوّل قليلاً (مِـفْتاح، مَـوْز، مُـثَلَّث) — لا تقل «مِيم» بدل الصوت. اقبل أيّ شيء صحيح يبدأ بالصوت نفسه ولو لم يكن من كلمات الدرس.</p>' +
       '<p><b>الخصوصية:</b> الصور والرسوم تبقى على هذا الجهاز فقط ولا تُرسَل إلى أيّ مكان. يكفي إكمال مهمّة واحدة (٣ خانات) ليُعدّ النشاط منجزاً، ويمكن إكمال أكثر.</p>' +
       '<p><b>في الحصّة التالية:</b> يعرض كلّ طفل صوره أو رسومه ويقول جملة عن واحد منها («هَذا مِفْتاحٌ»)؛ سجّل حكمك على «استخدام المفردة» (S9) في «دليل الإتقان».</p>' +
       '<p><b>' + esc(role.title) + '</b> — في المطبوع وصفحة الأسرة.</p>' }), pbtn));
@@ -265,8 +270,8 @@
       p = h('div.e16-print', { dir: 'rtl', lang: 'ar' });
       const ul = (a) => '<ul>' + a.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>';
       const box = '<div class="p-box"></div>';
-      p.innerHTML = '<p class="p-h">' + esc(title) + ' — اِخْتَر مُهِمَّةً</p>' +
-        MISSIONS.map((m) => '<div class="p-m">' + (m.img && BQ.hasImg7 && BQ.hasImg7(m.img) ? '<img src="' + BQ.img7(m.img) + '" alt="">' : '<div class="p-sand"></div>') +
+      p.innerHTML = '<p class="p-h">' + esc(title) + ' — اِخْتَر مَهَمَّةً</p>' +
+        MISSIONS.map((m) => '<div class="p-m">' + (m.img8 && HAVE8.has(m.img8) ? '<img src="media/img8/' + m.img8 + '.webp" alt="">' : m.svg ? '<img src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(m.svg) + '" alt="">' : m.img && BQ.hasImg7 && BQ.hasImg7(m.img) ? '<img src="' + BQ.img7(m.img) + '" alt="">' : '<div class="p-sand"></div>') +
           '<p class="p-k">' + esc(m.text) + '</p><div class="p-boxes">' + box + box + box + '</div></div>').join('') +
         '<hr class="p-cut"><h2>' + esc(role.title) + '</h2><p><b>هدف اليوم:</b> ' + esc(role.goal) + '</p>' +
         '<div class="p-role"><div><b>قبل الدرس</b>' + ul(role.before) + '</div><div><b>أثناء الدرس</b>' + ul(role.during) + '</div><div><b>بعد الدرس</b>' + ul(role.after) + '</div></div>' +

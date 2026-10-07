@@ -181,7 +181,7 @@
     const cap = A.capEl; if (!cap) return;
     const L = id && BQ.line(id);
     if (!L || !L.t || L.sp === 'مؤثّر' || L.sp === 'واجهة') { cap.hidden = true; cap.textContent = ''; return; }
-    const t = L.t.replace(/⏸\S*/g, ' ').replace(/\s*[(\[][^)\]]*[)\]]/g, '').replace(/\s{2,}/g, ' ').trim();
+    const t = L.t.replace(/⏸\S*/g, ' ').replace(/\s*\[[^\]]*\]/g, '').replace(/\s*\([^)؀-ۿ]*\)/g, '') /* SCI-1 T1: keep Arabic parentheses «(مَ – مِ – مُ)»; strip only [tags] / Latin (notes) */.replace(/\s{2,}/g, ' ').trim();
     if (!t) { cap.hidden = true; cap.textContent = ''; return; }
     cap.replaceChildren(SPEAKER[L.sp] ? h('b', null, SPEAKER[L.sp] + ': ') : '', t);
     cap.hidden = !BQ.state.cc;
@@ -296,7 +296,7 @@
   UI.reset = (el) => el.classList.remove('is-ok', 'is-dim', 'is-glow', 'is-hidden', 'is-picked');
 
   /** زرّ المثير (اسمع الصوت) — هويّة مختلفة عن سمّاعة التعليمة (تصميم D12) */
-  UI.listenBtn = (onClick, label) => h('button.bq-listen.bq-hear', { type: 'button', 'aria-label': label || 'اسْمَعِ الصَّوْتَ', onclick: onClick }, BQ.icon('ear'));
+  UI.listenBtn = (onClick, label) => h('button.bq-listen.bq-hear', { type: 'button', 'aria-label': label || 'اِسْتَمِعْ إِلَى الصَّوْتِ', onclick: onClick }, BQ.icon('ear'));
 
   /** بطاقات اختيار — items: [{id, img, label, icon, aria}] */
   UI.choices = function (parent, opt) {
@@ -386,7 +386,7 @@
     const card = h('div.bq-end', { role: 'dialog', 'aria-labelledby': tid },
       h('div.bq-end-card', null,
         UI.brq('cheer', 'bq-end-brq', 6000), // [brq-anim v1]
-        h('p.bq-end-t', { id: tid }, opt.title || 'أَحْسَنْتَ!'),
+        h('p.bq-end-t', { id: tid }, opt.title || 'أَحْسَنْتَ.'),
         opt.note ? h('p.bq-end-n', null, opt.note) : null,
         h('div.bq-end-row', null,
           h('button.bq-btn.ghost', { type: 'button', onclick: () => { card.remove(); opt.onReplay && opt.onReplay(); } }, BQ.icon('replay'), 'أَعِدِ النَّشاطَ'),
@@ -407,7 +407,7 @@
   UI.trace = function (parent, opt) {
     opt = opt || {};
     const box = h('div.bq-trace');
-    const cv = h('canvas', { width: 800, height: 800, 'aria-label': 'تَتَبَّعِ الحَرْفَ بِإِصْبَعِكَ', role: 'img' });
+    const cv = h('canvas', { width: 800, height: 800, 'aria-label': 'سِرْ مَعَ النِّقَاطِ', role: 'img' });
     box.append(h('span.bq-trace-glyph', { 'aria-hidden': 'true' }, opt.glyph || 'م'), cv);
     parent.append(box);
     const g = cv.getContext('2d');
@@ -500,7 +500,7 @@
   function nextInfo() {
     const cur = BQ.state.current; if (!cur || !BQ.meta(cur)) return null;
     const n = nextFrom(cur, posOf(cur)); if (!n) return null;
-    return { small: 'التالي', name: nameOf(n.id), to: n };
+    return { small: 'التَّالِي', name: nameOf(n.id), to: n };
   }
   BQ.nextInfo = nextInfo;
 
@@ -556,9 +556,9 @@
     const st = meta.station_short || String(meta.station || '').split('—')[0].trim();
     return [kicker(meta.id), meta.kind_ar, meta.time_label].filter(Boolean).join(' · '); // v7
   }
-  function kicker(id) { return 'العنصر ' + AR((BQ.meta(id) || {}).menu || '') + ' من ' + AR(D.elements.length); }
+  function kicker(id) { return 'الْعُنْصُرُ ' + AR((BQ.meta(id) || {}).menu || '') + ' مِن ' + AR(D.elements.length); }
 
-  const FN = [[/قول|قُل|غَنّ|رَدِّد|ما هَذا|سَمِعْتُ فَرْقاً/, 'mouth'], [/أَيْنَ|مَنْ|المِسْ|الْمِسْ|تَتَبَّع|ضَعْ|اقْلِب|رَتِّب|اخْتَر/, 'hand'], [/انْظُر|شاهِد|حَرْفُ|هَذِهِ الميمُ|^ماء/, 'eye']];
+  const FN = [[/قول|قُل|غَنّ|رَدِّد|ما هَذا|سَمِعْتُ فَرْقاً/, 'mouth'], [/أَيْنَ|مَنْ|المِسْ|الْمِسْ|تَتَبَّع|ضَعْ|اقْلِب|رَتِّب|اخْتَر|حَدِّد|سِرْ مَعَ|لَوِّن/, 'hand'], [/انْظُر|شاهِد|حَرْفُ|هَذِهِ الميمُ|^ماء/, 'eye']];
   const fnIcon = (text, line) => { const t = text || ((BQ.line(line) || {}).t) || ''; for (const [re, ic] of FN) if (re.test(t)) return ic; return 'ear'; };
 
   /* ---------- v8 FIXED STAGE (owner R3 «STAGE» 2026-10-05: «مقاس النشاط وشكل عرضه يكون ثابت») · css/stage8.css ----------
@@ -731,7 +731,7 @@
     }
     cleanups.push(() => { if (!adultPanel.hidden) { inertEls.forEach((e) => { e.inert = false; }); document.removeEventListener('keydown', drawerKeys, true); } });
     scrim.addEventListener('click', () => toggleAdult(false));
-    const restartBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'من البداية', title: 'من البداية', onclick: () => BQ.open(meta.id, { pos: posOf(meta.id), history: 'replace' }) }, BQ.icon('replay'), toolLbl('من البداية', 'إعادة'));
+    const restartBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'مِنَ الْبِدَايَةِ', title: 'مِنَ الْبِدَايَةِ', onclick: () => BQ.open(meta.id, { pos: posOf(meta.id), history: 'replace' }) }, BQ.icon('replay'), toolLbl('مِنَ الْبِدَايَةِ', 'إِعَادَة'));
     const head = h('header.elp-head', null,
       h('div.elp-ic', null, h('img', { src: meta.icon, alt: '' })),
       h('div.elp-titles', null,
@@ -846,9 +846,9 @@
     const pos = posOf(id);
     const pv = prevFrom(id, pos);
     const nx = nextFrom(id, pos);
-    const small = 'التالي';
+    const small = 'التَّالِي';
     return h('nav.elp-nav', { 'aria-label': 'التنقّل في مسار الدرس' },
-      pv ? h('button.elp-navbtn.ghost', { type: 'button', onclick: () => BQ.open(pv.id, { pos: pv.pos, src: 'next' }) }, BQ.icon('prev'), h('span', null, h('small', null, 'السابق'), nameOf(pv.id))) : h('span'),
+      pv ? h('button.elp-navbtn.ghost', { type: 'button', onclick: () => BQ.open(pv.id, { pos: pv.pos, src: 'next' }) }, BQ.icon('prev'), h('span', null, h('small', null, 'السَّابِقُ'), nameOf(pv.id))) : h('span'),
       nx ? h('button.elp-navbtn.primary.nextbtn', { type: 'button', onclick: () => { A.unlock(); BQ.goNext(); } }, h('span', null, h('small', null, small), nameOf(nx.id)), BQ.icon('next')) : h('span'));
   }
 
@@ -1125,7 +1125,7 @@
       const c = el.querySelector('circle.val'); const L = 2 * Math.PI * 18;
       if (c) { c.style.strokeDasharray = L; c.style.strokeDashoffset = L * (1 - n / t); }
       const b = el.querySelector('b'); if (b) b.textContent = AR(n);
-      el.setAttribute('aria-label', 'أُنجز ' + AR(n) + ' من ' + AR(t) + ' عنصراً');
+      el.setAttribute('aria-label', 'أُنْجِزَ ' + AR(n) + ' مِن ' + AR(t) + ' عُنْصُرًا');
     }
     const mc = $('#menuCount'); if (mc) mc.textContent = AR(n) + ' / ' + AR(t);
     updateResume();

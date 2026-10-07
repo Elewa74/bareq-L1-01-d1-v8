@@ -9,7 +9,9 @@
    الخطأ = اهتزاز لطيف ثمّ تعود · (٢) كلّ حرف داخل بطاقته (Vazirmatn، الحجم من عرض البطاقة، فُحص «مِ» و«مُ» آليّاً) · (٣) كلّ فرع يقول
    ما يوضع فيه: صورة الفرع + شكل الحرف الذي يخصّه (مـ ـمـ ـم · مَ مِ مُ · بطاقات بصور) + سمّاعة؛ ٣ نجوم = فرع اكتمل.
    v8 E14 fixed slots (المالك 2026-10-06 «ثبّت مقاس مربعات الإجابة»): لكلّ فرع خانات ثابتة فارغة ظاهرة بعدد إجاباته (٤ · ٦ · ٣)،
-   القطعة تستقرّ في وسط أوّل خانة فارغة وتصغر إن لزم؛ الفروع والدرج بمقاسات ثابتة على مسرح 1180×820 فلا تداخل ولا خروج عن الإطار. */
+   القطعة تستقرّ في وسط أوّل خانة فارغة وتصغر إن لزم؛ الفروع والدرج بمقاسات ثابتة على مسرح 1180×820 فلا تداخل ولا خروج عن الإطار.
+   SCI-1 T3 (2026-10-07): v8 = ٣ مراحل واحدة بعد واحدة (قصيرة ← طويلة ← أشكال الحرف)، لكلّ قطعة خانتها بصورة باهتة، ثم الخريطة كاملة (انظر run8).
+   مسار v7 (?theme=0) بقي كما هو (قديم). */
 (function () {
   'use strict';
   const ID = 'E14';
@@ -85,71 +87,72 @@
 .e14 img, .x7-ghost img { max-width: 100%; -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
 `;
 
-  /* ---------- v8 ---------- */
-  const LBL8 = { forms: ['مـ', 'ـمـ', 'ـم'], vowels: ['مَ', 'مِ', 'مُ'], words: null };
-  /* v8 · OWNER 2026-10-06 (E14_slots_overflow.png «تداخل وخروج الإجابات خارج الإطار … ثبّت مقاس مربعات الإجابة»): FIXED answer slots.
-     Every branch shows one empty slot frame per expected answer (forms 4 · vowels 6 · words 3), all sizes are constants of the fixed
-     1180×820 stage (layout px = --u), so nothing can grow: the map is 310u high, the tray 204u, slots never move, the tray is never covered.
-       slot 84u (inner 78u) ← letter tile 76u · word slot 160×84u ← picture card 76u high (shrink-to-fit by `scale` if a card is wider)
-       columns (RTL): vowels 3×2 = 286u · forms 4×1 under the centre «م» = 376u · words 2+1 = 348u · gaps 16u → 1042u ≤ 1058u panel content
-       heights: centre 104u + 16u + forms branch 190u = 310u; vowels / words branches 280u stretched to 310u; + 14u + tray 204u = 528u ≤ 550u
-     Touch: tray tiles 84u, placed tiles 76u (≥ 64 px on the glass at the iPad-landscape scale 0.85). */
-  const SLOT = { forms: 4, vowels: 3, words: 2 }; // slot columns per branch
+  /* ---------- v8 · SCI-1 T3 (2026-10-07) ----------
+     SCI «الخريطة المفاهيمية غير واضحة ولا تؤدي للهدف … التقسيم إلى حركات قصيرة ثم طويلة ثم أشكال الحرف» + «هيا نكمل الشكل، انظر، ثم ضع كل قطعة في مكانها الصحيح».
+     The map is built in 3 clear stages, ONE AT A TIME: (1) short vowels مَ مِ مُ → (2) long vowels ما مي مو → (3) letter forms مـ ـمـ ـم م.
+     Every answer slot shows a faint picture of the piece that belongs there («اُنْظُرْ»), so each piece has ONE right place («في مَكانِها الصَّحيحِ»).
+     The stage's branch lights up, Bariq says its title with the sounds, only that stage's pieces are in the tray; finished branch = a star + its
+     connector lights; after stage 3 the whole map lights and Bariq reads it (summary). Feedback (OWNER_R3 global ladder): ✓ the piece snaps into
+     its slot (green) + its sound · ✗1 red slot shake + «جَرِّبْ» and the piece goes back · ✗2 on the same piece → Bariq puts it in its place + model.
+     FIXED big slots (owner 2026-10-06 «ثبّت مقاس مربعات الإجابة» — kept): all sizes are constants of the 1180×820 stage (--u):
+       slot 100u (inner 94u) ← placed tile 88u · tray tile 96u (≥ 64 px on the glass in iPad landscape 0.85 and portrait 0.664)
+       top row: short 400u | centre 170u | long 400u (+2×24u) = 1018u ≤ 1058u · forms row 806u
+       heights: top 214u + 14u + forms 140u = 368u · + 14u + tray 156u = 538u ≤ 550u → nothing grows, nothing overlaps, nothing leaves the frame. */
+  const STAGES = [
+    { id: 'short', line: 'bq7_E14_st_short', label: 'حَرَكاتٌ قَصيرَةٌ', cue: 'short',
+      pieces: [{ t: 'مَ', au: 'bq7_S_ma' }, { t: 'مِ', au: 'bq7_S_mi' }, { t: 'مُ', au: 'bq7_S_mu' }] },
+    { id: 'long', line: 'bq7_E14_st_long', label: 'حَرَكاتٌ طَويلَةٌ', cue: 'long',
+      pieces: [{ t: 'مَا', au: 'bq7_S_maa' }, { t: 'مِي', au: 'bq7_S_mii' }, { t: 'مُو', au: 'bq7_S_muu' }] }, // full tashkeel incl. the long vowels (SCI «بحركات المدود»)
+    { id: 'forms', line: 'bq7_E14_st_forms', label: 'أَشْكالُ الحَرْفِ', icon: 'map_icon_forms',
+      pieces: [{ t: 'مـ', au: 'bq7_G_pos_first' }, { t: 'ـمـ', au: 'bq7_G_pos_mid' }, { t: 'ـم', au: 'bq7_G_pos_last' }, { t: 'م', au: 'bq7_E14_alone' }] },
+  ];
   const CSS8 = `
 .x7p.e14 { padding: calc(var(--u)*16) calc(var(--u)*18); gap: calc(var(--u)*14); justify-content: center; }
-.e14-map8 { --S: calc(var(--u)*84); --SW: calc(var(--u)*160); --SG: calc(var(--u)*6); --bp: calc(var(--u)*8); --bw: calc(var(--u)*3);
-  position: relative; flex: none; width: 100%; height: calc(var(--u)*310); display: grid; justify-content: center;
-  grid-template-columns: calc(var(--u)*286) calc(var(--u)*376) calc(var(--u)*348); grid-template-rows: calc(var(--u)*104) calc(var(--u)*190);
-  column-gap: calc(var(--u)*16); row-gap: calc(var(--u)*16); }
+.e14-map8 { --S: calc(var(--u)*100); --SG: calc(var(--u)*12); position: relative; flex: none; width: 100%; height: calc(var(--u)*368); display: grid; justify-content: center;
+  grid-template-columns: calc(var(--u)*400) calc(var(--u)*170) calc(var(--u)*400); grid-template-rows: calc(var(--u)*214) calc(var(--u)*140); column-gap: calc(var(--u)*24); row-gap: calc(var(--u)*14); }
 .e14-lines8 { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 0; }
 .e14-lines8 path { fill: none; stroke: rgba(11,45,79,.28); stroke-width: calc(var(--u)*6); stroke-linecap: round; stroke-dasharray: 0 calc(var(--u)*16); transition: stroke .3s; }
-.e14-lines8 path.on { stroke: var(--bq8-yellow); }
-.e14-c8 { grid-column: 2; grid-row: 1; justify-self: center; align-self: start; position: relative; z-index: 1; --w: calc(var(--u)*104); color: var(--bq8-meem); cursor: default; }
+.e14-lines8 path.on { stroke: var(--bq8-yellow); stroke-dasharray: none; }
+.e14-c8 { grid-column: 2; grid-row: 1; justify-self: center; align-self: center; position: relative; z-index: 1; --w: calc(var(--u)*150); color: var(--bq8-meem); cursor: default; }
 .e14-c8.bq8-tile { --fs: .62; }
-.e14 .bq8-slot { position: relative; z-index: 1; box-sizing: border-box; justify-content: flex-start; align-items: center; gap: calc(var(--u)*8); min-width: 0; min-height: 0; overflow: visible;
-  padding: var(--bp); border-width: var(--bw); background: rgba(255,255,255,.72); }
-.e14 .bq8-slot[data-br="vowels"] { grid-column: 1; grid-row: 1 / span 2; }
-.e14 .bq8-slot[data-br="forms"] { grid-column: 2; grid-row: 2; }
-.e14 .bq8-slot[data-br="words"] { grid-column: 3; grid-row: 1 / span 2; }
-.e14 .bq8-slot[data-br="forms"] { --slot-c: var(--bq8-eye); } .e14 .bq8-slot[data-br="vowels"] { --slot-c: var(--bq8-mouth); } .e14 .bq8-slot[data-br="words"] { --slot-c: var(--bq8-ear); }
-.e14 .bq8-slot__label { flex: none; border: 0; cursor: pointer; height: calc(var(--u)*76); min-height: max(64px, calc(var(--u)*76)); padding: calc(var(--u)*4) calc(var(--u)*16) calc(var(--u)*4) calc(var(--u)*8); gap: calc(var(--u)*10); }
-.e14 .bq8-slot__label img { width: calc(var(--u)*58); height: calc(var(--u)*58); object-fit: contain; border-radius: 0; }
-.e14 .e14-ex { display: inline-flex; gap: calc(var(--u)*8); font: 700 calc(var(--u)*34)/1.5 var(--font-letter); color: var(--bq8-meem); white-space: nowrap; }
-.e14 .e14-ex.is-pics { gap: calc(var(--u)*4); }
-.e14 .e14-ex.is-pics img { width: calc(var(--u)*44); height: calc(var(--u)*44); border-radius: calc(var(--u)*8); object-fit: cover; box-shadow: 0 0 0 calc(var(--u)*2) #fff, var(--bq8-sh-1); }
+.e14-c8.is-lit { box-shadow: inset 0 calc(var(--u)*-6) 0 rgba(214,143,0,.22), 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*14) var(--bq8-yellow), var(--bq8-sh-2); }
+.e14 .bq8-slot { position: relative; z-index: 1; box-sizing: border-box; justify-content: center; align-items: center; gap: calc(var(--u)*8); min-width: 0; min-height: 0; overflow: visible;
+  padding: calc(var(--u)*8); border-width: calc(var(--u)*3); background: rgba(255,255,255,.72); transition: opacity .3s, box-shadow .3s, background .3s; }
+.e14 .bq8-slot[data-br="short"] { grid-column: 1; grid-row: 1; --slot-c: var(--bq8-mouth); }
+.e14 .bq8-slot[data-br="long"] { grid-column: 3; grid-row: 1; --slot-c: var(--bq8-ear); }
+.e14 .bq8-slot[data-br="forms"] { grid-column: 1 / -1; grid-row: 2; justify-self: center; flex-direction: row; width: calc(var(--u)*806); --slot-c: var(--bq8-eye); }
+.e14 .bq8-slot.is-later { opacity: .5; }
+.e14 .bq8-slot.is-cur { opacity: 1; border-style: solid; border-color: var(--bq8-yellow); background: rgba(255,250,228,.95); box-shadow: 0 0 0 calc(var(--u)*6) rgba(255,194,26,.35), var(--bq8-sh-2); }
+.e14 .bq8-slot.is-filled { opacity: 1; }
+.e14 .bq8-slot__label { flex: none; border: 0; cursor: pointer; height: calc(var(--u)*76); min-height: max(64px, calc(var(--u)*76)); padding: calc(var(--u)*4) calc(var(--u)*16) calc(var(--u)*4) calc(var(--u)*10); gap: calc(var(--u)*10);
+  font: 700 calc(var(--u)*30)/1.9 var(--font-kid, var(--font-ui)); white-space: nowrap; }
+.e14 .bq8-slot__label img { width: calc(var(--u)*56); height: calc(var(--u)*56); object-fit: contain; border-radius: 0; }
+.e14 .e14-cue { flex: none; display: block; height: calc(var(--u)*22); border-radius: 999px; background: var(--bq8-navy); }
+.e14 .e14-cue.is-short { width: calc(var(--u)*22); } .e14 .e14-cue.is-long { width: calc(var(--u)*70); }
 .e14 .e14-say8 { font-size: calc(var(--u)*34); }
-/* the slot grid: fixed columns, fixed slots, centred in what is left of the branch under its label */
-.e14 .bq8-slot__body { flex: 1 1 auto; min-height: 0; min-width: 0; width: calc(var(--n) * var(--S) + (var(--n) - 1) * var(--SG)); max-width: 100%;
-  display: flex; flex-wrap: wrap; justify-content: center; align-content: center; align-items: center; gap: var(--SG); }
-.e14 .bq8-slot[data-br="words"] .bq8-slot__body { width: calc(var(--n) * var(--SW) + (var(--n) - 1) * var(--SG)); }
+.e14 .bq8-slot__body { flex: none; min-height: 0; min-width: 0; display: flex; flex-wrap: nowrap; direction: rtl; justify-content: center; align-items: center; gap: var(--SG); }
 .e14-slot { position: relative; box-sizing: border-box; flex: none; width: var(--S); height: var(--S); display: grid; place-items: center;
-  border-radius: calc(var(--u)*18); border: var(--bw) dashed rgba(11,45,79,.3); background: rgba(255,255,255,.55); }
-.e14-slot.is-word { width: var(--SW); }
-.e14-slot.is-full { border-style: solid; border-color: rgba(31,157,99,.45); background: rgba(207,245,226,.55); }
-.e14 .bq8-slot.is-over .e14-slot:not(.is-full) { border-color: var(--bq8-star-d); background: rgba(255,240,184,.9); }
-.e14-tray8 { flex: none; box-sizing: border-box; width: 100%; height: calc(var(--u)*204); display: flex; direction: rtl; flex-wrap: wrap; justify-content: center; align-content: center;
-  gap: calc(var(--u)*10) calc(var(--u)*12); padding: calc(var(--u)*10);
-  border-radius: calc(var(--u)*28); background: rgba(255,255,255,.55); border: calc(var(--u)*3) dashed rgba(11,45,79,.18); }
-.e14-tray8:empty { visibility: hidden; }
-.e14 .bq8-tile.e14-t8 { --w: max(64px, calc(var(--u)*84)); --fs: .6; }
-.e14 .bq8-tile.e14-t8.is-syll { --fs: .54; }
-.e14 .e14-wt.bq8-tile { width: auto; aspect-ratio: auto; height: var(--w); --w: max(64px, calc(var(--u)*84)); display: inline-flex; gap: calc(var(--u)*8); padding: 0 calc(var(--u)*14) 0 calc(var(--u)*8); }
-.e14 .e14-wt img { width: calc(var(--w) * .72); height: calc(var(--w) * .72); border-radius: calc(var(--u)*12); object-fit: cover; pointer-events: none; }
-.e14 .e14-wt > span { font-size: calc(var(--w) * .34); }
-/* a placed piece: centred in its slot, 76u (inner slot 78u), no outer white rim (it would cover the slot frame) */
-.e14 .e14-slot > .bq8-tile { --w: max(64px, calc(var(--u)*76)); margin: 0; cursor: pointer; box-shadow: inset 0 calc(var(--u)*-5) 0 rgba(31,157,99,.18), 0 calc(var(--u)*3) calc(var(--u)*6) rgba(11,45,79,.22); }
-.e14 .e14-slot > .e14-wt.bq8-tile { padding: 0 calc(var(--u)*10) 0 calc(var(--u)*6); gap: calc(var(--u)*6); max-width: none; }
+  border-radius: calc(var(--u)*20); border: calc(var(--u)*3) dashed rgba(11,45,79,.32); background: rgba(255,255,255,.6); transition: background .2s, border-color .2s; }
+.e14-slot > .e14-gh { font: 700 calc(var(--S) * var(--fs, .54))/1.25 var(--font-letter); color: #CDD3D9; white-space: nowrap; padding-bottom: calc(var(--S) * .06); pointer-events: none; user-select: none; -webkit-user-select: none; }
+.e14-slot.is-full { border-style: solid; border-color: rgba(31,157,99,.5); background: rgba(207,245,226,.6); }
+.e14-slot.is-full > .e14-gh { display: none; }
+.e14-slot.is-over:not(.is-full) { border-color: var(--bq8-star-d); border-style: solid; background: rgba(255,240,184,.95); }
+.e14-slot.is-no { border-color: #E53935; border-style: solid; background: rgba(229,57,53,.12); animation: bq8-shake-soft .35s ease; }
+.e14-slot.is-hint:not(.is-full) { border-color: var(--bq8-yellow); border-style: solid; box-shadow: 0 0 0 calc(var(--u)*6) rgba(255,194,26,.55); }
+.e14-tray8 { flex: none; box-sizing: border-box; width: calc(var(--u)*806); height: calc(var(--u)*156); display: flex; direction: rtl; flex-wrap: nowrap; justify-content: center; align-items: center;
+  gap: calc(var(--u)*30); padding: calc(var(--u)*10); border-radius: calc(var(--u)*28); background: rgba(255,255,255,.55); border: calc(var(--u)*3) dashed rgba(11,45,79,.18); }
+.e14 .bq8-tile.e14-t8 { --w: calc(var(--u)*96); --fs: .6; }
+.e14 .bq8-tile.e14-t8.is-syll, .e14-slot.is-syll { --fs: .54; }
+.e14 .e14-slot > .bq8-tile { --w: calc(var(--u)*88); margin: 0; cursor: pointer; box-shadow: inset 0 calc(var(--u)*-5) 0 rgba(31,157,99,.18), 0 calc(var(--u)*3) calc(var(--u)*6) rgba(11,45,79,.22); }
 .e14 .bq8-tile.is-in { animation: e14-snap .3s cubic-bezier(.3,1.6,.5,1) both; }
-@keyframes e14-snap { 0% { transform: scale(1.06); } 100% { transform: scale(1); } } /* the settle bounce stays inside the slot frame */
-/* OWNER_R3 2026-10-06 (iPad: «الصورة بحجمها الأصليّ بعرض الشاشة»): no picture in E14 may ever fall back to its natural size (1024 px webp) —
-   every <img> is capped by its box and never starts a native iOS image drag/callout (the drag ghost is built by X.dnd, pointer events only) */
+@keyframes e14-snap { 0% { transform: scale(1.06); } 100% { transform: scale(1); } }
 .e14 img, .x7-ghost img { max-width: 100%; -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
-.e14 .e14-wt img { flex: none; }
+@media (prefers-reduced-motion: reduce) { .e14-slot.is-no { animation: none; } .e14 .bq8-tile.is-in { animation: none; } }
 `;
 
   function run8(stage, ctx) {
-    const X = BQ.ix7b, h = BQ.h, W = X.W;
-    X.style('st-e14v8', CSS8);
+    const X = BQ.ix7b, h = BQ.h;
+    X.style('st-e14v8t3', CSS8);
     const S = X.session(ctx);
     const root = X.root(ctx, 'e14', { panel: ['wide', 'tall', 'col'], stars: 3, bariqTop: true });
     const F8 = root._8;
@@ -158,136 +161,131 @@
     svg.setAttribute('class', 'e14-lines8'); svg.setAttribute('aria-hidden', 'true');
     const center = h('div.e14-c8.bq8-tile.bq8-tile--letter', { role: 'img', 'aria-label': 'خَريطَةُ المِيمِ' }, h('span', null, 'م'));
     map.append(svg, center);
-    const brEl = {}, bodyEl = {}, paths = {}, need = {}, got = {};
-    BR.forEach((b) => {
-      const ex = LBL8[b.id]
-        ? h('span.e14-ex', { 'aria-hidden': 'true' }, LBL8[b.id].map((t) => h('span', null, t)))
-        : h('span.e14-ex.is-pics', { 'aria-hidden': 'true' }, ['mawz', 'qamar'].map((k) => h('img', { src: ctx.img(W[k].img), alt: '', draggable: 'false' })));
-      const label = h('button.bq8-slot__label', { type: 'button', 'aria-label': b.label, onclick: () => S.say(b.line) }, h('img', { src: ctx.img(b.icon), alt: '', draggable: 'false' }), ex, X.i8('listen', 'e14-say8'));
-      need[b.id] = PIECES.filter((p) => p.br === b.id).length; got[b.id] = 0;
-      // fixed answer slots: one empty frame per expected piece (never more, never resized)
-      const bb = h('div.bq8-slot__body.e14-slots', null,
-        Array.from({ length: need[b.id] }, () => h('div.e14-slot' + (b.id === 'words' ? '.is-word' : ''), { 'aria-hidden': 'true' })));
-      bb.style.setProperty('--n', String(SLOT[b.id]));
-      const el = h('div.bq8-slot.x7-8.x7-in', { role: 'group', 'aria-label': b.label, dataset: { br: b.id } }, label, bb);
-      brEl[b.id] = el; bodyEl[b.id] = bb;
-      paths[b.id] = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      svg.append(paths[b.id]);
+    const isSyll = (t) => X.bare(t).length > 1 || /[ًٌٍَُِّْ]/.test(t);
+    const brEl = {}, slotsOf = {}, paths = {};
+    STAGES.forEach((st) => {
+      const lead = st.cue ? h('span.e14-cue.is-' + st.cue, { 'aria-hidden': 'true' }) : h('img', { src: ctx.img(st.icon), alt: '', draggable: 'false' });
+      const label = h('button.bq8-slot__label', { type: 'button', 'aria-label': st.label, onclick: () => { if (!S.live) return; S.say(st.line); } }, lead, h('span', null, st.label), X.i8('listen', 'e14-say8'));
+      const slots = st.pieces.map((p) => h('div.e14-slot' + (isSyll(p.t) ? '.is-syll' : ''), { dataset: { t: p.t }, 'aria-label': 'مَكانُ ' + p.t }, X.kas(h('span.e14-gh', { 'aria-hidden': 'true', lang: 'ar' }, p.t))));
+      const body = h('div.bq8-slot__body.e14-slots', null, slots);
+      const el = h('div.bq8-slot.x7-8.x7-in.is-later', { role: 'group', 'aria-label': st.label, dataset: { br: st.id } }, label, body);
+      brEl[st.id] = el; slotsOf[st.id] = slots;
+      paths[st.id] = document.createElementNS('http://www.w3.org/2000/svg', 'path'); svg.append(paths[st.id]);
       map.append(el);
     });
     const tray = h('div.e14-tray8', { role: 'group', 'aria-label': 'القِطَعُ' });
     root.append(map, tray);
     const buddy = X.buddy(root);
-    // lines in the map's own layout px (client rects ÷ the stage's visual scale): centre → forms (down), centre → vowels / words (sideways)
     function lines() {
       const mr = map.getBoundingClientRect(); if (!mr.width || !map.offsetWidth) return;
       const k = mr.width / map.offsetWidth;
       const L = (e) => { const r = e.getBoundingClientRect(); return { l: (r.left - mr.left) / k, t: (r.top - mr.top) / k, r: (r.right - mr.left) / k, b: (r.bottom - mr.top) / k }; };
       const c = L(center), cx = (c.l + c.r) / 2, cy = (c.t + c.b) / 2, f = (n) => n.toFixed(1);
-      BR.forEach((b) => {
-        const r = L(brEl[b.id]);
-        let d;
-        if (b.id === 'forms') d = `M${f(cx)} ${f(c.b)} L ${f(cx)} ${f(r.t)}`;
+      STAGES.forEach((st) => {
+        const r = L(brEl[st.id]); let d;
+        if (st.id === 'forms') d = `M${f(cx)} ${f(c.b)} L ${f(cx)} ${f(r.t)}`;
         else if (r.l >= c.r) d = `M${f(c.r)} ${f(cy)} L ${f(r.l)} ${f(cy)}`;
         else d = `M${f(c.l)} ${f(cy)} L ${f(r.r)} ${f(cy)}`;
-        paths[b.id].setAttribute('d', d);
+        paths[st.id].setAttribute('d', d);
       });
     }
     requestAnimationFrame(lines);
     if (window.ResizeObserver) { const ro = new ResizeObserver(() => lines()); ro.observe(map); ctx.onCleanup(() => ro.disconnect()); }
 
+    let si = -1, got = 0, intro = true, finished = false;
     const errs = new Map();
-    let placed = 0, busy = false, lastUp = null;
-    root.addEventListener('pointerup', (e) => { lastUp = { x: e.clientX, y: e.clientY, t: performance.now() }; }, true);
+    const slotFor = (p) => slotsOf[STAGES[si].id].find((s) => s.dataset.t === p.t);
     const dnd = X.dnd({
       root,
-      onPick: (t) => { if (t._d.w) S.say(t._d.au, { stim: true }); },
+      canDrag: () => !intro && !finished,
       onDrop: (t, z) => {
         const p = t._d;
-        if (z.dataset.br === p.br) { settle(t, p); return true; }
-        const n = (errs.get(t) || 0) + 1; errs.set(t, n);
-        z.classList.add('is-wrong'); setTimeout(() => z.classList.remove('is-wrong'), 320);
+        if (z.dataset.t === p.t) { settle(t, p, z); return true; }
+        const n = (errs.get(p.t) || 0) + 1; errs.set(p.t, n);
+        z.classList.remove('is-no'); void z.offsetWidth; z.classList.add('is-no'); setTimeout(() => z.classList.remove('is-no'), 700);
         buddy.mood('think', 1300);
-        S.say(X.G.try);
-        if (n >= 2) { brEl[p.br].classList.add('is-lit'); setTimeout(() => brEl[p.br].classList.remove('is-lit'), 2600); }
+        if (n >= 2) {
+          // ✗2: Bariq puts the piece in its place and says it (no star credit change — the stage still completes)
+          setTimeout(async () => {
+            if (!t.isConnected || !dnd.tiles.has(t)) return;
+            const s = slotFor(p); if (!s) return;
+            s.classList.add('is-hint'); buddy.mood('talk', 1800);
+            await S.say(X.G.model);
+            if (t.isConnected && dnd.tiles.has(t)) settle(t, p, s, true);
+          }, 380);
+        } else S.say(X.G.try);
         return false;
       },
     });
-    BR.forEach((b) => dnd.zone(brEl[b.id], { br: b.id }));
-    BQ.shuffle(PIECES).forEach((p) => {
-      const t = p.w
-        ? h('div.bq8-tile.e14-wt.x7-8', { 'aria-label': W[p.w].t }, h('img', { src: ctx.img(W[p.w].img), alt: '', draggable: 'false' }), X.markMeem(W[p.w].t))
-        : h('div.bq8-tile.e14-t8.x7-8' + (X.bare(p.t).length > 1 || /[ًٌٍَُِّْ]/.test(p.t) ? '.is-syll' : ''), { 'aria-label': p.t }, X.markMeem(p.t));
-      t.dataset.br = p.br;
-      tray.append(dnd.tile(t, p));
-    });
 
-    function settle(t, p) {
-      // the tile itself moves into the branch body at once (no ghost flight, no fly-back) + a short settle bounce
-      dnd.tiles.delete(t);
-      t.classList.remove('x7-tile', 'is-lifted', 'is-sel');
-      t.classList.add('is-placed', 'is-in');
-      t.setAttribute('role', 'button'); t.tabIndex = 0;
-      const tc = t.cloneNode(true); // fresh node: drops the drag listeners → in the branch it only plays its sound
+    function settle(t, p, slot, solved) {
+      dnd.tiles.delete(t); dnd.zones.delete(slot);
+      const tc = t.cloneNode(true); // fresh node: no drag listeners → in its slot it only plays its sound
+      tc.classList.remove('x7-tile', 'is-lifted', 'is-sel', 'is-used'); tc.classList.add('is-placed', 'is-in');
+      tc.removeAttribute('style'); tc.setAttribute('role', 'button'); tc.tabIndex = 0;
       tc.addEventListener('click', () => S.say(p.au, { stim: !/_G_|_E14_/.test(p.au) }));
-      t.replaceWith(tc);
-      // into the next empty FIXED slot of its branch, centred; a card wider than the slot shrinks to fit (never the slot grows)
-      // review: the EMPTY slot nearest to where the finger let go (tap-then-tap / keyboard → the first empty slot)
-      const free = [...bodyEl[p.br].querySelectorAll('.e14-slot:not(.is-full)')];
-      let slot = free[0] || bodyEl[p.br].lastElementChild;
-      if (free.length > 1 && lastUp && performance.now() - lastUp.t < 400) {
-        let bd = 1e9;
-        free.forEach((s) => { const r = s.getBoundingClientRect(), d = Math.hypot(lastUp.x - (r.left + r.width / 2), lastUp.y - (r.top + r.height / 2)); if (d < bd) { bd = d; slot = s; } });
-      }
-      slot.classList.add('is-full'); slot.append(tc);
-      const fit = () => {
-        tc.style.scale = '';
-        const iw = slot.clientWidth - 2, ih = slot.clientHeight - 2, w = tc.offsetWidth, hh = tc.offsetHeight;
-        const k = Math.min(1, iw / (w || 1), ih / (hh || 1));
-        if (k < 1) tc.style.scale = k.toFixed(3);
-      };
-      fit();
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-      brEl[p.br].classList.add('is-filled');
-      S.fx(X.sfx.snap, 0.5);
-      X.burst(tc, 8);
-      buddy.mood('clap', 1200);
-      S.say(p.au, { stim: !/_G_|_E14_/.test(p.au) });
-      if (++got[p.br] === need[p.br]) { F8.star(); paths[p.br].classList.add('on'); }
-      if (++placed === PIECES.length) setTimeout(finish, 900);
-      requestAnimationFrame(lines);
+      t.remove();
+      slot.classList.remove('is-hint', 'is-over', 'is-no'); slot.classList.add('is-full'); slot.append(tc);
+      const fit = () => { tc.style.scale = ''; const k = Math.min(1, (slot.clientWidth - 2) / (tc.offsetWidth || 1), (slot.clientHeight - 2) / (tc.offsetHeight || 1)); if (k < 1) tc.style.scale = k.toFixed(3); };
+      fit(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+      S.fx(X.sfx.snap, 0.5); X.burst(tc, 8); buddy.mood(solved ? 'talk' : 'clap', 1200);
+      const sayP = S.say(p.au, { stim: !/_G_|_E14_/.test(p.au) });
+      if (++got === STAGES[si].pieces.length) sayP.then(() => stageDone());
     }
-
-    note8();
-    (async () => {
-      ctx.instruction(X.text('bq7_E14_intro'), 'bq7_E14_intro', { icon: 'hand' });
-      await X.nameSound(S, 'bq7_E14_intro');
-      for (const b of BR) { brEl[b.id].classList.add('is-lit'); paths[b.id].classList.add('on'); await S.say(b.line); brEl[b.id].classList.remove('is-lit'); if (got[b.id] < need[b.id]) paths[b.id].classList.remove('on'); }
-    })();
-
+    async function stageDone() {
+      const st = STAGES[si];
+      brEl[st.id].classList.remove('is-cur'); brEl[st.id].classList.add('is-filled');
+      paths[st.id].classList.add('on'); F8.star(); buddy.mood('cheer', 1600);
+      await S.say(X.yes());
+      if (si + 1 < STAGES.length) startStage(si + 1); else finish();
+    }
+    async function startStage(i) {
+      si = i; got = 0; intro = true; errs.clear();
+      const st = STAGES[i];
+      STAGES.forEach((x, j) => { brEl[x.id].classList.toggle('is-later', j > i); brEl[x.id].classList.toggle('is-cur', j === i); });
+      tray.replaceChildren();
+      slotsOf[st.id].forEach((s) => dnd.zone(s, { t: s.dataset.t }));
+      // the stage title with its sounds, said while its branch lights (look first: the faint pieces show where each one goes)
+      buddy.mood('talk', 2000);
+      await S.say(st.line);
+      if (!S.live) return;
+      BQ.shuffle(st.pieces.slice()).forEach((p) => {
+        const tl = h('div.bq8-tile.e14-t8.x7-8' + (isSyll(p.t) ? '.is-syll' : ''), { 'aria-label': p.t, dataset: { br: st.id, t: p.t } }, X.markMeem(p.t));
+        tray.append(dnd.tile(tl, p));
+      });
+      intro = false;
+    }
     async function finish() {
-      if (busy) return; busy = true;
-      ctx.instruction(X.text('bq7_E14_summary'), 'bq7_E14_summary', { icon: 'eye' });
-      for (const b of BR) { brEl[b.id].classList.add('is-lit'); paths[b.id].classList.add('on'); await S.sleep(450); }
+      if (finished) return; finished = true;
+      tray.replaceChildren();
+      ctx.instruction(X.text('bq7_E14_summary8'), 'bq7_E14_summary8', { icon: 'eye' });
+      center.classList.add('is-lit');
+      for (const st of STAGES) { brEl[st.id].classList.add('is-cur'); await S.sleep(350); }
       buddy.mood('cheer', 4000);
-      await S.say('bq7_E14_summary');
+      await S.say('bq7_E14_summary8');
       ctx.done();
       X.end(ctx, S, {});
     }
+    note8();
+    (async () => {
+      ctx.instruction(X.text('bq7_E14_intro8'), 'bq7_E14_intro8', { icon: 'hand' });
+      await S.say('bq7_E14_intro8');
+      if (S.live) startStage(0);
+    })();
     function note8() {
       const btn = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => {
         const box = h('div', { dir: 'rtl', style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '7mm', width: '255mm', font: '700 30px BQ8 Letter' } });
-        BR.forEach((b) => {
-          const col = h('div', { style: { border: '2px dashed #9ab', borderRadius: '6mm', padding: '4mm', textAlign: 'center' } }, h('div', { style: { font: '700 22px Scheherazade New', marginBottom: '3mm' } }, b.label));
-          PIECES.filter((p) => p.br === b.id).forEach((p) => col.append(h('div', { style: { margin: '2mm', display: 'inline-block', padding: '1mm 4mm', border: '2px solid #0B2D4F', borderRadius: '4mm' } }, X.markMeem(p.w ? W[p.w].t : p.t))));
+        STAGES.forEach((st) => {
+          const col = h('div', { style: { border: '2px dashed #9ab', borderRadius: '6mm', padding: '4mm', textAlign: 'center' } }, h('div', { style: { font: '700 22px Scheherazade New', marginBottom: '3mm' } }, st.label));
+          st.pieces.forEach((p) => col.append(h('div', { style: { margin: '2mm', display: 'inline-block', padding: '1mm 4mm', border: '2px solid #0B2D4F', borderRadius: '4mm' } }, X.markMeem(p.t))));
           box.append(col);
         });
         X.print([{ node: box }], { title: 'خريطة الميم', landscape: true });
       } }, 'اطبع الخريطة (A4)');
       X.note(ctx, h('div', null,
-        h('div', { html: '<p><b>ما يجري:</b> يسحب الطفل ١٣ قطعة إلى فروعها الثلاثة: أشكال الميم (مـ ـمـ ـم م) · الميم مع الحركات (مَ مِ مُ ما مي مو) · كلمات فيها الميم (مكتب، مانجو، نمور). يمكنه أيضاً لمس القطعة ثم لمس الفرع. على كلّ فرع صورته وأمثلة ممّا يوضع فيه، ولمس رأس الفرع يُسمِع اسمه.</p>' +
-          '<p><b>التغذية:</b> القطعة الصحيحة تستقرّ في الفرع مباشرة وتُسمِع صوتها؛ غيرها تهتزّ وتعود مع «جرّب مرّة أخرى»، وبعد خطأين يضيء فرعها. نجمة لكلّ فرع يكتمل. غير مسجَّل (تعزيز).</p>' +
-          '<p><b>بعده:</b> اطلب منه أن «يقرأ» الخريطة لك: يلمس كلّ قطعة ويقولها معها.</p>' }),
+        h('div', { html: '<p><b>ما يجري (٣ مراحل، واحدة في كلّ مرّة):</b> (١) الحركات القصيرة مَ مِ مُ ← (٢) الحركات الطويلة ما مي مو ← (٣) أشكال الحرف مـ ـمـ ـم م. في كلّ مرحلة يضيء فرعها ويقول بارق عنوانه بأصواته، وفي كلّ خانة صورة باهتة للقطعة التي تُوضع فيها («اُنْظُرْ، ثُمَّ ضَعْ كُلَّ قِطْعَةٍ في مَكانِها الصَّحيحِ»). يسحب الطفل القطعة أو يلمسها ثم يلمس الخانة. في الختام تضيء الخريطة كاملة ويقرؤها بارق.</p>' +
+          '<p><b>التغذية:</b> الصحيحة تستقرّ في خانتها وتُسمِع صوتها · الخطأ الأوّل: الخانة تهتزّ بالأحمر و«جرّب مرّة أخرى» · الخطأ الثاني على القطعة نفسها: بارق يضعها في مكانها ويُسمِعها. نجمة لكلّ مرحلة. غير مسجَّل (تعزيز).</p>' +
+          '<p><b>بعده:</b> اطلب منه أن «يقرأ» الخريطة: يلمس كلّ قطعة ويقولها معها، ثم يقارن مَ بـ ما.</p>' }),
         btn));
     }
   }

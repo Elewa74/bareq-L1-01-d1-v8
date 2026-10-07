@@ -17,11 +17,15 @@
   const GAME_SRC = 'games/g8/index.html';
   const FB_DIR = 'games/g8/fb/';
   const L = {
-    intro: 'bq7_E10_intro', demo: 'bq7_E10_demo', r1: 'bq7_E10_r1', found: 'bq7_E10_found', notfirst: 'bq7_E10_notfirst',
+    intro: 'bq7_E10_intro', demo: 'bq7_E10c_first_mawz', r1: 'bq7_E10c_pick_syl', found: 'bq7_E10_found', notfirst: 'bq7_E10_notfirst', midRule: 'bq7_E10c_mid_rule',
     start: 'bq7_G_hint_start', light: 'bq7_G_look_light', shape: 'bq7_G_look_shape', model: 'bq7_G_model', next: 'bq7_G_next',
     r2i: 'bq7_E10_r2_intro', r2t: 'bq7_E10_r2_task', win: 'bq7_E10_win', yes: 'bq7_G_yes2', ma: 'bq7_S_ma',
   };
   const PRAISE = ['bq7_G_yes1', 'bq7_G_yes2', 'bq7_G_yes3', 'bq7_G_yes4'];
+  /* SCI-1 (scientific team 2026-10-07): each find is praised with ITS OWN first syllable (Bariq «مِفْتاح… يَبْدَأُ بِـ مِ»), the task lists «مَ – مِ – مُ»,
+     verb «اِخْتَرْ» (never «اِلْمِسْ»); same lines as the g9 game. Instruction text comes from LINES (full tashkeel). */
+  const FIRST = { mawz: 'bq7_E10c_first_mawz', manju: 'bq7_E10c_first_manju', miftah: 'bq7_E10c_first_miftah', musht: 'bq7_E10c_first_musht', maktab: 'bq7_E10c_first_maktab' };
+  const LT = (id, fb) => { try { const l = BQ.line && BQ.line(id); return (l && l.t) || fb; } catch (e) { return fb; } };
   /* OWNER_R3 GLOBAL feedback ladder (binding for every element and game): ✓ green + varied praise · ✗1 red mark + motivating retry line ·
      ✗2 Bariq solves / helps + encouraging line · stars only on correct answers. Approved lines (E11 set, eleven_v4). */
   const PRAISE_R1 = ['bq7_E10_found', 'bq7_G_yes3', 'bq7_E10_found', 'bq7_G_yes4'];
@@ -238,7 +242,7 @@
         const it = its[s]; if (!it || it.gone) return;
         it.rr = f.r;
         if (f.sp) { it.sp = h('img.e10-sp', { src: FB_DIR + 'sp_' + cur.id + '_' + s + '.webp', alt: '' }); place(it.sp, f.sp); box.insertBefore(it.sp, bq); }
-        it.b = h('button.e10-it', { type: 'button', 'aria-label': 'شَيْءٌ في الغُرْفَةِ', 'data-s': s });
+        it.b = h('button.e10-it', { type: 'button', 'aria-label': 'شَيْءٌ فِي الْغُرْفَةِ', 'data-s': s });
         it.b.addEventListener('click', () => tap(it));
         if (it.demo) it.b.disabled = true;
         box.insertBefore(it.b, bq);
@@ -318,6 +322,7 @@
       ctx.record('S1', good, { item: it.s, from: 'E10' });
       streak = 0; clean = true;
       await say(how === 'shown' ? SOLVE[(nSolve++) % SOLVE.length] : PRAISE_R1[(res.found - 1) % PRAISE_R1.length]); if (!ok()) return;
+      await say(FIRST[it.s]); if (!ok()) return; // SCI-1: «مِفْتاح… يَبْدَأُ بِـ مِ»
       if (res.found >= 4) { setLock(true); await wait(ctx, 500); if (ok()) { unHud(); box.remove(); next(); } return; }
       if (!leftInShot().length && si < SH.length - 1) await goShot(si + 1);
       else await bqTo(cur.near._home);
@@ -346,7 +351,7 @@
       chip.classList.add('is-on');
       await say('bq7_W_' + it.s + '_seg'); if (!ok()) return;
       await say(it.m === 'mid' ? 'bq7_G_pos_mid' : 'bq7_G_pos_last'); if (!ok()) return;
-      if (first) { await say(L.r1); if (!ok()) return; await say(L.ma); if (!ok()) return; }
+      if (first) { await say(L.midRule); if (!ok()) return; }
       chip.classList.remove('is-on'); it.b.classList.remove('is-gold');
     }
 
@@ -394,12 +399,12 @@
       m.b.classList.add('is-say'); if (m.sp) m.sp.classList.add('is-say');
       await say('bq7_W_' + m.s); if (!ok()) return;
       m.b.classList.remove('is-say'); if (m.sp) m.sp.classList.remove('is-say');
-      await say(L.demo); if (!ok()) return;
+      await say(L.demo); if (!ok()) return; // «مَوْز… يَبْدَأُ بِـ مَ»
       await intoBasket(m, true); if (!ok()) return;
       await bqTo(cur.near._home); if (!ok()) return;
       layoutHits();
       setLock(false);
-      await ctx.instruction('اِلْمِس كُلَّ شَيْءٍ يَبْدَأُ بِصَوْتِ المِيمِ.', L.r1, { icon: 'hand' });
+      await ctx.instruction(LT(L.r1, 'اِخْتَر مَا يَبْدَأُ بِصَوْتِ الْمِيمِ:\u00a0مَ\u00a0–\u00a0مِ\u00a0–\u00a0مُ'), L.r1, { icon: 'hand' });
     }
     // R3-F7: phone portrait → the platform's «أَدِرِ الجِهازَ» card (icon + Bariq, no text) until the phone turns or «تابِعْ»
     const mq = window.matchMedia ? matchMedia('(orientation: portrait) and (max-width: 599.98px)') : null;
@@ -476,6 +481,7 @@
         if (juicy && stars.length) { nStar++; if (stars[nStar - 1]) stars[nStar - 1].classList.add('is-on'); } // stars only on correct answers
         await say('bq7_W_' + w.s); if (!ok()) return;
         await say(juicy ? praise() : SOLVE[(nSolve++) % SOLVE.length]); if (!ok()) return;
+        await say({ mawz: FIRST.mawz, musht: FIRST.musht, qamar: 'bq7_G_pos_mid', fam: 'bq7_G_pos_last' }[w.s]); if (!ok()) return; // SCI-1: same as the g9 game
         await wait(ctx, 400);
         done.end();
       };
@@ -513,7 +519,7 @@
     function word8(w, k) {
       return new Promise((resolve) => {
         const ear = h('span.bq8-card__ear', null, h('span.bq8-btn.bq8-btn--sm.bq8-btn--ear', null, h('i.bq8-ic.bq8-ic--ear')));
-        const card = h('button.bq8-card', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' }, h('img', { src: ctx.img('card_' + w.s), alt: '' }), ear);
+        const card = h('button.bq8-card', { type: 'button', 'aria-label': 'اِسْتَمِع إِلَى الْكَلِمَةِ' }, h('img', { src: ctx.img('card_' + w.s), alt: '' }), ear);
         card.addEventListener('click', () => say('bq7_W_' + w.s));
         const gap = h('span.gap');
         const row = h('div.e10-w8', { lang: 'ar' }, w.parts.map((p) => (p === '#' ? gap : h('span', null, p))));
@@ -529,7 +535,7 @@
         bindPieces(pcs, gap, judgeLadder(w, pcs, gap, done, true));
         (async () => {
           await wait(ctx, 300); if (!ok()) return;
-          if (k === 0) await ctx.instruction('اُنْظُر إِلى الصّورَةِ، وَضَعِ القِطْعَةَ النّاقِصَةَ.', L.r2t, { icon: 'hand' });
+          if (k === 0) await ctx.instruction(LT(L.r2t, 'اُنْظُر إِلَى الصُّورَةِ، وَضَعِ الْقِطْعَةَ النَّاقِصَةَ.'), L.r2t, { icon: 'hand' });
           if (!ok()) return;
           await say('bq7_W_' + w.s);
         })();
@@ -539,7 +545,7 @@
     function word7(w, first) {
       return new Promise((resolve) => {
         const r2 = h('div.e10-r2');
-        const card = h('button.e10-card', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' }, h('img', { src: ctx.img('card_' + w.s), alt: '' }));
+        const card = h('button.e10-card', { type: 'button', 'aria-label': 'اِسْتَمِع إِلَى الْكَلِمَةِ' }, h('img', { src: ctx.img('card_' + w.s), alt: '' }));
         card.addEventListener('click', () => say('bq7_W_' + w.s));
         const gap = h('span.gap');
         const row = h('div.e10-word', null, w.parts.map((p) => (p === '#' ? gap : h('span', null, p))));
@@ -555,7 +561,7 @@
         bindPieces(pcs, gap, judgeLadder(w, pcs, gap, done, false));
         (async () => {
           await wait(ctx, 300); if (!ok()) return;
-          if (first) await ctx.instruction('اُنْظُر إِلى الصّورَةِ، وَضَعِ القِطْعَةَ النّاقِصَةَ.', L.r2t, { icon: 'hand' });
+          if (first) await ctx.instruction(LT(L.r2t, 'اُنْظُر إِلَى الصُّورَةِ، وَضَعِ الْقِطْعَةَ النَّاقِصَةَ.'), L.r2t, { icon: 'hand' });
           if (!ok()) return;
           await say('bq7_W_' + w.s);
         })();
@@ -672,7 +678,7 @@
         try { BQ.store.set('e10-last', Object.assign({ t: Date.now() }, res)); } catch (e) { /* */ }
         report(ctx, res);
         ctx.done();
-        ctx.endCard({ title: 'أَحْسَنْتَ!', onReplay: () => BQ.open(ID, { skipCover: true, history: 'replace' }) });
+        ctx.endCard({ title: 'أَحْسَنْتَ', onReplay: () => BQ.open(ID, { skipCover: true, history: 'replace' }) });
       }, (err) => { clearInterval(watch); if (!started) fail(err); else try { console.error('[E10 g9]', err); } catch (e) { /* */ } });
     }, fail);
     return true;
@@ -699,7 +705,7 @@
       try { BQ.store.set('e10-last', Object.assign({ t: Date.now() }, res)); } catch (e) { /* */ }
       report(ctx, res);
       ctx.done();
-      ctx.endCard({ title: 'أَحْسَنْتَ!', onReplay: () => BQ.open(ID, { skipCover: true, history: 'replace' }) });
+      ctx.endCard({ title: 'أَحْسَنْتَ', onReplay: () => BQ.open(ID, { skipCover: true, history: 'replace' }) });
     };
     const toRound2 = () => { if (!ctx.alive()) return; stage.replaceChildren(); ctx.instruction(''); round2(stage, ctx, res, finishAll); };
     const runHtml = () => { stage.replaceChildren(); round1Html(stage, ctx, res, toRound2); };

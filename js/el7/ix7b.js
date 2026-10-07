@@ -44,7 +44,26 @@
     // مشتِّتات سمعية/صورية فقط (لا تُكتب على شاشة الطفل — قرار أ)
     bab: { t: 'باب', dis: true }, fil: { t: 'فيل', dis: true }, batta: { t: 'بَطَّة', dis: true }, farasha: { t: 'فَراشَة', dis: true }, kura: { t: 'كُرَة', dis: true },
   });
+  /* SCI-1 T3 (2026-10-07, additive): مُ-initial words that replace «قَمَر» in E11 (SCI «نغيّر كلمة قمر ونجيب كلمة تبدأ بالميم مضمومة: مُثلث / مُعلّم»).
+     Picture: T5 media/img8/w8_<k>.webp once listed in X.IMG8 (or D.img8) — until then an inline drawing (ph) — never a request for a missing file.
+     Audio: T2 bq7_W_<k>; until it exists, T3's own HAB take bq7_W_<k>_t3 (X.wordId resolves to the first one that has a file). */
+  W.muthallath = { t: 'مُثَلَّث', pos: 'ini', img8: 'w8_muthallath', alt: 'bq7_W_muthallath_t3' };
+  W.muallim = { t: 'مُعَلِّم', pos: 'ini', img8: 'w8_muallim', alt: 'bq7_W_muallim_t3' };
   Object.keys(W).forEach((k) => { const w = W[k]; w.key = k; w.img = 'card_' + k; w.au = 'bq7_W_' + k; w.seg = 'bq7_W_' + k + '_seg'; T[w.au] = ['HAB', w.t]; });
+  /** img8 keys known to exist (img8 is not indexed in data.js yet) — T5 adds w8_muallim / w8_muthallath here when the files land */
+  X.IMG8 = new Set(['w8_muthallath', 'w8_muallim']); // T5 delivered 2026-10-07
+  X.has8 = (k) => !!k && !!((BQ.D && BQ.D.img8 && BQ.D.img8[k]) || X.IMG8.has(k));
+  const PH8 = {
+    w8_muthallath: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#FFF7E6"/><path d="M200 70 345 320H55z" fill="#FFC21A" stroke="#0B2D4F" stroke-width="16" stroke-linejoin="round"/><path d="M200 112 300 286" stroke="#fff" stroke-width="12" stroke-linecap="round" opacity=".55"/></svg>',
+    w8_muallim: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#EAF6FF"/><rect x="40" y="60" width="320" height="190" rx="14" fill="#2E7D5B" stroke="#0B2D4F" stroke-width="12"/><circle cx="200" cy="270" r="48" fill="#F6C9A0" stroke="#0B2D4F" stroke-width="10"/><path d="M110 380c10-50 45-70 90-70s80 20 90 70" fill="#3D7BF0" stroke="#0B2D4F" stroke-width="10"/></svg>',
+  };
+  /** picture of word k: T5 img8 when present · inline drawing for the new words · else the img7 card */
+  X.wimg = function (ctx, k) {
+    const w = W[k]; if (!w) return '';
+    if (w.img8 && X.has8(w.img8)) return (BQ.D && BQ.D.img8 && BQ.D.img8[w.img8]) || 'media/img8/' + w.img8 + '.webp';
+    if (w.img8 && PH8[w.img8]) return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(PH8[w.img8]);
+    return ctx && ctx.img ? ctx.img(w.img) : (BQ.img7 ? BQ.img7(w.img) : '');
+  };
   /** المقاطع ← ملفّ الصوت (LINES_v7: bq7_S_*) */
   const SYL = (X.SYL = { 'مَ': 'bq7_S_ma', 'مِ': 'bq7_S_mi', 'مُ': 'bq7_S_mu', 'ما': 'bq7_S_maa', 'مي': 'bq7_S_mii', 'مو': 'bq7_S_muu', 'مْ': 'bq7_S_m0',
     'بَ': 'bq7_S_ba', 'بِ': 'bq7_S_bi', 'بُ': 'bq7_S_bu', 'با': 'bq7_S_baa', 'بو': 'bq7_S_buu', 'فَ': 'bq7_S_fa', 'فِ': 'bq7_S_fi', 'فُ': 'bq7_S_fu', 'في': 'bq7_S_fii',
@@ -57,7 +76,7 @@
     return list.find(has) || list[0];
   };
   X.sylId = (s) => SYL[s] || null;
-  X.wordId = (k) => 'bq7_W_' + k;
+  X.wordId = (k) => { const w = W[k]; return w && w.alt ? X.pick(null, ['bq7_W_' + k, w.alt]) : 'bq7_W_' + k; };
   X.segId = (k) => 'bq7_W_' + k + '_seg';
 
   /* ================= وصل الحروف (ZWJ) ================= */
@@ -94,8 +113,23 @@
       if (jn) out.append(ZWJ);
     }
     out.append(word.slice(last));
-    if (X.v8 && X.v8()) X.suk(out);
+    if (X.v8 && X.v8()) { X.suk(out); X.kas(out); }
     return out;
+  };
+  /** SCI-1 T3 (additive): Vazirmatn draws the kasra of an isolated/final «مِ» far under the TAIL (it reads as «م», and its ink overflows the tile).
+   *  Same fix as E06 (IX1): the letter is set bare and the kasra is drawn as its own short stroke under the head (.x7-kas, current colour).
+   *  Only a «مِ» that does not join forward (end of text / no ZWJ after) — an initial/medial «مِـ» keeps the font's kasra. */
+  X.kas = function (node) {
+    if (!node) return node;
+    if (!document.getElementById('st-x7kas')) document.head.append(h('style', { id: 'st-x7kas' }, '.x7-mi{position:relative;display:inline-block;line-height:1.25}.x7-kas{position:absolute;top:1.02em;right:.04em;width:.26em;height:.085em;border-radius:.05em;background:currentColor;transform:rotate(-20deg);pointer-events:none}'));
+    const walk = document.createTreeWalker(node, NodeFilter.SHOW_TEXT); const list = []; let n;
+    while ((n = walk.nextNode())) if (/م\u0650(?![\u200D\u0621-\u064A])/.test(n.nodeValue)) list.push(n);
+    list.forEach((tn) => {
+      const frag = document.createDocumentFragment(); const v = tn.nodeValue; const re = /م\u0650(?![\u200D\u0621-\u064A])/g; let last = 0, m;
+      while ((m = re.exec(v))) { if (m.index > last) frag.append(v.slice(last, m.index)); frag.append(h('span.x7-mi', { 'aria-label': 'مِ' }, 'م', h('i.x7-kas', { 'aria-hidden': 'true' }))); last = m.index + 2; }
+      frag.append(v.slice(last)); tn.replaceWith(frag);
+    });
+    return node;
   };
   /** v8 · سكون واضح: «رْ» بخطّ Vazirmatn تبدو قريبة من «ز» (السكون الصغيرة تقع حيث نقطة الزاي). القرار: نُبقي السكون (لازمة تربويّاً)
    *  ونرسمها حلقةً مفرغة أكبر وأعلى قليلاً فوق الحرف — للحروف التي لها أخت منقوطة من فوق: ر/ز · د/ذ · ح/خ · ص/ض · ع/غ.
@@ -241,7 +275,7 @@
   /** ختام النشاط (فوق منطقة اللعب): بارق يصفّق + «أَعِدْ» + «التّالي» */
   X.end = function (ctx, S, opt) {
     opt = opt || {};
-    if (BQ.ui && BQ.ui.endCard && !opt.custom) return BQ.ui.endCard(ctx.stage, { title: opt.title || 'أَحْسَنْتَ!', line: opt.line ? X.pick(ctx, opt.line) : null, onReplay: () => BQ.open(ctx.meta.id, { skipCover: true, history: 'replace' }) });
+    if (BQ.ui && BQ.ui.endCard && !opt.custom) return BQ.ui.endCard(ctx.stage, { title: opt.title || 'أَحْسَنْتَ.', line: opt.line ? X.pick(ctx, opt.line) : null, onReplay: () => BQ.open(ctx.meta.id, { skipCover: true, history: 'replace' }) });
     return null;
   };
 
@@ -494,6 +528,10 @@
       if (tAfter) { const w = tAfter.getComputedTextLength() || FS; tAfter.setAttribute('x', F.origin); tAfter.setAttribute('text-anchor', 'start'); left = Math.min(left, F.origin - w - 3); }
       if (tBefore) { const w = tBefore.getComputedTextLength() || FS; tBefore.setAttribute('x', F.adv); tBefore.setAttribute('text-anchor', 'end'); right = Math.max(right, F.adv + w + 3); }
       if (tAfter || tBefore) { top = Math.min(top, F.base - FS * 0.74); bot = Math.max(bot, F.base + FS * 0.3); }
+      // SCI-1 T2 (owner GLOBAL «diacritics inside the frame»): grow the box to the context text's real extent (e.g. the damma of «نُـ»)
+      [tBefore, tAfter].forEach((t) => { if (!t) return; try { const bb = t.getBBox(); if (bb.height) { top = Math.min(top, bb.y); bot = Math.max(bot, bb.y + bb.height); } } catch (e) { /* not rendered yet */ } });
+      // SCI-1 T2: the direction arrows sit outside the letter — keep them (and their arrow heads) inside the writing card too
+      try { const ab = arr.getBBox(); if (ab.width) { left = Math.min(left, ab.x - 3); right = Math.max(right, ab.x + ab.width + 3); top = Math.min(top, ab.y - 3); bot = Math.max(bot, ab.y + ab.height + 3); } } catch (e) { /* */ }
       top -= 4; bot += 4; left -= 3; right += 3;
       X0 = left; W0 = right - left;
       svg.setAttribute('viewBox', `${X0} ${top} ${W0} ${bot - top}`);

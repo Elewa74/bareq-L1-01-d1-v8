@@ -9,7 +9,10 @@
      ج١ مَ ✓ · بَ · فَ   ج٢ مِ ✓ · فِ · بِ   ج٣ مُ ✓ · بُ · فُ   ج٤ ما ✓ · با · (فا ← نا إن سُجِّلا؛ وإلا خياران)
      ✗١ (R1-4) بارق «اِسْمَعْ مَعي الفَرْقَ» ← الزوج المسجَّل مَ… بَ أو مَ… فَ (صامت المشتّت الملموس) ← إعادة الفقاعات — لا لقطات فم هنا (تلميح الشفتين يصدق على بَ أيضاً)
      ✗٢ يخفت مشتّت + G_look_light · ③ G_model + المقطع. النهاية bq7_E03_end. التسجيل S2 (المحاولة الأولى).
-   ctx.step 'l1' | 'l2' (مراجعة موجّهة). */
+   ctx.step 'l1' | 'l2' (مراجعة موجّهة).
+   SCI-1 T2 (2026-10-07 · review/sci1 · draft_unapproved): التعليمة «اِسْتَمِع، وَحَدِّد كُلَّ كَلِمَةٍ فيها صَوْتُنا: مَ… مِ… مُ.» (bq7_E03_l1_s1، مركّبة) ·
+     «قَمَر» تُحذف («بلاش قمر») وكلّ الأهداف تبدأ بالميم: ج١ مَوْز ✓ · باب · مِفْتاح ✓ · مُعَلِّم ✓ (مَ/مِ/مُ معاً) · ج٢ مُثَلَّث ✓ · فيل · مَكْتَب ✓ · بَطَّة ·
+     صورتا مُعَلِّم/مُثَلَّث من ART (img8/w8_*)، وإلى أن تصلا بطاقة بديلة نظيفة · المستوى ٢ «… اِسْتَمِع، ثُمَّ اخْتَر صَوْتَنا.» (bq7_E03_l2_s1) — لا «المس». */
 (function () {
   'use strict';
   const ID = 'E03';
@@ -107,13 +110,14 @@
     const S = I.session(ctx, { noText: true });
     const V8 = I.v8();
     I.lines({
-      bq7_E03_l1_all: 'اِسْمَع، وَالْمِس كُلَّ كَلِمَةٍ فيها صَوْتُنا: مَ… مِ… مُ.',
-      bq7_E03_l2_intro: 'الآنَ نَسْمَعُ أَصْواتًا. اِلْمِسِ الفُقّاعَةَ الَّتي فيها صَوْتُنا.',
-      bq7_E11_r_s2: 'اِسْمَع مَعي الفَرْقَ.', bq7_E03_end: 'أُذُنُكَ قَوِيَّةٌ!',
+      bq7_E03_l1_s1: 'اِسْتَمِع، وَحَدِّد كُلَّ كَلِمَةٍ فيها صَوْتُنا: مَ… مِ… مُ.',
+      bq7_E03_l2_s1: 'الآنَ نَسْتَمِعُ إِلى أَصْواتٍ. اِسْتَمِع، ثُمَّ اخْتَر صَوْتَنا.',
+      bq7_E03_end: 'أُذُنُكَ قَوِيَّةٌ.',
     });
     // المستوى ١ — سيناريو الفريق: المس كلّ كلمة فيها /م/ (R1-8)
-    const L1 = [{ list: ['mawz', 'bab', 'miftah', 'qamar'], yes: ['mawz', 'miftah', 'qamar'], fixed: true },
-      { list: ['numur', 'fil', 'fam', 'batta'], yes: ['numur', 'fam'] }];
+    // SCI-1 T2: every target STARTS with the sound (مَ مِ مُ) — no «قَمَر»
+    const L1 = [{ list: ['mawz', 'bab', 'miftah', 'muallim'], yes: ['mawz', 'miftah', 'muallim'], fixed: true },
+      { list: ['muthallath', 'fil', 'maktab', 'batta'], yes: ['muthallath', 'maktab'] }];
     // المستوى ٢ — الفرق في الصامت وحده (R1-7)
     const longSet = ['maa', 'baa'].concat(I.hasAudio('bq7_S_faa') ? ['faa'] : I.hasAudio('bq7_S_naa') ? ['naa'] : []);
     const L2 = [['ma', 'ba', 'fa'], ['mi', 'fi', 'bi'], ['mu', 'bu', 'fu'], longSet];
@@ -123,7 +127,7 @@
     const onlyL1 = !!ctx.review && ctx.step === 'l1'; // مراجعة موجّهة S1: المستوى ١ وحده
     const nRounds = (startL2 ? 0 : L1.length) + (onlyL1 ? 0 : L2.length);
     // سطر تعليمة المستوى ١: الجديد إن سُجِّل، وإلا «اِسْمَعْ، ثُمَّ اخْتَرْ.» + «مَ… مِ… مُ» (لا سطر يقول «كلمتين»)
-    const l1Intro = async () => { if (I.hasAudio('bq7_E03_l1_all')) await S.say('bq7_E03_l1_all'); else { await S.say('bq7_G_listen_choose'); await S.stim('bq7_S_chain_short'); } };
+    const l1Intro = async () => { if (I.hasAudio('bq7_E03_l1_s1')) await S.say('bq7_E03_l1_s1'); else { await S.say('bq7_G_listen_choose'); await S.stim('bq7_S_chain_short'); } };
 
     const f8 = V8 ? I.frame8(S, 'e03-8', { pose: 'wave', panel: ['wide'] }) : null;
     const root = V8 ? f8.panel : I.root(stage, 'e03');
@@ -155,7 +159,7 @@
       if (V8) f8.stars(R.yes.length); // v8: one star slot per word to find (replaces the basket)
       const left = () => cards.filter((c) => c.yes && !c.classList.contains('is-ok'));
       const playAll = async (slow) => { for (const c of cards) { if (I.isNo(c) || c.classList.contains('is-ok')) continue; await I.playOn(S, c, I.wordId(c.slug), slow ? { rate: 0.85 } : null); await S.sleep(320); } };
-      I.instr(S, 'bq7_E03_l1_all', 'hand', async () => { if (busy) return; busy = true; await l1Intro(); await playAll(); busy = false; });
+      I.instr(S, 'bq7_E03_l1_s1', 'hand', async () => { if (busy) return; busy = true; await l1Intro(); await playAll(); busy = false; });
       steps.cur(ri);
       await S.sleep(500);
       if (r === 0) await l1Intro();
@@ -225,18 +229,18 @@
       const right = () => bubs.find((b) => b.s === yes);
       const playAll = async () => { for (const b of bubs) { if (I.isNo(b)) continue; await I.playOn(S, b, sid(b.s)); await S.sleep(420); } };
       if (V8) {
-        const ear = h('button.bq8-btn.bq8-btn--ear.e03-ear8', { type: 'button', 'aria-label': 'اِسْمَعِ الأَصْواتَ مَرَّةً أُخْرى' }, I.i8('ear'));
+        const ear = h('button.bq8-btn.bq8-btn--ear.e03-ear8', { type: 'button', 'aria-label': 'اِسْتَمِعْ إِلَى الْأَصْوَاتِ مَرَّةً أُخْرَى' }, I.i8('ear'));
         ear.addEventListener('click', async () => { if (busy) return; busy = true; ear.classList.add('is-play'); await playAll(); ear.classList.remove('is-play'); busy = false; });
         field.replaceChildren(h('div.e03-tray8.i7-in', null, ear, h('span.e03-sep', { 'aria-hidden': 'true' }), sky));
         f8.stage.classList.add('e03-l2'); f8.bariq.classList.add('is-listen'); buddy.set('listen');
       } else field.replaceChildren(sky);
       // R1-6: سطر «الآنَ أَصْواتٌ قَصيرَةٌ» المسجَّل لا يصدق على جولة ما/با — في الجولة الطويلة تُعاد «اِسْمَعْ، ثُمَّ اخْتَرْ.»
       const longR = yes.length > 2;
-      const introId = longR ? 'bq7_G_listen_choose' : 'bq7_E03_l2_intro';
+      const introId = longR ? 'bq7_G_listen_choose' : 'bq7_E03_l2_s1';
       I.instr(S, introId, 'hand', async () => { if (busy) return; busy = true; await S.say(introId); await playAll(); busy = false; });
       steps.cur(ri);
       await S.sleep(500);
-      if (r === 0) await S.say('bq7_E03_l2_intro');
+      if (r === 0) await S.say('bq7_E03_l2_s1');
       else if (longR) await S.say('bq7_G_listen_choose');
       await playAll();
       let first = null;
@@ -246,7 +250,7 @@
         async hint1(picked) {
           const c = picked && picked.s ? picked.s[0] : 'b';
           const pair = I.pick(c === 'f' ? 'bq7_S_pair_mf' : c === 'n' ? 'bq7_S_pair_mn' : 'bq7_S_pair_mb', 'bq7_S_pair_mb');
-          await S.say('bq7_E11_r_s2', { talk: true }); // «اِسْمَعْ مَعي الفَرْقَ.» — the contrast is heard, no option is lit
+          // SCI-1 T2: no «اِسْمَع مَعي الفَرْقَ» line (sci: «بلاش جملة اسمع الفرق») — the contrast pair itself is heard after the retry line
           if (longR && picked && picked.s) { await S.stim(sid(yes)); await S.sleep(600); await S.stim(sid(picked.s)); } // R1b-N3: الجولة الطويلة ← زوج طويل ما… با / ما… فا
           else await S.stim(pair);
           await S.sleep(450);

@@ -35,6 +35,9 @@
     batta: { w: 'بَطَّة', e: '🦆' },
     farasha: { w: 'فَراشَة', e: '🦋' },
     kura: { w: 'كُرَة', e: '⚽' },
+    // SCI-1 T2 (2026-10-07): E03 words that START with «مُ» (sci: «بلاش قمر») — pictures by ART T5 → img8/w8_<slug>.webp
+    muallim: { w: 'مُعَلِّم', e: '🧑‍🏫', img8: 'w8_muallim' },
+    muthallath: { w: 'مُثَلَّث', e: '🔺', img8: 'w8_muthallath' },
   });
   const names = (slug) => [slug].concat((W[slug] && W[slug].alias) || []);
   /** ملفّ نطق الكلمة (bq7_W_<slug>، أو اسمه البديل إن كان هو الموجود) · suffix: '_seg' للمقطّعة */
@@ -332,6 +335,9 @@
     const cands = opt.key ? [].concat(opt.key) : [].concat(...names(slug).map((n) => ['card_' + n, 'w_' + n]));
     const key = cands.find((k) => I.hasImg(k)) || cands[0];
     const box = h('span.i7-pic', { 'aria-hidden': 'true', dataset: { k: key } });
+    // SCI-1 T2: a word picture made for v8 (img8/w8_<slug>) wins when it is known (I.has8); otherwise the clean placeholder below
+    const k8 = !opt.key && info.img8 && I.has8 && I.has8(info.img8) ? info.img8 : null;
+    if (k8) { const im8 = h('img', { alt: '', draggable: 'false', decoding: 'async', src: I.src8(k8) }); box.dataset.k = k8; box.append(im8); im8.addEventListener('error', () => { im8.remove(); box.classList.add('is-ph'); box.append(h('span.i7-emo', null, info.e || '❔')); }, { once: true }); return box; }
     const ph = () => { box.classList.add('is-ph'); box.replaceChildren(h('span.i7-emo', null, info.e || '❔')); if (opt.text && info.w) box.append(h('span.i7-phw', { lang: 'ar' }, info.w)); };
     if (I.hasImg(key)) {
       const im = h('img', { alt: '', draggable: 'false', decoding: 'async', src: I.imgSrc(key) });
@@ -362,7 +368,7 @@
   /** زرّ أذن صغير (يُسمع ولا يختار) */
   I.ear = function (id, onTap) {
     const mute = id && !I.hasAudio(id);
-    const e = h('span.i7-ear' + (mute ? '.is-mute' : ''), { role: 'button', tabindex: '0', 'aria-label': 'اِسْمَع', html: IC.ear });
+    const e = h('span.i7-ear' + (mute ? '.is-mute' : ''), { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِعْ', html: IC.ear });
     if (mute) e.append(h('span.i7-mute-ic', { 'aria-hidden': 'true' }, '🔈'));
     const go = (ev) => { ev.stopPropagation(); if (ev.cancelable) ev.preventDefault(); if (!mute && onTap) onTap(e); };
     e.addEventListener('click', go);
@@ -522,7 +528,7 @@
     const replay = () => BQ.open(ctx.meta.id, { skipCover: true, history: 'replace' });
     if (BQ.ui && BQ.ui.endCard) {
       try { BQ.audio.stop(); } catch (e) { /* */ }
-      return BQ.ui.endCard(ctx.stage, { title: opt.title || 'أَحْسَنْتَ!', line: I.hasAudio(opt.line) ? opt.line : null, onReplay: replay });
+      return BQ.ui.endCard(ctx.stage, { title: opt.title || 'أَحْسَنْتَ.', line: I.hasAudio(opt.line) ? opt.line : null, onReplay: replay });
     }
     const host = (ctx.frame && ctx.frame.querySelector('.elp-play')) || ctx.stage;
     const nextBtn = h('button.bq-btn', { type: 'button', onclick: () => BQ.goNext() }, 'التّالي');
@@ -534,11 +540,11 @@
 
   /* ================= أسطر عامّة (LINES_v7: bq7_G_*) ================= */
   I.lines({
-    bq7_G_yes1: 'نَعَم! هَذا هُوَ!', bq7_G_yes2: 'أَحْسَنْتَ!', bq7_G_yes3: 'رائِعٌ!', bq7_G_yes4: 'مُمْتازٌ!',
-    bq7_G_try: 'جَرِّب مَرَّةً أُخْرى.', bq7_G_listen_again: 'اِسْمَع مَرَّةً أُخْرى.', bq7_G_hint_start: 'اِسْمَع أَوَّلَ الكَلِمَةِ.',
+    bq7_G_yes1: 'نَعَم، هَذا هُوَ.', bq7_G_yes2: 'أَحْسَنْتَ.', bq7_G_yes3: 'رائِعٌ.', bq7_G_yes4: 'مُمْتازٌ.',
+    bq7_G_try: 'جَرِّب مَرَّةً أُخْرى.', bq7_G_listen_again: 'اِسْتَمِعْ مَرَّةً أُخْرَى.', bq7_G_hint_start: 'اِسْتَمِعْ إِلَى أَوَّلِ الْكَلِمَةِ.',
     bq7_G_hint_lips: 'الشَّفَتانِ تَلْتَقِيانِ، ثُمَّ تَنْفَتِحانِ: مَ.', bq7_G_look_light: 'اُنْظُر إِلى الضَّوْءِ.',
-    bq7_G_look_shape: 'اُنْظُر إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذا هُوَ. اِسْمَع مَعي:', bq7_G_next: 'هَيّا نُكْمِل.',
-    bq7_G_listen_choose: 'اِسْمَع، ثُمَّ اخْتَر.', bq7_G_your_turn: 'دَوْرُكَ!', bq7_G_end: 'أَحْسَنْتَ! أَنْهَيْتَ النَّشاطَ.',
+    bq7_G_look_shape: 'اُنْظُر إِلى شَكْلِ المِيمِ.', bq7_G_model: 'هَذَا هُوَ. اِسْتَمِعْ مَعِي:', bq7_G_next: 'هَيّا نُكْمِل.',
+    bq7_G_listen_choose: 'اِسْتَمِعْ، ثُمَّ اخْتَرْ.', bq7_G_your_turn: 'دَوْرُكَ.', bq7_G_end: 'أَحْسَنْتَ، أَنْهَيْتَ النَّشاطَ.',
   });
   /* ===== OWNER_R3 GLOBAL feedback ladder (binding, 2026-10-05) =====
      ✓ green + VARIED praise (never «شكراً») · ✗1 red mark on the chosen option + a motivating retry line, the child tries again ·
@@ -608,7 +614,7 @@
       if (o.modelLine) await S.say(o.modelLine);
       if (o.model) await o.model(picked);
       await S.sleep(200);
-      await S.say(I.solveL(), { talk: true });
+      await S.say(o.solveLine || I.solveL(), { talk: true });
     };
     return {
       get n() { return n; },
@@ -927,7 +933,8 @@
   // img8 is not indexed by data.js yet (PLATFORM): keys present on 2026-10-05 + BQ.D.img8 when PLATFORM adds it
   const IMG8 = new Set(('brq8_cheer brq8_front brq8_happy brq8_hi brq8_idle brq8_notebook brq8_point brq8_shy brq8_think brq8_wave brq8_wow ' +
     'b8_bariq_anchor d8_board_frame d8_island_bg d8_island_map d8_island_scene ' +
-    'm8_mouth_closed m8_mouth_a m8_mouth_i m8_mouth_u e05_majed_portrait e05_bariq_portrait').split(' '));
+    'm8_mouth_closed m8_mouth_a m8_mouth_i m8_mouth_u e05_majed_portrait e05_bariq_portrait ' +
+    'w8_muallim w8_muthallath').split(' ')); // SCI-1 T2: E03 word pictures by ART T5 (landed 2026-10-07 01:09)
   I.has8 = (k) => !!((D.img8 && D.img8[k]) || IMG8.has(k));
   I.src8 = (k) => (D.img8 && D.img8[k]) || 'media/img8/' + k + '.webp';
   const POSE8 = { idle: 'brq8_idle', wave: 'brq8_wave', hi: 'brq8_hi', talk: 'brq8_happy', happy: 'brq8_happy', cheer: 'brq8_cheer', clap: 'brq8_cheer',

@@ -220,8 +220,8 @@
         if (i) row.append(V8 ? X.i8('next', 'e08-arr8.x7-in') : h('span.e08-arrow.x7-in', { 'aria-hidden': 'true', html: ARROW }));
         const it = items[i];
         const b = V8
-          ? h('button.e08-link.bq8-tile.x7-in.is-wait' + (it.word ? '.bq8-tile--word' : '.bq8-tile--syll'), { type: 'button', 'aria-label': 'اِلْمِس وَاسْمَع' }, X.markMeem(it.text), X.i8('ear', 'e08-ear8'))
-          : h('button.e08-link.x7-in.is-wait', { type: 'button', 'aria-label': 'اِلْمِس وَاسْمَع' }, X.markMeem(it.text), h('span.e08-ear', { 'aria-hidden': 'true' }, X.icon('ear')));
+          ? h('button.e08-link.bq8-tile.x7-in.is-wait' + (it.word ? '.bq8-tile--word' : '.bq8-tile--syll'), { type: 'button', 'aria-label': 'اِخْتَرْ وَاسْتَمِعْ' }, X.markMeem(it.text), X.i8('ear', 'e08-ear8'))
+          : h('button.e08-link.x7-in.is-wait', { type: 'button', 'aria-label': 'اِخْتَرْ وَاسْتَمِعْ' }, X.markMeem(it.text), h('span.e08-ear', { 'aria-hidden': 'true' }, X.icon('ear')));
         row.append(b);
         await S.sleep(it.word ? 900 : 600); // وقت ليقرأ بصوته أوّلاً
         await new Promise((res) => {
@@ -250,7 +250,7 @@
       let slots, tray, slotEls;
       if (V8) {
         // v8: picture card (+ ear) · the word's place = dotted jigsaw slots (first = right, with the knob · last = left, with the socket)
-        const ear = X.btn8('ear', { size: 'sm', label: 'اِسْمَعِ الكَلِمَةَ', onclick: sayWord });
+        const ear = X.btn8('ear', { size: 'sm', label: 'اِسْتَمِعْ إِلَى الْكَلِمَةِ', onclick: sayWord });
         slots = h('div.bq8-puzzle.e08-slots8');
         slotEls = pcs.map((p, i) => h('div.bq8-piece.bq8-piece--slot.x7-8.' + (i === 0 ? 'bq8-piece--first' : 'bq8-piece--last'), { 'aria-label': 'خانَةٌ ' + X.AR(i + 1), dataset: { i } }));
         slots.append(...slotEls);
@@ -258,7 +258,7 @@
         tray = h('div.e08-tray8');
         body.append(tray);
       } else {
-        const ear = h('button.x7-ear', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ', onclick: sayWord }, X.icon('ear'));
+        const ear = h('button.x7-ear', { type: 'button', 'aria-label': 'اِسْتَمِعْ إِلَى الْكَلِمَةِ', onclick: sayWord }, X.icon('ear'));
         const card = h('div.e08-card.x7-in', null, X.pic(ctx, w.img));
         body.append(h('div.e08-pic-row', null, card, ear));
         slots = h('div.e08-slots');

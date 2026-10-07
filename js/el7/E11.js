@@ -19,6 +19,9 @@
    · السجلّ (الإتقان) = صواب المحاولة الأولى — لم يتغيّر. نقاط التقدّم في الشريط تمتلئ للصواب فقط.
    · «بأيّ حرف تبدأ؟»: صورة الكلمة فوق الخيارات، والحروف كلّها بلون واحد · «المس حرف الميم»: نصّ واحد مُشكَّل، وصندوق اللمس يُقاس على الحرف نفسه
      (Range.getClientRects)، والبطاقة تتّسع لكلّ الحركات · «وَالآنَ، وَحْدَكَ.» تُقال والبند ظاهر. */
+/* SCI-1 T3 (2026-10-07 · SCI_comments binding): renamed «اِخْتَبِرْ نَفْسَكَ» (title = T1) · S1 «أَيُّ الكَلِماتِ بِها صَوْتُ (مَ – مِ – مُ)؟ اِسْتَمِعْ، ثُمَّ اخْتَرْ.»
+   (bq7_E11_s1_q8) · S2 «اِخْتَرِ الصَّوْتَ الصَّحيحَ (مَ – مِ – مُ)» (s2_q8) · S3 redone: «اِسْتَمِعْ: حَرَكَةٌ قَصيرَةٌ أَمْ حَرَكَةٌ طَويلَةٌ؟» (s3_q8) with
+   letter+vowel cards (مُ/مو · مِ/مي · مَ/ما) · words that start with م · «مُثَلَّث» replaces «قَمَر» (S7 · S8 «اُكْتُبِ المِيمَ في الكَلِمَةِ: مُثَلَّث» s8_q8 · S6 retest). */
 (function () {
   'use strict';
   const ID = 'E11';
@@ -26,47 +29,50 @@
   /* مواصفة البنود: type pic | snd | txt | img | tapword | write | say · opts[0] = الصواب (يُخلط العرض) */
   const P = (k) => ({ pic: k });
   const ITEMS = {
-    S1: [{ type: 'pic', q: 'bq7_E11_s1_q', opts: ['numur', 'batta', 'kura'].map(P), announce: true },
-         { type: 'pic', q: 'bq7_E11_s1_q', opts: ['qamis', 'farasha', 'fil'].map(P), announce: true }],
-    S2: [{ type: 'snd', q: 'bq7_E11_s2_q', opts: ['مَ', 'بَ', 'فَ'], announce: true },
-         { type: 'snd', q: 'bq7_E11_s2_q', opts: ['مُ', 'نُ', 'بُ'], announce: true }],
-    S3: [{ type: 'img', q: 'bq7_E11_s3_q1', stim: 'bq7_S_muu', opts: ['glide', 'hop'] },
-         { type: 'snd', q: 'bq7_E11_s3_q2', opts: ['ما', 'مَ'], announce: true }],
+    // SCI-1 T3: words that START with م (SCI «أفضّل … الكلمات بها حرف الميم بالبداية») · «مُثَلَّث» replaces «قَمَر» everywhere in E11
+    S1: [{ type: 'pic', q: 'bq7_E11_s1_q8', opts: ['maktab', 'batta', 'kura'].map(P), announce: true },
+         { type: 'pic', q: 'bq7_E11_s1_q8', opts: ['muthallath', 'farasha', 'fil'].map(P), announce: true }],
+    S2: [{ type: 'snd', q: 'bq7_E11_s2_q8', opts: ['مَ', 'بَ', 'فَ'], announce: true },
+         { type: 'snd', q: 'bq7_E11_s2_q8', opts: ['مُ', 'نُ', 'بُ'], announce: true }],
+    // SCI-1 T3 «قصير أم طويل خطأ والتعبير عنها غير مناسب» → «حَرَكَةٌ قَصيرَةٌ أَمْ حَرَكَةٌ طَويلَةٌ؟»: the child hears a syllable and picks the
+    // written letter+vowel card that matches it (short «مُ» vs long «مو»); a dot (short) / a bar (long) under each card. opts[0] = the right card.
+    S3: [{ type: 'len', q: 'bq7_E11_s3_q8', stim: 'bq7_S_muu', opts: ['مُو', 'مُ'] },
+         { type: 'len', q: 'bq7_E11_s3_q8', stim: 'bq7_S_mi', opts: ['مِ', 'مِي'] }],
     S4: [{ type: 'brq', q: 'bq7_E05_puppet_intro', opts: ['bq7_E11_brq_miftah_ok', 'bq7_E11_brq_miftah_bad'] },
          { type: 'say', q: 'bq7_E11_s4_q2' }],
     S5: [{ type: 'txt', q: 'bq7_E11_s5_q1', stim: 'bq7_S_mi', opts: ['مِ', 'فِ', 'بِ'] },
          { type: 'txt', q: 'bq7_E11_s5_q2', opts: ['م', 'ب', 'ف'], pic: 'musht' }],
     S6: [{ type: 'tapword', q: 'bq7_E11_s6_q1', word: 'qamis', pic: 'qamis' },
          { type: 'form', q: 'bq7_E11_s6_q2', before: 'فَـ', word: 'fam', opts: ['ـم', 'مـ', 'ـمـ'], pic: 'fam' }],
-    S7: [{ type: 'read', q: 'bq7_E08_read_intro', word: 'mawz', opts: ['mawz', 'qamar', 'fam'].map(P) },
+    S7: [{ type: 'read', q: 'bq7_E08_read_intro', word: 'mawz', opts: ['mawz', 'muthallath', 'fam'].map(P) },
          { type: 'read', q: 'bq7_E08_read_intro', word: 'miftah', opts: ['miftah', 'musht', 'maktab'].map(P) }],
     S8: [{ type: 'write', q: 'bq7_E11_s8_q1', form: 'iso' },
-         { type: 'write', q: 'bq7_E11_s8_q2', form: 'med', before: 'قَـ', after: 'ـر', word: 'قَمَر', pic: 'qamar' }],
+         { type: 'write', q: 'bq7_E11_s8_q8', form: 'ini', after: 'ـثَلَّث', word: 'مُثَلَّث', pic: 'muthallath' }],
     S9: [{ type: 'pic', q: 'bq7_E11_s9_q1', opts: ['musht', 'miftah', 'manju'].map(P) },
          { type: 'pic', q: 'bq7_E11_s9_q2', opts: ['miftah', 'musht', 'mawz'].map(P) }],
   };
   /* المراجعة التكيّفية (SPEC: بارق يعيد · بندان تدريبيان · بند إعادة محايد) */
   const REVIEW = {
     S1: { teach: [{ line: 'bq7_E11_r_s1' }, { line: 'bq7_W_maktab_seg', pic: 'maktab' }, { line: 'bq7_W_musht_seg', pic: 'musht' }, { line: 'bq7_W_miftah_seg', pic: 'miftah' }],
-      practice: [{ type: 'pic', q: 'bq7_E03_intro', opts: ['miftah', 'fil'].map(P), announce: true }, { type: 'pic', q: 'bq7_E03_intro', opts: ['numur', 'batta'].map(P), announce: true }],
-      retest: { type: 'pic', q: 'bq7_E11_s1_q', opts: ['musht', 'kura', 'bab'].map(P), announce: true } },
+      practice: [{ type: 'pic', q: 'bq7_E11_s1_q8', opts: ['miftah', 'fil'].map(P), announce: true }, { type: 'pic', q: 'bq7_E11_s1_q8', opts: ['manju', 'batta'].map(P), announce: true }],
+      retest: { type: 'pic', q: 'bq7_E11_s1_q8', opts: ['musht', 'kura', 'bab'].map(P), announce: true } },
     S2: { teach: [{ line: 'bq7_E11_r_s2' }, { line: 'bq7_S_pair_mb', snd: ['مَ', 'بَ'] }, { line: 'bq7_S_pair_mf', snd: ['مَ', 'فَ'] }],
-      practice: [{ type: 'snd', q: 'bq7_E11_s2_q', opts: ['مِ', 'بِ'], announce: true }, { type: 'snd', q: 'bq7_E11_s2_q', opts: ['مُ', 'فُ'], announce: true }],
-      retest: { type: 'snd', q: 'bq7_E11_s2_q', opts: ['ما', 'با', 'فا'], announce: true } }, // كلّها طويلة، تختلف في الصامت وحده (R1b N4)
+      practice: [{ type: 'snd', q: 'bq7_E11_s2_q8', opts: ['مِ', 'بِ'], announce: true }, { type: 'snd', q: 'bq7_E11_s2_q8', opts: ['مُ', 'فُ'], announce: true }],
+      retest: { type: 'snd', q: 'bq7_E11_s2_q8', opts: ['ما', 'با', 'فا'], announce: true } }, // كلّها طويلة، تختلف في الصامت وحده (R1b N4)
     S3: { teach: [{ line: 'bq7_E11_r_s3', hopglide: true }, { line: 'bq7_S_pair_a', hopglide: true }, { line: 'bq7_S_pair_i', hopglide: true }, { line: 'bq7_S_pair_u', hopglide: true }],
-      practice: [{ type: 'img', q: 'bq7_E05_q_len', stim: 'bq7_S_mii', opts: ['glide', 'hop'] }, { type: 'img', q: 'bq7_E05_q_len', stim: 'bq7_S_mi', opts: ['hop', 'glide'] }],
-      retest: { type: 'img', q: 'bq7_E11_s3_q1', stim: 'bq7_S_maa', opts: ['glide', 'hop'] } },
+      practice: [{ type: 'len', q: 'bq7_E11_s3_q8', stim: 'bq7_S_mii', opts: ['مِي', 'مِ'] }, { type: 'len', q: 'bq7_E11_s3_q8', stim: 'bq7_S_ma', opts: ['مَ', 'مَا'] }],
+      retest: { type: 'len', q: 'bq7_E11_s3_q8', stim: 'bq7_S_maa', opts: ['مَا', 'مَ'] } },
     S4: { teach: [{ line: 'bq7_E11_r_s4', mouth: 'mouth_closed' }, { line: 'bq7_G_hint_lips', mouth: 'mouth_a' }, { line: 'bq7_S_chain_short', mouth: 'mouth_a', turn: true }, { line: 'bq7_S_chain_long', mouth: 'mouth_u', turn: true }],
       practice: [],
       retest: { type: 'brq', q: 'bq7_E05_puppet_intro', opts: ['bq7_E11_brq_qamis_ok', 'bq7_E11_brq_qamis_bad'] } },
     S5: { teach: [{ line: 'bq7_E11_r_s5', glyph: 'م' }],
-      practice: [{ type: 'txt', q: 'bq7_G_listen_choose', stim: 'bq7_S_ma', opts: ['مَ', 'بَ', 'فَ'] }, { type: 'txt', q: 'bq7_G_listen_choose', stim: 'bq7_S_muu', opts: ['مو', 'بو', 'فو'] }], // تختلف في الصامت وحده (R1b N4)
-      retest: { type: 'txt', q: 'bq7_E11_s5_q1', stim: 'bq7_S_mii', opts: ['مي', 'في', 'بي'] } },
+      practice: [{ type: 'txt', q: 'bq7_G_listen_choose', stim: 'bq7_S_ma', opts: ['مَ', 'بَ', 'فَ'] }, { type: 'txt', q: 'bq7_G_listen_choose', stim: 'bq7_S_muu', opts: ['مُو', 'بُو', 'فُو'] }], // تختلف في الصامت وحده (R1b N4) · SCI-1: full tashkeel incl. long vowels
+      retest: { type: 'txt', q: 'bq7_E11_s5_q1', stim: 'bq7_S_mii', opts: ['مِي', 'فِي', 'بِي'] } },
     S6: { teach: [{ line: 'bq7_E11_r_s6', words: ['maktab', 'numur', 'qalam'] }],
       practice: [{ type: 'tapword', q: 'bq7_E08_b_intro', word: 'mawz', say: true }, { type: 'tapword', q: 'bq7_E08_b_intro', word: 'qalam', say: true }],
-      retest: { type: 'tapword', q: 'bq7_E11_retest', word: 'qamar', say: true } },
+      retest: { type: 'tapword', q: 'bq7_E11_retest', word: 'muthallath', say: true } },
     S7: { teach: [{ line: 'bq7_E11_r_s7', chain: ['مَ', 'ما', 'مانْجو'] }],
-      practice: [{ type: 'read', q: 'bq7_E08_read_intro', word: 'musht', opts: ['musht', 'miftah', 'maktab'].map(P) }, { type: 'read', q: 'bq7_E08_read_intro', word: 'qamar', opts: ['qamar', 'fam', 'qalam'].map(P) }],
+      practice: [{ type: 'read', q: 'bq7_E08_read_intro', word: 'musht', opts: ['musht', 'miftah', 'maktab'].map(P) }, { type: 'read', q: 'bq7_E08_read_intro', word: 'muthallath', opts: ['muthallath', 'fam', 'qalam'].map(P) }],
       retest: { type: 'read', q: 'bq7_E08_read_intro', word: 'maktab', opts: ['maktab', 'musht', 'miftah'].map(P) } },
     S8: { teach: [{ line: 'bq7_E11_r_s8' }],
       practice: [{ type: 'trace', q: 'bq7_E09_trace' }, { type: 'trace', q: 'bq7_E09_trace' }],
@@ -273,6 +279,11 @@
 .x7p.e11 .e11-picq { width: calc(var(--u)*200); cursor: pointer; }
 .x7p.e11 .e11-plain { color: var(--bq8-navy); }
 .bq8-stage .e11-flystar { width: 64px; height: 64px; }
+/* SCI-1 T3 · short / long vowel (S3): written letter+vowel card + length cue under it */
+.x7p.e11 .e11-lenopt { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u)*16); padding: calc(var(--u)*14) calc(var(--u)*14) calc(var(--u)*22); border-radius: calc(var(--u)*38); background: rgba(255,255,255,.55); }
+.x7p.e11 .e11-lenopt .bq8-tile { --w: calc(var(--u)*200); --fs: .5; cursor: pointer; }
+.x7p.e11 .e11-lenopt .e11-len { margin: 0; height: calc(var(--u)*26); }
+.x7p.e11 .e11-lenopt .e11-len.is-short { width: calc(var(--u)*26); } .x7p.e11 .e11-lenopt .e11-len.is-long { width: calc(var(--u)*150); }
 @media (prefers-reduced-motion: reduce) { .x7p.e11 .e11-opt, .x7p.e11 .e11-ri { transition: none; } .x7p.e11 .e11-spk::before, .x7p.e11 .e11-spk::after { animation: none !important; } }
 `;
   /* shared by v7 and v8: feedback ladder marks, glow, shake, flying star, measured tap-word boxes, HUD dots */
@@ -293,6 +304,9 @@
 .e11-wrow { display: flex; direction: rtl; align-items: center; justify-content: center; gap: 24px; width: 100%; }
 .x7-wp.is-no { box-shadow: 0 0 0 6px #E53935 !important; } .x7-wp.is-solved { box-shadow: 0 0 0 6px #22C27A !important; }
 .e11-picq { cursor: pointer; }
+.e11-lenopt { flex-direction: column; gap: 8px; }
+.e11:not(.x7p) .e11-lenopt .e11-len { display: block; height: 14px; border-radius: 99px; background: var(--navy); }
+.e11:not(.x7p) .e11-lenopt .e11-len.is-short { width: 14px; } .e11:not(.x7p) .e11-lenopt .e11-len.is-long { width: 80px; }
 .e11-shake { animation: e11Shake .42s ease; }
 @keyframes e11Shake { 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
 @keyframes e11Pop { from { transform: scale(.2); opacity: 0; } }
@@ -377,8 +391,8 @@
     function wordPicEl(key, isBusy) {
       if (!key || !W[key]) return null;
       const el = V8
-        ? h('div.bq8-card.bq8-card--sm.e11-wordpic.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' }, h('img', { src: ctx.img(W[key].img), alt: '', draggable: 'false' }))
-        : h('div.e11-card.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' }, X.pic(ctx, W[key].img));
+        ? h('div.bq8-card.bq8-card--sm.e11-wordpic.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِعْ إِلَى الْكَلِمَةِ' }, h('img', { src: X.wimg(ctx, key), alt: '', draggable: 'false' }))
+        : h('div.e11-card.e11-picq.x7-in', { role: 'button', tabindex: '0', 'aria-label': 'اِسْتَمِعْ إِلَى الْكَلِمَةِ' }, X.pic(ctx, W[key].img));
       el.addEventListener('click', () => { if (!isBusy()) S.say(X.wordId(key), { stim: true }); });
       return el;
     }
@@ -451,9 +465,9 @@
         if (it.type === 'read') body.append(h('div.e11-word.bq8-tile.bq8-tile--word.x7-in', null, X.markMeem(W[it.word].t)));
         if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('div.bq8-tile.bq8-tile--syll', null, X.markMeem(it.before)), h('div.e11-blank', { 'aria-hidden': 'true' }, '?'), wordPic ? h('span.e11-formgap', { 'aria-hidden': 'true' }) : null, wordPic));
         // «I say the word twice»: the picture of the word Bariq says sits above his two numbered cards
-        if (it.type === 'brq') { const wk = brqWord(it); if (wk) body.append(h('div.bq8-card.bq8-card--sm.e11-wordpic.x7-in', { 'aria-hidden': 'true' }, h('img', { src: ctx.img(W[wk].img), alt: '', draggable: 'false' }))); }
+        if (it.type === 'brq') { const wk = brqWord(it); if (wk) body.append(h('div.bq8-card.bq8-card--sm.e11-wordpic.x7-in', { 'aria-hidden': 'true' }, h('img', { src: X.wimg(ctx, wk), alt: '', draggable: 'false' }))); }
         // the sound to judge (S3 short/long · S5) is a big replay sticker above the options
-        if (it.stim && it.type !== 'tapword') body.append(h('div.e11-stim.x7-in', null, X.btn8('listen', { size: 'lg', label: 'اِسْمَعِ الصَّوْتَ', cls: 'e11-stimbtn', onclick: () => { if (!asking && !busy) S.say(it.stim, { stim: true }); } })));
+        if (it.stim && it.type !== 'tapword') body.append(h('div.e11-stim.x7-in', null, X.btn8('listen', { size: 'lg', label: 'اِسْتَمِعْ إِلَى الصَّوْتِ', cls: 'e11-stimbtn', onclick: () => { if (!asking && !busy) S.say(it.stim, { stim: true }); } })));
       } else {
         if (it.type === 'read') body.append(h('div.e11-word.x7-w.x7-in', null, X.markMeem(W[it.word].t)));
         if (it.type === 'form') body.append(h('div.e11-form.x7-in', null, h('span.x7-w', null, it.before), h('div.e11-blank', null, h('span.x7-w', null, '?'))));
@@ -534,7 +548,7 @@
           if (au && (it.announce || it.type === 'brq')) X.replayable(b, () => replayOne(b, au), { ear: b.querySelector('.e11-ear8'), canPlay: () => !asking && !replaying && !busy, holdMs: 800, onHeld: () => { if (!busy && !asking) tapHint(b); } });
         });
         // written letters/forms: every glyph (with its harakat) must fit inside its tile
-        if (it.type === 'txt' || it.type === 'form') { const fit = () => btns.forEach((b) => { const t = b.querySelector('.x7-w'); if (t) X.fitInk(t, b, { shrink: true }); }); fit(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit); }
+        if (it.type === 'txt' || it.type === 'form' || it.type === 'len') { const fit = () => btns.forEach((b) => { const t = b.querySelector('.x7-w'); if (t) X.fitInk(t, b.querySelector('.e11-lentile') || b, { shrink: true }); }); fit(); requestAnimationFrame(fit); setTimeout(fit, 150); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit); } // re-fit after the global tashkeel pass (nosukun.js observer) may change the text
       }
       const ck = it.type === 'tapword' ? 'm' : correctKey;
       if (window.BQ_QA) wrapOpts.dataset.ck = ck; // للاختبار الآليّ فقط
@@ -623,7 +637,7 @@
     }
     function hintOf(it) {
       if (it.type === 'pic' && it.announce) return X.G.hintStart;
-      if (it.type === 'snd' || it.type === 'img') return X.G.listen;
+      if (it.type === 'snd' || it.type === 'img' || it.type === 'len') return X.G.listen;
       if (it.type === 'tapword' || it.type === 'form') return X.G.shape;
       return null; // Bariq's «حاوِلْ مَرَّةً أُخْرى!» already said it — no second try line
     }
@@ -636,7 +650,7 @@
       if (it.type === 'tapword') { await S.say(X.pick(ctx, [X.segId(it.word), X.wordId(it.word)]), { stim: true }); return S.say(X.G.pos[W[it.word].pos]); }
       if (it.type === 'form' && it.word) return S.say(X.G.pos[W[it.word].pos]);
       if (it.type === 'brq') return S.say(k0, { stim: true });
-      if (it.type === 'img' && it.stim) return S.say(it.stim, { stim: true });
+      if ((it.type === 'img' || it.type === 'len') && it.stim) return S.say(it.stim, { stim: true });
       if (it.type === 'txt' && it.pic) return S.say(X.pick(ctx, [X.segId(it.pic), X.wordId(it.pic)]), { stim: true });
       if (it.type === 'snd' || it.type === 'txt') { const a = X.sylId(k0); return a ? S.say(a, { stim: true }) : (it.stim ? S.say(it.stim, { stim: true }) : null); }
       return null;
@@ -647,17 +661,18 @@
       if (it.type === 'pic' || it.type === 'read') return h('button.e11-opt.e11-card.x7-in', { type: 'button', 'aria-label': aria }, X.pic(ctx, W[o.pic].img));
       if (it.type === 'snd') return h('button.e11-opt.e11-snd.x7-in', { type: 'button', 'aria-label': aria, dataset: { c: n % SND_COL.length } }, X.icon('speaker'));
       if (it.type === 'txt' || it.type === 'form') return h('button.e11-opt.e11-txt.x7-in', { type: 'button', 'aria-label': aria }, h('span.x7-w', null, o));
-      if (it.type === 'img') return h('button.e11-opt.e11-imgopt.x7-in', { type: 'button', 'aria-label': o === 'hop' ? 'قَصيرٌ' : 'طَويلٌ' }, h('img', { src: ctx.img(o === 'hop' ? 'bariq_hop' : 'bariq_glide'), alt: '', draggable: 'false' }));
+      if (it.type === 'len') return h('button.e11-opt.e11-txt.e11-lenopt.x7-in', { type: 'button', 'aria-label': X.bare(o).length > 1 ? 'حَرَكَةٌ طَويلَةٌ' : 'حَرَكَةٌ قَصيرَةٌ' }, h('span.x7-w', null, o), h('span.e11-len' + (X.bare(o).length > 1 ? '.is-long' : '.is-short'), { 'aria-hidden': 'true' }));
+      if (it.type === 'img') return h('button.e11-opt.e11-imgopt.x7-in', { type: 'button', 'aria-label': o === 'hop' ? 'حَرَكَةٌ قَصِيرَةٌ' : 'حَرَكَةٌ طَوِيلَةٌ' }, h('img', { src: ctx.img(o === 'hop' ? 'bariq_hop' : 'bariq_glide'), alt: '', draggable: 'false' }));
       if (it.type === 'brq') return h('button.e11-opt.x7-in', { type: 'button', 'aria-label': aria }, h('span.e11-brqbtn', null, X.brq(n ? 'think' : 'talk'), h('span.e11-n', null, X.icon('speaker'))));
       return h('button.e11-opt', { type: 'button' }, String(o));
     }
 
     /** v8 options. Cards are div[role=button] so the ear chip inside can be a real button. */
-    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْمَع مَرَّةً أُخْرى' }, X.i8('ear'))); }
+    function ear8() { return h('span.bq8-card__ear', null, h('button.bq8-btn.bq8-btn--sm.bq8-btn--ear.e11-ear8', { type: 'button', 'aria-label': 'اِسْتَمِعْ مَرَّةً أُخْرَى' }, X.i8('ear'))); }
     function optEl8(it, o, n, aria) {
       const card = (cls, kids) => h('div.e11-opt.x7-in' + cls, { role: 'button', tabindex: '0', 'aria-label': aria }, kids);
       if (it.type === 'pic' || it.type === 'read') {
-        const kids = [h('img', { src: ctx.img(W[o.pic].img), alt: '', draggable: 'false' })];
+        const kids = [h('img', { src: X.wimg(ctx, o.pic), alt: '', draggable: 'false' })];
         if (it.type === 'pic' && it.announce) kids.push(ear8()); // only options that are heard can be heard again (S7 reading and S9 stay silent)
         return card('.bq8-card', kids);
       }
@@ -669,8 +684,10 @@
         return c;
       }
       if (it.type === 'img') return card('.bq8-card', [h('img', { src: ctx.img(o === 'hop' ? 'bariq_hop' : 'bariq_glide'), alt: '', draggable: 'false', style: { objectFit: 'contain', background: '#EAF6FF' } }), h('span.e11-len' + (o === 'hop' ? '.is-short' : '.is-long'), { 'aria-hidden': 'true' })]);
+      // SCI-1 T3 short/long: the written letter+vowel card (one colour, never the answer coloured) + a dot (short) / a bar (long) under it
+      if (it.type === 'len') { const lg = X.bare(o).length > 1; return card('.e11-lenopt', [h('span.bq8-tile.bq8-tile--syll.e11-lentile', null, X.kas(h('span.x7-w.e11-plain', { lang: 'ar' }, o))), h('span.e11-len' + (lg ? '.is-long' : '.is-short'), { 'aria-hidden': 'true' })]); }
       // owner E11_d: every letter choice in the SAME colour — the answer is never coloured
-      if (it.type === 'txt' || it.type === 'form') return card('.bq8-tile.bq8-tile--syll', [h('span.x7-w.e11-plain', { lang: 'ar' }, o)]);
+      if (it.type === 'txt' || it.type === 'form') return card('.bq8-tile.bq8-tile--syll', [X.kas(h('span.x7-w.e11-plain', { lang: 'ar' }, o))]);
       return card('', [String(o)]);
     }
 
@@ -802,7 +819,7 @@
       buddy.mood('talk', 1500);
       for (const t of R.teach) {
         box.replaceChildren();
-        if (t.pic) box.append(V8 ? h('div.bq8-card.e11-wordpic.bq8-pop', null, h('img', { src: ctx.img(W[t.pic].img), alt: '' })) : h('div.e11-card', null, X.pic(ctx, W[t.pic].img)));
+        if (t.pic) box.append(V8 ? h('div.bq8-card.e11-wordpic.bq8-pop', null, h('img', { src: X.wimg(ctx, t.pic), alt: '' })) : h('div.e11-card', null, X.pic(ctx, W[t.pic].img)));
         if (t.ctxImg) box.append(h('div.e11-ctx', null, h('img', { src: ctx.img(t.ctxImg), alt: '', draggable: 'false' })));
         if (t.mouth) box.append(h('div.e11-mouth', null, h('img', { src: ctx.img(t.mouth), alt: '', draggable: 'false' })));
         if (t.glyph) box.append(h('div.e11-big', { 'aria-hidden': 'true' }, t.glyph));
@@ -839,7 +856,7 @@
     async function finish(all) {
       ctx.done();
       note();
-      X.end(ctx, S, { title: all ? 'أَحْسَنْتَ!' : 'تَعَلَّمْتَ كَثيرًا!' });
+      X.end(ctx, S, { title: all ? 'أَحْسَنْتَ.' : 'تَعَلَّمْتَ كَثيرًا.' });
     }
 
     /* ================= دليل المعلّم: النتيجة لكلّ مهارة ================= */

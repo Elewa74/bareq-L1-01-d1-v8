@@ -62,7 +62,7 @@
         const b = h('button.v7-eq-pick', { type: 'button', 'aria-label': o.aria || o.glyph || o.label || ('الخِيارُ ' + BQ.AR(i + 1)), dataset: { id: o.id } }, vis,
           h('span.bq-tick', { 'aria-hidden': 'true', html: BQ.icons.check }), h('span.v7-eq-x', { 'aria-hidden': 'true' }, '✕'));
         b.addEventListener('click', () => pick(o, b));
-        const ear = o.audio ? h('button.v7-eq-ear', { type: 'button', 'aria-label': 'اسْمَعْ', onclick: (e) => { e.stopPropagation(); BQ.audio.unlock(); hear(o, b); } }, BQ.icon('ear')) : null;
+        const ear = o.audio ? h('button.v7-eq-ear', { type: 'button', 'aria-label': 'اِسْتَمِعْ', onclick: (e) => { e.stopPropagation(); BQ.audio.unlock(); hear(o, b); } }, BQ.icon('ear')) : null;
         picks.push(b);
         row.append(h('div.v7-eq-opt', null, ear, b));
       });

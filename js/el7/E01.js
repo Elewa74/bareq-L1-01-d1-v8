@@ -3,7 +3,11 @@
    1 بارق: bq7_E01_hello · 2 bq7_E01_intro ← ٤ بطاقات تظهر واحدة واحدة وكلّ منها تُسمَع (مَكْتَبْ · مانْجو · مُشْطْ · مِفْتاحْ)
    3 bq7_E01_tap (لمس البطاقة يعيدها — اختياري) · 4 bq7_E01_question ← bq7_G_listen_choose ← ٣ أزرار صوت (مَ ✓ · بَ · فَ؛ مخلوطة؛ كلّ زرّ يضيء وهو يُسمَع؛ اللمس يُسمِع ثم يُحكم)
    ✓ G_yes1 + E01_ok (البطاقات تضيء بالتتابع) · ✗١ E01_hint1 + الكلمات الأربع مقطّعة (_seg) · ✗٢ يخفت زرّ خاطئ + G_look_light · ③ E01_model · 5 E01_bridge.
-   لا رمز ولا اسم حرف ولا نصّ على شاشة الطفل (DECISIONS ب، ج). الشكل: بطاقة اللعبة الذهبية كما في «تهيّأ» الأصليّ. record('S1', ok1). */
+   لا رمز ولا اسم حرف ولا نصّ على شاشة الطفل (DECISIONS ب، ج). الشكل: بطاقة اللعبة الذهبية كما في «تهيّأ» الأصليّ. record('S1', ok1).
+   SCI-1 T2 (2026-10-07, sci comment «أي فقاعة فيها صوت الميم → اختر الصوت الصحيح (مَ – مِ – مُ)»; draft_unapproved):
+   السؤال الجديد bq7_E01_q_s1 «بِأَيِّ صَوْتٍ تَبْدَأُ الكَلِماتُ؟ اِسْتَمِع، ثُمَّ اخْتَرِ الصَّوْتَ الصَّحيحَ.» · الأزرار الثلاثة (سمّاعة فقط — قرار المالك)
+   تُسمِع سلاسل: مَ… مِ… مُ ✓ (S_chain_short) · بَ… بِ… بُ (S_chain_b) · فَ… فِ… فُ (S_chain_f) — لأنّ الكلمات تبدأ بـ مَ/ما/مُ/مِ لا بـ «مَ» وحدها.
+   لا «المس»: bq7_E01_tap_s1 «اِخْتَر أَيَّ صورَةٍ، وَاسْتَمِع إِلَيْها.» */
 (function () {
   'use strict';
   const ID = 'E01';
@@ -77,14 +81,15 @@
     const S = I.session(ctx, { noText: true });
     const V8 = I.v8();
     I.lines({
-      bq7_E01_hello: 'مَرْحَبًا! أَنا بارِقٌ.', bq7_E01_intro: 'اِسْمَع هَذِهِ الكَلِماتِ.', bq7_E01_tap: 'اِلْمِس كُلَّ صورَةٍ، وَاسْمَع.',
-      bq7_E01_question: 'ما الصَّوْتُ الَّذي يَتَكَرَّرُ؟', bq7_E01_ok: 'نَعَم! سَمِعْناهُ في كُلِّ كَلِمَةٍ: مَ… ما… مُ… مِ.',
-      bq7_E01_hint1: 'اِسْمَع أَوَّلَ كُلِّ كَلِمَةٍ.', bq7_E01_model: 'هَذا هُوَ: مَ. مَكْتَب، مانْجو، مُشْط، مِفْتاح.', bq7_E01_bridge: 'هَيّا نَبْحَث عَن هَذا الصَّوْتِ!',
+      bq7_E01_hello: 'مَرْحَبًا، أَنا بارِقٌ.', bq7_E01_intro: 'اِسْتَمِعْ إِلَى هَذِهِ الْكَلِمَاتِ.', bq7_E01_tap_s1: 'اِخْتَر أَيَّ صورَةٍ، وَاسْتَمِع إِلَيْها.',
+      bq7_E01_q_s1: 'بِأَيِّ صَوْتٍ تَبْدَأُ الكَلِماتُ؟ اِسْتَمِع، ثُمَّ اخْتَرِ الصَّوْتَ الصَّحيحَ.', bq7_E01_ok: 'نَعَم، سَمِعْناهُ في كُلِّ كَلِمَةٍ: مَ… ما… مُ… مِ.',
+      bq7_E01_hint1: 'اِسْتَمِعْ إِلَى أَوَّلِ كُلِّ كَلِمَةٍ.', bq7_E01_model: 'هَذَا هُوَ: مَ – مِ – مُ. مَكْتَب، مَانْجُو، مُشْط، مِفْتَاح.', bq7_E01_bridge: 'هَيّا نَبْحَث عَن هَذا الصَّوْتِ.',
     });
-    const L = { hello: 'bq7_E01_hello', intro: 'bq7_E01_intro', tap: 'bq7_E01_tap', q: 'bq7_E01_question', choose: 'bq7_G_listen_choose',
+    const L = { hello: 'bq7_E01_hello', intro: 'bq7_E01_intro', tap: 'bq7_E01_tap_s1', q: 'bq7_E01_q_s1',
       ok: 'bq7_E01_ok', hint1: 'bq7_E01_hint1', model: 'bq7_E01_model', bridge: 'bq7_E01_bridge' };
     const WORDS = ['maktab', 'manju', 'musht', 'miftah'];
-    const OPTS = [{ key: 'm', id: 'bq7_S_ma', c: 1 }, { key: 'b', id: 'bq7_S_ba', c: 2 }, { key: 'f', id: 'bq7_S_fa', c: 3 }];
+    // SCI-1 T2: each sound button plays the sound family (مَ… مِ… مُ ✓ · بَ… بِ… بُ · فَ… فِ… فُ) — composed from the approved syllable clips
+    const OPTS = [{ key: 'm', id: 'bq7_S_chain_short', c: 1 }, { key: 'b', id: 'bq7_S_chain_b', c: 2 }, { key: 'f', id: 'bq7_S_chain_f', c: 3 }];
 
     const f8 = V8 ? I.frame8(S, 'e01-8', { scene: true, pose: 'wave', stageCls: 'e01s' }) : null;
     const root = V8 ? f8.panel : I.root(stage, 'e01');
@@ -116,16 +121,16 @@
       await S.sleep(200);
       for (const b of btns) { if (I.isNo(b)) continue; await I.playOn(S, b, b.sid); await S.sleep(420); }
     };
-    const ask = async () => { buddy.set('point', 1500); await S.say(L.q); await S.say(L.choose); await playOpts(); };
+    const ask = async () => { buddy.set('point', 1500); await S.say(L.q); await playOpts(); };
     earAll.addEventListener('click', async () => { if (busy || phase !== 'q') return; busy = true; await playOpts(); busy = false; });
     I.instr(S, L.intro, 'ear', async () => { if (busy) return; busy = true; if (phase === 'q') await ask(); else await S.say(L.tap); busy = false; });
 
     let first = null;
     const pol = I.policy(S, {
-      opts: btns, right, modelLine: L.model, next: false,
+      opts: btns, right, next: false,
       async hint1() { await S.say(L.hint1); for (const c of cards) { c.classList.add('is-play'); await S.stim(I.segId(c.slug)); c.classList.remove('is-play'); await S.sleep(380); } await S.sleep(200); await playOpts(); },
       async hint2() { await playOpts(); },
-      async model() { const r = right(); await I.playOn(S, r, r.sid); },
+      async model() { const r = right(); await I.playOn(S, r, r.sid); await S.sleep(300); for (const c of cards.slice(0, 2)) { c.classList.add('is-play'); await S.stim(I.segId(c.slug)); c.classList.remove('is-play'); await S.sleep(250); } },
     });
 
     btns.forEach((b) => b.addEventListener('click', async () => {
@@ -151,7 +156,7 @@
 
     async function finish() {
       phase = 'end';
-      I.note(S, '<p><b>نتيجة «تهيّأ للدرس» (S1):</b> ' + (first ? 'اختار «مَ» من المحاولة الأولى.' : pol.n >= 3 ? 'رأى النموذج بعد محاولتين — أعِد معه «اسمع واكتشف».' : 'اختاره بعد تلميح.') + ' (قرينة للمعلّم؛ الإتقان يُقرَّر في «تحقّق من تقدّمي».)</p>');
+      I.note(S, '<p><b>نتيجة «تهيّأ للدرس» (S1):</b> ' + (first ? 'اختار «مَ… مِ… مُ» من المحاولة الأولى.' : pol.n >= 3 ? 'رأى النموذج بعد محاولتين — أعِد معه «اسمع واكتشف».' : 'اختاره بعد تلميح.') + ' (قرينة للمعلّم؛ الإتقان يُقرَّر في «تحقّق من تقدّمي».)</p>');
       buddy.set('cheer');
       await S.say(L.bridge, { talk: true });
       I.finish(S, { pose: 'cheer' });

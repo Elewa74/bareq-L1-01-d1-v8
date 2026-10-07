@@ -1,6 +1,8 @@
 /* E10 «اِلْعَبْ» · v8 concept C «مِصْباحُ بارِقٍ» (warm evening) · three.js game · draft_unapproved · design: v7/game8/GDD_C_v8.md
    World: Blender scene authored by GPT/Codex on the owner's PC (g9_blender/build_c.py) → env.glb · props.glb · bariq.glb (meshopt + webp).
-   Level 1 «حَقيبَةُ ماجِدٍ»: tap a glowing closed place → the camera glides there, it opens → tap what STARTS with the sound of meem «مَ… مِ… مُ» (DECISIONS_v7 D-E10c-W) → into Majed's backpack.
+   Level 1 «حَقيبَةُ ماجِدٍ»: tap a glowing closed place → the camera glides there, it opens → tap what STARTS with the sound of meem «مَ – مِ – مُ» (DECISIONS_v7 D-E10c-W) → into Majed's backpack.
+   SCI-1 (scientific team 2026-10-07): task «اِبْحَثْ عَمّا يَبْدَأُ بِصَوْتِ المِيمِ: مَ – مِ – مُ», «اِخْتَرْ» (never «اِلْمِسْ»); every find → word chip with ITS first syllable
+   coloured + Bariq «مِفْتاح… يَبْدَأُ بِـ مِ» / «مُشْط… مُ» / «مَوْز، مَكْتَب… مَ» / «مانْجو… ما»; level 2 the same after each lock (مَوْز مُشْط; قَمَر فَم = where the م sits).
    Level 2 «سِرُّ الصُّنْدوقِ»: the treasure box on the bookcase; 4 «أَكْمِلِ الكَلِمَةَ» locks (S5 مَوْز مُشْط · S6 قَمَر فَم), letters in HTML on the brass plates.
    Ladder (OWNER_R3 GLOBAL): name first · ✓ green + praise + star · ✗1 red ✗ + retry line · ✗2 Bariq lights the answer + encouraging line ·
    middle/last-م (قَلَم قَميص قَمَر) = gold «heard it» + word chip with the م coloured in its place, never red, not counted.
@@ -10,18 +12,21 @@ import { GLTFLoader } from './vendor/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from './vendor/jsm/loaders/DRACOLoader.js';
 import { MeshoptDecoder } from './vendor/jsm/libs/meshopt_decoder.module.js';
 
-export const VERSION = 'g9-c2r';
+export const VERSION = 'g9-sci1';
 export function supported() {
   try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; }
 }
 
 /* ------------------------------------------------------------------ content (GDD §3) */
+/* SCI-1 (scientific team 2026-10-07): every target is praised with ITS OWN first syllable — Bariq «مِفْتاح… يَبْدَأُ بِـ مِ» (first: line id,
+   m/n = the coloured syllable on the word chip: letter index + letters, «مَا» of مَانْجُو = 2 letters). Words in full tashkeel, no final sukun. */
 const ITEMS = {
-  mawz: { role: 'target', word: 'مَوْز' }, manju: { role: 'target', word: 'مانْجو' }, tuffaha: { role: 'none', word: 'تُفّاحَة' },
-  miftah: { role: 'target', word: 'مِفْتاح' }, qalam: { role: 'mid', pos: 'last', word: 'قَلَم', m: 2 },
-  musht: { role: 'target', word: 'مُشْط' }, kura: { role: 'none', word: 'كُرَة' },
-  qamis: { role: 'mid', pos: 'mid', word: 'قَميص', m: 1 }, qamar: { role: 'mid', pos: 'mid', word: 'قَمَر', m: 1 },
-  maktab: { role: 'target', word: 'مَكْتَب' }, kitab: { role: 'none', word: 'كِتاب' },
+  mawz: { role: 'target', word: 'مَوْز', m: 0, n: 1, first: 'bq7_E10c_first_mawz' }, manju: { role: 'target', word: 'مَانْجُو', m: 0, n: 2, first: 'bq7_E10c_first_manju' },
+  tuffaha: { role: 'none', word: 'تُفَّاحَة' },
+  miftah: { role: 'target', word: 'مِفْتَاح', m: 0, n: 1, first: 'bq7_E10c_first_miftah' }, qalam: { role: 'mid', pos: 'last', word: 'قَلَم', m: 2 },
+  musht: { role: 'target', word: 'مُشْط', m: 0, n: 1, first: 'bq7_E10c_first_musht' }, kura: { role: 'none', word: 'كُرَة' },
+  qamis: { role: 'mid', pos: 'mid', word: 'قَمِيص', m: 1 }, qamar: { role: 'mid', pos: 'mid', word: 'قَمَر', m: 1 },
+  maktab: { role: 'target', word: 'مَكْتَب', m: 0, n: 1, first: 'bq7_E10c_first_maktab' }, kitab: { role: 'none', word: 'كِتَاب' },
 };
 const PLACES = {
   lunchbag: { cam: 'CAM_lunchbag', opens: ['ANIM_lunchbag_flap'], items: ['mawz', 'manju', 'tuffaha'], target: 'manju', demo: 'mawz' },
@@ -32,14 +37,14 @@ const PLACES = {
 };
 const FINAL = { cam: 'CAM_final', items: ['maktab', 'kitab'], target: 'maktab' };
 const WORDS = [ // level 2 = SPEC §E10 round 2 (approved «أَكْمِلِ الكَلِمَةَ»), now the 4 locks of Majed's box
-  { s: 'mawz', word: 'مَوْز', m: 0, parts: ['#', 'ـوْز'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5' },
-  { s: 'musht', word: 'مُشْط', m: 0, parts: ['#', 'ـشْط'], right: 'مُـ', wrong: ['بُـ', 'فُـ'], skill: 'S5' },
-  { s: 'qamar', word: 'قَمَر', m: 1, parts: ['قَـ', '#', 'ـر'], right: 'ـمَـ', wrong: ['ـبَـ', 'ـفَـ'], skill: 'S6' },
-  { s: 'fam', word: 'فَم', m: 1, parts: ['فَـ', '#'], right: 'ـم', wrong: ['ـب', 'ـف'], skill: 'S6' },
+  { s: 'mawz', word: 'مَوْز', m: 0, parts: ['#', 'ـوْز'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5', after: 'bq7_E10c_first_mawz' }, // SCI-1: Bariq names the piece's sound
+  { s: 'musht', word: 'مُشْط', m: 0, parts: ['#', 'ـشْط'], right: 'مُـ', wrong: ['بُـ', 'فُـ'], skill: 'S5', after: 'bq7_E10c_first_musht' },
+  { s: 'qamar', word: 'قَمَر', m: 1, parts: ['قَـ', '#', 'ـر'], right: 'ـمَـ', wrong: ['ـبَـ', 'ـفَـ'], skill: 'S6', after: 'bq7_G_pos_mid' },
+  { s: 'fam', word: 'فَم', m: 1, parts: ['فَـ', '#'], right: 'ـم', wrong: ['ـب', 'ـف'], skill: 'S6', after: 'bq7_G_pos_last' },
 ];
 const L = {
-  intro: 'bq7_E10c_intro', light: 'bq7_E10c_light', rule: 'bq7_E10c_rule', demo: 'bq7_E10_demo', turn: 'bq7_E10c_turn',
-  pickThing: 'bq7_E10c_pick_thing', pickPlace: 'bq7_E10c_pick_place', bag: 'bq7_E10c_bag', midYes: 'bq7_E10c_mid_yes', midRule: 'bq7_E10c_mid_rule',
+  intro: 'bq7_E10c_intro', light: 'bq7_E10c_light', rule: 'bq7_E10c_rule', demo: 'bq7_E10c_first_mawz', turn: 'bq7_E10c_turn',
+  pickThing: 'bq7_E10c_pick_syl', pickPlace: 'bq7_E10c_pick_place', bag: 'bq7_E10c_bag', midYes: 'bq7_E10c_mid_yes', midRule: 'bq7_E10c_mid_rule',
   help: 'bq7_E10c_help', final: 'bq7_E10c_final', deskOk: 'bq7_E10c_desk_ok', l2: 'bq7_E10c_l2_intro', r2task: 'bq7_E10_r2_task',
   boxOpen: 'bq7_E10c_box_open', winMaj: 'bq7_E10c_win_maj', winBrq: 'bq7_E10c_win_brq', hintStart: 'bq7_G_hint_start', shape: 'bq7_G_look_shape',
   model: 'bq7_G_model', posMid: 'bq7_G_pos_mid', posLast: 'bq7_G_pos_last',
@@ -147,6 +152,7 @@ const CSS = `
 .g9-word .card .bq8-ic { position: absolute; bottom: calc(var(--u)*6); left: calc(var(--u)*6); font-size: calc(var(--u)*44); }
 .g9-word .row { display: flex; direction: rtl; align-items: center; font: 700 calc(var(--u)*112)/1.6 var(--font-letter, 'Vazirmatn', sans-serif); color: #0B2D4F; white-space: nowrap; min-width: calc(var(--u)*330); justify-content: center; }
 .g9-word .row .m { color: #E4553F; }
+.g9-word .row .m.is-pulse { display: inline-block; animation: g9Beat .5s ease-in-out 4; }
 .g9-word .gap { display: inline-grid; place-items: center; width: calc(var(--u)*140); height: calc(var(--u)*150); margin-inline: calc(var(--u)*6); border-radius: calc(var(--u)*24);
   border: calc(var(--u)*5) dashed rgba(11,45,79,.4); background: rgba(255,240,184,.55); vertical-align: middle; }
 .g9-word .gap.is-glow { border-style: solid; border-color: #FFC21A; animation: g9Ring 1.1s ease-in-out infinite; }
@@ -183,9 +189,9 @@ const h = (tag, attrs, ...kids) => {
   if (attrs) for (const [k, v] of Object.entries(attrs)) { if (k === 'html') e.innerHTML = v; else if (k === 'style') Object.assign(e.style, v); else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v != null) e.setAttribute(k, v); }
   kids.flat().forEach((c) => { if (c != null) e.append(c); }); return e;
 };
-function wordParts(word, mIdx) { // split the connected word around its «م» (ZWJ keeps the joins → the word stays connected)
+function wordParts(word, mIdx, nL = 1) { // split the connected word around its «م» (+ nL−1 following letters, e.g. «مَا»); ZWJ keeps the joins → the word stays connected
   let i0 = 0, n = -1; for (let i = 0; i < word.length; i++) { if (/[ً-ٰٟ]/.test(word[i])) continue; n++; if (n === mIdx) { i0 = i; break; } }
-  let i1 = i0 + 1; while (i1 < word.length && /[ً-ٰٟ]/.test(word[i1])) i1++;
+  let i1 = i0; for (let k = 0; k < nL && i1 < word.length; k++) { i1++; while (i1 < word.length && /[ً-ٰٟ]/.test(word[i1])) i1++; }
   const Z = '‍';
   return [word.slice(0, i0) + (i0 ? Z : ''), (i0 ? Z : '') + word.slice(i0, i1) + (i1 < word.length ? Z : ''), (i1 < word.length ? Z : '') + word.slice(i1)];
 }
@@ -582,9 +588,9 @@ export async function run(host, api) {
   const instrSlot = h('div.g9-ins');
   const muteIc = h('i.bq8-ic.bq8-ic--sound_on');
   const muteBtn = h('button.bq8-btn.g9-small.g9-mute', { type: 'button', 'aria-label': 'كَتْمُ الصَّوْتِ', 'aria-pressed': 'false' }, muteIc);
-  const muteShow = () => { muteIc.className = 'bq8-ic bq8-ic--' + (muted ? 'sound_off' : 'sound_on'); muteBtn.classList.toggle('is-active', muted); muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false'); muteBtn.setAttribute('aria-label', muted ? 'تَشْغيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ'); };
-  const homeBtn = h('button.bq8-btn.bq8-btn--home.g9-small', { type: 'button', 'aria-label': 'الغُرْفَةُ', hidden: '' }, h('i.bq8-ic.bq8-ic--home'));
-  const albumBtn = h('button.bq8-btn.bq8-btn--hint.g9-small', { type: 'button', 'aria-label': 'الأَلْبومُ' }, h('i.bq8-ic.bq8-ic--book'));
+  const muteShow = () => { muteIc.className = 'bq8-ic bq8-ic--' + (muted ? 'sound_off' : 'sound_on'); muteBtn.classList.toggle('is-active', muted); muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false'); muteBtn.setAttribute('aria-label', muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ'); };
+  const homeBtn = h('button.bq8-btn.bq8-btn--home.g9-small', { type: 'button', 'aria-label': 'الْغُرْفَةُ', hidden: '' }, h('i.bq8-ic.bq8-ic--home'));
+  const albumBtn = h('button.bq8-btn.bq8-btn--hint.g9-small', { type: 'button', 'aria-label': 'الْأَلْبُومُ' }, h('i.bq8-ic.bq8-ic--book'));
   /* progress path (top-left): level 1 = 4 stations → Majed's backpack (fills); level 2 = 4 padlocks → the chest (glows) */
   const path = h('div.g9-path', { 'aria-hidden': 'true' });
   const pathSt = [], pathLn = []; const goal = h('div.goal', { html: BAG_SVG });
@@ -596,7 +602,7 @@ export async function run(host, api) {
   const album = h('div.g9-album', { hidden: '' });
   const ALB = ['manju', 'miftah', 'musht', 'maktab', 'mawz', 'qalam', 'qamis', 'qamar', 'medal'];
   const albSt = {}; ALB.forEach((s) => { const st = h('div.st', { 'data-s': s }); st.addEventListener('click', () => { if (st.classList.contains('is-on') && s !== 'medal') say('bq7_W_' + s); }); albSt[s] = st; album.append(st); });
-  const albX = h('button.bq8-btn.bq8-btn--home.x', { type: 'button', 'aria-label': 'إِغْلاقٌ' }, h('i.bq8-ic.bq8-ic--close'));
+  const albX = h('button.bq8-btn.bq8-btn--home.x', { type: 'button', 'aria-label': 'إِغْلَاقٌ' }, h('i.bq8-ic.bq8-ic--close'));
   album.append(albX);
   const chip = h('div.g9-chip', { 'aria-hidden': 'true' });
   const wordBox = h('div.g9-word', { hidden: '' });
@@ -860,9 +866,9 @@ export async function run(host, api) {
     res.prize = 'medal_meem';
   }
   async function showChip(it) {
-    const [a, m, z] = wordParts(it.word, it.m);
+    const [a, m, z] = wordParts(it.word, it.m || 0, it.n || 1);
     const w = h('span.w', { lang: 'ar' }, h('span', null, a), h('span.m', null, m), h('span', null, z));
-    const d = h('span.d', null, [0, 1, 2].map((k) => h('i', { class: (k === (it.pos === 'mid' ? 1 : 2) ? 'on' : '') })));
+    const d = h('span.d', null, [0, 1, 2].map((k) => h('i', { class: (k === (it.pos === 'mid' ? 1 : it.pos === 'last' ? 2 : 0) ? 'on' : '') })));
     chip.replaceChildren(w, d);
     const r = screenRect(it.hit || it.prop) || { cx: W() / 2, cy: Hh() / 2, x0: W() / 2, x1: W() / 2, y0: Hh() / 2, y1: Hh() / 2 };
     /* R-fix (review F12): the chip must not cover a thing that is still to be found (قَلَم's chip hid the key) → try above, below, beside */
@@ -875,6 +881,12 @@ export async function run(host, api) {
     let best = cands[0], bv = 1e18; cands.forEach((c2, i) => { const v = hits(c2[0], c2[1]) + i; if (v < bv) { bv = v; best = c2; } });
     chip.style.left = best[0] + 'px'; chip.style.top = best[1] + 'px'; chip.classList.add('is-on');
     return { w, d };
+  }
+  async function sayFirst(it) { // SCI-1: the word chip with ITS first syllable coloured (first dot on) while Bariq says «مِفْتاح… يَبْدَأُ بِـ مِ»
+    if (!it.first) return;
+    const c = await showChip(it); c.w.classList.add('is-pulse');
+    await say(it.first);
+    chip.classList.remove('is-on');
   }
   async function midHeard(it) { // OWNER 2026-10-05: «قميص/قلم ليست خطأ» — praise hearing the meem, show where it sits, remind the rule
     const first = !midSeen; midSeen = true;
@@ -917,6 +929,7 @@ export async function run(host, api) {
     starOn(); pathMark(it.s); albAdd(it.s, false);
     streak = 0; clean = true;
     await say(praise()); if (!ok()) return;
+    await sayFirst(it); if (!ok()) return;
     if (it.s !== 'maktab') { it.gone = true; thingGlow(it.s, null); await flyItem(it); if (res.found <= 2) await say(L.bag); }
   }
 
@@ -1019,7 +1032,7 @@ export async function run(host, api) {
     const m = items.mawz; if (!m) return;
     await brqNear(m.hit || m.prop); brqAct('point'); lift('mawz', true); thingGlow('mawz', 'say');
     await say('bq7_W_mawz'); if (!ok()) return;
-    await say(L.demo); if (!ok()) return;
+    await sayFirst(m); if (!ok()) return; // L.demo = «مَوْز… يَبْدَأُ بِـ مَ» (SCI-1; was bq7_E10_demo «…مَ! يَبْدَأُ بِصَوْتِ المِيمِ»)
     lift('mawz', false); thingGlow('mawz', null); m.gone = true; brqAct('hop');
     await flyItem(m); albAdd('mawz', false);
     await brqTo('MARK_bariq_lunchbag', 0.6);
@@ -1087,7 +1100,7 @@ export async function run(host, api) {
     await new Promise((resolve) => {
       const gap = h('span.gap');
       const row = h('div.row', { lang: 'ar' }, w.parts.map((p) => (p === '#' ? gap : h('span', null, p))));
-      const card = h('button.card', { type: 'button', 'aria-label': 'اِسْمَعِ الكَلِمَةَ' }, h('img', { src: api.img('card_' + w.s), alt: '' }), h('i.bq8-ic.bq8-ic--listen'));
+      const card = h('button.card', { type: 'button', 'aria-label': 'اِسْتَمِع إِلَى الْكَلِمَةِ' }, h('img', { src: api.img('card_' + w.s), alt: '' }), h('i.bq8-ic.bq8-ic--listen'));
       card.addEventListener('click', () => say('bq7_W_' + w.s));
       wordBox.replaceChildren(card, row); wordBox.hidden = false; coins.hidden = false;
       const opts = [w.right, ...w.wrong].sort(() => Math.random() - 0.5);
@@ -1110,6 +1123,7 @@ export async function run(host, api) {
         await Promise.all([dropPad(pk), say('bq7_W_' + w.s)]); if (!ok()) return;
         if (studs < 4) await creak(studs);
         await say(juicy ? praise() : SOLVE[(nSolve2++) % SOLVE.length]); if (!ok()) return;
+        if (w.after) { row.querySelectorAll('.m').forEach((e) => e.classList.add('is-pulse')); await say(w.after); if (!ok()) return; } // SCI-1: «مُشْط… يَبْدَأُ بِـ مُ» · قَمَر/فَم: where the م sits
         await sleep(250);
         resolve();
       };

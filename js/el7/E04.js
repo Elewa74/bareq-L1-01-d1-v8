@@ -127,7 +127,7 @@
     const V8 = I.v8();
     const WORDS = ['maktab', 'musht', 'miftah', 'timsah', 'manju', 'numur', 'qamis'];
     I.lines({
-      bq7_E04_intro: 'هَذِهِ كَلِماتٌ جَديدَةٌ. اُنْظُر، وَاسْمَع، ثُمَّ قُل.', bq7_E04_check_intro: 'الآنَ اسْمَع، وَالْمِسِ الصّورَةَ.', bq7_E04_end: 'صارَت عِنْدَكَ كَلِماتٌ جَديدَةٌ!',
+      bq7_E04_intro: 'هَذِهِ كَلِمَاتٌ جَدِيدَةٌ. اُنْظُرْ، وَاسْتَمِعْ، ثُمَّ قُلْ.', bq7_E04_check_intro: 'الْآنَ اسْتَمِعْ، وَاخْتَرِ الصُّورَةَ.', bq7_E04_end: 'صارَت عِنْدَكَ كَلِماتٌ جَديدَةٌ.',
       bq7_E04_q_maktab: 'أَيْنَ المَكْتَبُ؟', bq7_E04_q_miftah: 'أَيْنَ المِفْتاحُ؟', bq7_E04_q_numur: 'أَيْنَ النُّمورُ؟',
       bq7_E04_say_maktab: 'قُل: مَكْتَب.', bq7_E04_say_musht: 'قُل: مُشْط.', bq7_E04_say_miftah: 'قُل: مِفْتاح.', bq7_E04_say_timsah: 'قُل: تِمْساح.',
       bq7_E04_say_manju: 'قُل: مانْجو.', bq7_E04_say_numur: 'قُل: نُمور.', bq7_E04_say_qamis: 'قُل: قَميص.',
@@ -155,14 +155,14 @@
 
     async function teach(slug, i, pre) {
       const wid = I.wordId(slug);
-      const photo = h('button.e04-photo', { type: 'button', 'aria-label': V8 ? I.W[slug].w : 'اِسْمَعِ الكَلِمَةَ' },
+      const photo = h('button.e04-photo', { type: 'button', 'aria-label': V8 ? I.W[slug].w : 'اِسْتَمِعْ إِلَى الْكَلِمَةِ' },
         h('span.e04-face.e04-card', null, I.pic(slug), V8 ? wordEl(slug) : null), h('span.e04-face.e04-ctx', null, I.pic(slug, { key: ['ctx_' + slug, 'ctx_mango', 'card_' + slug, 'w_' + slug, 'w_mango'].filter((k) => slug === 'manju' || !/mango/.test(k)) }), V8 ? wordEl(slug) : null));
       // owner-late: touching the written word always says the WORD (also on the meaning side of the card)
       photo.querySelectorAll('.e04-w').forEach((we) => we.addEventListener('click', async (e) => { e.stopPropagation(); if (busy) return; busy = true; photo.classList.add('is-play'); await S.stim(wid); photo.classList.remove('is-play'); busy = false; }));
-      const cEar = chip('ear', I.IC.ear, 'اِسْمَع'), cSay = chip('mouth', I.IC.mouth, 'قُل'), cEye = chip('eye', I.IC.eye, 'المَعْنى');
+      const cEar = chip('ear', I.IC.ear, 'اِسْتَمِعْ'), cSay = chip('mouth', I.IC.mouth, 'قُل'), cEye = chip('eye', I.IC.eye, 'المَعْنى');
       const ctl = h('div.e04-ctl');
       if (V8) {
-        const slot = h('div.bq8-skillrow.e04-slot', { role: 'group', 'aria-label': 'اِسْمَع · قُل · اُنْظُر' }, cEar, cSay, cEye);
+        const slot = h('div.bq8-skillrow.e04-slot', { role: 'group', 'aria-label': 'اِسْتَمِعْ · قُلْ · اُنْظُرْ' }, cEar, cSay, cEye);
         main.replaceChildren(h('div.e04-col', null, photo, slot), ctl);
         const tapChip = (fn) => async () => { if (busy) return; busy = true; I.sfx('tick'); try { await fn(); } finally { busy = false; } };
         cEar.onclick = tapChip(async () => { photo.classList.add('is-play'); await S.stim(wid); photo.classList.remove('is-play'); });

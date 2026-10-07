@@ -82,7 +82,7 @@
   /* ---------- صفحة «دليل الإتقان ودور الأسرة» (للمعلّم ولوليّ الأمر — لا على شاشة الطفل) ---------- */
   const esc = (x) => String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const nameOf = (id) => { const m = BQ.meta(id); return m ? m.name : id; };
-  const KID = ['أَسْمَعُ صَوْتَ المِيمِ', 'أُفَرِّقُ المِيمَ عَن غَيْرِها', 'أَعْرِفُ القَصيرَ وَالطَّويلَ', 'أَنْطِقُ المِيمَ', 'أَعْرِفُ شَكْلَ المِيمِ', 'أَجِدُ المِيمَ في الكَلِمَةِ', 'أَقْرَأُ كَلِماتٍ فيها المِيمُ', 'أَكْتُبُ المِيمَ', 'أَسْتَعْمِلُ كَلِماتي'];
+  const KID = ['أَسْمَعُ صَوْتَ المِيمِ', 'أُفَرِّقُ المِيمَ عَن غَيْرِها', 'أُمَيِّزُ الْحَرَكَةَ الْقَصِيرَةَ وَالطَّوِيلَةَ', 'أَنْطِقُ المِيمَ', 'أَعْرِفُ شَكْلَ المِيمِ', 'أَجِدُ المِيمَ في الكَلِمَةِ', 'أَقْرَأُ كَلِماتٍ فيها المِيمُ', 'أَكْتُبُ المِيمَ', 'أَسْتَعْمِلُ كَلِماتي'];
   const ICON = { none: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-dasharray="3 3"/></svg>',
     review: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2.3-5.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     followup: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M12 18.5v.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',

@@ -8,31 +8,37 @@
    محرّك اللمس: X.writePad (ix7b.js) — امتداد لمحرّك v6 المعتمد على الآيباد (أحداث المؤشّر · touch-action:none · سماحية · نقطة بدء + أسهم).
    v8 (?theme=8 · OWNER_R3-9 «الفونت وشكل الميم هذا غير مناسب»): كلّ نموذج وكلّ مسار تتبّع بخطّ Vazirmatn Bold — المسارات مُشتقّة من
    خطوط الحرف نفسه (X.FORMS8 · v7/ix2_v8/meem_paths.py)، والممرّ = شكل الحرف الحقيقيّ، وبقيّة الكلمة بالخطّ والحجم نفسيهما فتلتحم.
-   اللوح الخشبيّ (.bq8-board) · ٤ نجوم = المراحل الأربع. */
+   اللوح الخشبيّ (.bq8-board).
+   SCI-1 T2 (2026-10-07 · review/sci1 · draft_unapproved — DECISIONS_v7 D-E09-S1):
+   (١) «تَتَبَّعِ المِيمَ بِإِصْبَعِكَ» تُحذف ← «سِر مَعَ النِّقاطِ، وَابْدَأ مِنَ النُّقْطَةِ الخَضْراءِ.» (bq7_E09_trace_s1).
+   (٢) الاتّساق (ملاحظة الفريق: كتب الشكل المنفصل ثم أعطى أمثلة الحلّ في كلّ المواضع): كلّ بند يكتب الطفل فيه الشكل الذي يراه نموذجاً ومثالاً:
+       م منفصلة ← بطاقة «م» وحدها بلا كلمات (سِر مَعَ النِّقاطِ ×١، اُنْسَخ ×١) · ثم «في الكَلِمَةِ تَتَّصِلُ المِيمُ… فَيَتَغَيَّرُ شَكْلُها» (bq7_E09_forms_s1)
+       ← لكلّ موضع بطاقة شكله (مـ / ـمـ / ـم) + صورة كلمته + «في أَوَّلِ/وَسَطِ/آخِرِ الكَلِمَةِ»، ويَسير مع نقاط ذلك الشكل نفسه داخل كلمته:
+       مَوْز (مـ) · نُمور (ـمـ، بدل «قَمَر») · فَم (ـم) ← ثم يكتبها وحده في الكلمات نفسها وبطاقة الشكل أمامه.
+   (٣) نجمة لكلّ بند (٨) تمتلئ فقط إن كتبه الطفل بنفسه (لا حين يرسمه بارق) + «أَكْمِل وَرَكِّز» بعد رسم بارق. */
 (function () {
   'use strict';
   const ID = 'E09';
   /* الأسطر (LINES_v7.json) */
   const L = {
-    intro: 'bq7_E09_intro', watch: 'bq7_E09_watch', trace: 'bq7_E09_trace', copy: 'bq7_E09_copy', guided: 'bq7_E09_guided', indep: 'bq7_E09_indep',
+    intro: 'bq7_E09_intro', watch: 'bq7_E09_watch', trace: 'bq7_E09_trace_s1', forms: 'bq7_E09_forms_s1', solve: 'bq7_E11_fb_solve1', copy: 'bq7_E09_copy', guided: 'bq7_E09_guided', indep: 'bq7_E09_indep',
     ok: 'bq7_E09_ok', retry: 'bq7_E09_retry', light: 'bq7_G_look_light', end: 'bq7_E09_end',
   };
   /* البنود (SPEC §E09) — form: شكل الميم · before/after: بقيّة الكلمة حول الخانة (قبل = يمين) · word: الكلمة بعد النجاح · wk: صوت الكلمة */
   const STAGES = [
-    { key: 'trace', label: 'تَتَبَّع', line: L.trace, items: [
-      { form: 'iso', guide: 'road', arrows: true, start: true, lenient: true, demo: true, scored: false },
-      { form: 'iso', guide: 'road', arrows: true, start: true, lenient: true, scored: false },
+    { key: 'trace', label: 'سِر مَعَ النِّقاطِ', line: L.trace, items: [
+      { form: 'iso', guide: 'road', arrows: true, start: true, lenient: true, demo: true, model: true, scored: false },
     ] },
     { key: 'copy', label: 'اُنْسَخ', line: L.copy, items: [{ form: 'iso', guide: 'none', arrows: false, start: true, model: true, scored: false }] },
-    { key: 'guided', label: 'أَكْمِل', line: L.guided, items: [
-      { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', guide: 'dots', arrows: 'faint', start: true, scored: true },
-      { form: 'med', before: 'قَـ', after: 'ـر', word: 'قَمَر', img: 'card_qamar', wk: 'qamar', guide: 'dots', arrows: 'faint', start: true, scored: true },
-      { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', guide: 'dots', arrows: 'faint', start: true, scored: true },
+    { key: 'guided', label: 'في الكَلِمَةِ', line: L.guided, pre: L.forms, items: [
+      { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', pos: 'bq7_G_pos_first', guide: 'road', arrows: true, start: true, scored: true },
+      { form: 'med', before: 'نُـ', after: 'ـور', word: 'نُمور', img: 'card_numur', wk: 'numur', pos: 'bq7_G_pos_mid', guide: 'road', arrows: true, start: true, scored: true },
+      { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', pos: 'bq7_G_pos_last', guide: 'road', arrows: true, start: true, scored: true },
     ] },
     { key: 'indep', label: 'اُكْتُب', line: L.indep, items: [
-      { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
-      { form: 'med', before: 'قَـ', after: 'ـر', word: 'قَمَر', img: 'card_qamar', wk: 'qamar', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
-      { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+      { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', pos: 'bq7_G_pos_first', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+      { form: 'med', before: 'نُـ', after: 'ـور', word: 'نُمور', img: 'card_numur', wk: 'numur', pos: 'bq7_G_pos_mid', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+      { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', pos: 'bq7_G_pos_last', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
     ] },
   ];
 
@@ -76,7 +82,8 @@
     X.style('st-e09', CSS);
     const S = X.session(ctx);
     const V8 = X.v8();
-    const root = X.root(ctx, 'e09', { board: true, stars: 4, panel: ['wide', 'tall'] });
+    const NIT = STAGES.reduce((a, s2) => a + s2.items.length, 0);
+    const root = X.root(ctx, 'e09', { board: true, stars: NIT, panel: ['wide', 'tall'] });
     const F8 = root._8;
     const top = h('div.e09-top');
     const ph = X.phase(top, STAGES.map((s) => s.label));
@@ -112,7 +119,7 @@
     note();
     let k = STAGES.slice(0, startStage).reduce((a, s) => a + s.items.length, 0);
     (async () => {
-      if (F8) F8.starsTo(startStage);
+      if (F8) F8.starsTo(k); // review mode: earlier items count as done
       for (let si = startStage; si < STAGES.length; si++) {
         const st = STAGES[si];
         ph.set(si);
@@ -121,19 +128,20 @@
           await item(st, st.items[ii], ii === 0);
           k++;
         }
-        if (F8) F8.star(); // one star per stage: trace · copy · guided · independent
       }
       dots.set(nItems);
       ctx.done();
       buddy.mood('cheer', 4000);
       await S.say(L.end);
-      X.end(ctx, S, { title: 'أَحْسَنْتَ!' });
+      X.end(ctx, S, { title: 'أَحْسَنْتَ.' });
     })();
 
     async function item(st, it, firstOfStage) {
       fb.clear();
       side.replaceChildren(); padWrap.replaceChildren();
-      if (it.model) side.append(V8 ? h('div.e09-model8.bq8-tile.bq8-tile--letter.x7-in', { 'aria-hidden': 'true' }, h('span', null, 'م')) : h('div.e09-model.x7-in', { 'aria-hidden': 'true' }, h('span.x7-w', null, 'م')));
+      // SCI-1 T2: the model tile always shows the SAME form the child writes in this item (م · مـ · ـمـ · ـم)
+      const FORMG = { iso: 'م', ini: 'مـ', med: 'ـمـ', fin: 'ـم' }, fg = FORMG[it.form] || 'م';
+      if (it.model || it.form !== 'iso') side.append(V8 ? h('div.e09-model8.bq8-tile.bq8-tile--letter.x7-in', { 'aria-hidden': 'true', dataset: { form: it.form } }, h('span', null, fg)) : h('div.e09-model.x7-in', { 'aria-hidden': 'true' }, h('span.x7-w', null, fg)));
       if (it.img) side.append(V8 ? h('div.bq8-card.e09-pic8.x7-in', null, h('img', { src: ctx.img(it.img), alt: '', draggable: 'false' })) : h('div.e09-picbox.x7-in', null, X.pic(ctx, it.img, { noText: st.key === 'indep' })));
       side.hidden = !side.childNodes.length;
       let stage2 = false, failsHandled = 0, assisted = false;
@@ -152,8 +160,10 @@
         await pad.demo(2600);
         pad.lock(false);
       }
+      if (firstOfStage && st.pre) await S.say(st.pre);
       if (firstOfStage || it.demo) await S.say(st.line);
       if (it.wk && (it.sayFirst || firstOfStage || st.key === 'guided')) await S.say(X.wordId(it.wk));
+      if (it.pos) await S.say(it.pos); // «في أَوَّلِ / وَسَطِ / آخِرِ الكَلِمَةِ» — the form ↔ its place
       async function onFail(reason, n) {
         if (n <= failsHandled) return;
         failsHandled = n;
@@ -170,6 +180,7 @@
           await S.say(L.watch);
           await pad.demo(3600, true);
           pad.fill();
+          await S.say(L.solve); // owner ✗2: Bariq solves + «أَكْمِل وَرَكِّز»
         }
       }
       const res = await S.gate(pad.done);
@@ -180,6 +191,8 @@
       note();
       if (!res.assisted) { fb.ok('✔ ' + 'الشَّكْلُ صَحيحٌ.'); X.burst(pad.el, 12); buddy.mood('cheer', 2200); S.fx(X.sfx.ok, 0.5); }
       else fb.clear();
+      // one star per item, only when the child wrote it (Bariq's drawing leaves the slot empty)
+      if (F8 && F8.starsEl) { const sl = F8.starsEl.children[F8.stars]; F8.star(); if (sl && res.assisted) { sl.classList.remove('is-on'); sl.classList.add('is-help'); } }
       if (it.word) { await S.sleep(350); pad.typeset(it.word); }
       if (!res.assisted) await S.say(L.ok);
       if (it.wk) await S.say(X.wordId(it.wk), { stim: true });
@@ -219,12 +232,12 @@
         const d = document.createElement('div');
         d.setAttribute('dir', 'rtl'); d.style.cssText = 'width:100%;align-self:flex-start';
         d.innerHTML = '<h2 style="font:700 24px Scheherazade New;margin:0 0 4mm">اُكْتُبِ المِيمَ — اِبْدَأ مِنَ النُّقْطَةِ الخَضْراءِ</h2>' +
-          row('iso', 7) + row('iso', 7) + row('ini', 3, null, 'ـوْز', 'مَوْز') + row('med', 3, 'قَـ', 'ـر', 'قَمَر') + row('fin', 4, 'فَـ', null, 'فَم') +
+          row('iso', 7) + row('iso', 7) + row('ini', 3, null, 'ـوْز', 'مَوْز') + row('med', 3, 'نُـ', 'ـور', 'نُمور') + row('fin', 4, 'فَـ', null, 'فَم') +
           '<p style="font:16px Scheherazade New;margin-top:6mm">الاسم: ……………………………</p>';
         return d;
       };
       const printBtn = BQ.h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print([{ node: sheet() }], { title: 'ورقة كتابة الميم' }) }, 'اطبع ورقة الكتابة (A4)');
-      X.note(ctx, BQ.h('div', null, BQ.h('div', { html: '<p><b>ما يجري:</b> تتبّع «م» بعد نموذج القلم ← نسخ «م» ← إكمال «ـوز / قـ ـر / فـ» على النقط ← كتابة الميم مستقلّة في «موز / قمر / فم» بعد سماع الكلمة (يختار الطفل الشكل: مـ ـمـ ـم).</p>' +
+      X.note(ctx, BQ.h('div', null, BQ.h('div', { html: '<p><b>ما يجري:</b> «م» منفصلة: يسير مع النقاط بعد نموذج القلم ثم ينسخها (بطاقة «م» وحدها) ← في الكلمة: لكلّ موضع بطاقة شكله وصورة كلمته — مـ في «موز» · ـمـ في «نمور» · ـم في «فم» — يسير مع نقاط ذلك الشكل ← ثم يكتبه وحده في الكلمات نفسها والبطاقة أمامه.</p>' +
         '<p><b>المحاولات:</b> الأولى ← «جرّب مرّة أخرى. ابدأ من هنا» ونقطة البدء تنبض · الثانية ← المسار المنقّط أوضح ونقطة تجري عليه · الثالثة ← بارق يرسم ببطء ونمضي. يُسجَّل S8 (كتابة الحرف) قرينةً لبنود الإنتاج الموجّه والمستقلّ (٦): صحيح من الأولى أو الثانية. النجاح: ٥ من ٦.</p>' +
         '<p><b>انتبه:</b> نقطة البدء والاتّجاه جزء من المهارة؛ إن تعثّر الطفل فأمسك إصبعه وارسم معه مرّة، ثم دعه وحده.</p>' +
         (rows ? '<table class="x7-log"><thead><tr><th>البند</th><th>المرحلة</th><th>النتيجة</th></tr></thead><tbody>' + rows + '</tbody></table>' : '') }), printBtn));

@@ -16,12 +16,21 @@
   const ID = 'E15';
   const COLORS = ['#E4553F', '#FF9F1C', '#FEBA02', '#3DBB6B', '#00AEED', '#2E6CA6', '#8E6CD9', '#8B5A2B'];
   const NAMES = ['أَحْمَرُ', 'بُرْتُقالِيٌّ', 'أَصْفَرُ', 'أَخْضَرُ', 'أَزْرَقُ فاتِحٌ', 'أَزْرَقُ', 'بَنَفْسَجِيٌّ', 'بُنِّيٌّ'];
-  /* الصفحة ٢: شبكة ٢×٣ (الصورة: يسار/يمين × ٣ صفوف) ← اسم الشيء */
-  const GRID2 = [['manju', 'mawz'], ['qamar', 'musht'], ['miftah', 'timsah']];
-  /* letter = نقطة داخل جسم «م» (نسبة من الصفحة) — تلوين الحرف وحده يكفي للختام · hole = مركز الفراغ الدائريّ (منطقة مستقلّة، ليست الحرف) · card = نقطة في بطاقة الحرف (تُحجب كخلفية) */
-  const PAGES = [{ key: 'color_page1', src: 'media/img8/color_page1_meem8.webp', letter: [0.3725, 0.4278], hole: [0.5581, 0.3707], card: [0.42, 0.72] },
-    { key: 'color_page2', grid: GRID2 }];
-  const MIN_FILLS = 3;      // «قدرٌ معقول» قبل زرّ «التّالي»
+  /* SCI-1 T3 (2026-10-07) «لابد من تلوين أشياء تبدأ بالميم، وهو لوّن الحرف فقط» → ONE page: the correct Vazirmatn «م» (empty counter) +
+     pictures of things that START with م; instruction «لَوِّنْ حَرْفَ المِيمِ، وَلَوِّنِ الصُّوَرَ الَّتي فيها صَوْتُ المِيمِ» (bq7_E15_intro8);
+     done = the letter + at least 2 pictures. Page = media/img8/color_page_m8.webp made by v7/ix2_v8/e15_page8/build.py from T5's line art
+     img8/color_page_m8_raw.png (6 pictures: مُشْط مِفْتاح مَوْز / مَكْتَب مِظَلَّة مانْجو + an empty frame) with the Vazirmatn «م» set in the frame:
+     `python3 build.py <raw> musht miftah mawz maktab mizalla manju --frame=260,138,1339,629` → JSON pasted here. card = the frame (backdrop, never filled).
+     letter = a point inside the «م» body · hole = the counter (its own region, never «the letter») · objects = picture boxes (page fractions) →
+     a coloured region counts for the picture whose box holds its centre; the picture's name is said the first time it is coloured. */
+  const PAGES = [{ key: 'color_page_m8', src: 'media/img8/color_page_m8.webp', letter: [0.4656, 0.1445], hole: [0.5294, 0.1246], card: [0.1812, 0.0742],
+    objects: [{ k: 'musht', box: [0.6269, 0.3358, 0.9825, 0.5811] },
+      { k: 'miftah', box: [0.3869, 0.3137, 0.6381, 0.5974] },
+      { k: 'mawz', box: [0.0169, 0.3248, 0.3525, 0.5926] },
+      { k: 'maktab', box: [0.6544, 0.658, 0.9844, 0.8979] },
+      { k: 'mizalla', box: [0.3256, 0.6297, 0.6569, 0.8953] },
+      { k: 'manju', box: [0.0281, 0.6253, 0.3175, 0.901] }] }];
+  const MIN_OBJ = 2;        // done = the letter + ≥ 2 pictures (SCI-1)
   const BG_MAX = 0.22;      // منطقة أكبر من هذا (نسبة من الصفحة) = خلفية/بطاقة، لا تُلوَّن
   const PW = 760; // دقّة المعالجة (العرض بالبكسل)
 
@@ -133,7 +142,7 @@
     const goBtn = h('button.e15-sw2', { type: 'button', 'aria-label': 'الصَّفْحَةُ الأُخْرى' });
     const srcOf = (i) => PAGES[i].src || ctx.img(PAGES[i].key);
     const setSwitch = () => { goBtn.style.backgroundImage = 'url("' + srcOf((pi + 1) % PAGES.length) + '")'; };
-    const side = h('div.e15-side', null, h('div.e15-pal', { role: 'group', 'aria-label': 'الأَلْوانُ' }, sws), h('div.e15-tools', null, undoBtn, goBtn));
+    const side = h('div.e15-side', null, h('div.e15-pal', { role: 'group', 'aria-label': 'الأَلْوانُ' }, sws), h('div.e15-tools', null, undoBtn, PAGES.length > 1 ? goBtn : null));
     // زرّ الختام «التّالي» — مخفيّ (يحجز مكانه) حتى يلوّن الطفل قدراً معقولاً
     const finLbl = h('span.e15-finlbl', null, 'التّالي');
     const finBtn = V8 ? h('button.bq8-pill.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, X.i8('next'), finLbl)
@@ -184,19 +193,19 @@
       const N = w * hh, lab = new Int32Array(N).fill(-1);
       const light = new Uint8Array(N);
       for (let p = 0, q = 0; p < N; p++, q += 4) light[p] = (src[q] * 0.299 + src[q + 1] * 0.587 + src[q + 2] * 0.114) > 175 ? 1 : 0;
-      let n = 0; const sizes = []; const stack = new Int32Array(N);
+      let n = 0; const sizes = [], cxs = [], cys = []; const stack = new Int32Array(N);
       for (let p = 0; p < N; p++) {
         if (!light[p] || lab[p] >= 0) continue;
-        let sp = 0, cnt = 0; stack[sp++] = p; lab[p] = n;
+        let sp = 0, cnt = 0, sx = 0, sy = 0; stack[sp++] = p; lab[p] = n;
         while (sp) {
           const c = stack[--sp]; cnt++;
-          const x = c % w;
+          const x = c % w; sx += x; sy += (c - x) / w;
           if (x > 0 && light[c - 1] && lab[c - 1] < 0) { lab[c - 1] = n; stack[sp++] = c - 1; }
           if (x < w - 1 && light[c + 1] && lab[c + 1] < 0) { lab[c + 1] = n; stack[sp++] = c + 1; }
           if (c >= w && light[c - w] && lab[c - w] < 0) { lab[c - w] = n; stack[sp++] = c - w; }
           if (c < N - w && light[c + w] && lab[c + w] < 0) { lab[c + w] = n; stack[sp++] = c + w; }
         }
-        sizes.push(cnt); n++;
+        sizes.push(cnt); cxs.push(sx / cnt / w); cys.push(sy / cnt / hh); n++;
       }
       const color = g.createImageData(w, hh); color.data.fill(255);
       // الخلفية: كلّ منطقة تلمس حافّة الصورة + كلّ منطقة كبيرة جدّاً (بطاقة/ورقة) — لا تُلوَّن أبداً
@@ -209,11 +218,14 @@
       let letter = -1;
       if (PAGES[i].letter) {
         const lx = Math.round(PAGES[i].letter[0] * w), ly = Math.round(PAGES[i].letter[1] * hh), r = lab[ly * w + lx];
-        if (r >= 0 && !blocked.has(r) && sizes[r] > N * 0.01) letter = r;
+        if (r >= 0 && !blocked.has(r) && sizes[r] > N * 0.004) letter = r;
       }
       const hole = PAGES[i].hole ? lab[Math.round(PAGES[i].hole[1] * hh) * w + Math.round(PAGES[i].hole[0] * w)] : -1;
       if (hole >= 0 && hole === letter) letter = -1; // الفراغ ليس جسم الحرف
-      const st = { cv, g, w, h: hh, lab, sizes, color, line: img, fills: new Map(), undo: [], named: new Set(), blocked, letter, hole, bg: lab[w * 2 + 2] };
+      // every region → the picture it belongs to (its centre inside the picture box) · -1 = letter / decoration
+      const objs = PAGES[i].objects || [];
+      const objOf = sizes.map((c, r) => { if (r === letter || r === hole) return -1; const x = cxs[r], y = cys[r]; return objs.findIndex((o) => x >= o.box[0] && x <= o.box[2] && y >= o.box[1] && y <= o.box[3]); });
+      const st = { cv, g, w, h: hh, lab, sizes, color, line: img, fills: new Map(), undo: [], named: new Set(), blocked, letter, hole, objOf, objs, bg: lab[w * 2 + 2] };
       try { draw(st); } catch (e) { console.warn('[E15] draw ' + e.message); state[i] = fallback(i, img); return state[i]; }
       cv.addEventListener('pointerdown', (e) => tap(st, e));
       cv.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -268,24 +280,24 @@
       const dot = h('span.e15-dot', { 'aria-hidden': 'true', style: { left: (fx * 100) + '%', top: (fy * 100) + '%', background: col } });
       page.append(dot); setTimeout(() => dot.remove(), 600);
       S.fx(X.sfx.snap, 0.25);
-      // اسم الشيء أوّل مرّة (الصفحة ٢: الشبكة ٢×٣؛ لا خلفية)
-      const grid = PAGES[pi].grid;
-      if (grid) {
-        const row = Math.min(2, Math.floor(fy * 3)), colI = fx < 0.5 ? 0 : 1;
-        const k = grid[row][colI];
-        if (!st.named.has(k)) { st.named.add(k); S.say(X.wordId(k), { stim: true }); buddy.mood('talk', 1000); }
-      }
+      // the picture's name, the first time it gets colour
+      const oi = st.objOf[r], o = oi >= 0 ? st.objs[oi] : null;
+      let talk = null;
+      if (o && o.k && !st.named.has(o.k)) { st.named.add(o.k); talk = S.say(X.wordId(o.k), { stim: true }); buddy.mood('talk', 1000); }
       const filled = st.fills.size;
       if (filled % 5 === 0) buddy.mood('clap', 1400);
-      if (enough(st)) {
-        if (!ready) becomeReady();
-        else glowOther();
+      if (enough(st)) { if (!ready) Promise.resolve(talk).then(becomeReady); }
+      else if (!ready && !st.reminded && objCount(st) >= MIN_OBJ && !st.fills.has(st.letter) && st.letter >= 0) {
+        // pictures done, the letter not yet: Bariq points at the «م» once
+        st.reminded = true; Promise.resolve(talk).then(() => { X.anim(page, 'fx7-pop', 400); return S.say('bq7_E15_intro8'); });
       }
     }
-    const enough = (st) => !!st && (st.fills.size >= MIN_FILLS || (st.letter >= 0 && st.fills.has(st.letter)));
-    // الصفحة الأخرى لم تُلوَّن بعد → زرّ تبديل الصفحة يضيء (اختياريّ؛ «التّالي» متاح دائماً بعد الجاهزيّة)
-    function glowOther() { const o = (pi + 1) % PAGES.length; goBtn.classList.toggle('is-go', enough(state[pi]) && !enough(state[o])); }
+    /** pictures with at least one coloured region */
+    const objCount = (st) => { const s = new Set(); st.fills.forEach((c, r) => { const oi = st.objOf ? st.objOf[r] : -1; if (oi >= 0) s.add(oi); }); return s.size; };
+    const enough = (st) => !!st && (st.fallback || ((st.letter < 0 || st.fills.has(st.letter)) && objCount(st) >= Math.min(MIN_OBJ, (st.objs || []).length)));
+    function glowOther() { /* one page only (SCI-1) */ }
     async function becomeReady() {
+      if (ready) return;
       ready = true;
       ctx.done(); // يُسجَّل الإنجاز فوراً (سهم «التّالي» في المنصّة يعمل أيضاً)
       glowOther();
@@ -321,7 +333,7 @@
       if (!S.live || pi !== i) return;
       page.replaceChildren(st ? st.cv : h('div.e15-wait', null, '…'));
       undoBtn.disabled = !(st && st.undo.length);
-      if (st) glowOther();
+      if (st && st.fallback && !ready) becomeReady(); // no canvas (memory/taint): the picture is shown, the child can still finish
     }
 
     /* iOS may drop a canvas backing store while the tab is hidden or the stage is re-scaled → repaint the current page from its data */
@@ -335,16 +347,15 @@
     note();
     (async () => {
       await show(0);
-      ctx.instruction(X.text('bq7_E15_intro'), 'bq7_E15_intro', { icon: V8 ? 'touch' : 'hand' });
-      await X.nameSound(S, 'bq7_E15_intro');
-      load(1); // تحميل مسبق للصفحة الثانية
+      ctx.instruction(X.text('bq7_E15_intro8'), 'bq7_E15_intro8', { icon: V8 ? 'touch' : 'hand' });
+      await S.say('bq7_E15_intro8'); // SCI-1 wording verbatim (the letter + the pictures)
     })();
 
     function note() {
-      const b1 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print([{ img: srcOf(0) }, { img: srcOf(1) }], { title: 'لوّن — صوت الميم' }) }, 'اطبع الصفحتين للتلوين (A4)');
+      const b1 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print(PAGES.map((p, i) => ({ img: srcOf(i) })), { title: 'لوّن — صوت الميم' }) }, 'اطبع صفحة التلوين (A4)');
       const b2 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => { const pgs = state.filter((st) => st && !st.fallback).map((st) => ({ img: st.cv.toDataURL('image/png') })); if (pgs.length) X.print(pgs, { title: 'تلوين الطفل' }); } }, 'اطبع ما لوّنه الطفل');
       X.note(ctx, h('div', null,
-        h('div', { html: '<p><b>ما يجري:</b> يختار الطفل لوناً ثم يلمس منطقة فتتلوّن (الصفحة ١: «م» كبيرة مع بارق · الصفحة ٢: مانجو، موز، قمر، مشط، مفتاح، تمساح — لمس الشيء أوّل مرّة يُسمِع اسمه). «تراجع» يلغي آخر تلوين. خلفية الصفحة لا تتلوّن. بعد ٣ مناطق أو تلوين الحرف يظهر «التّالي» ويُسجَّل النشاط منجزاً، ويمكن للطفل أن يكمل التلوين.</p>' +
+        h('div', { html: '<p><b>ما يجري:</b> «لَوِّنْ حَرْفَ المِيمِ، وَلَوِّنِ الصُّوَرَ الَّتي فيها صَوْتُ المِيمِ». صفحة واحدة: «م» بشكلها الصحيح (رأس مستدير مفرَّغ وذيل) في إطار، وستّ صور أشياء تبدأ بصوت الميم (مُشط، مِفتاح، مَوز، مَكتب، مِظلّة، مانجو). يختار الطفل لوناً ثم يلمس منطقة فتتلوّن، وأوّل تلوين لكلّ صورة يُسمِع اسمها. «تراجع» يلغي آخر تلوين. خلفية الصفحة لا تتلوّن. حين يلوّن الحرف وصورتين على الأقلّ يظهر «التّالي» ويُسجَّل النشاط منجزاً، ويمكنه أن يكمل التلوين.</p>' +
           '<p><b>اسأله أثناء التلوين:</b> «ما هذا؟ أين الميم في اسمه؟» — دون ضغط؛ هذا نشاط تعزيز غير مسجَّل.</p>' }),
         h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } }, b1, b2)));
     }
