@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261007185210",
+"build": "261007203853",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
