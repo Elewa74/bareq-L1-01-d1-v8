@@ -77,6 +77,8 @@
   BQ.char.MOTIONS = ['idle', 'talk', 'cheer', 'clap', 'wave', 'point', 'think'];
   BQ.char.anim = (s) => 'media/brq/brq_' + (BQ.char.MOTIONS.includes(s) ? s : 'idle') + '.webp';
   BQ.char.still = (s) => 'media/brq/brq_' + (BQ.char.MOTIONS.includes(s) ? s : 'idle') + '_still.webp';
+  /* FIX12 A-19 (display only; audio untouched): the Name of Allah fully voweled — «بَارَكَ اللهُ» → «بَارَكَ اللَّهُ» (source fix requested from VOICE/TEXT) */
+  try { Object.keys(D.lines || {}).forEach((k) => { const L = D.lines[k]; if (L && typeof L.t === 'string' && /(^|[\s،.])الله[َُِ]/.test(L.t)) L.t = L.t.replace(/(^|[\s،.])الله([َُِ])/g, '$1اللَّه$2'); }); } catch (e) { /* */ }
   BQ.line = (id) => D.lines[id] || null;
   /** v7: نوع العنصر — 'video' | 'interactive' | 'game' | 'print' (من البيانات) */
   const KINDS = { video: 'فيديو', interactive: 'تفاعلي', game: 'لعبة', print: 'طباعة' };
@@ -88,7 +90,8 @@
   };
   BQ.typeOf = (id) => { const k = (D.elements.find((e) => e.id === id) || {}).kind; return KINDS[k] ? k : 'interactive'; };
   BQ.typeLabel = (id) => KINDS[BQ.typeOf(id)];
-  const typeBadge = (id, cls) => h('span.bq-type.is-' + BQ.typeOf(id) + (cls ? '.' + cls : ''), { 'aria-label': 'النوع: ' + BQ.typeLabel(id) },
+  /* FIX12 D-09/A-01: theme 8 hides the type chips (owner) → not rendered at all, so screen readers never read them */
+  const typeBadge = (id, cls) => document.documentElement.dataset.theme === '8' ? null : h('span.bq-type.is-' + BQ.typeOf(id) + (cls ? '.' + cls : ''), { 'aria-label': 'النوع: ' + BQ.typeLabel(id) },
     h('span.bq-type-ic', { 'aria-hidden': 'true', html: KIND_IC[BQ.typeOf(id)] }),
     h('span', { 'aria-hidden': 'true' }, BQ.typeLabel(id)));
   BQ.typeBadge = typeBadge;
@@ -105,7 +108,13 @@
 
   /* ---------- الصوت + النصّ المصاحب ---------- */
   const SPEAKER = { 'ماجد': 'ماجِد', 'سيف': 'سَيْف', 'بارق': 'بارِق', 'واجهة': '', 'مؤثّر': '' };
-  const A = (BQ.audio = { cur: null, token: 0, capEl: null, onLine: null });
+  const A = (BQ.audio = { cur: null, token: 0, capEl: null, onLine: null, ctxs: new Set() });
+  /** FIX12 D-01: one shared WebAudio context, created suspended-aware; never resumed while muted */
+  A.getCtx = function () {
+    try { const C = window.AudioContext || window.webkitAudioContext; if (!A.ctx && C) { A.ctx = new C(); A.ctxs.add(A.ctx); } if (A.ctx && A.isMuted() && A.ctx.state === 'running') A.ctx.suspend().catch(() => {}); } catch (e) { /* */ }
+    return A.ctx || null;
+  };
+  A.isMuted = () => !!(BQ.state && BQ.state.muted);
   /* OWNER 2026-10-07 «لو عايز أعمل كتم للصوت في النشاط؟» — global mute (all lesson audio + video), remembered for the session */
   BQ.state = BQ.state || {};
   try { BQ.state.muted = sessionStorage.getItem('bq_muted') === '1'; } catch (e) { BQ.state.muted = false; }
@@ -120,7 +129,10 @@
     try { sessionStorage.setItem('bq_muted', on ? '1' : '0'); } catch (e) { /* */ }
     mediaSeen.forEach((m) => { try { m.muted = !!on; } catch (e) { /* */ } });
     document.querySelectorAll('audio, video').forEach((m) => { try { m.muted = !!on; } catch (e) { /* */ } });
-    try { if (BQ.audio && BQ.audio.ctx) { if (on) BQ.audio.ctx.suspend(); else BQ.audio.ctx.resume(); } } catch (e) { /* */ }
+    /* FIX12 D-01: muted = NO sound at all — suspend every WebAudio context; resume ONLY here on unmute */
+    (BQ.audio && BQ.audio.ctxs ? Array.from(BQ.audio.ctxs) : []).concat(BQ.audio && BQ.audio.ctx ? [BQ.audio.ctx] : []).forEach((c) => {
+      try { if (on) { if (c.state === 'running') c.suspend().catch(() => {}); } else if (c.state !== 'running') c.resume().catch(() => {}); } catch (e) { /* */ }
+    });
     document.querySelectorAll('.elp-mute').forEach((b) => {
       b.setAttribute('aria-pressed', String(!!on)); b.classList.toggle('is-on', !!on);
       const lbl = on ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ'; b.setAttribute('aria-label', lbl); b.title = lbl;
@@ -171,9 +183,8 @@
     if (!gestured) { gestured = true; while (pool.length < POOL_N) { const a = mkAudio(); if (!a) break; pool.push(a); } }
     pool.forEach(unlockEl);
     try {
-      const C = window.AudioContext || window.webkitAudioContext;
-      if (!A.ctx && C) A.ctx = new C();
-      if (A.ctx && A.ctx.state !== 'running') A.ctx.resume().catch(() => {});
+      const c = A.getCtx();
+      if (c && c.state !== 'running' && !A.isMuted()) c.resume().catch(() => {}); // FIX12 D-01: never while muted
     } catch (e) { /* */ }
     const now = Date.now();
     queue.splice(0).forEach((q) => { if (now - q.t < 6000) { try { q.fn(); } catch (e) { /* */ } } });
@@ -181,7 +192,7 @@
   ['touchend', 'pointerup', 'click', 'keydown'].forEach((ev) => document.addEventListener(ev, onGesture, { capture: true, passive: true }));
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return;
-    if (A.ctx && A.ctx.state !== 'running') A.ctx.resume().catch(() => {});
+    if (A.ctx && A.ctx.state !== 'running' && !A.isMuted()) A.ctx.resume().catch(() => {});
     const c = A.cur; if (c && c.paused && !c.ended && (A.pending || A.segLive)) { const p = c.play(); if (p && p.catch) p.catch(() => {}); }
   });
   /** عنصر الكلام المفتوح (للمقاطع المقصوصة: kit.playSeg) */
@@ -259,6 +270,7 @@
   };
   /** مؤثّر أو موسيقى بلا نصّ مصاحب ولا يقطع الكلام */
   A.fx = function (id, vol) {
+    if (A.isMuted()) return { stop() {}, done: Promise.resolve() }; // FIX12 D-01: muted → no effect at all (callers fall back to nominal timing)
     if (!BQ.hasAudio(id)) return { stop() {}, done: Promise.resolve() };
     const au = A.pooled(); if (!au) return { stop() {}, done: Promise.resolve() };
     let fin = false, stopped = false, res;
@@ -403,7 +415,7 @@
     const nx = nextInfo();
     const tid = 'bq-end-' + Math.random().toString(36).slice(2, 7);
     const home = (opt.home || []).filter(Boolean).slice(0, 3);
-    const nextBtn = nx ? h('button.bq-btn', { type: 'button', onclick: () => { A.unlock(); BQ.goNext(); } }, 'التّالي', BQ.icon('next')) : null;
+    const nextBtn = nx ? h('button.bq-btn', { type: 'button', onclick: () => { A.unlock(); BQ.goNext(); } }, 'التَّالِي', BQ.icon('next')) : null;
     /* v0-12: الورقة فوق منطقة اللعب كلّها (لا داخل المسرح المتمرّر) وتتّسع للإطار بلا تمرير: الأزرار قبل «في البيت اليوم» */
     const card = h('div.bq-end', { role: 'dialog', 'aria-labelledby': tid },
       h('div.bq-end-card', null,
@@ -413,7 +425,7 @@
         h('div.bq-end-row', null,
           h('button.bq-btn.ghost', { type: 'button', onclick: () => { card.remove(); opt.onReplay && opt.onReplay(); } }, BQ.icon('replay'), 'أَعِدِ النَّشاطَ'),
           nextBtn),
-        nx ? h('p.bq-end-next', null, 'التّالي: ', h('b', null, nx.name)) : null, // R3-N9
+        nx ? h('p.bq-end-next', null, h('small', null, 'التَّالِي'), ' ', h('b', null, nx.name)) : null, // R3-N9
         home.length ? homeBox(home) : null));
     const host = (stage && stage.closest && stage.closest('.elp-play')) || stage;
     host.append(card);
@@ -723,7 +735,7 @@
       h('section.elp-adult-meta.gd-notes', { hidden: true }, h('p.lbl', null, 'ملاحظات النشاط'), metaEl, metaData));
     const notesSec = adultPanel.querySelector('.gd-notes');
     const toolLbl = (full, short) => [h('span.elp-tool-l', null, full), h('span.elp-tool-s', { 'aria-hidden': 'true' }, short)];
-    const adultBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'دليل المعلّم', title: 'دليل المعلّم', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', onclick: () => toggleAdult() }, BQ.icon('adult'), toolLbl('دليل المعلّم', 'الدليل'));
+    const adultBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'دَلِيلُ الْمُعَلِّمِ', title: 'دَلِيلُ الْمُعَلِّمِ', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', onclick: () => toggleAdult() }, BQ.icon('adult'), toolLbl('دَلِيلُ الْمُعَلِّمِ', 'الدَّلِيلُ')); // FIX12 D-10: the three tools = voweled noun labels, one style
     let inertEls = [];
     function toggleAdult(v) {
       const on = v == null ? adultPanel.hidden : v;
@@ -753,8 +765,8 @@
     }
     cleanups.push(() => { if (!adultPanel.hidden) { inertEls.forEach((e) => { e.inert = false; }); document.removeEventListener('keydown', drawerKeys, true); } });
     scrim.addEventListener('click', () => toggleAdult(false));
-    const restartBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'مِنَ الْبِدَايَةِ', title: 'مِنَ الْبِدَايَةِ', onclick: () => BQ.open(meta.id, { pos: posOf(meta.id), history: 'replace' }) }, BQ.icon('replay'), toolLbl('مِنَ الْبِدَايَةِ', 'إِعَادَة'));
-    const muteBtn = h('button.elp-tool.elp-mute', { type: 'button', 'aria-pressed': String(!!BQ.state.muted), 'aria-label': BQ.state.muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ', title: BQ.state.muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ', onclick: () => BQ.setMuted(!BQ.state.muted) }, BQ.icon(BQ.state.muted ? 'mute' : 'speaker'), toolLbl('الصَّوْتُ', 'صَوْت'));
+    const restartBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'مِنَ الْبِدَايَةِ', title: 'مِنَ الْبِدَايَةِ', onclick: () => BQ.open(meta.id, { pos: posOf(meta.id), history: 'replace' }) }, BQ.icon('replay'), toolLbl('مِنَ الْبِدَايَةِ', 'الْإِعَادَةُ'));
+    const muteBtn = h('button.elp-tool.elp-mute', { type: 'button', 'aria-pressed': String(!!BQ.state.muted), 'aria-label': BQ.state.muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ', title: BQ.state.muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ', onclick: () => BQ.setMuted(!BQ.state.muted) }, BQ.icon(BQ.state.muted ? 'mute' : 'speaker'), toolLbl('الصَّوْتُ', 'الصَّوْتُ'));
     if (BQ.state.muted) muteBtn.classList.add('is-on');
     const head = h('header.elp-head', null,
       h('div.elp-ic', null, h('img', { src: meta.icon, alt: '' })),
@@ -845,23 +857,22 @@
     if (g) body = typeof g === 'string' ? '<section class="gd-row"><p>' + esc(g) + '</p></section>' : gObj(g, 0);
     else body = '<section class="gd-row"><p class="lbl">وصف العنصر</p><p>' + esc(meta.desc) + '</p></section>' +
       ((meta.run || []).length ? '<section class="gd-row"><p class="lbl">طريقة التشغيل</p><ol class="do">' + meta.run.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ol></section>' : '') +
-      '<p class="gd-src">النصّ من خطّة v7 إلى أن يصل دليل الفريق العلمي (مسوّدة).</p>';
+      '<p class="gd-src">النصّ من خطّة الدرس (v8 — مسوّدة) إلى أن يصل دليل الفريق العلمي.</p>';
     const pr = meta.id === 'E16' ? '' : '';
     return head + body + outs + sk + pr + '<section class="gd-row"><p class="lbl">المدّة</p><p>' + esc(meta.time_label) + '</p></section>';
   }
   BQ.guideHtml = guideHtml;
-  /** بطاقة «قيد الإنتاج» الموحّدة (للطفل: العنوان المشكول + «التّالي» فقط) */
+  /** بطاقة «قيد الإنتاج» الموحّدة (للطفل: العنوان المشكول + «التَّالِي» فقط) */
   function placeholderCard(stage, meta, text) {
     const CLOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5.5l3.5 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
     const cov = meta.cover_file || '';
-    const el = h('div.v7-ph', { role: 'region', 'aria-label': 'قَيْدَ الإنْتاجِ' },
+    const el = h('div.v7-ph', { role: 'region', 'aria-label': meta.cover_title || meta.name || '' },
       cov ? h('img', { src: cov, alt: '', draggable: 'false' }) : null,
       h('div.v7-ph-in', null,
         UI.brq('think', 'v7-ph-brq'),
-        h('span.v7-ph-tag', { html: CLOCK + '<span>قيد الإنتاج</span>' }),
         h('p.v7-ph-t', null, meta.cover_title || meta.name),
         text ? h('p.v7-ph-n', null, text) : null,
-        h('button.bq-btn', { type: 'button', onclick: () => { A.unlock(); BQ.goNext(); } }, 'التّالي', BQ.icon('next'))));
+        h('button.bq-btn', { type: 'button', onclick: () => { A.unlock(); BQ.goNext(); } }, 'التَّالِي', BQ.icon('next'))));
     stage.append(el);
     return el;
   }
@@ -1081,7 +1092,7 @@
     const lt = $('#lesson-title'), bd = $('.hdr-badge');
     if (lt) lt.textContent = on ? (lt.dataset.child || 'صَوْتُ «م»') : (lt.dataset.neutral || 'صَوْتٌ جَديدٌ');
     if (bd) { bd.classList.toggle('is-ear', !on); bd.innerHTML = on ? 'م' : I.ear; }
-    document.title = on ? 'بارق · صَوْتُ «م» — v7 مسوّدة' : 'بارق · صَوْتٌ جَديدٌ — v7 مسوّدة';
+    document.title = on ? 'بارِق · صَوْتُ «م»' : 'بارِق · صَوْتٌ جَدِيدٌ'; // FIX12 D-03: no version/draft label on child screens
   }
   BQ.reveal = () => { try { localStorage.setItem('bq7_revealed', '1'); } catch (e) { /* */ } if (!document.body.classList.contains('show-plan')) childHeader(); };
   BQ.childHeader = childHeader;
@@ -1109,7 +1120,6 @@
     document.body.classList.remove('show-plan'); delete document.body.dataset.page;
     const lv = $('#lessonView'); if (lv) lv.hidden = false;
     Object.keys(PAGES).forEach((k) => { const el = $(PAGES[k].sel); if (el) el.hidden = true; });
-    document.title = 'بارق · صوت الميم — v7 مسوّدة';
     childHeader();
   }
 

@@ -285,21 +285,20 @@
   "id": "bq7_W_manju_seg",
   "speaker": "HAB",
   "text": "ما… مانْجو",
-  "dur": 3.37,
+  "dur": 2.06,
   "file": "media/audio7/bq7_W_manju_seg.mp3",
-  "take": "composed",
+  "take": "V11_W_manju_seg__1.mp3",
   "checks": {
-   "composed": "bq7_S_maa +0.5 bq7_W_mango",
    "asr": "ما منجو",
-   "dj_fric_ms": 60,
-   "dur": 2.12,
-   "lufs": -17.4,
-   "tp": -3.8,
-   "max_closed_nasal_s": 0.14,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
+   "sim": 0.92,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.5,
+   "tp": -5.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_W_mawz",
@@ -603,29 +602,19 @@
   "id": "bq7_W_qalam_seg",
   "speaker": "HAB",
   "text": "قَ… لَمْ… قَلَمْ",
-  "dur": 2.77,
+  "dur": 2.66,
   "file": "media/audio7/bq7_W_qalam_seg.mp3",
-  "take": "g4_A",
+  "take": "V11_W_qalam_seg__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     2.63
-    ],
-    "B": [
-     0.0,
-     0,
-     0.59
-    ]
-   },
-   "heard": "قلمقلم",
-   "max_closed_nasal_s": 0,
-   "dur": 2.77,
+   "asr": "قلم",
+   "sim": 0.67,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -3.8
-  }
+   "tp": -1.4,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_W_qamar",
@@ -722,29 +711,19 @@
   "id": "bq7_W_qamis_seg",
   "speaker": "HAB",
   "text": "قَ… مي… قَميصْ",
-  "dur": 2.56,
+  "dur": 2.66,
   "file": "media/audio7/bq7_W_qamis_seg.mp3",
-  "take": "g3_A",
+  "take": "V11_W_qamis_seg__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0.27,
-     2.42
-    ],
-    "B": [
-     0.0,
-     0,
-     0.09
-    ]
-   },
-   "heard": "قميقميص",
-   "max_closed_nasal_s": 0.26,
-   "dur": 2.56,
+   "asr": "قميص",
+   "sim": 0.73,
+   "verdict": "PASS*",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -2.7
-  }
+   "tp": -5.3,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_W_timsah",
@@ -796,29 +775,19 @@
   "id": "bq7_W_timsah_seg",
   "speaker": "HAB",
   "text": "تِمْ… ساحْ… تِمْساحْ",
-  "dur": 3.06,
+  "dur": 3.19,
   "file": "media/audio7/bq7_W_timsah_seg.mp3",
-  "take": "g3_A",
+  "take": "V11_W_timsah_seg__1.mp3",
   "checks": {
-   "asr_score": 0.9,
-   "scores": {
-    "A": [
-     0.67,
-     0,
-     1.46
-    ],
-    "B": [
-     0.0,
-     0,
-     0.09
-    ]
-   },
-   "heard": "تمساح | تمساح (manual chunk ASR)",
-   "max_closed_nasal_s": 0,
-   "dur": 3.06,
+   "asr": "تمساح",
+   "sim": 0.67,
+   "verdict": "PASS*",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -2.8
-  }
+   "tp": -2.9,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_S_ba",
@@ -1506,35 +1475,39 @@
   "id": "bq7_E01_model",
   "speaker": "HAB",
   "text": "هَذَا هُوَ: مَ – مِ – مُ. مَكْتَب، مَانْجُو، مُشْط، مِفْتَاح.",
-  "dur": 12.7,
+  "dur": 9.35,
   "file": "media/audio7/bq7_E01_model.mp3",
-  "take": "c_E01model.mp3 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3 + bq7_W_maktab.mp3 + bq7_W_mango.mp3 + bq7_W_musht.mp3 + bq7_W_miftah.mp3",
+  "take": "V11_E01_model__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "هَذَا هُوَ: مَ… مِ… مُ. مَكْتَبْ، مانْجو، مُشْطْ، مِفْتاحْ.",
-   "dur": 8.41,
-   "lufs": -17.4,
-   "tp": -1.4
+   "asr": "هذا هو ما مي مو مكتب مانجو مشط مفتاح",
+   "sim": 0.94,
+   "verdict": "PASS*",
+   "whole_take": true,
+   "lufs": -17.6,
+   "tp": -1.7,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E01_ok",
   "speaker": "HAB",
   "text": "نَعَمْ! سَمِعْناهُ في كُلِّ كَلِمَةٍ: مَ… ما… مُ… مِ.",
-  "dur": 9.93,
+  "dur": 7.29,
   "file": "media/audio7/bq7_E01_ok.mp3",
-  "take": "composed",
+  "take": "V11_E01_ok__1.mp3",
   "checks": {
-   "composed": "c_E01ok +0.35s bq7_S_ma +0.45s bq7_S_maa +0.45s bq7_S_mu +0.45s bq7_S_mi",
-   "note": "rebuilt with v8 bq7_S_mi",
-   "dur": 6.5,
+   "asr": "نعم سمعناه في كل كلمة ما ما مو مي",
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.9,
-   "fix_round": "v8 2026-10-05"
+   "tp": -4.0,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E01_question",
@@ -1727,18 +1700,20 @@
   "id": "bq7_E02_hint",
   "speaker": "HAB",
   "text": "اِسْتَمِع مَرَّةً أُخْرَى: مَكْتَب… مَانْجُو… نُمُور.",
-  "dur": 7.68,
+  "dur": 6.03,
   "file": "media/audio7/bq7_E02_hint.mp3",
-  "take": "sci1/listen_again_A_1 + bq7_W_maktab.mp3 + bq7_W_mango.mp3 + bq7_W_numur.mp3",
+  "take": "V11_E02_hint__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِسْتَمِعْ مَرَّةً أُخْرَى: مَكْتَبْ… مانْجو… نُمورْ.",
-   "dur": 5.43,
-   "lufs": -17.5,
-   "tp": -1.8
+   "asr": "استمع مرة أخرى مكتب مانجو نمور",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -4.3,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E02_maj_book",
@@ -1762,27 +1737,17 @@
   "text": "هَذا مَكْتَبي.",
   "dur": 1.2,
   "file": "media/audio7/bq7_E02_maj_maktab.mp3",
-  "take": "g30_A",
+  "take": "V11_E02_maj_maktab__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     1.08
-    ],
-    "B": [
-     1.0,
-     0,
-     1.09
-    ]
-   },
-   "heard": "هذامكتبي",
-   "max_closed_nasal_s": 0,
-   "dur": 1.2,
+   "asr": "هذا مكتبي",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.5,
-   "tp": -1.8
-  }
+   "tp": -3.5,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E02_maj_manju",
@@ -1790,18 +1755,17 @@
   "text": "وَآخُذُ مانْجو مَعي.",
   "dur": 1.83,
   "file": "media/audio7/bq7_E02_maj_manju.mp3",
-  "take": "fx_maj_A",
+  "take": "V11_E02_maj_manju__6.mp3",
   "checks": {
-   "dj_fric_ms": 40,
-   "dj_splice": "/g/ release replaced by same-voice /dʒ/ release from ipa_maj_A.mp3",
-   "note": "TTS sentence takes still said /g/; closure-to-closure splice keeps sentence prosody",
-   "dur": 1.83,
-   "lufs": -17.4,
+   "asr": "وآخذ مانجو معي",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.7,
    "tp": -3.1,
-   "max_closed_nasal_s": 0,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E02_maj_morning",
@@ -1927,18 +1891,20 @@
   "id": "bq7_E02_ok",
   "speaker": "HAB",
   "text": "نَعَمْ! سَمِعْناهُ في كُلِّ الكَلِماتِ: مَ… مِ… مُ… ما… مي… مو.",
-  "dur": 13.06,
+  "dur": 9.4,
   "file": "media/audio7/bq7_E02_ok.mp3",
-  "take": "composed",
+  "take": "V11_E02_ok__2.mp3",
   "checks": {
-   "composed": "c_E02ok +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu +0.45s bq7_S_maa +0.45s bq7_S_mii +0.45s bq7_S_muu",
-   "note": "rebuilt with v8 bq7_S_mi",
-   "dur": 9.12,
+   "asr": "نعم، سمعناه في كل الكلمات ما، مي، مو، ما، مي، مو",
+   "sim": 0.95,
+   "verdict": "PASS*",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.9,
-   "fix_round": "v8 2026-10-05"
+   "tp": -4.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E02_question",
@@ -2040,35 +2006,39 @@
   "id": "bq7_E03_intro",
   "speaker": "HAB",
   "text": "اِسْتَمِع إِلَى كَلِمَتَيْنِ، وَحَدِّدِ الْكَلِمَةَ الَّتِي فِيهَا صَوْتُنَا: مَ – مِ – مُ.",
-  "dur": 9.4,
+  "dur": 8.31,
   "file": "media/audio7/bq7_E03_intro.mp3",
-  "take": "sci1/G3_A_1 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": "V11_E03_intro__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِسْتَمِعْ إِلَى كَلِمَتَيْنِ، وَحَدِّدِ الْكَلِمَةَ الَّتِي فِيهَا صَوْتُنَا: مَ… مِ… مُ.",
-   "dur": 6.79,
+   "asr": "استمع إلى كلمتين وحدد الكلمة التي فيها صوتنا ما، مه، مو",
+   "sim": 0.96,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.7
+   "tp": -2.3,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E03_l1_all",
   "speaker": "HAB",
   "text": "اِسْتَمِع، وَحَدِّد كُلَّ كَلِمَةٍ فِيهَا صَوْتُنَا: مَ – مِ – مُ.",
-  "dur": 8.62,
+  "dur": 7.55,
   "file": "media/audio7/bq7_E03_l1_all.mp3",
-  "take": "sci1/G3_A_3 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": "V11_E03_l1__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِسْتَمِعْ، وَحَدِّدْ كُلَّ كَلِمَةٍ فِيهَا صَوْتُنَا: مَ… مِ… مُ.",
-   "dur": 5.93,
+   "asr": "استمع وحدد كل كلمة فيها صوتنا ما مي مو",
+   "sim": 0.95,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.9
+   "tp": -2.3,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E03_l2_intro",
@@ -2199,20 +2169,19 @@
   "id": "bq7_E04_mean_manju",
   "speaker": "MAJ",
   "text": "المانْجو فاكِهَةٌ حُلْوَةٌ.",
-  "dur": 2.27,
+  "dur": 2.82,
   "file": "media/audio7/bq7_E04_mean_manju.mp3",
-  "take": "fx_mean_A",
+  "take": "V11_E04_mean_manju__1.mp3",
   "checks": {
-   "dj_fric_ms": 40,
-   "dj_splice": "/g/ release replaced by same-voice /dʒ/ release from ipa_maj_A.mp3",
-   "note": "TTS sentence takes still said /g/; closure-to-closure splice keeps sentence prosody",
-   "dur": 2.27,
-   "lufs": -17.6,
-   "tp": -2.5,
-   "max_closed_nasal_s": 0.06,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "asr": "المانجو فاكهة حلوة",
+   "sim": 0.97,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -1.9,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E04_mean_miftah",
@@ -2496,116 +2465,134 @@
   "id": "bq7_E04_say_maktab",
   "speaker": "HAB",
   "text": "قُلْ: مَكْتَبْ.",
-  "dur": 2.3,
+  "dur": 2.12,
   "file": "media/audio7/bq7_E04_say_maktab.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_maktab__1.mp3",
   "checks": {
-   "composed": "c_qul +0.3s bq7_W_maktab",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.78,
-   "lufs": -17.4,
-   "tp": -2.2
+   "asr": "قل مكتب",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.6,
+   "tp": -3.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_say_manju",
   "speaker": "HAB",
   "text": "قُلْ: مانْجو.",
-  "dur": 2.51,
+  "dur": 2.17,
   "file": "media/audio7/bq7_E04_say_manju.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_manju__2.mp3",
   "checks": {
-   "composed": "c_qul +0.3 bq7_W_mango",
-   "dj_fric_ms": 60,
-   "dur": 1.7,
-   "lufs": -17.5,
-   "tp": -3.5,
-   "max_closed_nasal_s": 0.16,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
+   "asr": "قل منجو",
+   "sim": 0.86,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -6.1,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_say_miftah",
   "speaker": "HAB",
   "text": "قُلْ: مِفْتاحْ.",
-  "dur": 2.64,
+  "dur": 2.17,
   "file": "media/audio7/bq7_E04_say_miftah.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_miftah__1.mp3",
   "checks": {
-   "composed": "c_qul +0.3s bq7_W_miftah",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 2.01,
-   "lufs": -17.5,
-   "tp": -1.4
+   "asr": "قل مفتاح",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -2.5,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_say_musht",
   "speaker": "HAB",
   "text": "قُلْ: مُشْطْ.",
-  "dur": 1.91,
+  "dur": 2.06,
   "file": "media/audio7/bq7_E04_say_musht.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_musht__1.mp3",
   "checks": {
-   "composed": "c_qul +0.3s bq7_W_musht",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.78,
-   "lufs": -17.4,
-   "tp": -2.9
+   "asr": "قل مشت",
+   "sim": 0.8,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.5,
+   "tp": -4.5,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_say_numur",
   "speaker": "HAB",
   "text": "قُلْ: نُمورْ.",
-  "dur": 2.3,
+  "dur": 2.06,
   "file": "media/audio7/bq7_E04_say_numur.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_numur__1.mp3",
   "checks": {
-   "composed": "c_qul +0.3s bq7_W_numur",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.83,
+   "asr": "قل نمور",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -4.0
+   "tp": -8.3,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_say_qamis",
   "speaker": "HAB",
   "text": "قُلْ: قَميصْ.",
-  "dur": 2.35,
+  "dur": 2.43,
   "file": "media/audio7/bq7_E04_say_qamis.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_qamis__1.mp3",
   "checks": {
-   "composed": "c_qul +0.3s bq7_W_qamis",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.78,
+   "asr": "قل قميص",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -4.1
+   "tp": -5.6,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_say_timsah",
   "speaker": "HAB",
   "text": "قُلْ: تِمْساحْ.",
-  "dur": 2.48,
+  "dur": 2.19,
   "file": "media/audio7/bq7_E04_say_timsah.mp3",
-  "take": "composed",
+  "take": "V11_E04_say_timsah__1.mp3",
   "checks": {
-   "composed": "c_qul +0.3s bq7_W_timsah",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.96,
+   "asr": "قل تمساح",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -4.4
+   "tp": -2.9,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E04_title",
@@ -2717,42 +2704,38 @@
   "id": "bq7_E05_brq_musht_ok",
   "speaker": "BRQ",
   "text": "مُشْط",
-  "dur": 0.47,
+  "dur": 1.36,
   "file": "media/audio7/bq7_E05_brq_musht_ok.mp3",
-  "take": "sci1/BM_C_1",
+  "take": "V11_E05_brq_musht_ok__6.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "مُشْطْ",
-   "dur": 0.47,
-   "lufs": -17.5,
-   "tp": -1.5,
-   "voice9_head_trim": {
-    "what": "a stray 0.3 s voiced hum (ASR «همم», F1 ~350 F2 ~2200) + 0.65 s silence sat before «مُشْط»; file now starts at the /m/ (src 0.97–1.41 s)",
-    "asr": "مشت",
-    "mu_F2_hz": 1260,
-    "lufs": -17.5,
-    "tp": -1.5,
-    "round": "VOICE-9 2026-10-07",
-    "old_file": "v7/voice/old_v7/voice9/bq7_E05_brq_musht_ok.mp3"
-   }
-  }
+   "asr": "موشت",
+   "sim": 0.57,
+   "verdict": "PASS*",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -5.9,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E05_demo_lips",
   "speaker": "HAB",
   "text": "الشَّفَتانِ مُغْلَقَتانِ: مْ… ثُمَّ تَنْفَتِحانِ: مَ.",
-  "dur": 7.0,
+  "dur": 5.98,
   "file": "media/audio7/bq7_E05_demo_lips.mp3",
-  "take": "composed",
+  "take": "V11_E05_demo_lips__1.mp3",
   "checks": {
-   "composed": "c_lipsA +0.3s bq7_S_m0 +0.35s c_lipsB +0.3s bq7_S_ma",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 7.16,
+   "asr": "الشفتان مغلقتان ثم تنفتحان",
+   "sim": 0.96,
+   "verdict": "PASS*",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -2.2
+   "tp": -1.8,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E05_end",
@@ -2955,33 +2938,39 @@
   "id": "bq7_E05_say_ma",
   "speaker": "HAB",
   "text": "قُلْ مَعي: مَ.",
-  "dur": 1.99,
+  "dur": 2.01,
   "file": "media/audio7/bq7_E05_say_ma.mp3",
-  "take": "composed",
+  "take": "V11_E05_say_ma__2.mp3",
   "checks": {
-   "composed": "c_qul_maai +0.3s bq7_S_ma",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.36,
-   "lufs": -17.5,
-   "tp": -5.0
+   "asr": "قل معي ما؟",
+   "sim": 0.92,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -5.1,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E05_say_maa",
   "speaker": "HAB",
   "text": "قُلْ مَعي: ما.",
-  "dur": 2.38,
+  "dur": 2.01,
   "file": "media/audio7/bq7_E05_say_maa.mp3",
-  "take": "composed",
+  "take": "V11_E05_say_maa__1.mp3",
   "checks": {
-   "composed": "c_qul_maai +0.3s bq7_S_maa",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.8,
-   "lufs": -17.4,
-   "tp": -3.6
+   "asr": "قل معي ما",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.3,
+   "tp": -3.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E05_say_mi",
@@ -3004,49 +2993,58 @@
   "id": "bq7_E05_say_mii",
   "speaker": "HAB",
   "text": "قُلْ مَعي: مي.",
-  "dur": 2.25,
+  "dur": 2.04,
   "file": "media/audio7/bq7_E05_say_mii.mp3",
-  "take": "composed",
+  "take": "V11_E05_say_mii__1.mp3",
   "checks": {
-   "composed": "c_qul_maai +0.3s bq7_S_mii",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.8,
+   "asr": "قل معي مي",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -6.1
+   "tp": -6.6,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E05_say_mu",
   "speaker": "HAB",
   "text": "قُلْ مَعي: مُ.",
-  "dur": 2.06,
+  "dur": 1.96,
   "file": "media/audio7/bq7_E05_say_mu.mp3",
-  "take": "composed",
+  "take": "V11_E05_say_mu__2.mp3",
   "checks": {
-   "composed": "c_qul_maai +0.3s bq7_S_mu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.36,
-   "lufs": -17.5,
-   "tp": -5.8
+   "asr": "قل معي مو",
+   "sim": 0.92,
+   "verdict": "PASS*",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -6.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E05_say_muu",
   "speaker": "HAB",
   "text": "قُلْ مَعي: مو.",
-  "dur": 2.17,
+  "dur": 2.04,
   "file": "media/audio7/bq7_E05_say_muu.mp3",
-  "take": "composed",
+  "take": "V11_E05_say_muu__1.mp3",
   "checks": {
-   "composed": "c_qul_maai +0.3s bq7_S_muu",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 1.75,
+   "asr": "قل معي مو",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -5.5
+   "tp": -7.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E05_short_intro",
@@ -3169,18 +3167,20 @@
   "id": "bq7_E06_find_intro",
   "speaker": "HAB",
   "text": "اِسْتَمِع إِلَى الْكَلِمَةِ، وَحَدِّد حَرْفَ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.",
-  "dur": 9.35,
+  "dur": 7.68,
   "file": "media/audio7/bq7_E06_find_intro.mp3",
-  "take": "sci1/G3_A_4 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": "V11_E06_find_intro__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِسْتَمِعْ إِلَى الْكَلِمَةِ، وَحَدِّدْ حَرْفَ الْمِيمِ، صَوْتُهُ: مَ… مِ… مُ.",
-   "dur": 6.19,
+   "asr": "استمع إلى الكلمة وحدد حرف الميم صوته م م مو",
+   "sim": 0.99,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -2.2
+   "tp": -2.4,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E06_match_intro",
@@ -3203,18 +3203,20 @@
   "id": "bq7_E06_ok_letter",
   "speaker": "HAB",
   "text": "هَذَا حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.",
-  "dur": 7.58,
+  "dur": 6.06,
   "file": "media/audio7/bq7_E06_ok_letter.mp3",
-  "take": "c_okl.mp3 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": "V11_E06_ok_letter__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "هَذَا حَرْفُ الْمِيمِ، صَوْتُهُ: مَ… مِ… مُ.",
-   "dur": 4.99,
+   "asr": "هذا حرف الميم صوته م م مو",
+   "sim": 0.97,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.8
+   "tp": -2.9,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E06_recall",
@@ -3848,16 +3850,20 @@
   "id": "bq7_E07m_open",
   "speaker": "HAB",
   "text": "هَذا قِطارُ الكَلِماتِ! وَهَذِهِ المِيمُ… صَوْتُها مَ.",
-  "dur": 6.79,
+  "dur": 5.98,
   "file": "media/audio7/bq7_E07m_open.mp3",
-  "take": "composed",
+  "take": "V11_E07m_open__1.mp3",
   "checks": {
-   "composed": "c_E07m(g37_A) +0.3s bq7_S_ma",
-   "dur": 5.9,
+   "asr": "هذا قطار الكلمات وهذه الميم صوتها ما",
+   "sim": 0.98,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -2.1
+   "tp": -1.8,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E07m_rule",
@@ -4335,18 +4341,20 @@
   "id": "bq7_E09_intro",
   "speaker": "HAB",
   "text": "هَيَّا نَكْتُب حَرْفَ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.",
-  "dur": 7.73,
+  "dur": 6.43,
   "file": "media/audio7/bq7_E09_intro.mp3",
-  "take": "c_e09.mp3 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": "V11_E09_intro__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "هَيّا نَكْتُبْ حَرْفَ المِيمِ، صَوْتُهُ: مَ… مِ… مُ.",
-   "dur": 5.02,
+   "asr": "هيا نكتب حرف الميم صوته ما مه مو",
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.9
+   "tp": -3.1,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E09_ok",
@@ -5145,26 +5153,20 @@
   "id": "bq7_E11_r_s5",
   "speaker": "BRQ",
   "text": "هَذا حَرْفُ المِيمِ: م. صَوْتُهُ: مَ، مِ، مُ.",
-  "dur": 7.5,
+  "dur": 5.96,
   "file": "media/audio7/bq7_E11_r_s5.mp3",
-  "take": "composed",
+  "take": "V11_E11_r_s5__1.mp3",
   "checks": {
-   "composed": "c_rs5 +0.4 brq_ma +0.45 brq_mi(v8, bmi_A) +0.45 brq_mu",
-   "asr": "هذا حرف الميم صوته ما مي مو",
-   "vowel_F2_hz": {
-    "ma": 1726,
-    "mi": 2320,
-    "mu": 1148
-   },
-   "note": "Bariq «مِ» re-taken (old ASR «مه» → new «مي»)",
-   "dur": 5.69,
+   "asr": "هذا حرف الميم صوته م م م م",
+   "sim": 0.97,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -4.0,
-   "max_closed_nasal_s": 0.14,
-   "fix_round": "v8 2026-10-05",
-   "nasal_run_resolution_s": 0.05
+   "tp": -1.7,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E11_r_s6",
@@ -5200,20 +5202,19 @@
   "id": "bq7_E11_r_s7",
   "speaker": "BRQ",
   "text": "نَقْرَأُ مَعًا: مَ… ما… مانْجو.",
-  "dur": 4.73,
+  "dur": 4.88,
   "file": "media/audio7/bq7_E11_r_s7.mp3",
-  "take": "composed",
+  "take": "V11_E11_r_s7__2.mp3",
   "checks": {
-   "composed": "c_rs7 (BRQ «نَقْرَأُ مَعًا:») +0.4 brq_ma +0.6 brq_maa (rs7_A) +0.6 brq_mango (w_brq_A)",
-   "asr": "نقرأ معا م ما منجو",
-   "dj_fric_ms": 60,
-   "dur": 4.73,
+   "asr": "نقرأ معاً م ما مانجو",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -3.2,
-   "max_closed_nasal_s": 0.13,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "tp": -2.5,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E11_r_s8",
@@ -5374,18 +5375,20 @@
   "id": "bq7_E11_s2_q",
   "speaker": "HAB",
   "text": "اِخْتَرِ الصَّوْتَ الصَّحِيحَ (مَ – مِ – مُ).",
-  "dur": 6.19,
+  "dur": 5.04,
   "file": "media/audio7/bq7_E11_s2_q.mp3",
-  "take": "sci1/G3_A_6 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": "V11_E11_s2__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِخْتَرِ الصَّوْتَ الصَّحِيحَ: مَ… مِ… مُ.",
-   "dur": 4.02,
+   "asr": "اختر الصوت الصحيح ما مي مو",
+   "sim": 0.92,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.5
+   "tp": -2.6,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E11_s3_q1",
@@ -5427,18 +5430,20 @@
   "id": "bq7_E11_s4_q2",
   "speaker": "HAB",
   "text": "قُلْ: مَ، مِ، مُ، ما، مي، مو.",
-  "dur": 10.19,
+  "dur": 7.94,
   "file": "media/audio7/bq7_E11_s4_q2.mp3",
-  "take": "composed",
+  "take": "V11_E11_s4_q2__1.mp3",
   "checks": {
-   "composed": "c_qul +0.35s bq7_S_ma +0.4s bq7_S_mi +0.4s bq7_S_mu +0.4s bq7_S_maa +0.4s bq7_S_mii +0.4s bq7_S_muu",
-   "note": "rebuilt with v8 bq7_S_mi",
-   "dur": 6.3,
+   "asr": "قل ما مي مو ما مي مو",
+   "sim": 0.64,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -3.3,
-   "fix_round": "v8 2026-10-05"
+   "tp": -3.4,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E11_s5_q1",
@@ -5656,27 +5661,17 @@
   "text": "هَذا حَرْفُ المِيمِ…",
   "dur": 1.7,
   "file": "media/audio7/bq7_E12_brq_name.mp3",
-  "take": "g28_A",
+  "take": "V11_E12_brq_name__2.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     1.57
-    ],
-    "B": [
-     1.0,
-     0.23,
-     1.79
-    ]
-   },
-   "heard": "هذاحرفالميم",
-   "max_closed_nasal_s": 0,
-   "dur": 1.7,
-   "lufs": -17.4,
-   "tp": -3.5
-  }
+   "asr": "هذا حرف الميم",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.7,
+   "tp": -5.0,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E12_intro",
@@ -6099,15 +6094,17 @@
   "text": "اِسْتَيْقَظَ مَاجِدٌ مُبَكِّرًا. لَبِسَ قَمِيصَهُ، وَسَرَّحَ شَعْرَهُ بِالْمُشْطِ.",
   "dur": 6.01,
   "file": "media/audio7/bq7_E13_n1.mp3",
-  "take": "n1_head.wav + n1_tail.wav",
+  "take": "V11_E13_n1__4.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِسْتَيْقَظَ ماجِدٌ مُبَكِّرًا. لَبِسَ قَميصَهُ، وَسَرَّحَ شَعْرَهُ بِالْمُشْطْ.",
-   "dur": 6.01,
-   "lufs": -17.5,
-   "tp": -1.4
-  }
+   "asr": "استيقف ماجد مبكرا لبس قميصه وسرح شعره بالموشط",
+   "sim": 0.97,
+   "verdict": "PASS*",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -1.4,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E13_n2",
@@ -6115,18 +6112,17 @@
   "text": "وَضَعَ ماجِدٌ مانْجو وَمَوْزًا في حَقيبَتِهِ.",
   "dur": 3.5,
   "file": "media/audio7/bq7_E13_n2.mp3",
-  "take": "fx_n2_B",
+  "take": "V11_E13_n2__5.mp3",
   "checks": {
-   "dj_fric_ms": 60,
-   "dj_splice": "/g/ release replaced by same-voice /dʒ/ release from mj_A.mp3",
-   "note": "TTS sentence takes still said /g/; closure-to-closure splice keeps sentence prosody",
-   "dur": 3.5,
-   "lufs": -17.5,
-   "tp": -1.4,
-   "max_closed_nasal_s": 0.06,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "asr": "وضع ماجد منجو وموزاً في حقيبته",
+   "sim": 0.96,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -3.0,
+   "round": "VOICE-11"
+  },
+  "voice11": true
  },
  {
   "id": "bq7_E13_n3",
@@ -6905,18 +6901,20 @@
   "id": "bq7_E16_task",
   "speaker": "BRQ",
   "text": "اِبْحَث فِي الْبَيْتِ عَن أَشْيَاءَ تَبْدَأُ بِصَوْتِ: مَ – مِ – مُ.",
-  "dur": 7.86,
+  "dur": 6.35,
   "file": "media/audio7/bq7_E16_task.mp3",
-  "take": "sci1/B2_A_2 + brq_ma.mp3 + brq_mi.mp3 + brq_mu.mp3",
+  "take": "V11_E16_task__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِبْحَثْ فِي الْبَيْتِ عَنْ أَشْيَاءَ تَبْدَأُ بِصَوْتِ: مَ… مِ… مُ.",
-   "dur": 5.83,
+   "asr": "ابحث في البيت عن أشياء تبدأ بصوتي ما مي مو",
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.6
+   "tp": -1.5,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E16_title",
@@ -6969,17 +6967,20 @@
   "id": "bq7_G_hint_lips",
   "speaker": "HAB",
   "text": "الشَّفَتانِ تَلْتَقِيانِ، ثُمَّ تَنْفَتِحانِ: مَ.",
-  "dur": 5.3,
+  "dur": 5.04,
   "file": "media/audio7/bq7_G_hint_lips.mp3",
-  "take": "composed",
+  "take": "V11_G_hint_lips__1.mp3",
   "checks": {
-   "composed": "c_hint +0.3s bq7_S_ma",
-   "note": "carrier TTS + approved syllable/word clips (exact short/long, no «ميم» misreading)",
-   "dur": 4.65,
+   "asr": "الشفتان تلتقيان ثم تنفتحان ما",
+   "sim": 0.98,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.4
+   "tp": -2.3,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_G_hint_start",
@@ -7968,22 +7969,22 @@
  },
  {
   "id": "bq7_E10c_rule",
-  "take": "composed",
+  "take": "V11_E10c_rule__1.mp3",
   "checks": {
-   "composed": "e10c_sci1_c_rule_C +0.35 S_ma +0.45 S_mi +0.45 S_mu",
-   "asr_carrier": "إبحث عن ما يبدأ بصوت الميم",
-   "dur": 4.99,
+   "asr": "ابحث عما يبدأ بصوت الميم ما مي مو",
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.5,
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07"
+   "tp": -2.7,
+   "round": "VOICE-11"
   },
   "speaker": "HAB",
   "text": "اِبْحَث عَمَّا يَبْدَأُ بِصَوْتِ الْمِيمِ: مَ – مِ – مُ",
-  "dur": 7.44,
+  "dur": 6.35,
   "file": "media/audio7/bq7_E10c_rule.mp3",
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E10c_pick_thing",
@@ -8043,93 +8044,98 @@
  },
  {
   "id": "bq7_E10c_first_mawz",
-  "take": "composed",
+  "take": "V11_E10c_first_mawz__1.mp3",
   "checks": {
-   "composed": "take f_mawz_A +0.38 [f_mawz_A seg1 «يَبْدَأُ بِـ»] +0.32 brq_ma",
-   "dur": 3.03,
-   "lufs": -17.4,
+   "asr": "موز يبدأ بما",
+   "sim": 0.95,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.5,
    "tp": -1.4,
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07"
+   "round": "VOICE-11"
   },
   "speaker": "BRQ",
   "text": "مَوْز… يَبْدَأُ بِـ مَ",
-  "dur": 3.5,
+  "dur": 3.32,
   "file": "media/audio7/bq7_E10c_first_mawz.mp3",
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E10c_first_manju",
-  "take": "composed",
+  "take": "V11_E10c_first_manju__2.mp3",
   "checks": {
-   "composed": "carriers/brq_mango (/dʒ/) +0.38 [f_manju_D seg1 «يَبْدَأُ بِـ»] +0.32 brq_maa",
-   "dur": 3.4,
-   "lufs": -17.5,
+   "asr": "منجو يبدأ بما",
+   "sim": 0.92,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.2,
    "tp": -1.4,
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07"
+   "round": "VOICE-11"
   },
   "speaker": "BRQ",
   "text": "مَانْجُو… يَبْدَأُ بِـ مَا",
-  "dur": 3.66,
+  "dur": 3.37,
   "file": "media/audio7/bq7_E10c_first_manju.mp3",
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E10c_first_miftah",
-  "take": "composed",
+  "take": "V11_E10c_first_miftah__1.mp3",
   "checks": {
-   "composed": "take f_miftah_A +0.38 [f_miftah_A seg2 «يَبْدَأُ بِـ»] +0.32 brq_mi",
-   "dur": 3.37,
-   "lufs": -17.3,
-   "tp": -1.5,
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07"
+   "asr": "مفتاح يبدأ بمي",
+   "sim": 0.96,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -3.1,
+   "round": "VOICE-11"
   },
   "speaker": "BRQ",
   "text": "مِفْتَاح… يَبْدَأُ بِـ مِ",
-  "dur": 3.76,
+  "dur": 3.53,
   "file": "media/audio7/bq7_E10c_first_miftah.mp3",
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E10c_first_musht",
-  "take": "composed",
+  "take": "V11_E10c_first_musht__3.mp3",
   "checks": {
-   "composed": "bq7_E05_brq_musht_ok (/u/ F2 1090) +0.38 [f_musht_D seg1 «يَبْدَأُ بِـ»] +0.32 brq_mu",
-   "dur": 3.08,
-   "lufs": -17.5,
-   "tp": -1.4,
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07"
+   "asr": "مشت يبدأ بمه",
+   "sim": 0.9,
+   "verdict": "PASS*",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -1.6,
+   "round": "VOICE-11"
   },
   "speaker": "BRQ",
   "text": "مُشْط… يَبْدَأُ بِـ مُ",
-  "dur": 3.58,
+  "dur": 3.97,
   "file": "media/audio7/bq7_E10c_first_musht.mp3",
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E10c_first_maktab",
-  "take": "composed",
+  "take": "V11_E10c_first_maktab__1.mp3",
   "checks": {
-   "composed": "take f_maktab_C +0.38 [f_maktab_C seg1 «يَبْدَأُ بِـ»] +0.32 brq_ma",
-   "dur": 2.98,
+   "asr": "مكتب يدأ بي ما",
+   "sim": 0.86,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.5,
-   "tp": -1.3,
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07"
+   "tp": -1.1,
+   "round": "VOICE-11"
   },
   "speaker": "BRQ",
   "text": "مَكْتَب… يَبْدَأُ بِـ مَ",
-  "dur": 3.5,
+  "dur": 3.19,
   "file": "media/audio7/bq7_E10c_first_maktab.mp3",
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E11_s3_q8",
@@ -8322,86 +8328,101 @@
   "id": "bq7_E11_s1_q8",
   "speaker": "HAB",
   "text": "أَيُّ الكَلِماتِ بِها صَوْتُ (مَ – مِ – مُ)؟ اِسْتَمِع، ثُمَّ اخْتَر.",
-  "dur": 10.24,
+  "dur": 7.92,
   "file": "media/audio7/bq7_E11_s1_q8.mp3",
-  "take": "composed",
+  "take": "V11_E11_s1_q8__1.mp3",
   "model": "eleven_v4",
   "checks": {
+   "asr": "أي الكلمات بها صوت م م م م استمع ثم اختر",
+   "sim": 0.98,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.8,
-   "dur": 6.97,
-   "composed": "t3_s1a.wav +0.3s bq7_S_ma.mp3 +0.4s bq7_S_mi.mp3 +0.4s bq7_S_mu.mp3 +0.55s t3_lc.wav",
-   "fix_round": "SCI-1 T3"
+   "tp": -2.2,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E11_s2_q8",
   "speaker": "HAB",
   "text": "اِخْتَرِ الصَّوْتَ الصَّحيحَ (مَ – مِ – مُ).",
-  "dur": 6.19,
+  "dur": 5.04,
   "file": "media/audio7/bq7_E11_s2_q8.mp3",
-  "take": "composed",
+  "take": "V11_E11_s2__1.mp3",
   "model": "eleven_v4",
   "checks": {
-   "lufs": -17.5,
-   "tp": -2.8,
-   "dur": 3.92,
-   "composed": "t3_ch.wav +0.3s bq7_S_ma.mp3 +0.4s bq7_S_mi.mp3 +0.4s bq7_S_mu.mp3",
-   "fix_round": "SCI-1 T3"
+   "asr": "اختر الصوت الصحيح ما مي مو",
+   "sim": 0.92,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.4,
+   "tp": -2.6,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E14_st_short",
   "speaker": "HAB",
   "text": "الحَرَكاتُ القَصيرَةُ: مَ، مِ، مُ.",
-  "dur": 6.06,
+  "dur": 4.75,
   "file": "media/audio7/bq7_E14_st_short.mp3",
-  "take": "composed",
+  "take": "V11_E14_st_short__1.mp3",
   "model": "eleven_v4",
   "checks": {
+   "asr": "الحركات القصيرة م مي مو",
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -3.0,
-   "dur": 3.79,
-   "composed": "t3_short.wav +0.3s bq7_S_ma.mp3 +0.4s bq7_S_mi.mp3 +0.4s bq7_S_mu.mp3",
-   "fix_round": "SCI-1 T3"
+   "tp": -4.5,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E14_st_long",
   "speaker": "HAB",
   "text": "الحَرَكاتُ الطَّويلَةُ: ما، مي، مو.",
-  "dur": 6.79,
+  "dur": 5.15,
   "file": "media/audio7/bq7_E14_st_long.mp3",
-  "take": "composed",
+  "take": "V11_E14_st_long__1.mp3",
   "model": "eleven_v4",
   "checks": {
+   "asr": "الحركات الطويلة ما مي مو ترجمة",
+   "sim": 0.89,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -2.2,
-   "dur": 5.07,
-   "composed": "t3_long.wav +0.3s bq7_S_maa.mp3 +0.4s bq7_S_mii.mp3 +0.4s bq7_S_muu.mp3",
-   "fix_round": "SCI-1 T3"
+   "tp": -5.1,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E16_k4",
   "speaker": "BRQ",
   "text": "اُرْسُم حَرْفَ المِيمِ عَلى الرَّمْلِ، وَقُل: ما، مي، مو.",
-  "dur": 8.07,
+  "dur": 5.9,
   "file": "media/audio7/bq7_E16_k4.mp3",
-  "take": "composed",
+  "take": "V11_E16_k4__1.mp3",
   "model": "eleven_v4",
   "checks": {
-   "lufs": -17.4,
-   "tp": -3.1,
-   "dur": 5.98,
-   "composed": "t3_k4.wav +0.3s brq_maa.mp3 +0.4s t3_bmii.wav +0.4s t3_bmuu.wav",
-   "fix_round": "SCI-1 T3"
+   "asr": "أرسم حرف الميم على الرمل وقل ما مي مو",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "whole_take": true,
+   "lufs": -17.5,
+   "tp": -2.1,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E01_q_s1",
@@ -8679,19 +8700,20 @@
   "id": "bq7_E03_l1_s1",
   "speaker": "HAB",
   "text": "اِسْتَمِع، وَحَدِّد كُلَّ كَلِمَةٍ فيها صَوْتُنا: مَ… مِ… مُ.",
-  "dur": 8.62,
+  "dur": 7.55,
   "file": "media/audio7/bq7_E03_l1_s1.mp3",
-  "take": "composed",
+  "take": "V11_E03_l1__1.mp3",
   "checks": {
-   "composed": "c_e03_l1_s1 +0.35 bq7_S_ma +0.45 bq7_S_mi +0.45 bq7_S_mu",
-   "asr_carrier": "استمع وحدد كل كلمة فيها صوتنا",
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "dur": 6.09,
+   "asr": "استمع وحدد كل كلمة فيها صوتنا ما مي مو",
+   "sim": 0.95,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.6
+   "tp": -2.3,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_W_muallim_seg",
@@ -8803,18 +8825,20 @@
   "id": "bq7_E16_m1",
   "speaker": "BRQ",
   "text": "اِبْحَث فِي الْبَيْتِ عَن أَشْيَاءَ تَبْدَأُ بِصَوْتِ: مَ – مِ – مُ.",
-  "dur": 7.86,
+  "dur": 6.35,
   "file": "media/audio7/bq7_E16_m1.mp3",
-  "take": "sci1/B2_A_2 + brq_ma.mp3 + brq_mi.mp3 + brq_mu.mp3",
+  "take": "V11_E16_task__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "اِبْحَثْ فِي الْبَيْتِ عَنْ أَشْيَاءَ تَبْدَأُ بِصَوْتِ: مَ… مِ… مُ.",
-   "dur": 5.83,
+   "asr": "ابحث في البيت عن أشياء تبدأ بصوتي ما مي مو",
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.6
+   "tp": -1.5,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_E16_m2",
@@ -8874,20 +8898,20 @@
   "id": "bq7_E10c_pick_syl",
   "speaker": "HAB",
   "text": "اِخْتَر مَا يَبْدَأُ بِصَوْتِ الْمِيمِ: مَ – مِ – مُ",
-  "dur": 7.21,
+  "dur": 6.11,
   "file": "media/audio7/bq7_E10c_pick_syl.mp3",
-  "take": "composed",
+  "take": "V11_E10c_pick_syl__1.mp3",
   "checks": {
-   "composed": "e10c_sci1_c_pick_C +0.35 S_ma +0.45 S_mi +0.45 S_mu",
    "asr": "اختر ما يبدأ بصوت الميم ما مي مو",
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "round": "SCI-1 2026-10-07 (T4; restores the syllable listing over T1 take sci1/G6_A_4)",
-   "dur": 4.86,
+   "sim": 0.94,
+   "verdict": "PASS",
+   "whole_take": true,
    "lufs": -17.4,
-   "tp": -1.3
+   "tp": -4.6,
+   "round": "VOICE-11"
   },
-  "voice10": true
+  "voice10": true,
+  "voice11": true
  },
  {
   "id": "bq7_FB_yes1",

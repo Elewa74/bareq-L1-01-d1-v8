@@ -180,3 +180,5 @@ body.icons-platform-white .item[aria-selected="true"] { color: var(--c-menu-sele
   .item .wip { display: none; }
   .content { aspect-ratio: auto; width: calc(100% + 32px); margin: 0 -16px; height: min(calc(100dvh - 190px), 160vw); min-height: 420px; }
 }
+/* FIX12 D-08: the lesson breadcrumb (unvoweled teacher text) is not shown on child screens — teacher pages (#plan / #mastery) only */
+body:not(.show-plan) .hdr-crumb { display: none !important; }

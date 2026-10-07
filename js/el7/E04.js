@@ -146,7 +146,7 @@
     const main = h('div.e04-main');
     if (V8) root.append(main); else root.append(top, main);
     const buddy = I.buddy(S, root, 'wave');
-    let busy = true, cur = null, judged = null;
+    let busy = true, cur = null, judged = null, own = 0; // own: checks the child answered himself (FIX12 A-11)
     // owner-late: the written word (exactly I.W, plain navy ink — no coloured meem in E04)
     const wordEl = (slug) => h('span.e04-w', { lang: 'ar', 'aria-hidden': 'true' }, h('span', null, I.W[slug].w));
     const RING = '<svg class="e04-ring" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36"/></svg>';
@@ -231,7 +231,7 @@
           if (busy || I.isNo(c)) return;
           busy = true;
           if (c === right()) {
-            if (first == null) { first = true; I.record(S, 'S9', true, { item: q.t }); }
+            own++; if (first == null) { first = true; I.record(S, 'S9', true, { item: q.t }); }
             c.classList.remove('is-soft'); c.classList.add('is-ok'); I.anim(c, 'i7-pop', 450); I.sfx('ok'); I.burst(root, c, 16); buddy.cheer();
             opts.forEach((x) => { if (x !== c && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
             await S.say(I.yes(), { talk: true });
@@ -307,7 +307,7 @@
       main.replaceChildren();
       buddy.set('cheer');
       await S.say('bq7_E04_end', { talk: true });
-      I.finish(S, { pose: 'cheer' });
+      I.finish(S, res.length && !own ? { pose: 'cheer', title: 'هَيَّا نُكْمِل.' } : { pose: 'cheer' }); // FIX12 A-11: no «أَحْسَنْتَ.» if Bariq solved every check
     })();
   }
 

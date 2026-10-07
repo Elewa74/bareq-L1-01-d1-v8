@@ -150,16 +150,30 @@
       }
       if (first == null) { first = false; I.record(S, 'S1', false, { item: 'repeat-sound', picked: b.o.key }); }
       const st = await pol.wrong(b);
-      if (st === 'model') return finish();
+      if (st === 'model') return finish(true);
       busy = false;
     }));
 
-    async function finish() {
+    /** FIX12 A-09: a closing line is heard to its END before the end card covers the screen — S.say resolves on «ended»; if it resolved
+     *  early (watchdog / an interrupted start) we still wait for the clip's «ended», at most until its duration + 1 s after the start. */
+    async function sayFull(id, o) {
+      const t0 = performance.now();
+      await S.say(id, o);
+      const au = BQ.audio && BQ.audio.voice ? BQ.audio.voice() : null;
+      if (!au || au.ended || String(au.currentSrc || au.src || '').indexOf(id + '.mp3') < 0) return;
+      const d = isFinite(au.duration) && au.duration > 0 ? au.duration : 0;
+      const left = Math.max(0, (d + 1) * 1000 - (performance.now() - t0));
+      if (!d || !left) return;
+      await S.gate(new Promise((r) => { const t = setTimeout(r, left); au.addEventListener('ended', () => { clearTimeout(t); r(); }, { once: true }); }));
+    }
+
+    async function finish(solved) {
       phase = 'end';
       I.note(S, '<p><b>نتيجة «تهيّأ للدرس» (S1):</b> ' + (first ? 'اختار «مَ… مِ… مُ» من المحاولة الأولى.' : pol.n >= 3 ? 'رأى النموذج بعد محاولتين — أعِد معه «اسمع واكتشف».' : 'اختاره بعد تلميح.') + ' (قرينة للمعلّم؛ الإتقان يُقرَّر في «تحقّق من تقدّمي».)</p>');
       buddy.set('cheer');
-      await S.say(L.bridge, { talk: true });
-      I.finish(S, { pose: 'cheer' });
+      await sayFull(L.bridge, { talk: true });
+      // FIX12 A-11: Bariq solved the only item (the child did not find it) → no «أَحْسَنْتَ.» on the end card
+      I.finish(S, solved ? { pose: 'cheer', title: 'هَيَّا نُكْمِل.' } : { pose: 'cheer' });
     }
 
     (async () => {

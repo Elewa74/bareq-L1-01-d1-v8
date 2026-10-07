@@ -115,6 +115,13 @@
 .x7p.e15 .e15-sw2 { width: calc(var(--u)*86); height: calc(var(--u)*120); }
 .x7p.e15 .e15-tools > .e15-fin { margin-inline-start: calc(var(--u)*10); }
 .x7p.e15 .e15-finbtn, .x7p.e15.is-tall .e15-finbtn { min-width: calc(var(--u)*132); min-height: calc(var(--u)*132); }
+/* FIX12-B B-10: a bigger sheet. The A4 art is portrait, so the board HEIGHT is the limit: the page now fills the board height (570 u, was 480 u)
+   and shows only the drawing (the empty paper margins are cropped: content box x 13–1590 · y 105–2054 of 1600×2263) → ≈ 1.6× the area.
+   Taps still map through the canvas rect (getBoundingClientRect), so the crop needs no change in the fill code. */
+.x7p.e15 { gap: calc(var(--u)*44); padding: 0 calc(var(--u)*20); }
+.x7p.e15 .e15-page, .x7p.e15.is-tall .e15-page { height: calc(var(--u)*570); width: calc(var(--u)*461.2); overflow: hidden; }
+.x7p.e15 .e15-page > canvas, .x7p.e15 .e15-page > img.e15-img { inset: auto; left: -0.824%; top: -5.387%; width: 101.458%; height: 116.11%; }
+.x7p.e15 .e15-pal, .x7p.e15.is-tall .e15-pal { gap: calc(var(--u)*18) calc(var(--u)*16); }
 `;
 
   function run(stage, ctx) {
@@ -144,9 +151,9 @@
     const setSwitch = () => { goBtn.style.backgroundImage = 'url("' + srcOf((pi + 1) % PAGES.length) + '")'; };
     const side = h('div.e15-side', null, h('div.e15-pal', { role: 'group', 'aria-label': 'الأَلْوانُ' }, sws), h('div.e15-tools', null, undoBtn, PAGES.length > 1 ? goBtn : null));
     // زرّ الختام «التّالي» — مخفيّ (يحجز مكانه) حتى يلوّن الطفل قدراً معقولاً
-    const finLbl = h('span.e15-finlbl', null, 'التّالي');
-    const finBtn = V8 ? h('button.bq8-pill.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, X.i8('next'), finLbl)
-      : h('button.x7-btn.e15-finbtn', { type: 'button', 'aria-label': 'التّالي' }, finLbl, X.icon('next'));
+    const finLbl = h('span.e15-finlbl', null, 'التَّالِي'); // FIX12-B: one full-tashkeel form (A-05)
+    const finBtn = V8 ? h('button.bq8-pill.e15-finbtn', { type: 'button', 'aria-label': 'التَّالِي' }, X.i8('next'), finLbl)
+      : h('button.x7-btn.e15-finbtn', { type: 'button', 'aria-label': 'التَّالِي' }, finLbl, X.icon('next'));
     const fin = h('div.e15-fin', { hidden: true }, finBtn);
     if (V8) { side.lastChild.append(fin); root.append(pageWrap, side); } // v8: «التّالي» sits in the tools row under the palette
     else root.append(pageWrap, side, fin);
@@ -260,6 +267,9 @@
       }
       return -1;
     }
+    // the tap ring sits where the finger is, in % of the (cropped) page box
+    const px = (e) => { const pr = page.getBoundingClientRect(); return (e.clientX - pr.left) / pr.width * 100; };
+    const py = (e) => { const pr = page.getBoundingClientRect(); return (e.clientY - pr.top) / pr.height * 100; };
     function tap(st, e) {
       if (st.fallback || (e.button && e.button !== 0)) return;
       if (e.cancelable) e.preventDefault();
@@ -268,7 +278,7 @@
       const x = Math.max(0, Math.min(st.w - 1, Math.round(fx * st.w))), y = Math.max(0, Math.min(st.h - 1, Math.round(fy * st.h)));
       const r = regionAt(st, x, y);
       if (r < 0) { // لا شيء يُلوَّن هنا: حلقة خفيفة فقط
-        const no = h('span.e15-dot.is-no', { 'aria-hidden': 'true', style: { left: (fx * 100) + '%', top: (fy * 100) + '%' } });
+        const no = h('span.e15-dot.is-no', { 'aria-hidden': 'true', style: { left: px(e) + '%', top: py(e) + '%' } });
         page.append(no); setTimeout(() => no.remove(), 600);
         return;
       }
@@ -277,7 +287,7 @@
       st.undo.push({ r, prev: st.fills.get(r) || null });
       undoBtn.disabled = false;
       paint(st, r, col);
-      const dot = h('span.e15-dot', { 'aria-hidden': 'true', style: { left: (fx * 100) + '%', top: (fy * 100) + '%', background: col } });
+      const dot = h('span.e15-dot', { 'aria-hidden': 'true', style: { left: px(e) + '%', top: py(e) + '%', background: col } });
       page.append(dot); setTimeout(() => dot.remove(), 600);
       S.fx(X.sfx.snap, 0.25);
       // the picture's name, the first time it gets colour

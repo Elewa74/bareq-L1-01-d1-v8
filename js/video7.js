@@ -34,6 +34,16 @@
     const alive = () => !ctx || !ctx.alive || ctx.alive();
     const say = async (id) => { if (!id) return; if (Array.isArray(id)) { for (const x of id) { if (!alive()) return; await say(x); } return; } if (!lineOk(id)) return; await BQ.audio.play(id); };
     const yesLine = () => { const y = q.fb_yes; if (Array.isArray(y) && y.length && Array.isArray(y[0])) return y[(praiseN++) % y.length]; return y; };
+    /* FIX12 C-12/D-06/D-07: the checkpoint ladder speaks through BQ.fb (the SAME pools as every activity):
+       ✓ = BQ.fb.yes() praise + the item's own content tail (e.g. «فِي وَسَطِ الكَلِمَةِ» / the word) · ✗1 = BQ.fb.tryL() («حَاوِلْ مَرَّةً أُخْرَى»)
+       + the item's own listening hint if it has one · ✗2 = fb_show + model + BQ.fb.solveL(). Generic per-question praise/retry ids are dropped. */
+    const GENERIC = /^bq7_(G_yes\d|G_try|FB_(yes|try|solve)\d|E11_fb_(yes|try|solve)\d)$/;
+    const flat = (x) => (Array.isArray(x) ? x.flat(3) : x ? [x] : []).filter(Boolean);
+    const content = (x) => flat(x).filter((id) => !GENERIC.test(id));
+    const fb = BQ.fb || null;
+    const praise = () => (fb ? [fb.yes()] : []).concat(content(yesLine()));
+    const retryL = () => (fb ? [fb.tryL()] : ['bq7_E11_fb_try1']).concat(content(q.fb_retry));
+    const solveEnd = () => (fb ? fb.solveL() : q.fb_end);
     /* v8: the question text is part of the question (no CC setting hides it); before E06 no Arabic text on the child's screen (lesson rule) */
     const showText = BQ.state.age === '10-12' || !(ctx && ctx.meta && /^E0[1-5]$/.test(ctx.meta.id));
     const picks = [];
@@ -101,6 +111,39 @@
       if (window.ResizeObserver) { const ro = new ResizeObserver(relayout); ro.observe(wordBox); done.then(() => ro.disconnect()); }
       setTimeout(relayout, 400);
     }
+    /* FIX12 C-15: when Bariq solves, he stands BESIDE the right option and never covers any option (or the ear / replay buttons):
+       candidate spots around the right option (side, side, below, above) at 150 → 120 → 96 px; the first spot that stays inside the video box
+       and overlaps nothing wins; he is mirrored so he always points toward the answer. */
+    function placeBrq() {
+      try {
+        const good = picks.find((x) => x.dataset.id === q.correct); if (!good || !card.isConnected) return;
+        const host = card.parentElement || card; // the checkpoint layer (= the video box in v8): the card itself clips (overflow hidden)
+        if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+        const hr = host.getBoundingClientRect(); const sc = hr.width / (host.offsetWidth || 1) || 1;
+        const loc = (el) => { const r = el.getBoundingClientRect(); return { l: (r.left - hr.left) / sc, t: (r.top - hr.top) / sc, r: (r.right - hr.left) / sc, b: (r.bottom - hr.top) / sc }; };
+        const g = loc(isWord ? good : (good.closest('.v7-eq-opt') || good));
+        const busyR = Array.from(card.querySelectorAll('.v7-eq-pick, .v7-eq-ear, .v7-eq-say, .v7-eq-hit, .v7-eq-word, .v7-eq-t, .v7-eq-img')).map(loc).filter((r) => r.r - r.l > 2);
+        const W = host.offsetWidth, H = host.offsetHeight, PAD = 4;
+        const ar = brq.naturalWidth ? brq.naturalHeight / brq.naturalWidth : 1;
+        const hit = (a, b) => a.l < b.r - PAD && a.r > b.l + PAD && a.t < b.b - PAD && a.b > b.t + PAD;
+        for (const w of [150, 120, 96]) {
+          const hh = w * ar, cx = (g.l + g.r) / 2;
+          const spots = [{ l: g.r + 6, t: g.b - hh, side: 'r' }, { l: g.l - 6 - w, t: g.b - hh, side: 'l' }, { l: cx - w / 2, t: g.b + 4, side: 'b' }, { l: cx - w / 2, t: g.t - hh - 4, side: 't' }];
+          for (const sp of spots) {
+            const box = { l: sp.l, t: sp.t, r: sp.l + w, b: sp.t + hh };
+            if (box.l < 4 || box.r > W - 4 || box.t < 4 || box.b > H - 4) continue;
+            if (busyR.some((r) => hit(r, box))) continue;
+            if (brq.parentElement !== host) host.append(brq);
+            Object.assign(brq.style, { left: sp.l + 'px', top: sp.t + 'px', right: 'auto', bottom: 'auto', width: w + 'px', zIndex: '5' }); // (no inset-inline-end: in RTL it IS «left»)
+            brq.dataset.side = sp.side; brq.classList.toggle('is-flip', sp.side === 'r');
+            requestAnimationFrame(() => brq.classList.add('is-show'));
+            done.then(() => brq.remove());
+            return;
+          }
+        }
+        brq.classList.add('is-off'); // no free spot: the green ring + ✓ already show the answer — never cover an option
+      } catch (e) { /* */ }
+    }
     async function hear(o, b) { b.classList.add('is-hear'); await say(o.audio); b.classList.remove('is-hear'); }
     async function intro() {
       if (over) return;
@@ -116,7 +159,7 @@
       if (ok) {
         over = true; BQ.ui.ok(b); b.classList.add('is-ok'); card.classList.add('is-done');
         if (tries === 0 && q.skill && ctx && ctx.record) ctx.record(q.skill, true, { from: 'endq' });
-        await say(yesLine());
+        await say(praise());
         res({ ok: true, tries: tries + 1 });
         return;
       }
@@ -129,14 +172,15 @@
         over = true;
         card.classList.add('is-solve');
         if (good) { BQ.ui.glow(good); good.classList.add('is-ok'); }
-        await say(q.fb_show); await say(q.model); await say(q.fb_end);
+        placeBrq();
+        await say(q.fb_show); await say(q.model); await say(solveEnd());
         await BQ.sleep(700);
         res({ ok: false, tries });
         return;
       }
       busy = true;
-      if (max >= 3 && tries === max - 1) { if (good) BQ.ui.glow(good); await say(q.fb_glow || q.fb_retry || 'bq7_G_try'); }
-      else await say(q.fb_retry || 'bq7_G_try');
+      if (max >= 3 && tries === max - 1) { if (good) BQ.ui.glow(good); await say(q.fb_glow || retryL()); }
+      else await say(retryL());
       busy = false;
     }
     requestAnimationFrame(() => card.classList.add('in'));
@@ -166,10 +210,13 @@
         const cn = navigator.connection || {};
         const small = Math.max(screen.width || 0, screen.height || 0) <= 1180 || (window.innerWidth || 0) <= 1180;
         const slow = cn.saveData || (cn.downlink && cn.downlink < 5) || /(^|-)2g|3g/.test(cn.effectiveType || '');
-        const src = meta.video_720 && (small || slow) ? base + '_720.mp4' : null;
+        /* FIX12 C-20: 720p is the DEFAULT everywhere (lighter, same picture on the 1180-px stage); 1080p only on request (?hd=1, teacher/QA) */
+        let hd = false; try { hd = /[?&]hd=1\b/.test(location.search) || localStorage.getItem('bq_hd') === '1'; } catch (e) { /* */ }
+        void small; void slow;
+        const src = meta.video_720 && !hd ? base + '_720.mp4' : null;
         const P = V.mp4(stage, ctx, { id: vid, base, src, aria: 'مَقْطَعُ «' + (meta.cover_title || meta.name) + '»', captions: true, noCues: true, cuesOptional: true,
           noCuesFile: !meta.video_cues && !BQ.scan, posterSrc: meta.video_poster ? base + '.jpg' : (meta.cover_file || BLANK), poster: meta.cover_file || BLANK,
-          title: meta.name, failNext: 'التّالي', slow: false });
+          title: meta.name, failNext: 'التَّالِي', slow: false });
         /* OWNER R3 «تداخل الفيديو والنشاط» (E07, 2026-10-05): a question card is a clean CHECKPOINT — the video is PAUSED on that frame
            (P.hold: play/seek/tap blocked, controls + captions hidden), the card sits centred on a soft scrim that covers the VIDEO BOX ONLY
            (theme 8; v7 keeps its play-area layer), nothing else layered; after the answer the card closes, controls/captions return and the video
@@ -186,7 +233,7 @@
           const nx = BQ.nextInfo && BQ.nextInfo();
           endEl = h('div.v5-end', { role: 'group', 'aria-label': 'انْتَهى المَقْطَعُ' },
             h('button.bq-btn.ghost', { type: 'button', onclick: () => { clearEnd(); asked = false; P.goto(0); } }, BQ.icon('replay'), 'أَعِدِ المَقْطَعَ'),
-            nx ? h('button.bq-btn.go', { type: 'button', onclick: next }, 'التّالي', BQ.icon('next')) : null);
+            nx ? h('button.bq-btn.go', { type: 'button', onclick: next }, 'التَّالِي', BQ.icon('next')) : null);
           box.append(endEl);
         };
         const hold = (on, resume) => { if (P.hold) P.hold(on, resume); else if (on && P.pause) P.pause(); ctx.frame.classList.toggle('is-vq', !!on); };

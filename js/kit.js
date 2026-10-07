@@ -303,7 +303,7 @@
   };
   K.nextBtn = function (parent) {
     return new Promise((res) => {
-      const b = h('button.bq-btn.kx-cont', { type: 'button', onclick: () => { b.remove(); res(); } }, 'التّالي', BQ.icon('next'));
+      const b = h('button.bq-btn.kx-cont', { type: 'button', onclick: () => { b.remove(); res(); } }, 'التَّالِي', BQ.icon('next'));
       parent.append(b);
       requestAnimationFrame(() => b.focus({ preventScroll: true }));
     });

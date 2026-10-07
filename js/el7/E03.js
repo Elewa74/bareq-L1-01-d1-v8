@@ -140,8 +140,20 @@
     const bottom = h('div.e03-bottom', null, basket);
     if (V8) root.append(field); else root.append(top, field, bottom);
     const buddy = I.buddy(S, root, 'wave');
-    let busy = true, ri = 0;
+    let busy = true, ri = 0, own = 0; // own: answers the child found himself (FIX12 A-11)
     const log = [];
+
+    /** FIX12 A-14: a closing line is heard to its END before the end card — waits for the clip's «ended» (≤ duration + 1 s after the start) */
+    async function sayFull(id, o) {
+      const t0 = performance.now();
+      await S.say(id, o);
+      const au = BQ.audio && BQ.audio.voice ? BQ.audio.voice() : null;
+      if (!au || au.ended || String(au.currentSrc || au.src || '').indexOf(id + '.mp3') < 0) return;
+      const d = isFinite(au.duration) && au.duration > 0 ? au.duration : 0;
+      const left = Math.max(0, (d + 1) * 1000 - (performance.now() - t0));
+      if (!d || !left) return;
+      await S.gate(new Promise((r) => { const t = setTimeout(r, left); au.addEventListener('ended', () => { clearTimeout(t); r(); }, { once: true }); }));
+    }
 
     async function wordRound(R, r) {
       const order = R.fixed ? R.list.slice() : BQ.shuffle(R.list);
@@ -171,7 +183,7 @@
           if (busy || I.isNo(c) || c.classList.contains('is-ok')) return;
           busy = true;
           if (c.yes) {
-            c.classList.remove('is-soft'); c.classList.add('is-ok'); I.anim(c, 'i7-pop', 450); I.sfx('ok'); I.burst(root, c, 12);
+            own++; c.classList.remove('is-soft'); c.classList.add('is-ok'); I.anim(c, 'i7-pop', 450); I.sfx('ok'); I.burst(root, c, 12);
             const dot = need.children[R.yes.length - left().length - 1]; if (dot) dot.classList.add('on');
             await I.playOn(S, c, I.segId(c.slug));
             await toBasket(c, c.slug);
@@ -248,11 +260,11 @@
         opts: bubs, right,
         // R1-4: تلميح يفرّق فعلاً — الزوج المسجَّل بين صوتنا وصامت المشتّت الملموس (لا «الشفتان تلتقيان» التي تصدق على بَ)
         async hint1(picked) {
-          const c = picked && picked.s ? picked.s[0] : 'b';
-          const pair = I.pick(c === 'f' ? 'bq7_S_pair_mf' : c === 'n' ? 'bq7_S_pair_mn' : 'bq7_S_pair_mb', 'bq7_S_pair_mb');
           // SCI-1 T2: no «اِسْمَع مَعي الفَرْقَ» line (sci: «بلاش جملة اسمع الفرق») — the contrast pair itself is heard after the retry line
-          if (longR && picked && picked.s) { await S.stim(sid(yes)); await S.sleep(600); await S.stim(sid(picked.s)); } // R1b-N3: الجولة الطويلة ← زوج طويل ما… با / ما… فا
-          else await S.stim(pair);
+          // FIX12 A-13: the pair is VOWEL-MATCHED to the round — our syllable then the touched one (مِ… بِ · مُ… فُ · ما… با), from the
+          // approved single-syllable clips (S_<syl>); the old recorded fatha pairs (S_pair_mb/mf) only if a clip is missing
+          if (picked && picked.s && I.hasAudio(sid(yes)) && I.hasAudio(sid(picked.s))) { await S.stim(sid(yes)); await S.sleep(600); await S.stim(sid(picked.s)); }
+          else { const c = picked && picked.s ? picked.s[0] : 'b'; await S.stim(I.pick(c === 'f' ? 'bq7_S_pair_mf' : c === 'n' ? 'bq7_S_pair_mn' : 'bq7_S_pair_mb', 'bq7_S_pair_mb')); }
           await S.sleep(450);
           await playAll();
         },
@@ -265,6 +277,7 @@
           busy = true;
           await I.playOn(S, b, sid(b.s)); // يُسمَع ثم يُحكم
           if (b.s === yes) {
+            own++;
             if (first == null) { first = true; I.record(S, 'S2', true, { item: yes }); }
             if (V8) I.markOk(b); else b.classList.add('is-glow'); I.sfx('rise'); I.burst(root, b, 14); buddy.cheer();
             bubs.forEach((x) => { if (x !== b && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
@@ -303,8 +316,9 @@
       field.replaceChildren();
       if (V8) { f8.stage.classList.remove('e03-l2'); f8.bariq.classList.remove('is-listen'); }
       buddy.set('cheer');
-      await S.say('bq7_E03_end', { talk: true });
-      I.finish(S, { pose: 'cheer' });
+      // FIX12 A-11: «أُذُنُكَ قَوِيَّةٌ» / «أَحْسَنْتَ.» only if the child found at least one answer himself (not when Bariq solved everything)
+      if (own > 0) { await sayFull('bq7_E03_end', { talk: true }); I.finish(S, { pose: 'cheer' }); } // FIX12 A-14: heard to its end before the end card
+      else I.finish(S, { pose: 'cheer', title: 'هَيَّا نُكْمِل.' });
     })();
   }
 

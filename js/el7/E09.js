@@ -32,12 +32,12 @@
     { key: 'copy', label: 'اُنْسَخ', line: L.copy, items: [{ form: 'iso', guide: 'none', arrows: false, start: true, model: true, scored: false }] },
     { key: 'guided', label: 'في الكَلِمَةِ', line: L.guided, pre: L.forms, items: [
       { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', pos: 'bq7_G_pos_first', guide: 'road', arrows: true, start: true, scored: true },
-      { form: 'med', before: 'نُـ', after: 'ـور', word: 'نُمور', img: 'card_numur', wk: 'numur', pos: 'bq7_G_pos_mid', guide: 'road', arrows: true, start: true, scored: true },
+      { form: 'med', before: 'نُـ', after: 'ـور', word: 'نُمُور', img: 'card_numur', wk: 'numur', pos: 'bq7_G_pos_mid', guide: 'road', arrows: true, start: true, scored: true },
       { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', pos: 'bq7_G_pos_last', guide: 'road', arrows: true, start: true, scored: true },
     ] },
     { key: 'indep', label: 'اُكْتُب', line: L.indep, items: [
       { form: 'ini', after: 'ـوْز', word: 'مَوْز', img: 'card_mawz', wk: 'mawz', pos: 'bq7_G_pos_first', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
-      { form: 'med', before: 'نُـ', after: 'ـور', word: 'نُمور', img: 'card_numur', wk: 'numur', pos: 'bq7_G_pos_mid', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
+      { form: 'med', before: 'نُـ', after: 'ـور', word: 'نُمُور', img: 'card_numur', wk: 'numur', pos: 'bq7_G_pos_mid', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
       { form: 'fin', before: 'فَـ', word: 'فَم', img: 'card_fam', wk: 'fam', pos: 'bq7_G_pos_last', guide: 'none', arrows: false, start: false, scored: true, sayFirst: true },
     ] },
   ];
@@ -151,17 +151,20 @@
         onFail: (reason, n) => onFail(reason, n),
       });
       pad.el.classList.add('x7-in');
-      ctx.instruction(X.text(st.line), st.line, { icon: V8 ? 'pencil' : 'hand' });
       // التعليمة: النموذج أوّلاً في أوّل بند من التتبّع
+      // FIX12-B B-04: the bubble shows the line that is PLAYING (E09_intro text while E09_intro plays, then the item's line) ·
+      // B-05: ctx.instruction no longer starts the line (ix7b) — each line is said once, here
       if (it.demo) {
         pad.lock(true);
+        ctx.instruction(X.text(L.intro), L.intro, { icon: V8 ? 'pencil' : 'hand' });
         await X.nameSound(S, L.intro);
         await S.say(L.watch);
         await pad.demo(2600);
         pad.lock(false);
       }
+      ctx.instruction(X.text(st.line), st.line, { icon: V8 ? 'pencil' : 'hand' });
       if (firstOfStage && st.pre) await S.say(st.pre);
-      if (firstOfStage || it.demo) await S.say(st.line);
+      await S.say(st.line); // once per item (before: the platform also started it → heard twice on the first item)
       if (it.wk && (it.sayFirst || firstOfStage || st.key === 'guided')) await S.say(X.wordId(it.wk));
       if (it.pos) await S.say(it.pos); // «في أَوَّلِ / وَسَطِ / آخِرِ الكَلِمَةِ» — the form ↔ its place
       async function onFail(reason, n) {

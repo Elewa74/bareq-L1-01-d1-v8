@@ -579,11 +579,12 @@
       asking = ask(); await asking; asking = null;
       // v8: the first time each kind of item appears, a small hand shows «listen again here · then touch one» (no answer shown)
       const ct = it.type + (it.announce ? '+' : '');
+      // FIX12-B B-06: the options are live DURING the hand — a touch ends the coaching at once (X.coach) and is taken as the answer
+      wrapOpts.classList.remove('is-locked');
       if (V8 && !coached.has(ct) && (it.announce || it.type === 'brq')) {
         coached.add(ct);
         asking = X.coach(S, btns.map((b) => b.querySelector('.e11-ear8')).filter(Boolean), wrapOpts); await asking; asking = null;
       }
-      wrapOpts.classList.remove('is-locked');
       let tries = 0;
       return new Promise((resolve) => {
         let over = false;
@@ -761,7 +762,7 @@
       ctx.onReplay(() => S.say(it.q));
       const brqWrap = h('div.e11-saybrq.x7-in', { role: 'img', 'aria-label': 'بارِق' }, X.brq('talk'));
       const chain = h('div.e11-chain', { 'aria-hidden': 'true' }, ['مَ', 'مِ', 'مُ', 'ما', 'مي', 'مو'].map((t) => (V8 ? h('span.bq8-tile.bq8-tile--syll', null, X.markMeem(t)) : h('span.x7-w', null, X.markMeem(t)))));
-      const go = V8 ? h('button.bq8-btn.bq8-btn--next.e11-go', { type: 'button', 'aria-label': 'التّالي', disabled: true }, X.i8('next')) : h('button.x7-btn.e11-go', { type: 'button', 'aria-label': 'التّالي', disabled: true }, X.icon('next'));
+      const go = V8 ? h('button.bq8-btn.bq8-btn--next.e11-go', { type: 'button', 'aria-label': 'التَّالِي', disabled: true }, X.i8('next')) : h('button.x7-btn.e11-go', { type: 'button', 'aria-label': 'التَّالِي', disabled: true }, X.icon('next'));
       body.append(h('div.e11-say', null, brqWrap, chain, go));
       X.longPress(brqWrap, 1500, () => judgePanel(body));
       await S.say(it.q);

@@ -74,15 +74,19 @@
 
   /* ================= مؤثّرات مركّبة خفيفة (WebAudio — بلا ملفّات) ================= */
   let AC = null;
+  const muted = () => !!(BQ.state && BQ.state.muted);
   const ac = () => {
     try {
-      if (BQ.audio && BQ.audio.ctx) AC = BQ.audio.ctx;
-      if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (C) AC = new C(); }
+      if (muted()) return null; // FIX12 D-01: muted → never touch/resume the AudioContext (only BQ.setMuted(false) resumes it)
+      if (BQ.audio && BQ.audio.getCtx) AC = BQ.audio.getCtx();
+      else if (BQ.audio && BQ.audio.ctx) AC = BQ.audio.ctx;
+      if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (C) { AC = new C(); if (BQ.audio) { BQ.audio.ctx = BQ.audio.ctx || AC; if (BQ.audio.ctxs) BQ.audio.ctxs.add(AC); } } }
       if (AC && AC.state !== 'running') AC.resume().catch(() => {});
     } catch (e) { AC = null; }
     return AC;
   };
   function tone(freqs, opt) {
+    if (muted()) return;
     const c = ac(); if (!c || c.state !== 'running') return;
     opt = opt || {};
     const t0 = c.currentTime + 0.01, vol = (opt.vol == null ? 0.08 : opt.vol) * I.sfxLevel;
@@ -115,6 +119,7 @@
   const FILE = { ok: ['bariq_L1-01_sfx-check-done', 0.45], pop: ['bariq_L1-01_sfx-tile-snap', 0.3], tick: ['bariq_L1-01_sfx-tile-snap', 0.2],
     flip: ['bariq_L1-01_sfx-card-flip', 0.35], sparkle: ['bariq_L1-01_sfx-compass-bead', 0.25], rise: ['bariq_L1-01_sfx-compass-bead', 0.3], soft: null, whoosh: null };
   I.sfx = (name) => {
+    if (muted()) return; // FIX12 D-01
     try {
       const f = FILE[name];
       if (f === null) return;
@@ -131,18 +136,18 @@
     const au = BQ.audio && BQ.audio.cur;
     if (!au) return;
     const k = SKIP[id];
-    if (!k || String(au.src || '').indexOf(id + '.mp3') < 0) { if (au.muted) au.muted = false; return; } // أيّ سطر آخر: غير مكتوم دائماً
+    if (!k || String(au.src || '').indexOf(id + '.mp3') < 0) { au.muted = muted(); return; } // أيّ سطر آخر: غير مكتوم دائماً
     const mine = () => String(au.src || '').indexOf(id + '.mp3') >= 0;
-    const un = () => { if (mine()) au.muted = false; };
+    const un = () => { if (mine()) au.muted = muted(); };
     function go() {
-      if (!mine()) { au.muted = false; return; }
+      if (!mine()) { au.muted = muted(); return; }
       try {
         if (isFinite(au.duration) && au.duration > k.ifDur && au.currentTime < k.from) { au.addEventListener('seeked', un, { once: true }); au.currentTime = k.from; }
         else un();
       } catch (e) { un(); }
     }
     au.muted = true;
-    setTimeout(() => { au.muted = false; }, 2500); // أمان: لا يبقى العنصر المشترك مكتوماً أبداً
+    setTimeout(() => { au.muted = muted(); }, 2500); // أمان: لا يبقى العنصر المشترك مكتوماً أبداً
     if (au.readyState >= 1) go(); else au.addEventListener('loadedmetadata', go, { once: true });
   };
 
@@ -443,7 +448,7 @@
   /** زرّ دائريّ (ابدأ/التالي) يُحلّ عند اللمس */
   I.goBtn = (parent, kind, aria) => new Promise((res) => {
     const b = kind === 'next'
-      ? h('button.bq-btn.kx-cont.i7-next', { type: 'button', 'aria-label': aria || 'التّالي' }, 'التّالي', BQ.icon ? BQ.icon('next') : '')
+      ? h('button.bq-btn.kx-cont.i7-next', { type: 'button', 'aria-label': aria || 'التَّالِي' }, 'التَّالِي', BQ.icon ? BQ.icon('next') : '')
       : h('button.i7-go', { type: 'button', 'aria-label': aria || 'ابْدَأ', html: IC.play });
     b.onclick = () => { try { BQ.audio.unlock && BQ.audio.unlock(); } catch (e) { /* */ } I.sfx('pop'); b.remove(); res(); };
     parent.append(b);
@@ -519,7 +524,7 @@
     };
   };
 
-  /** الختام: بطاقة الإغلاق الأصليّة (BQ.ui.endCard: بارق يفرح · «أَعِدِ النَّشاطَ» · «التّالي») — بلا رقم */
+  /** الختام: بطاقة الإغلاق الأصليّة (BQ.ui.endCard: بارق يفرح · «أَعِدِ النَّشاطَ» · «التَّالِي») — بلا رقم */
   I.finish = function (S, opt) {
     opt = opt || {};
     const ctx = S.ctx;
@@ -531,7 +536,7 @@
       return BQ.ui.endCard(ctx.stage, { title: opt.title || 'أَحْسَنْتَ.', line: I.hasAudio(opt.line) ? opt.line : null, onReplay: replay });
     }
     const host = (ctx.frame && ctx.frame.querySelector('.elp-play')) || ctx.stage;
-    const nextBtn = h('button.bq-btn', { type: 'button', onclick: () => BQ.goNext() }, 'التّالي');
+    const nextBtn = h('button.bq-btn', { type: 'button', onclick: () => BQ.goNext() }, 'التَّالِي');
     const el = h('div.i7-end', { role: 'dialog', 'aria-label': 'انْتَهى النَّشاطُ' }, BQ.ui.brq(opt.pose || 'clap', null, 6500), h('div.i7-end-row', null, h('button.bq-btn.ghost.i7-again', { type: 'button', 'aria-label': 'أَعِدِ النَّشاطَ', onclick: replay }, '↺'), nextBtn));
     host.append(el);
     if (opt.line) S.say(opt.line, { talk: true });
@@ -1062,7 +1067,7 @@
   I.goBtn = (parent, kind, aria) => {
     if (!F8) return goBtn7(parent, kind, aria);
     return new Promise((res) => {
-      const b = h('button.bq8-btn.bq8-btn--lg.i8-go.bq8-btn--' + (kind === 'next' ? 'next' : 'listen') + '.is-pulse', { type: 'button', 'aria-label': aria || (kind === 'next' ? 'التّالي' : 'ابْدَأ') }, I.i8(kind === 'next' ? 'next' : 'play'));
+      const b = h('button.bq8-btn.bq8-btn--lg.i8-go.bq8-btn--' + (kind === 'next' ? 'next' : 'listen') + '.is-pulse', { type: 'button', 'aria-label': aria || (kind === 'next' ? 'التَّالِي' : 'ابْدَأ') }, I.i8(kind === 'next' ? 'next' : 'play'));
       b.onclick = () => { try { BQ.audio.unlock && BQ.audio.unlock(); } catch (e) { /* */ } I.sfx('pop'); b.remove(); res(); };
       parent.append(b);
       requestAnimationFrame(() => { try { b.focus({ preventScroll: true }); } catch (e) { /* */ } });

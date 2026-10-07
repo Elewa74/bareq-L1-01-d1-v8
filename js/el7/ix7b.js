@@ -38,10 +38,10 @@
     miftah: { t: 'مِفْتاح', syl: ['مِفْ', 'تاح'], pos: 'ini' },
     timsah: { t: 'تِمْساح', syl: ['تِمْ', 'ساح'], pos: 'mid' },
     manju: { t: 'مانْجو', syl: ['ما', 'نْجو'], pos: 'ini' },
-    numur: { t: 'نُمور', syl: ['نُ', 'مور'], pos: 'mid' },
+    numur: { t: 'نُمُور', syl: ['نُ', 'مُور'], letters: ['نُ', 'مُ', 'و', 'ر'], pos: 'mid' }, // FIX12-B B-01: replaces «قَمَر» in E08 «حَلِّل» (middle م)
     qamis: { t: 'قَميص', syl: ['قَ', 'ميص'], pos: 'mid' },
     mawz: { t: 'مَوْز', letters: ['مَ', 'وْ', 'ز'], pos: 'ini' },
-    qamar: { t: 'قَمَر', letters: ['قَ', 'مَ', 'ر'], pos: 'mid' },
+    // FIX12-B B-01: «قَمَر» removed everywhere (owner: no «قَمَر» — مُعَلِّم / مُثَلَّث / نُمُور)
     fam: { t: 'فَم', letters: ['فَ', 'م'], pos: 'fin' },
     qalam: { t: 'قَلَم', letters: ['قَ', 'لَ', 'م'], pos: 'fin' },
     // مشتِّتات سمعية/صورية فقط (لا تُكتب على شاشة الطفل — قرار أ)
@@ -70,7 +70,9 @@
   /** المقاطع ← ملفّ الصوت (LINES_v7: bq7_S_*) */
   const SYL = (X.SYL = { 'مَ': 'bq7_S_ma', 'مِ': 'bq7_S_mi', 'مُ': 'bq7_S_mu', 'ما': 'bq7_S_maa', 'مي': 'bq7_S_mii', 'مو': 'bq7_S_muu', 'مْ': 'bq7_S_m0',
     'بَ': 'bq7_S_ba', 'بِ': 'bq7_S_bi', 'بُ': 'bq7_S_bu', 'با': 'bq7_S_baa', 'بو': 'bq7_S_buu', 'فَ': 'bq7_S_fa', 'فِ': 'bq7_S_fi', 'فُ': 'bq7_S_fu', 'في': 'bq7_S_fii',
-    'فا': 'bq7_S_faa', 'فو': 'bq7_S_fuu', 'نَ': 'bq7_S_na', 'نُ': 'bq7_S_nu', 'مَكْ': 'bq7_S_mak', 'مِفْ': 'bq7_S_mif', 'تِمْ': 'bq7_S_tim' });
+    'فا': 'bq7_S_faa', 'فو': 'bq7_S_fuu', 'نَ': 'bq7_S_na', 'نُ': 'bq7_S_nu', 'مَكْ': 'bq7_S_mak', 'مِفْ': 'bq7_S_mif', 'تِمْ': 'bq7_S_tim',
+    // FIX12-B B-08: the same syllables written with full tashkeel («مَا» «مُو» «مِي» · «بَا») share the recorded takes
+    'مَا': 'bq7_S_maa', 'مُو': 'bq7_S_muu', 'مِي': 'bq7_S_mii', 'بَا': 'bq7_S_baa', 'بُو': 'bq7_S_buu', 'فَا': 'bq7_S_faa', 'فُو': 'bq7_S_fuu', 'فِي': 'bq7_S_fii' });
   Object.keys(SYL).forEach((k) => { T[SYL[k]] = ['HAB', k]; });
   /** أوّل معرّف له ملفّ صوت (أو الأوّل) */
   X.pick = function (ctx, list) {
@@ -805,7 +807,25 @@
       hud.prepend(instr);
       ctx.onCleanup(() => { if (ic) ic.remove(); if (bub) bub.classList.remove('x7-bub8'); if (home && home.isConnected) home.insertBefore(instr, nextSib && nextSib.parentNode === home ? nextSib : home.firstChild); ctx.stage.classList.remove('x7v8-host'); });
       const orig = ctx.instruction;
-      ctx.instruction = function (text, lineId, o) { hud.dataset.fn = FN8[(o && o.icon) || ''] || 'ear'; return orig.call(ctx, text, lineId, o); };
+      /* FIX12-B B-05: the platform's ctx.instruction(text, line) STARTS the line, and every IX2 element then says the same line itself
+         (S.say / X.nameSound) → the first words were heard twice. Here the bubble + replay are set WITHOUT starting it; the element says it once. */
+      ctx.instruction = function (text, lineId, o) {
+        hud.dataset.fn = FN8[(o && o.icon) || ''] || 'ear';
+        if (!lineId) return orig.call(ctx, text, lineId, o);
+        const realSay = ctx.say;
+        ctx.say = () => Promise.resolve();
+        try { orig.call(ctx, text, lineId, o); } finally { ctx.say = realSay; }
+        nowrapGroups();
+        return Promise.resolve();
+      };
+      /* FIX12-B B-07: a bracketed syllable list «(مَ – مِ – مُ)» (+ its «؟») stays on ONE line in the bubble */
+      const nowrapGroups = () => {
+        const tEl = instr.querySelector('.elp-instr-t'); if (!tEl) return;
+        const t = tEl.textContent || ''; const re = /\([^()]{1,30}\)[؟،.:]?/g; if (!re.test(t)) return;
+        re.lastIndex = 0; const out = []; let last = 0, m;
+        while ((m = re.exec(t))) { if (m.index > last) out.push(t.slice(last, m.index)); out.push(h('span', { style: { whiteSpace: 'nowrap' } }, m[0])); last = m.index + m[0].length; }
+        out.push(t.slice(last)); tEl.replaceChildren(...out);
+      };
       ctx.onCleanup(() => { ctx.instruction = orig; });
     }
     // fit: the 1180×820 stage, as large as the play area allows; in a tall (portrait) area the stage grows taller (--u stays width-based)
@@ -862,17 +882,24 @@
     return { get held() { return held; } };
   };
   /** first-time coach: a hand glides to each ear chip (= «you can listen again here»), then taps the row (= «now touch one») */
+  /* FIX12-B B-06: a touch on the row (or anywhere on the stage) during the hand ends the coaching AT ONCE (the promise resolves on
+     pointerdown), so the element's tap handler — attached right after — receives that same tap's click. */
   X.coach = async function (S, targets, row) {
     if (!cur8 || reduced() || !targets.length) return;
     const st = cur8.stage, sr = () => st.getBoundingClientRect();
     const hand = h('i.bq8-ic.bq8-ic--touch.x7-coach', { 'aria-hidden': 'true' });
     st.append(hand);
     const at = (el, dy) => { const r = el.getBoundingClientRect(), s = sr(); hand.style.left = (r.left + r.width / 2 - s.left) + 'px'; hand.style.top = (r.top + r.height / 2 - s.top + (dy || 0)) + 'px'; };
-    try {
-      at(targets[0], 60); await S.sleep(30); hand.classList.add('on');
-      for (const t of targets) { at(t, 0); await S.sleep(520); t.classList.add('x7-coach-hit'); await S.sleep(380); t.classList.remove('x7-coach-hit'); }
-      if (row) { at(row, 0); await S.sleep(500); hand.classList.add('tap'); await S.sleep(900); }
-    } finally { hand.remove(); }
+    let stop = false, wake;
+    const cut = new Promise((r) => { wake = r; });
+    const onDown = () => { stop = true; hand.remove(); targets.forEach((t) => t.classList.remove('x7-coach-hit')); wake(); };
+    st.addEventListener('pointerdown', onDown, true);
+    const run = (async () => {
+      at(targets[0], 60); await S.sleep(30); if (stop) return; hand.classList.add('on');
+      for (const t of targets) { if (stop) return; at(t, 0); await S.sleep(520); if (stop) return; t.classList.add('x7-coach-hit'); await S.sleep(380); t.classList.remove('x7-coach-hit'); }
+      if (row && !stop) { at(row, 0); await S.sleep(500); if (stop) return; hand.classList.add('tap'); await S.sleep(900); }
+    })();
+    try { await Promise.race([run, cut]); } finally { st.removeEventListener('pointerdown', onDown, true); hand.remove(); }
   };
 
   /* ================= الأنماط ================= */

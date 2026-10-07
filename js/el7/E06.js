@@ -169,8 +169,16 @@
     const main = h('div.e06-main');
     if (V8) root.append(main); else root.append(top, main);
     const buddy = I.buddy(S, root, 'wave');
-    let busy = true, si = 0;
+    let busy = true, si = 0, own = 0; // own: answers the child found himself (FIX12 A-11)
     const log = [];
+    /* FIX12 A-25: idle re-prompt — when the child has not touched anything for 9 s while a choice is waiting, the current instruction
+       is replayed ONCE (per item). Any touch on the board cancels the countdown; it re-arms after a handled touch (until it has been used). */
+    let idleT = 0, idleFn = null, idleUsed = false;
+    const IDLE_MS = 9000;
+    const idleOff = () => { if (idleT) clearTimeout(idleT); idleT = 0; };
+    const idleArm = () => { idleOff(); if (!idleFn || idleUsed) return; idleT = S.later(async () => { idleT = 0; if (busy || idleUsed || !idleFn) { if (!idleUsed) idleArm(); return; } idleUsed = true; busy = true; await idleFn(); busy = false; }, IDLE_MS); };
+    const idleSet = (fn) => { idleFn = fn; idleUsed = false; if (fn) idleArm(); else idleOff(); };
+    root.addEventListener('pointerdown', idleOff, true);
 
     async function recall() {
       steps.cur(si);
@@ -238,9 +246,10 @@
         if (busy) return; busy = true;
         await I.playOn(S, t, sid(t.x.s));
         t.classList.add('is-heard'); busy = false;
-        if (res && tiles.every((x) => x.classList.contains('is-heard'))) { const r = res; res = null; r(); }
+        if (res && tiles.every((x) => x.classList.contains('is-heard'))) { const r = res; res = null; idleSet(null); r(); } else idleArm();
       }));
       busy = false;
+      idleSet(() => S.say('bq7_E06_tap_vowels'));
       await S.gate(new Promise((r) => { res = r; }));
       busy = true;
       I.sfx('sparkle'); buddy.cheer();
@@ -275,27 +284,29 @@
             if (busy || s.classList.contains('is-m') || s.classList.contains('i8-x')) return;
             busy = true;
             if (s === target) {
+              own++;
               if (first == null) { first = true; I.record(S, 'S5', true, { item: w.slug }); log.push([info.w, true]); }
               tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); s.classList.add('i8-ok'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer(); if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
               await S.say('bq7_E06_brq_wow', { talk: true }); // «حَرْفُ المِيمِ! صَوْتُهُ: مَ!» — الاسم مقروناً بالصوت (ok_letter المسجَّل يقول الاسم وحده)
               await I.playOn(S, pic, I.segId(w.slug));
               await S.sleep(350);
-              return resolve();
+              idleSet(null); return resolve();
             }
+            idleOff();
             if (first == null) { first = false; I.record(S, 'S5', false, { item: w.slug }); log.push([info.w, false]); }
             // OWNER_R3 ladder: ✗1 the tapped letter turns red + retry line (+ the «م» card pulses — a shape cue, not the answer)
             // FB-1: the red mark STAYS on the wrong letter (owner «علامة حمراء على الاختيار»); it cannot be chosen again
             const si2 = s.idx; tw.paint(si2, 'is-no'); s.classList.add('i8-x'); I.sfx('soft');
             n++; buddy.think();
-            if (n === 1) { await S.say(I.tryL(), { talk: true }); refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); busy = false; return; }
+            if (n === 1) { await S.say(I.tryL(), { talk: true }); refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); busy = false; idleArm(); return; }
             // ✗2 Bariq solves: the meem lights up + the word in parts + an encouraging line
             tw.paint(tIdx, 'is-m'); target.classList.add('i8-ok'); buddy.point(); I.helped = true; if (V8) f8.help(); // FB-1: no star for a Bariq-solved word
             await I.playOn(S, pic, I.segId(w.slug)); await S.say(I.solveL(), { talk: true });
-            return resolve();
+            idleSet(null); return resolve();
           };
           spans.forEach((s) => s.addEventListener('click', () => tap(s)));
-          (async () => { busy = true; await S.sleep(450); if (w === WORDS[0]) await findIntro(); await sayWord(); busy = false; })();
+          (async () => { busy = true; await S.sleep(450); if (w === WORDS[0]) await findIntro(); await sayWord(); busy = false; idleSet(async () => { await findIntro(); await sayWord(); }); })();
         });
         steps.on(si++);
         busy = true;
@@ -325,6 +336,7 @@
             if (busy || I.isNo(t)) return;
             busy = true; // الخيار المكتوب صامت حتى الحكم (DECISIONS ج)
             if (t === right()) {
+              own++;
               if (first == null) { first = true; I.record(S, 'S5', true, { item: 'match-' + it.s }); log.push([it.opts[0], true]); }
               t.classList.remove('is-soft'); t.classList.add('is-ok'); I.anim(t, 'i7-pop', 450); I.sfx('ok'); I.burst(root, t, 12); buddy.cheer();
               tiles.forEach((x) => { if (x !== t && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
@@ -332,14 +344,14 @@
               await S.say(I.yes(), { talk: true });
               await I.playOn(S, t, sid(it.s));
               await S.sleep(350);
-              return resolve();
+              idleSet(null); return resolve();
             }
             if (first == null) { first = false; I.record(S, 'S5', false, { item: 'match-' + it.s, picked: t.g }); log.push([it.opts[0], false]); }
             const st = await pol.wrong(t);
-            if (st === 'model') { if (V8) f8.help(); return resolve(); } // FB-1: no star for a Bariq-solved item
-            busy = false;
+            if (st === 'model') { if (V8) f8.help(); idleSet(null); return resolve(); } // FB-1: no star for a Bariq-solved item
+            busy = false; idleArm();
           }));
-          (async () => { busy = true; await S.sleep(400); if (k === 0) await S.say('bq7_E06_match_intro'); await ask(); busy = false; })();
+          (async () => { busy = true; await S.sleep(400); if (k === 0) await S.say('bq7_E06_match_intro'); await ask(); busy = false; idleSet(async () => { await S.say('bq7_E06_match_intro'); await ask(); }); })();
         });
         steps.on(si++);
         busy = true;
@@ -357,7 +369,7 @@
       main.replaceChildren();
       buddy.set('cheer');
       await S.say('bq7_E06_end', { talk: true });
-      I.finish(S, { pose: 'cheer' });
+      I.finish(S, log.length && !own ? { pose: 'cheer', title: 'هَيَّا نُكْمِل.' } : { pose: 'cheer' }); // FIX12 A-11: no «أَحْسَنْتَ.» if Bariq solved every item
     })();
   }
 

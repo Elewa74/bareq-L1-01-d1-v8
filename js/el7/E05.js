@@ -16,7 +16,8 @@
 (function () {
   'use strict';
   const ID = 'E05';
-  const lib = () => (BQ.ix1 ? Promise.resolve(BQ.ix1) : BQ.loadScript('js/el7/lib/ix1.js').then(() => BQ.ix1));
+  const lib = () => (BQ.ix1 ? Promise.resolve(BQ.ix1) : BQ.loadScript('js/el7/lib/ix1.js').then(() => BQ.ix1))
+    .then((I) => (BQ.ix7b ? I : BQ.loadScript('js/el7/ix7b.js').then(() => I, () => I))); // FIX12 A-22: X.kas (shared kasra fix)
 
   /* one stylesheet for v8 (--u = stage unit) and the v7 fallback (--u fixed) */
   const CSS = `
@@ -52,6 +53,14 @@
 .e05-lc.is-dim { opacity: .4; filter: grayscale(.5); pointer-events: none; }
 .e05-lc.is-hint .e05-madd { animation: e05Glow .7s ease-in-out 3; }
 @keyframes e05Glow { 50% { color: #FF5F00; text-shadow: 0 0 calc(var(--u)*18) rgba(255,160,0,.9); } }
+/* FIX12 A-20: while the child is answering, the card shows the plain syllable only — no duration bar, no orange madd letter
+   (they give the answer away). They appear after the answer as feedback (or when Bariq solves). */
+.e05-lc.is-task .e05-bar { visibility: hidden; }
+.e05-lc.is-task .e05-madd { color: inherit; }
+/* …and every task card has the SAME width (a wider «long» card would show the answer too) */
+.e05x .e05-lc.is-eq, .e05x .e05-lc.is-eq.is-long { --w: calc(var(--u)*270); }
+.bq8-stage.is-tall .e05x .e05-lc.is-eq, .bq8-stage.is-tall .e05x .e05-lc.is-eq.is-long { --w: calc(var(--u)*300); }
+.bq8-stage.is-tall .e05x .e05-cards.is-3 .e05-lc.is-eq, .bq8-stage.is-tall .e05x .e05-cards.is-3 .e05-lc.is-eq.is-long { --w: calc(var(--u)*260); }
 .e05-lc:not(.is-static):active { transform: translateY(calc(var(--u)*4)); }
 .e05x .e05-ear { width: max(var(--i8-t, 76px), calc(var(--u)*110)); height: max(var(--i8-t, 76px), calc(var(--u)*110)); min-width: 0; min-height: 0; font-size: calc(max(var(--i8-t, 76px), calc(var(--u)*110)) * .62); }
 .e05x .e05-ear.is-play { animation: bq8-wiggle .6s ease infinite; }
@@ -117,7 +126,7 @@
     const area = h('div.e05x', null, mouthW, board);
     if (V8) root.append(area); else root.append(top, area);
     const buddy = I.buddy(S, root, 'wave');
-    let busy = true, judged = false;
+    let busy = true, judged = false, own = 0; // own: items the child answered himself (FIX12 A-11)
 
     I.teacherPanel(S, {
       title: 'نطق الطفل (S4) — حكم المعلّم',
@@ -131,6 +140,7 @@
       const [base, madd] = GL[s];
       const g = h('span.e05-g', { lang: 'ar' });
       if (madd) g.append(base + ZWJ, h('span.e05-madd', null, ZWJ + madd)); else g.append(base);
+      if (BQ.ix7b && BQ.ix7b.kas) BQ.ix7b.kas(g); // FIX12 A-22: the kasra of a lone «مِ» under the head, not far under the tail (same fix as E06)
       const gw = h('span.e05-gw', { 'aria-hidden': 'true' }, g);
       const bar = h('span.e05-bar', { 'aria-hidden': 'true' }, h('i'));
       const b = h((opt.static ? 'div' : 'button') + '.e05-lc' + (madd ? '.is-long' : '') + (opt.static ? '.is-static' : ''),
@@ -200,7 +210,8 @@
       const log = [];
       for (let n = 0; n < TASKS.length; n++) {
         const T = TASKS[n];
-        const opts = BQ.shuffle(T.opts).map((s) => card(s));
+        const opts = BQ.shuffle(T.opts).map((s) => { const c = card(s); c.classList.add('is-task', 'is-eq'); return c; });
+        const reveal = () => opts.forEach((c) => c.classList.remove('is-task')); // FIX12 A-20: bars + madd colour only after the answer
         const right = () => opts.find((c) => c.s === T.s);
         if (window.BQ_QA) opts.forEach((c) => { c.dataset.qa = c.s === T.s ? 'r' : 'w'; }); // automated QA only
         const row = h('div.e05-cards' + (opts.length > 2 ? '.is-3' : ''), { role: 'group', 'aria-label': 'بِطاقاتٌ' }, opts);
@@ -221,12 +232,15 @@
         }
         let first = null;
         const pol = I.policy(S, {
-          opts, right, // FB-1: ✗2 line from the shared pool (BQ.fb.solveL — all end in an encouraging «أَكْمِلْ…/نُكْمِلُ…»)
-          async hint1() {
-            if (T.t === 'A') { await S.sleep(200); await stim(); }
-            else { opts.forEach((c) => { if (!I.isNo(c)) c.classList.add('is-hint'); }); await S.say('bq7_E05_s1_look'); opts.forEach((c) => c.classList.remove('is-hint')); }
+          opts: T.t === 'A' ? [] : opts, right, // FIX12 A-21: no forced-choice shortcut for the 2-card tasks · FB-1: ✗2 line from the shared pool (BQ.fb.solveL — all end in an encouraging «أَكْمِلْ…/نُكْمِلُ…»)
+          // FIX12 A-21: two-card tasks — ✗1 is a real retry (the red mark shows during the retry line, then both cards are live again)
+          async hint1(picked) {
+            if (T.t === 'A') {
+              if (picked) { picked.classList.remove('is-no'); picked.querySelectorAll(':scope > .i7-nob, :scope > .fb-badge').forEach((x) => x.remove()); }
+              await S.sleep(200); await stim();
+            } else { await S.sleep(200); await S.say(lineId); } // FIX12 A-20: no glowing madd letter (it would show the answer) — the instruction again
           },
-          async model() { const r = right(); await sylOn(r, r.s); },
+          async model() { reveal(); const r = right(); await sylOn(r, r.s); },
         });
         await new Promise((resolve) => {
           opts.forEach((c) => c.addEventListener('click', async () => {
@@ -234,7 +248,7 @@
             busy = true;
             if (c === right()) {
               if (first == null) { first = true; I.record(S, 'S3', true, { item: T.t + ':' + T.s }); log.push([T, true]); }
-              c.classList.add('is-ok'); I.sfx('ok'); I.burst(root, c, 14); buddy.cheer();
+              own++; reveal(); c.classList.add('is-ok'); I.sfx('ok'); I.burst(root, c, 14); buddy.cheer();
               opts.forEach((x) => { if (x !== c && !I.isNo(x)) x.classList.add('is-dim'); });
               if (V8) { await I.flyTo(root, c.querySelector('.e05-gw') || c, f8.starAt() || f8.starsEl, 600); f8.star(); }
               await S.say(I.yes(), { talk: true });
@@ -245,6 +259,7 @@
             if (first == null) { first = false; I.record(S, 'S3', false, { item: T.t + ':' + T.s, picked: c.s }); log.push([T, false]); }
             const st = await pol.wrong(c);
             if (st === 'model') {
+              if (T.t === 'A') opts.forEach((x) => { if (x !== right()) { x.classList.add('is-dim'); } });
               // Bariq solved: this item's star stays empty (owner: stars only for the child's own right answers)
               if (V8) f8.help(); // FB-1 star rule: Bariq solved → «helped» slot, no gold
               await S.sleep(400); return resolve();
@@ -279,8 +294,9 @@
         '<p>الحركة القصيرة تُنطق سريعة (مَ مِ مُ)، والطويلة تُمدّ بقدر حركتين (مَا مِي مُو). الحرف الملوّن (ا ي و) هو الذي يمدّ الصوت.</p>');
       board.replaceChildren();
       buddy.set('cheer');
-      await S.say('bq7_E05_s1_end', { talk: true });
-      I.finish(S, { pose: 'cheer' });
+      // FIX12 A-11: praise («أَحْسَنْتَ…») only when the child answered himself; if Bariq solved everything → no praise line, neutral end title
+      if (own > 0 || !log.length) { await S.say('bq7_E05_s1_end', { talk: true }); I.finish(S, { pose: 'cheer' }); }
+      else I.finish(S, { pose: 'cheer', title: 'هَيَّا نُكْمِل.' });
     })();
   }
 

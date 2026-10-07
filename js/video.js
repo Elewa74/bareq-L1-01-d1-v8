@@ -953,7 +953,11 @@
            rounding flip of ch could re-layout on every ResizeObserver tick); (2) v8 fixed stage: bar 84 layout px so the 76-px buttons/segments sit
            INSIDE it (they overflowed a 63–66 bar onto the picture); box/bar sizes and the frame's top-left are snapped to whole device px. */
         const s8 = BQ.fixedStage && BQ.fixedStage() ? BQ.stageScale() : 0;
-        const ch = s8 ? 84 /* TX-1: constant in the fixed stage (was 64 ÷ scale + 8 → the bar and the picture changed size with the window) */ : Math.round(Math.max(62, Math.min(66, W * 0.065))); // v8: ≥ the in-stage touch size (--bq8-glass64) + 8
+        /* FIX12 C-16: buttons ≥ 64 VISUAL px at every stage scale (iPad portrait 820×1180 scale ≈ .68 → 76 layout px were ≈ 52 px):
+           tap = max(76, 66 ÷ scale) layout px; the bar is tap + 8 (constant for a given window size — no jitter loop). */
+        const tap = s8 ? Math.max(76, Math.ceil(66 / s8)) : 0;
+        if (s8) setSt(root, '--vp-tap', tap + 'px');
+        const ch = s8 ? tap + 8 /* TX-1: constant in the fixed stage (was 64 ÷ scale + 8 → the bar and the picture changed size with the window) */ : Math.round(Math.max(62, Math.min(66, W * 0.065))); // v8: ≥ the in-stage touch size (--bq8-glass64) + 8
         // v0-10: الإطار ثابت الارتفاع ⇒ يُحدّ عرض المشغّل بما يتّسع له ارتفاع المسرح (مع النقاط والزرّ تحته) فلا تمرير ولا قصّ
         const stg = root.closest('.elp-stage');
         if (stg && stg.clientHeight) {
@@ -1311,7 +1315,10 @@
     // المصدر والتشغيل داخل لمسة «ابْدَأْ» نفسها (iOS/iPadOS لا يسمح بالتشغيل بعد انتظار شبكيّ — T10)؛ الوقفات تُحمَّل بالتوازي
     video.src = o.src || (base + '.mp4'); // v7: o.src = نسخة 720p للشاشات الصغيرة/الشبكات البطيئة (R3-F10)
     if (o.autoplay !== false) { try { const pp = video.play(); if (pp && pp.catch) pp.catch(() => {}); } catch (e) {} }
-    (o.noCuesFile ? Promise.reject(new Error('no cues file')) : fetch(base + '.cues.json')).then((r) => { if (!r.ok) throw new Error('cues ' + r.status); return r.json(); }).then((j) => {
+    /* FIX12 C-18: the cues file is retried up to 2× (short backoff 400 / 1200 ms) — a single 503 used to drop captions + checkpoints */
+    const cuesGet = (n) => fetch(base + '.cues.json').then((r) => { if (!r.ok) throw new Error('cues ' + r.status); return r.json(); })
+      .catch((err) => (n < 2 && alive && !fell ? new Promise((res) => setTimeout(res, n ? 1200 : 400)).then(() => cuesGet(n + 1)) : Promise.reject(err)));
+    (o.noCuesFile ? Promise.reject(new Error('no cues file')) : cuesGet(0)).then((j) => {
       if (!alive || fell) return;
       cues = j; cues.cues = (cues.cues || []).slice().sort((a, b) => a.t - b.t);
       // v5: أسطر المقطع بنصّها في ملفّ الوقفات (أسطر جديدة لم تدخل البيانات بعد) ⇒ نصّ مصاحب لها أيضاً
@@ -1417,8 +1424,8 @@
    v5 — BQ.video.element(id, o): عنصر «فيديو» نظيف (اللوحات v5 · الإطار v2 القاعدة ٥: «فيديو أو تفاعلي — لا خلط»)
    · مشغّل المقطع media/video/v5-ELxx.mp4 (+ .cues.json: المشاهد · النصّ المصاحب · مواضع ✋) بإطار المنصّة الأسود.
    · بلا مهامّ ولا أدراج ولا أسئلة داخل الفيديو، ولا يتوقّف وحده؛ المعلّم يوقفه (نقرة على الصورة · زرّ الإيقاف · مسافة).
-   · عند النهاية: «التّالي» و«أَعِدِ المَقْطَعَ» فوق آخر لقطة، ويُعلَّم العنصر منجَزاً.
-   · إلى أن يصل المقطع الجديد (غير مدرج في BQ_DATA.videos): بطاقة هادئة «قيد الإنتاج» بفنّ الغلاف و«التّالي» — لا مشغّل معطوب.
+   · عند النهاية: «التَّالِي» و«أَعِدِ المَقْطَعَ» فوق آخر لقطة، ويُعلَّم العنصر منجَزاً.
+   · إلى أن يصل المقطع الجديد (غير مدرج في BQ_DATA.videos): بطاقة هادئة «قيد الإنتاج» بفنّ الغلاف و«التَّالِي» — لا مشغّل معطوب.
    · دليل المعلّم: مواضع ✋ (من البيانات) + سلسلة أحداث المقطع مطويّة + تعليم العنصر منجَزاً يدوياً.
    ================================================================================================ */
 (function () {
@@ -1466,7 +1473,7 @@
         let finished = false, P = null;
         const next = () => { BQ.audio.unlock(); BQ.goNext(); };
         const finish = () => { if (finished || !alive()) return; finished = true; ctx.done(); };
-        const nextBtn = (cls) => h('button.bq-btn' + (cls || ''), { type: 'button', onclick: next }, 'التّالي', BQ.icon('next'));
+        const nextBtn = (cls) => h('button.bq-btn' + (cls || ''), { type: 'button', onclick: next }, 'التَّالِي', BQ.icon('next'));
 
         /* دليل المعلّم: سلسلة أحداث المقطع (مطويّة) + تعليم منجَز */
         const chain = (meta.frames || []).length ? h('details.v5-chain', null, h('summary', null, 'ما في المقطع (سلسلة الأحداث)'),
@@ -1476,12 +1483,10 @@
 
         if (!has(vid)) {
           /* «قيد الإنتاج»: بطاقة هادئة لا مشغّل معطوب */
-          const ph = h('div.v5-ph', { role: 'region', 'aria-label': 'المَقْطَعُ قَيْدَ الإنْتاجِ' },
+          const ph = h('div.v5-ph', { role: 'region', 'aria-label': BQ.coverInfo(id).title },
             coverSrc ? h('img', { src: coverSrc, alt: '', draggable: 'false' }) : null,
             h('div.v5-ph-in', null,
-              h('span.v5-ph-tag', { html: CLOCK + '<span>قيد الإنتاج</span>' }),
               h('p.v5-ph-t', null, BQ.coverInfo(id).title),
-              h('p.v5-ph-n', null, 'يُضاف المقطع الجديد إلى هذه النسخة قريباً.'),
               nextBtn()));
           stage.append(ph);
           const fit = () => { const pl = ctx.frame.querySelector('.elp-play'); if (pl) ph.style.setProperty('--play-h', stage.clientHeight + 'px'); };
@@ -1490,7 +1495,7 @@
         }
 
         P = V.mp4(stage, ctx, { id: vid, aria: o.aria || ('مَقْطَعُ «' + BQ.coverInfo(id).title + '»'), captions: true, noCues: true, cuesOptional: true,
-          title: meta.name, poster: coverSrc, failNext: 'التّالي', slow: false });
+          title: meta.name, poster: coverSrc, failNext: 'التَّالِي', slow: false });
         ctx.onReplay(() => P.goto(P.scene));
         let endEl = null;
         const clearEnd = () => { if (endEl) { endEl.remove(); endEl = null; } if (P.root) P.root.classList.remove('v5-ended'); };
@@ -1508,7 +1513,7 @@
           P.video.addEventListener('ended', () => { finish(); showEnd(); });
           ['play', 'seeking'].forEach((ev) => P.video.addEventListener(ev, () => { if (!P.video.ended) clearEnd(); }));
         }
-        P.done.then((ok) => { if (ok === false) { if (alive()) next(); return; } finish(); showEnd(); }); // تعذّر التشغيل ثم «التّالي» ⇒ العنصر التالي (بلا إنجاز)
+        P.done.then((ok) => { if (ok === false) { if (alive()) next(); return; } finish(); showEnd(); }); // تعذّر التشغيل ثم «التَّالِي» ⇒ العنصر التالي (بلا إنجاز)
       },
     });
   }

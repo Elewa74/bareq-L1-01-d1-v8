@@ -325,3 +325,7 @@
 /* owner-approved Vazirmatn meem on the form tiles (v8), marks kept inside the tile */
 :root[data-theme="8"] .v7-eq-g { font-family: var(--font-letter); line-height: 1.6; }
 
+/* FIX12 C-15: Bariq placed beside the right option by video7.js placeBrq(); mirrored when he stands on its right; hidden if no free spot */
+.v7-eq-brq.is-flip { scale: -1 1; }
+.v7-eq.is-solve .v7-eq-brq.is-off { opacity: 0; }
+.v7-eq-brq.is-show { opacity: 1; transform: none; }

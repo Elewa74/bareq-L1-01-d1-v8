@@ -17,11 +17,11 @@
     b: 'bq7_E08_b_intro', end: 'bq7_E08_end',
   };
   const CHAINS = [
-    { links: ['مَ', 'ما'], word: 'manju' },
-    { links: ['مُ', 'مو'], word: 'numur' },
+    { links: ['مَ', 'مَا'], word: 'manju' }, // FIX12-B B-08: «مَا» «مُو» with their harakat on م
+    { links: ['مُ', 'مُو'], word: 'numur' },
   ];
   const BUILD = [
-    { w: 'manju', parts: ['ما', 'نْجو'], dis: 'با' },
+    { w: 'manju', parts: ['مَا', 'نْجو'], dis: 'بَا' },
     { w: 'musht', parts: ['مُ', 'شْط'], dis: 'بُ' },
     { w: 'maktab', parts: ['مَكْ', 'تَب'], dis: 'فَ' },
     { w: 'miftah', parts: ['مِفْ', 'تاح'], dis: 'بِ' },
@@ -30,10 +30,10 @@
   ];
   const READ = [
     { w: 'musht', opts: ['musht', 'miftah', 'maktab'] },
-    { w: 'manju', opts: ['manju', 'mawz', 'qamar'] },
-    { w: 'qamar', opts: ['qamar', 'fam', 'qalam'] },
+    { w: 'manju', opts: ['manju', 'mawz', 'muthallath'] }, // FIX12-B B-01: no «قَمَر» (owner) → مُثَلَّث / مُعَلِّم (T2 audio + T5 img8 pictures)
+    { w: 'muallim', opts: ['muallim', 'fam', 'qalam'] },
   ];
-  const ANALYZE = ['mawz', 'qamar', 'fam'];
+  const ANALYZE = ['mawz', 'numur', 'fam']; // FIX12-B B-01: middle م = «نُمُور» (was «قَمَر»)
 
   const CSS = `
 .e08 { justify-content: flex-start; }
@@ -367,7 +367,7 @@
       const fin = new Promise((r) => { resolve = r; });
       const btns = BQ.shuffle(it.opts).map((o) => {
         const b = V8
-          ? h('button.bq8-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, h('img', { src: ctx.img(W[o].img), alt: '', draggable: 'false' }))
+          ? h('button.bq8-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, h('img', { src: X.wimg(ctx, o), alt: '', draggable: 'false' }))
           : h('button.e08-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, X.pic(ctx, W[o].img));
         b.addEventListener('click', () => pick(b, o));
         if (BQ.fb) BQ.fb.qa(b, o === it.w); // automated QA only
@@ -496,10 +496,10 @@
       const row = (r) => '<tr><td>' + esc(r.w) + '</td><td>' + (r.ok ? 'من المحاولة الأولى' : 'بعد مساعدة') + '</td></tr>';
       const tbl = (t, a) => a.length ? '<p><b>' + t + '</b></p><table class="x7-log"><tbody>' + a.map(row).join('') + '</tbody></table>' : '';
       const okN = (a) => a.filter((r) => r.ok).length;
-      X.note(ctx, '<p><b>ما يجري:</b> أ١ سلسلتا قراءة (مَ ← ما ← مانْجو · مُ ← مو ← نُمور): يقرأ الطفل بصوته أوّلاً ثم يلمس ليتحقّق. ' +
+      X.note(ctx, '<p><b>ما يجري:</b> أ١ سلسلتا قراءة (مَ ← مَا ← مانْجو · مُ ← مُو ← نُمُور): يقرأ الطفل بصوته أوّلاً ثم يلمس ليتحقّق. ' +
         'أ٢ يركّب ٦ كلمات بسحب المقاطع (قطعة مشتِّتة في كلّ بند). أ٣ يقرأ ٣ كلمات وحده ويلمس صورتها (لا صوت قبل الجواب). ' +
-        'ب «حَلِّل»: تتفكّك الكلمة (مَوْز · قَمَر · فَم) ويضع الطفل الميم في خانة موضعها.</p>' +
-        '<p><b>للمعلّم:</b> القطعة الأولى في التركيب = الميم وحركتها (مُ + شْط، ما + نْجو)؛ هذا تركيب للقراءة لا تقطيع عروضيّ.</p>' +
+        'ب «حَلِّل»: تتفكّك الكلمة (مَوْز · نُمُور · فَم) ويضع الطفل الميم في خانة موضعها.</p>' +
+        '<p><b>للمعلّم:</b> القطعة الأولى في التركيب = الميم وحركتها (مُ + شْط، مَا + نْجو)؛ هذا تركيب للقراءة لا تقطيع عروضيّ.</p>' +
         '<p><b>المحاولات:</b> الأولى تلميح يعلّل (ابدأ من اليمين / الكلمة مقطّعة) · الثانية ضوء على الصواب · الثالثة يُعرض الجواب بهدوء. قرائن S7 (أ٢، أ٣) وS6 (ب) — الحكم في E11.</p>' +
         '<p><b>النجاح:</b> أ٣ ٢ من ٣ من المحاولة الأولى على الأقلّ + ب ٢ من ٣.' + (log.read.length ? ' الآن: أ٣ ' + AR(okN(log.read)) + '/' + AR(log.read.length) : '') + (log.analyze.length ? ' · ب ' + AR(okN(log.analyze)) + '/' + AR(log.analyze.length) : '') + '</p>' +
         tbl('التركيب', log.build) + tbl('القراءة المستقلّة', log.read) + tbl('حَلِّل', log.analyze));

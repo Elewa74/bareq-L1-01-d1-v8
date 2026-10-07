@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261008005711",
+"build": "261008022023",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -3167,7 +3167,7 @@ window.BQ_DATA={
 },
 "bq7_E11_fb_yes4": {
 "sp": "بارق",
-"t": "بَارَكَ اللهُ فِيكَ. صَحِيحٌ.",
+"t": "بَارَكَ اللَّهُ فِيكَ. صَحِيحٌ.",
 "tag": "[warmly]",
 "use": "E11 ✓ praise, rotation 4 (DRAFT)"
 },

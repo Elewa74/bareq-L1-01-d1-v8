@@ -23,8 +23,10 @@
   const MISSIONS = [
     { id: 'k1', img: 'card_miftah', label: 'مِفْتاحٌ وَمِرْآةٌ', line: 'bq7_E16_k1', text: 'اِبْحَث مَعَ أُسْرَتِكَ عَن: مِفْتاحٍ، وَمِلْعَقَةٍ، وَمِرْآةٍ.' },
     { id: 'k2', img: 'card_mawz', label: 'مَوْزٌ لَذيذٌ', line: 'bq7_E16_k2', text: 'تَذَوَّق مَعَ أُسْرَتِكَ مَوْزًا، وَقُلِ اسْمَهُ.' },
-    { id: 'k3', img8: 'w8_muthallath', svg: SHAPES, label: 'مُثَلَّثٌ وَمُرَبَّعٌ', line: 'bq7_E16_k3', text: 'اُرْسُم مَعَ أُسْرَتِكَ: مُثَلَّثًا، وَمُرَبَّعًا، وَمُسْتَطيلًا.' },
-    { id: 'k4', img8: 'e16_sand_tray', label: 'مَا، مِي، مُو', line: 'bq7_E16_k4', text: 'اُرْسُم حَرْفَ المِيمِ عَلى الرَّمْلِ، وَقُل: مَا، مِي، مُو.' },
+    // FIX12-B B-11: k3 shows all THREE shapes of its task (triangle + square + rectangle, the SHAPES drawing) — not the triangle alone
+    { id: 'k3', svg: SHAPES, label: 'مُثَلَّثٌ وَمُرَبَّعٌ', line: 'bq7_E16_k3', text: 'اُرْسُم مَعَ أُسْرَتِكَ: مُثَلَّثًا، وَمُرَبَّعًا، وَمُسْتَطيلًا.' },
+    // FIX12-B B-11: k4 = the sand tray WITH a finger-drawn «م» in the sand (overlay), as the task says
+    { id: 'k4', img8: 'e16_sand_tray', meem: true, label: 'مَا، مِي، مُو', line: 'bq7_E16_k4', text: 'اُرْسُم حَرْفَ المِيمِ عَلى الرَّمْلِ، وَقُل: مَا، مِي، مُو.' },
   ];
   const LINES = { bq7_E16_pick8: 'اِخْتَر مَهَمَّةً، وَحَدِّد صورَتَها.', bq7_E16_add: 'صَوِّر ما وَجَدْتَ، أَوِ ارْسُمْهُ هُنا.', bq7_E16_bye: 'إِلى اللِّقاءِ يا صَديقي.' };
   MISSIONS.forEach((m) => { LINES[m.line] = m.text; });
@@ -47,6 +49,10 @@
 .e16w .e16-mc.is-done::after { content: ''; position: absolute; top: calc(var(--k)*-22); inset-inline-start: calc(var(--k)*-22); width: max(40px, calc(var(--k)*60)); aspect-ratio: 1; background: url(assets/icons8/check.svg) center / contain no-repeat; }
 .e16w .e16-pic { display: block; width: 100%; aspect-ratio: 1; border-radius: calc(var(--k)*18); overflow: hidden; background: #F4EAD2; }
 .e16w .e16-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.e16w .e16-pic.has-m { position: relative; }
+/* the «م» drawn with a finger in the tray's sand (k4): a darker groove with a light lip, centred on the tray */
+.e16w .e16-pic .e16-groove { position: absolute; left: 50%; top: 47%; transform: translate(-50%, -50%); font: 700 calc(var(--k)*78)/1 var(--font-letter, 'Vazirmatn', sans-serif); color: rgba(140,90,35,.82); text-shadow: 0 calc(var(--k)*-1.5) 0 rgba(255,246,220,.95), 0 calc(var(--k)*2) calc(var(--k)*2) rgba(100,55,15,.45); pointer-events: none; padding-bottom: .2em; }
+.e16w .e16-mv .e16-pic .e16-groove { font-size: calc(var(--k)*96); }
 .e16w .e16-lbl { display: block; text-align: center; font: 700 max(15px, calc(var(--k)*26))/2.1 var(--font-bubble, var(--ff-child)); white-space: nowrap; }
 /* m4 placeholder picture: a sand tray with a finger-drawn «م» (until ART e16_sand_tray) */
 .e16w .e16-sand { display: grid; place-items: center; width: 100%; height: 100%; background: radial-gradient(circle at 50% 45%, #F7E3B5 0, #E9C98A 70%, #C99A56 100%); box-shadow: inset 0 0 0 calc(var(--k)*12) #B07A3E, inset 0 0 calc(var(--k)*30) calc(var(--k)*14) rgba(120,70,20,.45); }
@@ -108,17 +114,25 @@
   body.e16-printing { background: #fff !important; display: block !important; min-height: 0 !important; }
   body.e16-printing .e16-print { display: block !important; color: #000; font: 400 12pt/1.65 'Readex Pro', 'Noto Sans Arabic', sans-serif; direction: rtl; }
   .e16-print .p-h { font: 700 17pt/1.9 'Scheherazade New', serif; margin: 0 0 4pt; color: #166B46; }
-  .e16-print .p-m { display: grid; grid-template-columns: 60pt 1fr; gap: 4pt 10pt; align-items: center; border: 2pt solid #DEC68E; border-radius: 12pt; padding: 6pt 10pt; margin-bottom: 6pt; background: #FEFEDE; break-inside: avoid; }
-  .e16-print .p-m img, .e16-print .p-m .p-sand { width: 60pt; height: 60pt; object-fit: cover; border-radius: 8pt; background: #E9C98A; }
-  .e16-print .p-k { font: 700 13.5pt/2 'Scheherazade New', serif; margin: 0; }
+  .e16-print .p-m { display: grid; grid-template-columns: 46pt 1fr; gap: 2pt 10pt; align-items: center; border: 2pt solid #DEC68E; border-radius: 12pt; padding: 5pt 10pt; margin-bottom: 5pt; background: #FEFEDE; break-inside: avoid; }
+  .e16-print .p-m img, .e16-print .p-m .p-sand { width: 46pt; height: 46pt; object-fit: cover; border-radius: 8pt; background: #E9C98A; }
+  .e16-print .p-k { font: 700 13.5pt/1.85 'Scheherazade New', serif; margin: 0; }
   .e16-print .p-boxes { grid-column: 1 / -1; display: flex; gap: 8pt; }
-  .e16-print .p-box { flex: 1; height: 62pt; border: 1.5pt dashed #82C3E8; border-radius: 8pt; background: #fff; }
-  .e16-print .p-cut { border: 0; border-top: 1.2pt dashed #999; margin: 10pt 0 8pt; }
-  .e16-print h2 { font-size: 14pt; margin: 0 0 4pt; color: #00345B; }
+  .e16-print .p-box { flex: 1; height: 36pt; border: 1.5pt dashed #82C3E8; border-radius: 8pt; background: #fff; }
+  .e16-print .p-cut { border: 0; border-top: 1.2pt dashed #999; margin: 6pt 0 4pt; }
+  .e16-print h2 { font-size: 13pt; margin: 0 0 2pt; color: #00345B; }
+  .e16-print .p-rolewrap > p { margin: 0 0 4pt; }
   .e16-print .p-role { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8pt; }
-  .e16-print .p-role ul { margin: 2pt 0 0; padding-inline-start: 1.1em; font-size: 10pt; line-height: 1.5; }
+  .e16-print .p-role ul { margin: 2pt 0 0; padding-inline-start: 1.1em; font-size: 9.5pt; line-height: 1.4; }
   .e16-print .p-foot { margin-top: 8pt; font-size: 8.5pt; color: #777; }
-  .e16-print .p-ms { break-before: page; }
+  /* FIX12-B B-03: the parent-role block never splits (its 3 columns move together).
+     Missions are a little tighter so page 1 = the 4 missions + the whole role block; page 2 = the mastery guide (A4: 2 pages, none near-empty). */
+  .e16-print .p-rolewrap { break-inside: avoid; page-break-inside: avoid; }
+  .e16-print .p-role > div { break-inside: avoid; page-break-inside: avoid; }
+  .e16-print .p-ms { break-before: page; page-break-before: always; }
+  .e16-print .p-ms tr, .e16-print .p-ms .lp-bar { break-inside: avoid; page-break-inside: avoid; }
+  .e16-print .p-ms .ms-draft { display: none !important; }
+  @page { size: A4; margin: 12mm; }
   .e16-print .p-ms .ms-bar-act, .e16-print .p-ms .ms-foot, .e16-print .p-ms .ms-parent, .e16-print .p-ms .ms-intro, .e16-print .p-ms .ms-judge { display: none !important; }
 }`;
   const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -162,7 +176,7 @@
 
     const pic = (m) => {
       const box = h('span.e16-pic', { 'aria-hidden': 'true' });
-      if (m.img8 && HAVE8.has(m.img8)) box.append(h('img', { src: 'media/img8/' + m.img8 + '.webp', alt: '', draggable: 'false', decoding: 'async' }));
+      if (m.img8 && HAVE8.has(m.img8)) { box.append(h('img', { src: 'media/img8/' + m.img8 + '.webp', alt: '', draggable: 'false', decoding: 'async' })); if (m.meem) { box.classList.add('has-m'); box.append(h('span.e16-groove', null, 'م')); } }
       else if (m.svg) box.append(h('img', { src: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(m.svg), alt: '', draggable: 'false' }));
       else if (m.img && BQ.hasImg7 && BQ.hasImg7(m.img)) box.append(h('img', { src: BQ.img7(m.img), alt: '', draggable: 'false', decoding: 'async' }));
       else box.append(h('span.e16-sand', null, h('span', null, 'م')));
@@ -273,10 +287,17 @@
       p.innerHTML = '<p class="p-h">' + esc(title) + ' — اِخْتَر مَهَمَّةً</p>' +
         MISSIONS.map((m) => '<div class="p-m">' + (m.img8 && HAVE8.has(m.img8) ? '<img src="media/img8/' + m.img8 + '.webp" alt="">' : m.svg ? '<img src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(m.svg) + '" alt="">' : m.img && BQ.hasImg7 && BQ.hasImg7(m.img) ? '<img src="' + BQ.img7(m.img) + '" alt="">' : '<div class="p-sand"></div>') +
           '<p class="p-k">' + esc(m.text) + '</p><div class="p-boxes">' + box + box + box + '</div></div>').join('') +
-        '<hr class="p-cut"><h2>' + esc(role.title) + '</h2><p><b>هدف اليوم:</b> ' + esc(role.goal) + '</p>' +
-        '<div class="p-role"><div><b>قبل الدرس</b>' + ul(role.before) + '</div><div><b>أثناء الدرس</b>' + ul(role.during) + '</div><div><b>بعد الدرس</b>' + ul(role.after) + '</div></div>' +
-        '<p class="p-foot">بارق · L1-01-d1 · صوت الميم · v8 مسوّدة (draft_unapproved)</p>';
-      if (BQ.masteryView) { const ms = h('div.p-ms.lp.ms-view'); BQ.masteryView.render(ms); p.append(ms); }
+        '<div class="p-rolewrap"><hr class="p-cut"><h2>' + esc(role.title) + '</h2><p><b>هدف اليوم:</b> ' + esc(role.goal) + '</p>' +
+        '<div class="p-role"><div><b>قبل الدرس</b>' + ul(role.before) + '</div><div><b>أثناء الدرس</b>' + ul(role.during) + '</div><div><b>بعد الدرس</b>' + ul(role.after) + '</div></div></div>';
+      // FIX12-B B-03: no version / draft / code labels on paper (was «بارق · L1-01-d1 · … · v8 مسوّدة (draft_unapproved)» + the guide's «L1-01-d1 … v7 مسوّدة»)
+      if (BQ.masteryView) {
+        const ms = h('div.p-ms.lp.ms-view'); BQ.masteryView.render(ms);
+        const strip = (t) => t.replace(/\(?draft_unapproved\)?/g, '').replace(/v\d+\s*مسوّدة/g, '').replace(/مسوّدة غير معتمدة/g, '').replace(/L\d+-\d+(-d\d+)?/g, '')
+          .replace(/(\s*·\s*){2,}/g, ' · ').replace(/^\s*·\s*|\s*·\s*$/g, '').trim();
+        const tw = document.createTreeWalker(ms, NodeFilter.SHOW_TEXT); const tn = []; let n; while ((n = tw.nextNode())) tn.push(n);
+        tn.forEach((x) => { if (/draft_unapproved|مسوّدة|L\d+-\d+/.test(x.nodeValue)) x.nodeValue = strip(x.nodeValue); });
+        p.append(ms);
+      }
       document.body.append(p);
       document.body.classList.add('e16-printing');
       const done = () => { document.body.classList.remove('e16-printing'); const q = document.querySelector('.e16-print'); if (q) q.remove();

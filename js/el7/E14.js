@@ -141,7 +141,7 @@
 .e14-slot.is-hint:not(.is-full) { border-color: var(--bq8-yellow); border-style: solid; box-shadow: 0 0 0 calc(var(--u)*6) rgba(255,194,26,.55); }
 .e14-tray8 { flex: none; box-sizing: border-box; width: calc(var(--u)*806); height: calc(var(--u)*156); display: flex; direction: rtl; flex-wrap: nowrap; justify-content: center; align-items: center;
   gap: calc(var(--u)*30); padding: calc(var(--u)*10); border-radius: calc(var(--u)*28); background: rgba(255,255,255,.55); border: calc(var(--u)*3) dashed rgba(11,45,79,.18); }
-.e14 .bq8-tile.e14-t8 { --w: calc(var(--u)*96); --fs: .6; }
+.e14 .bq8-tile.e14-t8 { --w: calc(var(--u)*110); --fs: .6; } /* FIX12-B B-13: 110u ≈ 73 px on the glass in iPad portrait (×0.664) — was 96u = 64 px */
 .e14 .bq8-tile.e14-t8.is-syll, .e14-slot.is-syll { --fs: .54; }
 .e14 .e14-slot > .bq8-tile { --w: calc(var(--u)*88); margin: 0; cursor: pointer; box-shadow: inset 0 calc(var(--u)*-5) 0 rgba(31,157,99,.18), 0 calc(var(--u)*3) calc(var(--u)*6) rgba(11,45,79,.22); }
 .e14 .bq8-tile.is-in { animation: e14-snap .3s cubic-bezier(.3,1.6,.5,1) both; }
@@ -166,7 +166,9 @@
     STAGES.forEach((st) => {
       const lead = st.cue ? h('span.e14-cue.is-' + st.cue, { 'aria-hidden': 'true' }) : h('img', { src: ctx.img(st.icon), alt: '', draggable: 'false' });
       const label = h('button.bq8-slot__label', { type: 'button', 'aria-label': st.label, onclick: () => { if (!S.live) return; S.say(st.line); } }, lead, h('span', null, st.label), X.i8('listen', 'e14-say8'));
-      const slots = st.pieces.map((p) => h('div.e14-slot' + (isSyll(p.t) ? '.is-syll' : ''), { dataset: { t: p.t }, 'aria-label': 'مَكانُ ' + p.t }, X.kas(h('span.e14-gh', { 'aria-hidden': 'true', lang: 'ar' }, p.t))));
+      // FIX12-B B-02 (owner rule «never show the answer before the child answers»): the slots are EMPTY — no faint glyph. Any piece of the
+      // lit branch goes into any empty slot of that branch; ✗ = a piece dropped on another branch. Order is tidied when the branch is full.
+      const slots = st.pieces.map((p) => h('div.e14-slot' + (isSyll(p.t) ? '.is-syll' : ''), { dataset: { t: p.t, br: st.id }, 'aria-label': 'خانَةٌ' }));
       const body = h('div.bq8-slot__body.e14-slots', null, slots);
       const el = h('div.bq8-slot.x7-8.x7-in.is-later', { role: 'group', 'aria-label': st.label, dataset: { br: st.id } }, label, body);
       brEl[st.id] = el; slotsOf[st.id] = slots;
@@ -194,13 +196,13 @@
 
     let si = -1, got = 0, intro = true, finished = false, helpedSt = false;
     const errs = new Map();
-    const slotFor = (p) => slotsOf[STAGES[si].id].find((s) => s.dataset.t === p.t);
+    const slotFor = () => slotsOf[STAGES[si].id].find((s) => !s.classList.contains('is-full'));
     const dnd = X.dnd({
       root,
       canDrag: () => !intro && !finished,
       onDrop: (t, z) => {
         const p = t._d;
-        if (z.dataset.t === p.t) { settle(t, p, z); return true; }
+        if (z.dataset.br === STAGES[si].id && !z.classList.contains('is-full')) { settle(t, p, z); return true; }
         const n = (errs.get(p.t) || 0) + 1; errs.set(p.t, n);
         z.classList.remove('is-no'); void z.offsetWidth; z.classList.add('is-no'); setTimeout(() => z.classList.remove('is-no'), 700);
         if (BQ.fb) BQ.fb.markNo(z, { stay: false, ms: 1300 }); // FB-1: clear red mark on the chosen slot
@@ -236,6 +238,9 @@
     }
     async function stageDone() {
       const st = STAGES[si];
+      // tidy: the placed pieces take the canonical order of the branch (مَ مِ مُ · مَا مِي مُو · مـ ـمـ ـم م)
+      const placed = new Map(slotsOf[st.id].map((s) => s.querySelector('.bq8-tile')).filter(Boolean).map((tc) => [tc.dataset.t, tc]));
+      slotsOf[st.id].forEach((s) => { const tc = placed.get(s.dataset.t); if (tc && tc.parentNode !== s) s.append(tc); });
       brEl[st.id].classList.remove('is-cur'); brEl[st.id].classList.add('is-filled');
       paths[st.id].classList.add('on'); buddy.mood('cheer', 1600);
       // FB-1 star rule: the stage star is gold only when the child placed every piece himself; Bariq placed one → «helped» slot
@@ -248,7 +253,8 @@
       const st = STAGES[i];
       STAGES.forEach((x, j) => { brEl[x.id].classList.toggle('is-later', j > i); brEl[x.id].classList.toggle('is-cur', j === i); });
       tray.replaceChildren();
-      slotsOf[st.id].forEach((s) => dnd.zone(s, { t: s.dataset.t }));
+      // every still-empty slot of every branch is a drop zone (a piece on another branch = ✗); the lit branch is the right one
+      STAGES.forEach((x) => slotsOf[x.id].forEach((s) => { if (!s.classList.contains('is-full') && !dnd.zones.has(s)) dnd.zone(s, { t: s.dataset.t }); }));
       // the stage title with its sounds, said while its branch lights (look first: the faint pieces show where each one goes)
       buddy.mood('talk', 2000);
       await S.say(st.line);

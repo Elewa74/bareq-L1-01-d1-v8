@@ -23,8 +23,11 @@
     // ✓ praise: sentences (owner) — the bare «نَعَم، هَذا هُوَ» (G_yes1) is a confirmation, not praise → not in the pool
     yes: ['bq7_FB_yes1', 'bq7_E11_fb_yes1', 'bq7_FB_yes2', 'bq7_E11_fb_yes2', 'bq7_FB_yes3', 'bq7_E11_fb_yes3', 'bq7_FB_yes4',
       'bq7_E11_fb_yes5', 'bq7_FB_yes5', 'bq7_E11_fb_yes4', 'bq7_G_yes2', 'bq7_G_yes4'],
-    try: ['bq7_E11_fb_try1', 'bq7_FB_try1', 'bq7_E11_fb_try2', 'bq7_FB_try2', 'bq7_E11_fb_try3'],
-    solve: ['bq7_E11_fb_solve1', 'bq7_FB_solve1', 'bq7_E11_fb_solve2', 'bq7_E11_fb_solve3'],
+    /* FIX12 D-07: ✗1 must say «حَاوِلْ مَرَّةً أُخْرَى» → only the lines that do. Removed (off-rule): E11_fb_try2 «لَا بَأْسَ، جَرِّب مِن جَدِيدٍ»,
+       FB_try2 «… فَكِّر وَجَرِّب مَرَّةً أُخْرَى» (جَرِّب), FB_try1 «أَنْتَ قَرِيبٌ، …» (misleading for an unrelated pick, R11 C-12). */
+    try: ['bq7_E11_fb_try1', 'bq7_E11_fb_try3'],
+    /* ✗2 = Bariq solved + encouraging line. Removed: E11_fb_solve3 «اُنْظُر جَيِّدًا. أَنْتَ تَسْتَطِيعُ» (does not close a solved item, R11 D-07). */
+    solve: ['bq7_E11_fb_solve1', 'bq7_FB_solve1', 'bq7_E11_fb_solve2'],
   };
   /* rotation: shuffled once per page, walks the whole pool before any line comes back, never the same line twice in a row */
   const rot = (k) => {

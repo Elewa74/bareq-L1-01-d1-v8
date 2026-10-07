@@ -70,7 +70,7 @@
       '<p>بطاقة المهمّة للطفل في العنصر ١٦ «مُهِمَّةٌ مَعَ الأُسْرَةِ» وتُطبع على A4.</p>';
     const gd = ELS.map((e) => '<details class="lp7-gd"><summary><span class="lp7-n">' + AR(e.menu) + '</span><span class="lp-k">' + esc(e.name) + '</span> <small>· ' + esc(typeAr(e)) + '</small></summary><div>' +
       (window.BQ && BQ.guideHtml ? BQ.guideHtml(e) : esc(e.desc)) + '</div></details>').join('');
-    root.innerHTML = '<div class="lp-bar"><div class="lp-bar-t"><h2>خطة الدرس ودليل المعلّم</h2><p><span class="lp-k">صَوْتُ «م»</span> · L1-01-d1 · النسخة v7 — مسوّدة للمراجعة</p></div>' +
+    root.innerHTML = '<div class="lp-bar"><div class="lp-bar-t"><h2>خطة الدرس ودليل المعلّم</h2><p><span class="lp-k">صَوْتُ «م»</span> · L1-01-d1 · النسخة v8 — مسوّدة للمراجعة</p></div>' +
       '<div class="lp7-bar-act"><button type="button" class="bq-btn ghost" data-print="1">اطبع</button><a class="lp-back" href="#">العودة إلى الدرس</a></div><span class="lp-status" title="مسوّدة غير معتمدة">draft_unapproved</span></div>' +
       '<div class="lp-doc">' + sec('lp7-card', 1, 'بطاقة الدرس', card) + sec('lp7-out', 2, 'نواتج التعلّم', outs) + sec('lp7-els', 3, 'عناصر الدرس الستة عشر', table) +
       sec('lp7-mx', 4, 'مصفوفة النواتج والعناصر', mx) + sec('lp7-ms', 5, 'دليل الإتقان والمراجعة الموجّهة', ms) + sec('lp7-role', 6, 'دور وليّ الأمر', role) +

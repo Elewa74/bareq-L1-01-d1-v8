@@ -93,9 +93,9 @@
    ÷ the live scale --bq-s» (cover «اِبْدَأِ النَّشاطَ», video play button, ix1 --i8-t) use this constant instead, so their layout size is the same on
    every window (owner: fixed stage). --bq-s itself stays the live scale used by the transform only. */
 .elp-fit { --bq8-sref: 0.846; }
-.elp-fit .vp-mp4 .vp-ctl > button, .elp-fit .vp-mp4 .vp-ctl > button.pp { min-width: var(--bq8-glass64) !important; min-height: var(--bq8-glass64) !important; flex-basis: var(--bq8-glass64); }
-.elp-fit .vp-mp4 .vp-ctl { height: auto; min-height: var(--bq8-glass64); }
-.elp-fit .vp-mp4 .vp-track { min-height: var(--bq8-glass64); }
+.elp-fit .vp-mp4 .vp-ctl > button, .elp-fit .vp-mp4 .vp-ctl > button.pp { min-width: var(--vp-tap, var(--bq8-glass64)) !important; min-height: var(--vp-tap, var(--bq8-glass64)) !important; flex-basis: var(--vp-tap, var(--bq8-glass64)); } /* FIX12 C-16: --vp-tap = max(76, 66 ÷ stage scale) from video.js */
+.elp-fit .vp-mp4 .vp-ctl { height: auto; min-height: var(--vp-tap, var(--bq8-glass64)); }
+.elp-fit .vp-mp4 .vp-track { min-height: var(--vp-tap, var(--bq8-glass64)); }
 .elp-fit .v7-eq-say, .elp-fit .v7-eq-ear { width: var(--bq8-glass64); height: var(--bq8-glass64); }
 .elp-fit .elp-say { width: var(--bq8-glass64); height: var(--bq8-glass64); }
 .elp-fit .v7-eq-pick { min-width: var(--bq8-glass64); min-height: var(--bq8-glass64); }   /* word hit boxes: sized by the glyphs (word ≥ 180 px), never overlapping */
