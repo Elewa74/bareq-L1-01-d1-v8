@@ -52,6 +52,8 @@ const L = {
 const PRAISE = ['bq7_G_yes1', 'bq7_E10_found', 'bq7_G_yes3', 'bq7_G_yes4', 'bq7_G_yes2'];
 const TRY = ['bq7_E11_fb_try1', 'bq7_E11_fb_try2', 'bq7_E11_fb_try3'];
 const SOLVE = ['bq7_E11_fb_solve1', 'bq7_E11_fb_solve2', 'bq7_E11_fb_solve3'];
+/* FB-1: praise / retry / solve lines from the ONE shared pool of the platform (js/fb.js · BQ.fb); the lists above are only the fallback */
+const FBP = () => (typeof window !== 'undefined' && window.BQ && window.BQ.fb) || null;
 const MIN_HIT = 120;      // layout px of the 1180-wide stage (≥ 96 CSS px on a 1024 iPad, ≥ 64 px on the smallest scale)
 const MIN_HS = 160;       // closed places in the master shot
 const GLIDE = 1.2;        // s, camera glide (ease-in-out, no roll)
@@ -85,7 +87,7 @@ const CSS = `
 .g9 .g9-ins .elp-instr { min-height: 0; gap: calc(var(--u)*12); }
 .g9 .g9-ins .elp-say.bq8-btn { width: max(76px, calc(var(--u)*104)); height: max(76px, calc(var(--u)*104)); font-size: max(54px, calc(var(--u)*74)); }
 .g9 .g9-ins .elp-bubble { max-width: calc(var(--u)*380); }
-.g9 .g9-ins .elp-instr-t, .g9 .g9-ins .elp-cap { font-size: calc(var(--u)*24); line-height: 1.7; padding: calc(var(--u)*6) calc(var(--u)*16) calc(var(--u)*8); white-space: normal; border-radius: calc(var(--u)*20);
+.g9 .g9-ins .elp-instr-t, .g9 .g9-ins .elp-cap { font-size: calc(var(--u)*24); line-height: 2.05; padding: calc(var(--u)*3) calc(var(--u)*16) calc(var(--u)*5); /* TX-1: lh 1.7 put «يَبْدَأُ» damma on the border; 2.05 = the voweled line box */ white-space: normal; border-radius: calc(var(--u)*20);
   background: rgba(255,250,236,.96); border: calc(var(--u)*3) solid #0B2D4F; box-shadow: 0 0 0 calc(var(--u)*4) #fff; }
 .g9 .g9-small { width: max(64px, calc(var(--u)*76)); height: max(64px, calc(var(--u)*76)); font-size: max(44px, calc(var(--u)*54)); }
 .g9 .g9-mute { --h: #EEF2F7; --hd: #8FA3B8; }
@@ -811,7 +813,7 @@ export async function run(host, api) {
   const earBadge = (it) => { const r = screenRect(it.hit || it.prop); if (!r) return null; const m = h('span.g9-ear', { html: EAR }); m.style.left = r.x1 + 'px'; m.style.top = r.y0 + 'px'; box.append(m); return m; };
   const center = (it) => { const b = new THREE.Box3().setFromObject(it.hit || it.prop, true); return b.getCenter(new THREE.Vector3()); };
   const ringSize = (it) => { const b = new THREE.Box3().setFromObject(it.prop || it.hit, true); const z = b.getSize(new THREE.Vector3()); return clamp(Math.max(z.x, z.y, z.z) * 1.5, 0.14, 0.7); };
-  let pI = 0; const praise = () => PRAISE[(pI++) % PRAISE.length];
+  let pI = 0; const praise = () => (FBP() ? FBP().yes() : PRAISE[(pI++) % PRAISE.length]);
   let tI = 0, sI = 0, midSeen = false, streak = 0, clean = true, earEls = [];
   const instr = (id) => { curInstr = id; return api.instruction ? api.instruction(id) : say(id); };
   let curInstr = null;
@@ -906,7 +908,7 @@ export async function run(host, api) {
     res.wrong++; streak++; clean = false; res.items.push({ slug: it.s, ok: false, how: 'distractor', view: box.dataset.shot });
     markNo(it); brqAct('think'); if (api.fx) api.fx('no', 0.4);
     await sleep(250);
-    await say(TRY[(tI++) % TRY.length]); if (!ok()) return;
+    await say(FBP() ? FBP().tryL() : TRY[(tI++) % TRY.length]); if (!ok()) return;
     if (streak < 2) { await say(L.hintStart); return; }
     // ✗2 in a row → Bariq floats beside the answer and lights it; the child still touches it (no star? yes a star: the find is correct, S1 = not first-try)
     streak = 0; const tg = items[targetS]; if (!tg || tg.gone) return;
@@ -1122,7 +1124,7 @@ export async function run(host, api) {
         const pk = studs; studs++;
         await Promise.all([dropPad(pk), say('bq7_W_' + w.s)]); if (!ok()) return;
         if (studs < 4) await creak(studs);
-        await say(juicy ? praise() : SOLVE[(nSolve2++) % SOLVE.length]); if (!ok()) return;
+        await say(juicy ? praise() : (FBP() ? FBP().solveL() : SOLVE[(nSolve2++) % SOLVE.length])); if (!ok()) return;
         if (w.after) { row.querySelectorAll('.m').forEach((e) => e.classList.add('is-pulse')); await say(w.after); if (!ok()) return; } // SCI-1: «مُشْط… يَبْدَأُ بِـ مُ» · قَمَر/فَم: where the م sits
         await sleep(250);
         resolve();
@@ -1132,7 +1134,7 @@ export async function run(host, api) {
         if (b.dataset.t === w.right) { await finishWord(b, tier === 0 ? 'first' : 'hint', true); return; }
         tier++; b.classList.add('is-no'); b.append(h('span.x', { html: MARK_NO })); b.setAttribute('aria-disabled', 'true'); brqAct('think'); if (api.fx) api.fx('no', 0.4);
         await sleep(250);
-        if (tier === 1) { await say(TRY[(nTry2++) % TRY.length]); if (!ok()) return; await say(L.shape); busy = false; wordBox.dataset.ready = '1'; return; }
+        if (tier === 1) { await say(FBP() ? FBP().tryL() : TRY[(nTry2++) % TRY.length]); if (!ok()) return; await say(L.shape); busy = false; wordBox.dataset.ready = '1'; return; }
         const rb = lockEls.find((x) => x.dataset.t === w.right); gap.classList.add('is-glow'); rb.classList.add('is-ok'); brqAct('point');
         await say(L.model); if (!ok()) return; await finishWord(rb, 'shown', false);
       };

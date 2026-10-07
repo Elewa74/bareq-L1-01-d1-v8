@@ -116,7 +116,11 @@
 .e06-8 .e06-main.is-words .e06-wpic.i7-card.i8-card { --s: calc(var(--u)*184); }
 .e06-8 .e06-main.is-words .e06-word { font-size: calc(var(--u)*180); line-height: 1.62; padding: 0 calc(var(--u)*30); min-width: calc(var(--u)*500); }
 .bq8-stage .e06-8 .i7-tw-d.is-no { color: var(--bq8-no); text-shadow: none; }
-.bq8-stage .e06-8 .i7-tw-hit.is-no { border-radius: calc(var(--u)*18); box-shadow: 0 0 0 calc(var(--u)*5) var(--bq8-no) !important; }
+.bq8-stage .e06-8 .i7-tw-hit.is-no { border-radius: calc(var(--u)*18); box-shadow: inset 0 0 0 calc(var(--u)*6) #E53935 !important; background: rgba(229,57,53,.10); } /* FB-1: clear RED, drawn INSIDE the card */
+.bq8-stage .e06-8 .i7-tw-d.is-no { color: #E53935; }
+.bq8-stage .e06-8 .i7-tw-hit.i8-ok { border-radius: calc(var(--u)*18); box-shadow: inset 0 0 0 calc(var(--u)*6) #22C27A !important; background: rgba(34,194,122,.12); }
+.bq8-stage .e06-8 .i7-tw-hit.i8-ok::after { content: ''; position: absolute; top: calc(var(--u)*4); left: 50%; translate: -50% 0; width: calc(var(--u)*46); aspect-ratio: 1;
+  background: url(assets/icons8/check.svg) center / 100% no-repeat; animation: i7Pop .4s ease-out; }
 .bq8-stage .e06-8 .i7-tw-hit.i8-x::after { content: ''; position: absolute; top: calc(var(--u)*4); left: 50%; translate: -50% 0; width: calc(var(--u)*46); aspect-ratio: 1;
   background: #fff url(assets/icons8/close.svg) center / 100% no-repeat; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,.25); animation: i7Pop .4s ease-out; }
 .e06-8 .e06-word { font-family: var(--font-letter); font-weight: 700; font-size: calc(var(--u)*120); line-height: 1.75; padding: 0 calc(var(--u)*40); min-width: max(340px, calc(var(--u)*420)); text-align: center;
@@ -251,6 +255,7 @@
         const spans = tw.cl.map((c) => c.hit);
         const tIdx = tw.cl.findIndex((c) => c.b === 'م');
         const target = spans[tIdx];
+        if (BQ.fb) spans.forEach((x) => BQ.fb.qa(x, x === target)); // automated QA only
         const pic = I.card(w.slug, { aria: info.w, text: true }); pic.classList.add('e06-wpic', 'i7-in');
         const refB = V8 ? ref8() : h('button.e06-ref', { type: 'button', 'aria-label': 'م', lang: 'ar' }, h('span', null, 'م'));
         main.replaceChildren(refB, h('div.e06-wrow', null, pic, word)); main.classList.add('is-words');
@@ -265,11 +270,11 @@
         let n = 0, first = null;
         await new Promise((resolve) => {
           const tap = async (s) => {
-            if (busy || s.classList.contains('is-m')) return;
+            if (busy || s.classList.contains('is-m') || s.classList.contains('i8-x')) return;
             busy = true;
             if (s === target) {
               if (first == null) { first = true; I.record(S, 'S5', true, { item: w.slug }); log.push([info.w, true]); }
-              tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer(); if (V8) f8.star();
+              tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); s.classList.add('i8-ok'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer(); if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
               await S.say('bq7_E06_brq_wow', { talk: true }); // «حَرْفُ المِيمِ! صَوْتُهُ: مَ!» — الاسم مقروناً بالصوت (ok_letter المسجَّل يقول الاسم وحده)
               await I.playOn(S, pic, I.segId(w.slug));
@@ -278,11 +283,12 @@
             }
             if (first == null) { first = false; I.record(S, 'S5', false, { item: w.slug }); log.push([info.w, false]); }
             // OWNER_R3 ladder: ✗1 the tapped letter turns red + retry line (+ the «م» card pulses — a shape cue, not the answer)
-            const si2 = s.idx; tw.paint(si2, 'is-no'); s.classList.add('i8-x'); I.sfx('soft'); setTimeout(() => { tw.unpaint(si2, 'is-no'); s.classList.remove('i8-x'); }, 1400);
+            // FB-1: the red mark STAYS on the wrong letter (owner «علامة حمراء على الاختيار»); it cannot be chosen again
+            const si2 = s.idx; tw.paint(si2, 'is-no'); s.classList.add('i8-x'); I.sfx('soft');
             n++; buddy.think();
             if (n === 1) { await S.say(I.tryL(), { talk: true }); refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); busy = false; return; }
             // ✗2 Bariq solves: the meem lights up + the word in parts + an encouraging line
-            tw.paint(tIdx, 'is-m'); buddy.point(); I.helped = true;
+            tw.paint(tIdx, 'is-m'); target.classList.add('i8-ok'); buddy.point(); I.helped = true; if (V8) f8.help(); // FB-1: no star for a Bariq-solved word
             await I.playOn(S, pic, I.segId(w.slug)); await S.say(I.solveL(), { talk: true });
             return resolve();
           };
@@ -319,7 +325,7 @@
             if (t === right()) {
               if (first == null) { first = true; I.record(S, 'S5', true, { item: 'match-' + it.s }); log.push([it.opts[0], true]); }
               t.classList.remove('is-soft'); t.classList.add('is-ok'); I.anim(t, 'i7-pop', 450); I.sfx('ok'); I.burst(root, t, 12); buddy.cheer();
-              tiles.forEach((x) => { if (x !== t) x.classList.add('is-dim'); });
+              tiles.forEach((x) => { if (x !== t && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
               if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
               await I.playOn(S, t, sid(it.s));
@@ -328,7 +334,7 @@
             }
             if (first == null) { first = false; I.record(S, 'S5', false, { item: 'match-' + it.s, picked: t.g }); log.push([it.opts[0], false]); }
             const st = await pol.wrong(t);
-            if (st === 'model') return resolve();
+            if (st === 'model') { if (V8) f8.help(); return resolve(); } // FB-1: no star for a Bariq-solved item
             busy = false;
           }));
           (async () => { busy = true; await S.sleep(400); if (k === 0) await S.say('bq7_E06_match_intro'); await ask(); busy = false; })();

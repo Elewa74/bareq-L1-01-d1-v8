@@ -106,6 +106,27 @@
   /* ---------- الصوت + النصّ المصاحب ---------- */
   const SPEAKER = { 'ماجد': 'ماجِد', 'سيف': 'سَيْف', 'بارق': 'بارِق', 'واجهة': '', 'مؤثّر': '' };
   const A = (BQ.audio = { cur: null, token: 0, capEl: null, onLine: null });
+  /* OWNER 2026-10-07 «لو عايز أعمل كتم للصوت في النشاط؟» — global mute (all lesson audio + video), remembered for the session */
+  BQ.state = BQ.state || {};
+  try { BQ.state.muted = sessionStorage.getItem('bq_muted') === '1'; } catch (e) { BQ.state.muted = false; }
+  const mediaSeen = new Set();
+  (function () {
+    const MP = window.HTMLMediaElement && HTMLMediaElement.prototype; if (!MP || MP._bqMutePatched) return;
+    const op = MP.play; MP._bqMutePatched = true;
+    MP.play = function () { try { this.muted = !!BQ.state.muted; mediaSeen.add(this); } catch (e) { /* */ } return op.apply(this, arguments); };
+  })();
+  BQ.setMuted = function (on) {
+    BQ.state.muted = !!on;
+    try { sessionStorage.setItem('bq_muted', on ? '1' : '0'); } catch (e) { /* */ }
+    mediaSeen.forEach((m) => { try { m.muted = !!on; } catch (e) { /* */ } });
+    document.querySelectorAll('audio, video').forEach((m) => { try { m.muted = !!on; } catch (e) { /* */ } });
+    try { if (BQ.audio && BQ.audio.ctx) { if (on) BQ.audio.ctx.suspend(); else BQ.audio.ctx.resume(); } } catch (e) { /* */ }
+    document.querySelectorAll('.elp-mute').forEach((b) => {
+      b.setAttribute('aria-pressed', String(!!on)); b.classList.toggle('is-on', !!on);
+      const lbl = on ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ'; b.setAttribute('aria-label', lbl); b.title = lbl;
+      const ic = b.querySelector('.bq-ic, svg'); if (ic) ic.replaceWith(BQ.icon(on ? 'mute' : 'speaker'));
+    });
+  };
   A.pending = null; // مُحلّل السطر الجاري — يُستدعى عند المقاطعة حتى لا يتجمّد من ينتظره
   const settle = () => { const r = A.pending; A.pending = null; if (r) r(); };
   /* عنصر صوت واحد مشترك يُفتح بلمسة «ابْدَأْ» (سياسة التشغيل في iOS/iPadOS تحفظ الفتح للعنصر نفسه) — T10 */
@@ -264,6 +285,7 @@
   /* ---------- أيقونات ---------- */
   const I = (BQ.icons = {
     speaker: '<svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="currentColor"/><path d="M32 17a9 9 0 0 1 0 14M36.5 12a16 16 0 0 1 0 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>',
+    mute: '<svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="currentColor"/><path d="M33 18l10 12M43 18L33 30" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>',
     next: '<svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     prev: '<svg viewBox="0 0 48 48"><path d="M18 10l14 14-14 14" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     home: '<svg viewBox="0 0 48 48"><path d="M8 23 24 9l16 14M13 20v18h9V29h4v9h9V20" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -654,7 +676,7 @@
       const has = !!(ins.text || ins.line);
       const showText = !!ins.text; // v8: never hidden by a setting (owner: «من الخطأ أن يخفي التعليمات في النشاط»)
       instr.classList.toggle('is-empty', !has);
-      instrText.textContent = ins.text || '';
+      instrText.textContent = (ins.text || '').replace(/ ([–-]) (?=\S{1,3}(?:\s|$|[)،؟.]))/g, '\u00a0$1\u00a0'); // TX-1: a syllable list «مَ – مِ – مُ» never breaks over two lines (layout only, same text)
       instrText.hidden = !showText;
       fnChip.hidden = showText || !has;
       fnChip.innerHTML = I[ins.icon || fnIcon(ins.text, ins.line)] || '';
@@ -732,12 +754,14 @@
     cleanups.push(() => { if (!adultPanel.hidden) { inertEls.forEach((e) => { e.inert = false; }); document.removeEventListener('keydown', drawerKeys, true); } });
     scrim.addEventListener('click', () => toggleAdult(false));
     const restartBtn = h('button.elp-tool', { type: 'button', 'aria-label': 'مِنَ الْبِدَايَةِ', title: 'مِنَ الْبِدَايَةِ', onclick: () => BQ.open(meta.id, { pos: posOf(meta.id), history: 'replace' }) }, BQ.icon('replay'), toolLbl('مِنَ الْبِدَايَةِ', 'إِعَادَة'));
+    const muteBtn = h('button.elp-tool.elp-mute', { type: 'button', 'aria-pressed': String(!!BQ.state.muted), 'aria-label': BQ.state.muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ', title: BQ.state.muted ? 'تَشْغِيلُ الصَّوْتِ' : 'كَتْمُ الصَّوْتِ', onclick: () => BQ.setMuted(!BQ.state.muted) }, BQ.icon(BQ.state.muted ? 'mute' : 'speaker'), toolLbl('الصَّوْتُ', 'صَوْت'));
+    if (BQ.state.muted) muteBtn.classList.add('is-on');
     const head = h('header.elp-head', null,
       h('div.elp-ic', null, h('img', { src: meta.icon, alt: '' })),
       h('div.elp-titles', null,
         h('p.elp-kicker', null, h('span', null, kicker(meta.id)), typeBadge(meta.id, 'is-sm')),
         h('h2.elp-title', { id: 'elp-t', tabindex: '-1' }, cleanName(meta.name))),
-      h('div.elp-tools', { role: 'group', 'aria-label': 'أدوات المعلّم' }, adultBtn, restartBtn)); // v8: the CC toggle lives in the video player controls
+      h('div.elp-tools', { role: 'group', 'aria-label': 'أدوات المعلّم' }, adultBtn, muteBtn, restartBtn)); // v8: the CC toggle lives in the video player controls
     const nav = navBar(meta.id);
     const f = h('section.bq-frame.elp', { dataset: { el: meta.id }, 'aria-labelledby': 'elp-t' }, head, fitBox, nav, scrim, adultPanel);
     content.replaceChildren(f);

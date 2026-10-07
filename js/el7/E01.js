@@ -139,8 +139,8 @@
       await I.playOn(S, b, b.sid); // اللمس يُسمِع الصوت ثم يُحكم
       if (b.o.key === 'm') {
         if (first == null) { first = true; I.record(S, 'S1', true, { item: 'repeat-sound' }); }
-        b.classList.remove('is-soft'); b.classList.add('is-ok'); I.anim(b, 'i7-pop', 450); I.sfx('ok'); I.burst(root, b, 18); buddy.cheer();
-        btns.forEach((x) => { if (x !== b) x.classList.add('is-dim'); });
+        I.markOk(b); I.anim(b, 'i7-pop', 450); I.sfx('ok'); I.burst(root, b, 18); buddy.cheer();
+        btns.forEach((x) => { if (x !== b && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
         await S.say(I.yes(), { talk: true });
         const pl = S.say(L.ok);
         for (const c of cards) { await S.sleep(560); c.classList.add('is-glow'); I.sfx('sparkle'); }

@@ -35,143 +35,8 @@
  ],
  "cues": [],
  "marks": [],
- "captions": false,
- "captions_note": "E02 shows no written words (the symbol comes in E06): the lines are listed under lines_nocaption so the player draws no captions.",
- "lines_nocaption": [
-  {
-   "id": "bq7_E02_maj_morning",
-   "t": 4.4,
-   "end": 9.01,
-   "sp": "MAJ",
-   "text": "صَبَاحُ الْخَيْرِ يَا بَارِقُ. الْيَوْمَ نَزُورُ حَدِيقَةَ الْحَيَوَانِ."
-  },
-  {
-   "id": "bq7_E02_brq_ready",
-   "t": 9.95,
-   "end": 11.2,
-   "sp": "BRQ",
-   "text": "هَيَّا نَسْتَعِدُّ."
-  },
-  {
-   "id": "bq7_E02_maj_qamis",
-   "t": 12.395,
-   "end": 13.645,
-   "sp": "MAJ",
-   "text": "أَلْبَسُ قَمِيصِي."
-  },
-  {
-   "id": "bq7_W_qamis_emph",
-   "t": 15.9,
-   "end": 16.835,
-   "sp": "HAB",
-   "text": "قَمِيص"
-  },
-  {
-   "id": "bq7_E02_maj_musht",
-   "t": 20.595,
-   "end": 22.695,
-   "sp": "MAJ",
-   "text": "أُسَرِّحُ شَعْرِي بِالْمُشْطِ."
-  },
-  {
-   "id": "bq7_W_musht_emph",
-   "t": 23.5,
-   "end": 24.319,
-   "sp": "HAB",
-   "text": "مُشْط"
-  },
-  {
-   "id": "bq7_E02_maj_maktab",
-   "t": 25.65,
-   "end": 26.79,
-   "sp": "MAJ",
-   "text": "هَذَا مَكْتَبِي."
-  },
-  {
-   "id": "bq7_W_maktab_emph",
-   "t": 28.7,
-   "end": 29.691,
-   "sp": "HAB",
-   "text": "مَكْتَب"
-  },
-  {
-   "id": "bq7_E02_maj_where_key",
-   "t": 30.97,
-   "end": 32.35,
-   "sp": "MAJ",
-   "text": "أَيْنَ مِفْتَاحُ الدُّرْجِ؟"
-  },
-  {
-   "id": "bq7_E02_brq_found_key",
-   "t": 34.1,
-   "end": 35.995,
-   "sp": "BRQ",
-   "text": "هُنَا، تَحْتَ الدَّفْتَرِ."
-  },
-  {
-   "id": "bq7_W_miftah_emph",
-   "t": 37.4,
-   "end": 38.447,
-   "sp": "HAB",
-   "text": "مِفْتَاح"
-  },
-  {
-   "id": "bq7_E02_maj_book",
-   "t": 42.0,
-   "end": 45.42,
-   "sp": "MAJ",
-   "text": "شُكْرًا، فِي الدُّرْجِ كِتَابُ الْحَيَوَانَاتِ."
-  },
-  {
-   "id": "bq7_E02_brq_numur",
-   "t": 46.02,
-   "end": 47.73,
-   "sp": "BRQ",
-   "text": "اُنْظُر، نُمُورٌ."
-  },
-  {
-   "id": "bq7_W_numur_emph",
-   "t": 48.62,
-   "end": 49.517,
-   "sp": "HAB",
-   "text": "نُمُور"
-  },
-  {
-   "id": "bq7_E02_maj_timsah",
-   "t": 54.72,
-   "end": 56.98,
-   "sp": "MAJ",
-   "text": "وَهَذَا تِمْسَاحٌ كَبِيرٌ."
-  },
-  {
-   "id": "bq7_W_timsah_emph",
-   "t": 57.82,
-   "end": 58.874,
-   "sp": "HAB",
-   "text": "تِمْسَاح"
-  },
-  {
-   "id": "bq7_E02_maj_manju",
-   "t": 59.99,
-   "end": 61.76,
-   "sp": "MAJ",
-   "text": "وَآخُذُ مَانْجُو مَعِي."
-  },
-  {
-   "id": "bq7_W_manju_emph",
-   "t": 63.015,
-   "end": 63.819,
-   "sp": "HAB",
-   "text": "مَانْجُو"
-  },
-  {
-   "id": "bq7_E02_brq_noticed",
-   "t": 65.17,
-   "end": 67.115,
-   "sp": "BRQ",
-   "text": "سَمِعْتُ صَوْتًا يَتَكَرَّرُ."
-  }
- ],
+ "captions": true,
+ "captions_note": "OWNER 2026-10-07: «ال CC مش موجودة في كل الفيديوهات» → captions ON in E02 too (lines = former lines_nocaption).",
  "endq": {
   "t": 68.719,
   "line": "bq7_E02_question",
@@ -503,9 +368,144 @@
   }
  ],
  "loudness": {
-  "I": -15.9,
+  "I": -16.0,
   "TP": -1.5
  },
  "interim": null,
- "interim_g9": "VO over a closed-mouth window / stand-in take until Grok regenerates (grok9_overrides.json): A12=vo:V8_E02_A12_f A23=vo:V8_E02_A23_b"
+ "interim_g9": "VO over a closed-mouth window / stand-in take until Grok regenerates (grok9_overrides.json): A12=vo:V8_E02_A12_f A23=vo:V8_E02_A23_b",
+ "lines": [
+  {
+   "id": "bq7_E02_maj_morning",
+   "t": 4.4,
+   "end": 9.01,
+   "sp": "MAJ",
+   "text": "صَبَاحُ الْخَيْرِ يَا بَارِقُ. الْيَوْمَ نَزُورُ حَدِيقَةَ الْحَيَوَانِ."
+  },
+  {
+   "id": "bq7_E02_brq_ready",
+   "t": 9.95,
+   "end": 11.2,
+   "sp": "BRQ",
+   "text": "هَيَّا نَسْتَعِدُّ."
+  },
+  {
+   "id": "bq7_E02_maj_qamis",
+   "t": 12.305,
+   "end": 13.883,
+   "sp": "MAJ",
+   "text": "أَلْبَسُ قَمِيصِي."
+  },
+  {
+   "id": "bq7_W_qamis_emph",
+   "t": 15.9,
+   "end": 16.835,
+   "sp": "HAB",
+   "text": "قَمِيص"
+  },
+  {
+   "id": "bq7_E02_maj_musht",
+   "t": 20.595,
+   "end": 22.695,
+   "sp": "MAJ",
+   "text": "أُسَرِّحُ شَعْرِي بِالْمُشْطِ."
+  },
+  {
+   "id": "bq7_W_musht_emph",
+   "t": 23.5,
+   "end": 24.319,
+   "sp": "HAB",
+   "text": "مُشْط"
+  },
+  {
+   "id": "bq7_E02_maj_maktab",
+   "t": 25.65,
+   "end": 26.79,
+   "sp": "MAJ",
+   "text": "هَذَا مَكْتَبِي."
+  },
+  {
+   "id": "bq7_W_maktab_emph",
+   "t": 28.7,
+   "end": 29.691,
+   "sp": "HAB",
+   "text": "مَكْتَب"
+  },
+  {
+   "id": "bq7_E02_maj_where_key",
+   "t": 30.97,
+   "end": 32.35,
+   "sp": "MAJ",
+   "text": "أَيْنَ مِفْتَاحُ الدُّرْجِ؟"
+  },
+  {
+   "id": "bq7_E02_brq_found_key",
+   "t": 34.1,
+   "end": 35.995,
+   "sp": "BRQ",
+   "text": "هُنَا، تَحْتَ الدَّفْتَرِ."
+  },
+  {
+   "id": "bq7_W_miftah_emph",
+   "t": 37.4,
+   "end": 38.447,
+   "sp": "HAB",
+   "text": "مِفْتَاح"
+  },
+  {
+   "id": "bq7_E02_maj_book",
+   "t": 42.0,
+   "end": 45.42,
+   "sp": "MAJ",
+   "text": "شُكْرًا، فِي الدُّرْجِ كِتَابُ الْحَيَوَانَاتِ."
+  },
+  {
+   "id": "bq7_E02_brq_numur",
+   "t": 46.02,
+   "end": 47.73,
+   "sp": "BRQ",
+   "text": "اُنْظُر، نُمُورٌ."
+  },
+  {
+   "id": "bq7_W_numur_emph",
+   "t": 48.62,
+   "end": 49.517,
+   "sp": "HAB",
+   "text": "نُمُور"
+  },
+  {
+   "id": "bq7_E02_maj_timsah",
+   "t": 54.72,
+   "end": 56.98,
+   "sp": "MAJ",
+   "text": "وَهَذَا تِمْسَاحٌ كَبِيرٌ."
+  },
+  {
+   "id": "bq7_W_timsah_emph",
+   "t": 57.82,
+   "end": 58.874,
+   "sp": "HAB",
+   "text": "تِمْسَاح"
+  },
+  {
+   "id": "bq7_E02_maj_manju",
+   "t": 59.99,
+   "end": 61.76,
+   "sp": "MAJ",
+   "text": "وَآخُذُ مَانْجُو مَعِي."
+  },
+  {
+   "id": "bq7_W_manju_emph",
+   "t": 63.015,
+   "end": 63.819,
+   "sp": "HAB",
+   "text": "مَانْجُو"
+  },
+  {
+   "id": "bq7_E02_brq_noticed",
+   "t": 65.17,
+   "end": 67.115,
+   "sp": "BRQ",
+   "text": "سَمِعْتُ صَوْتًا يَتَكَرَّرُ."
+  }
+ ]
 }

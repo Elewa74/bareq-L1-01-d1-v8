@@ -282,7 +282,7 @@
           if (done) return false;
           const ok = t._d.slot === +z.dataset.i;
           if (ok) { place(t, z); return true; }
-          wrong(t);
+          wrong(t, z);
           return false;
         },
       });
@@ -315,16 +315,15 @@
         S.fx(X.sfx.snap, 0.5);
         if (++filled === pcs.length) complete();
       }
-      async function wrong(t) {
+      /* FB-1 shared ladder (BQ.fb): ✗1 red mark on the dropped piece + its slot (they flash red), a retry line + the order hint ·
+         ✗2 Bariq builds the word (no star) + an encouraging line. No glow/pre-reveal of the right piece. */
+      async function wrong(t, z0) {
+        if (done) return;
         errors++;
         X.anim(t, 'fx7-wob', 450);
-        if (errors === 1) { buddy.mood('think', 1500); await S.say(L.order); await S.say(X.segId(it.w), { stim: true }); }
-        else if (errors === 2) {
-          const z = slotEls.find((s) => !s.classList.contains('is-full'));
-          if (z) { z.classList.add('is-hint'); z.replaceChildren(V8 ? pieceText(pcs[+z.dataset.i]) : h('span.x7-w', null, pcs[+z.dataset.i].t)); }
-          [...tray.children].forEach((c) => { if (c._d && z && c._d.slot === +z.dataset.i) c.classList.add('is-glow'); });
-          await S.say(X.G.light);
-        } else if (errors >= 3 && !done) {
+        if (BQ.fb) { BQ.fb.markNo(t, { stay: false, ms: 1500 }); if (z0) BQ.fb.markNo(z0, { stay: false, ms: 1500 }); }
+        if (errors === 1) { buddy.mood('think', 1500); await S.say(X.tryL()); await S.say(L.order); await S.say(X.segId(it.w), { stim: true }); }
+        else if (errors >= 2 && !done) {
           done = true;
           await S.say(X.G.model);
           [...tray.children].forEach((c) => {
@@ -346,9 +345,9 @@
         slots.replaceChildren(word);
         if (good) X.burst(word, 12);
         await S.say(X.wordId(it.w), { stim: true });
-        if (good) await yes(); else await S.say(X.G.next);
+        if (good) await yes(); else await S.say(X.solveL());
         const ok1 = good && errors === 0;
-        scored(ok1);
+        scored(BQ.fb ? good && BQ.fb.credit(errors + 1, false) : ok1); // FB-1 star rule: built by the child with ≤ 1 miss
         X.record(ctx, 'S7', ok1, { task: 'build', word: it.w });
         log.build.push({ w: w.t, errors, ok: ok1 }); note();
         await S.sleep(600);
@@ -371,32 +370,36 @@
           ? h('button.bq8-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, h('img', { src: ctx.img(W[o].img), alt: '', draggable: 'false' }))
           : h('button.e08-card.e08-opt.x7-in', { type: 'button', 'aria-label': 'صورَةٌ', dataset: { k: o } }, X.pic(ctx, W[o].img));
         b.addEventListener('click', () => pick(b, o));
+        if (BQ.fb) BQ.fb.qa(b, o === it.w); // automated QA only
         return b;
       });
       opts.append(...btns);
       async function pick(b, o) {
-        if (over || b.classList.contains('is-dim')) return;
+        if (over || b.classList.contains('is-dim') || b.classList.contains('fb-no')) return;
         tries++;
         if (o === it.w) {
           over = true;
-          b.classList.add('is-ok'); X.burst(b, 12);
+          b.classList.add('is-ok'); if (BQ.fb) BQ.fb.markOk(b); X.burst(b, 12);
           await S.say(X.wordId(it.w), { stim: true });
           await yes();
-          finish(tries === 1);
+          finish(tries === 1, true);
           return;
         }
-        b.classList.add('is-dim'); X.anim(b, 'fx7-wob', 450);
-        if (tries === 1) { buddy.mood('think', 1500); wordEl.classList.add('is-pulse'); setTimeout(() => wordEl.classList.remove('is-pulse'), 2500); await S.say(X.G.try); }
-        else if (tries === 2) { const c = btns.find((x) => x.dataset.k === it.w); c.classList.add('is-glow'); await S.say(X.G.light); }
+        // FB-1 shared ladder: ✗1 red mark (stays) + retry line · ✗2 (or one choice left) Bariq shows the right picture + its word + encouraging line
+        if (BQ.fb) BQ.fb.markNo(b); else b.classList.add('is-dim');
+        X.anim(b, 'fx7-wob', 450); buddy.mood('think', 1500);
+        if (tries === 1 && !(BQ.fb && BQ.fb.live(btns).length <= 1)) { wordEl.classList.add('is-pulse'); setTimeout(() => wordEl.classList.remove('is-pulse'), 2500); await S.say(X.tryL()); }
         else {
           over = true;
-          const c = btns.find((x) => x.dataset.k === it.w); c.classList.remove('is-glow'); c.classList.add('is-ok');
-          await S.say(X.G.model); await S.say(X.wordId(it.w), { stim: true });
-          finish(false);
+          const c = btns.find((x) => x.dataset.k === it.w); c.classList.add('is-ok'); if (BQ.fb) BQ.fb.markOk(c);
+          btns.forEach((x) => { if (x !== c && !x.classList.contains('fb-no')) x.classList.add('is-dim'); });
+          buddy.mood('talk', 2000);
+          await S.say(X.G.model); await S.say(X.wordId(it.w), { stim: true }); await S.say(X.solveL());
+          finish(false, false);
         }
       }
-      async function finish(ok1) {
-        scored(ok1);
+      async function finish(ok1, own) {
+        scored(own); // FB-1 star rule: the child's own right answer on try 1 or 2
         X.record(ctx, 'S7', ok1, { task: 'read', word: it.w });
         log.read.push({ w: w.t, tries, ok: ok1 }); note();
         await S.sleep(700);
@@ -438,7 +441,7 @@
         onDrop: (t, z) => {
           if (over) return false;
           if (+z.dataset.i === mIdx) { good(z); return true; }
-          bad(); return false;
+          bad(z); return false;
         },
       });
       dnd.tile(meem, { i: mIdx });
@@ -454,11 +457,13 @@
         await S.sleep(450);
         await rejoin(true);
       }
-      async function bad() {
+      /* FB-1 shared ladder: ✗1 the chosen box flashes red + retry line + «listen to the start» · ✗2 Bariq puts the م in its box + encouraging line */
+      async function bad(z0) {
+        if (over) return;
         errors++;
         X.anim(meem, 'fx7-wob', 450);
-        if (errors === 1) { buddy.mood('think', 1500); await S.say(X.G.hintStart); await S.say(X.segId(key), { stim: true }); }
-        else if (errors === 2) { boxEls[mIdx].classList.add('is-glow'); await S.say(X.G.light); }
+        if (BQ.fb && z0) BQ.fb.markNo(z0, { stay: false, ms: 1500 });
+        if (errors === 1) { buddy.mood('think', 1500); await S.say(X.tryL()); await S.say(X.G.hintStart); await S.say(X.segId(key), { stim: true }); }
         else if (!over) {
           over = true;
           boxEls[mIdx].classList.remove('is-glow');
@@ -475,8 +480,9 @@
         else wordRow.replaceChildren(h('div.e08-word.x7-in', null, X.markMeem(w.t)));
         if (ok) { X.burst(V8 ? joined : wordRow, 12); await yes(); }
         await S.say(posLine);
+        if (!ok) await S.say(X.solveL());
         const ok1 = ok && errors === 0;
-        scored(ok1);
+        scored(BQ.fb ? ok && BQ.fb.credit(errors + 1, false) : ok1); // FB-1 star rule
         X.record(ctx, 'S6', ok1, { task: 'analyze', word: key });
         log.analyze.push({ w: w.t, errors, ok: ok1 }); note();
         await S.sleep(700);

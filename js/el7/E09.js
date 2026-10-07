@@ -167,20 +167,17 @@
       async function onFail(reason, n) {
         if (n <= failsHandled) return;
         failsHandled = n;
-        if (n === 1) { pad.showStart(); fb.tryAgain(X.text(L.retry)); buddy.mood('think', 1600); S.say(L.retry); }
-        else if (n === 2) {
-          fb.tryAgain(X.text(L.retry));
-          pad.setGuide('bold'); pad.setArrows(true); pad.showStart(); pad.runner(true); stage2 = true;
-          buddy.mood('point', 2000);
-          S.say(L.light);
-        } else if (n >= 3 && !assisted) {
+        // FB-1 shared ladder: ✗1 the pad flashes red + «جَرِّبْ مَرَّةً أُخْرى. اِبْدَأْ مِنْ هُنا» with the start shown · ✗2 Bariq writes it (no star) + encouraging line
+        if (n === 1) { if (BQ.fb) { BQ.fb.markNo(pad.el, { stay: false, ms: 2600 }); BQ.fb.log('try', L.retry); } pad.showStart(); fb.tryAgain(X.text(L.retry)); buddy.mood('think', 1600); S.say(L.retry); }
+        else if (n >= 2 && !assisted) {
+          if (BQ.fb) BQ.fb.markNo(pad.el, { stay: false, ms: 1200 });
           assisted = true;
           pad.runner(false); pad.lock(true); fb.clear();
           buddy.mood('talk', 3000);
           await S.say(L.watch);
           await pad.demo(3600, true);
           pad.fill();
-          await S.say(L.solve); // owner ✗2: Bariq solves + «أَكْمِل وَرَكِّز»
+          await S.say(X.solveL()); // owner ✗2: Bariq solves + an encouraging line (shared pool)
         }
       }
       const res = await S.gate(pad.done);
@@ -192,9 +189,9 @@
       if (!res.assisted) { fb.ok('✔ ' + 'الشَّكْلُ صَحيحٌ.'); X.burst(pad.el, 12); buddy.mood('cheer', 2200); S.fx(X.sfx.ok, 0.5); }
       else fb.clear();
       // one star per item, only when the child wrote it (Bariq's drawing leaves the slot empty)
-      if (F8 && F8.starsEl) { const sl = F8.starsEl.children[F8.stars]; F8.star(); if (sl && res.assisted) { sl.classList.remove('is-on'); sl.classList.add('is-help'); } }
+      if (F8 && F8.starsEl) { const sl = F8.starsEl.children[F8.stars]; F8.star(); if (sl && res.assisted) { if (BQ.fb) BQ.fb.helpSlot(sl); else { sl.classList.remove('is-on'); sl.classList.add('is-help'); } } }
       if (it.word) { await S.sleep(350); pad.typeset(it.word); }
-      if (!res.assisted) await S.say(L.ok);
+      if (!res.assisted) await S.say(X.yes()); // FB-1: varied praise sentence (the card still shows «✔ الشَّكْلُ صَحيحٌ.»)
       if (it.wk) await S.say(X.wordId(it.wk), { stim: true });
       await S.sleep(it.word ? 900 : 500);
       void stage2;

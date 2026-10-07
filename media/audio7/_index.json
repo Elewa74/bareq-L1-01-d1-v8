@@ -1398,7 +1398,7 @@
 "id": "bq7_E01_hello",
 "speaker": "BRQ",
 "text": "مَرْحَبًا! أَنا بارِقٌ.",
-"dur": 2.14,
+"dur": 2.09,
 "file": "media/audio7/bq7_E01_hello.mp3",
 "take": "g23_A",
 "checks": {
@@ -1417,9 +1417,17 @@
 },
 "heard": "مرحباانابارق",
 "max_closed_nasal_s": 0,
-"dur": 2.14,
+"dur": 2.09,
 "lufs": -17.4,
-"tp": -2.4
+"tp": -2.3,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 1.973 s, kept to 1.995, silence to 2.075 (next speech 2.105)",
+"lufs": -17.4,
+"tp": -2.3,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E01_hello.mp3"
+}
 }
 },
 {
@@ -1802,28 +1810,27 @@
 "id": "bq7_E02_maj_qamis",
 "speaker": "MAJ",
 "text": "أَلْبَسُ قَميصي.",
-"dur": 1.31,
+"dur": 1.65,
 "file": "media/audio7/bq7_E02_maj_qamis.mp3",
-"take": "g30_A",
+"take": "voice9/qme_A+psola_a70",
 "checks": {
-"asr_score": 1.0,
-"scores": {
-"A": [
-1.0,
-0,
-1.19
-],
-"B": [
-1.0,
-0,
-1.24
-]
+"model": "eleven_v4",
+"voice": "Zpl3Nt0o92Aq8JSlaPvh",
+"prompt": "[cheerful] أَلْبَاسُ قَميصي.",
+"gen_id": "AJ2oMKKFjq7w5ynWkjAA",
+"takes": 20,
+"vowel_after_b": {
+"old": "F1 ~290 F2 ~2280 Hz = /i/ («أَلْبِسُ»; diac-ASR «البِسُ»)",
+"new": "70 ms, F1 ≈ 650-720 Hz = short /a/",
+"psola": "qme_A /a/ 0.39-0.53 (140 ms, prompt «أَلْبَاسُ») → 70 ms (Praat overlap-add, raw/voice9/psola_a.py); 90 ms version was heard «الباس» by the fresh-ears turbo pass, 70 ms → «البس»"
 },
-"heard": "البسقميصي",
-"max_closed_nasal_s": 0,
-"dur": 1.31,
+"tries": "qma/qmb (plain/tatweel): 8/8 /i/; qmc ([Modern Standard Arabic]) F1 ~460-540 (reduced); qmd (one fatha): /i/; qme (ا): /a/ but 140-410 ms",
+"asr": "turbo «البس قميصي»; medium «ألبس قميصي»",
+"dur": 1.65,
 "lufs": -17.4,
-"tp": -3.9
+"tp": -2.2,
+"fix_round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E02_maj_qamis.mp3"
 }
 },
 {
@@ -2633,16 +2640,25 @@
 "id": "bq7_E05_brq_musht_ok",
 "speaker": "BRQ",
 "text": "مُشْط",
-"dur": 1.41,
+"dur": 0.47,
 "file": "media/audio7/bq7_E05_brq_musht_ok.mp3",
 "take": "sci1/BM_C_1",
 "checks": {
 "model": "eleven_v4",
 "fix_round": "SCI-1 2026-10-07",
 "prompt": "مُشْطْ",
-"dur": 1.41,
-"lufs": -17.4,
-"tp": -3.2
+"dur": 0.47,
+"lufs": -17.5,
+"tp": -1.5,
+"voice9_head_trim": {
+"what": "a stray 0.3 s voiced hum (ASR «همم», F1 ~350 F2 ~2200) + 0.65 s silence sat before «مُشْط»; file now starts at the /m/ (src 0.97–1.41 s)",
+"asr": "مشت",
+"mu_F2_hz": 1260,
+"lufs": -17.5,
+"tp": -1.5,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E05_brq_musht_ok.mp3"
+}
 }
 },
 {
@@ -2761,7 +2777,15 @@
 "prompt": "حَرَكَةٌ طَوِيلَةٌ، مِثْلُ انْزِلَاقِ بَارِقٍ.",
 "dur": 4.0,
 "lufs": -17.4,
-"tp": -1.3
+"tp": -1.4,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 3.830 s, kept to 3.852, silence to 3.872 (next speech 3.902)",
+"lufs": -17.4,
+"tp": -1.4,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E05_long_intro.mp3"
+}
 }
 },
 {
@@ -2943,8 +2967,16 @@
 "fix_round": "SCI-1 2026-10-07",
 "prompt": "حَرَكَةٌ قَصِيرَةٌ، مِثْلُ قَفْزَةِ بَارِقٍ.",
 "dur": 4.08,
-"lufs": -17.6,
-"tp": -1.3
+"lufs": -17.5,
+"tp": -1.3,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 3.903 s, kept to 3.925, silence to 3.945 (next speech 3.975)",
+"lufs": -17.5,
+"tp": -1.3,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E05_short_intro.mp3"
+}
 }
 },
 {
@@ -3718,7 +3750,7 @@
 "id": "bq7_E07m_saywithme",
 "speaker": "HAB",
 "text": "قُلْها مَعَ بارِقٍ!",
-"dur": 1.25,
+"dur": 1.2,
 "file": "media/audio7/bq7_E07m_saywithme.mp3",
 "take": "g20_A",
 "checks": {
@@ -3737,9 +3769,17 @@
 },
 "heard": "قلهامعبارق",
 "max_closed_nasal_s": 0,
-"dur": 1.25,
-"lufs": -17.5,
-"tp": -2.6
+"dur": 1.2,
+"lufs": -17.4,
+"tp": -2.5,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 1.076 s, kept to 1.098, silence to 1.188 (next speech 1.218)",
+"lufs": -17.4,
+"tp": -2.5,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E07m_saywithme.mp3"
+}
 }
 },
 {
@@ -5453,27 +5493,28 @@
 {
 "id": "bq7_E13_brq0",
 "speaker": "BRQ",
-"text": "اُنْظُرْ إِلى رَسْمِ ماجِدْ! تَعالَ نَعْرِفْ حِكايَتَهُ.",
-"dur": 3.87,
+"text": "اُنْظُر إِلَى رَسْمِ مَاجِد. تَعَالَ نَعْرِف حِكَايَتَهُ.",
+"dur": 3.71,
 "file": "media/audio7/bq7_E13_brq0.mp3",
-"take": "v8names_brq0_A",
+"take": "voice9/b0b_B+tail_trim",
 "checks": {
 "model": "eleven_v4",
 "voice": "Hrv0GXSKTrxIbeeX8u3r",
-"takes": 3,
-"heard": "انظر الى رسم ماجد تعال نعرف حكايته",
+"prompt": "[curious, inviting] اُنْظُرْ إِلى رَسْمِ ماجِدْ، تَعالَ نَعْرِفْ حِكايَتَهُ.",
+"gen_id": "PNitt3lNNXeZ51ti2cXA",
+"takes": 8,
+"asr": "انظر الى رسم ماجد تعال نعرف حكايته",
 "name_tail": {
 "i_after_dj_ms": 110,
-"i_F1_median_hz": 470,
-"d_release": "clear unvoiced burst, no vowel after /d/",
-"old": "i 130 ms, F1 ~600 (open, ≈ a), /d/ release almost inaudible"
+"i_F1_mean_hz": 530,
+"d_release": "qalqala burst kept 22 ms + 12 ms fade; the a-coloured aspirated tail (F1 ~600-670 Hz, ~50 ms) that sounded like «ماجِدا» removed",
+"script": "v7/voice/raw/voice9/b0_trim.py"
 },
-"max_closed_nasal_s": 0,
-"dur": 3.87,
-"lufs": -17.4,
-"tp": -3.0,
-"fix_round": "v8 name fixes",
-"old_file": "v7/voice/old_v7/bq7_E13_brq0_old.mp3"
+"dur": 3.71,
+"lufs": -17.5,
+"tp": -1.4,
+"fix_round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E13_brq0.mp3"
 }
 },
 {
@@ -5564,7 +5605,7 @@
 "id": "bq7_E13_brq9",
 "speaker": "BRQ",
 "text": "تُصْبِحُ عَلى خَيْرٍ يا ماجِدُ!",
-"dur": 2.35,
+"dur": 2.3,
 "file": "media/audio7/bq7_E13_brq9.mp3",
 "take": "g29_A",
 "checks": {
@@ -5583,9 +5624,17 @@
 },
 "heard": "تصبحعليخيرياماجد",
 "max_closed_nasal_s": 0,
-"dur": 2.35,
-"lufs": -19.3,
-"tp": -1.7
+"dur": 2.3,
+"lufs": -17.8,
+"tp": -1.7,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 2.168 s, kept to 2.190, silence to 2.290 (next speech 2.320)",
+"lufs": -17.8,
+"tp": -1.7,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E13_brq9.mp3"
+}
 }
 },
 {
@@ -6170,7 +6219,15 @@
 "max_closed_nasal_s": 0,
 "dur": 3.42,
 "lufs": -17.4,
-"tp": -3.2
+"tp": -3.2,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 3.217 s, kept to 3.239, silence to 3.259 (next speech 3.289)",
+"lufs": -17.4,
+"tp": -3.2,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E13_say3.mp3"
+}
 }
 },
 {
@@ -7255,44 +7312,28 @@
 {
 "id": "bq7_E11_s9_q1",
 "speaker": "HAB",
-"text": "ماجِدٌ يُريدُ أَنْ يُسَرِّحَ شَعْرَهُ. ماذا يَحْتاجُ؟",
-"dur": 3.76,
+"text": "مَاجِدٌ يُرِيدُ أَن يَسْرَحَ شَعْرَهُ. مَاذَا يَحْتَاجُ؟",
+"dur": 3.97,
 "file": "media/audio7/bq7_E11_s9_q1.mp3",
-"take": "s9b_A+psola_u",
+"take": "voice9/s9a_B",
 "checks": {
-"dur": 3.76,
-"lufs": -17.0,
-"tp": -2.0,
-"asr": "ماجد يريد أن يسرح شعره ماذا يحتاج؟",
 "model": "eleven_v4",
-"prompt": "[clearly, natural pace, short vowels] ماجِدٌ يُريدُ أَنْ يُسَرِّحَ شَعْرَهُ. ماذا يَحْتاجُ؟",
-"gen_id": "Gf19XLi5aAq7HcJabSB2",
-"fix_round": "v8 E11 fix 2 2026-10-05 (re-export −17.0 LUFS ebur128)",
-"yu_ms": 90,
-"n_murmur_ms": 75,
-"old_yu_ms": 105,
-"calib_long_yu_ms": 220,
-"asr_old": "يصرح",
-"note": "owner «يوسرّح»: 15 takes (3 prompt groups ×4 + plain-spelling group ×4, minus the hint group that spoke the hint) ranked by /ju/ duration (end of the «أَنْ» n-murmur → /s/ onset, Praat Burg formants) + ASR «يسرح» with س; calibration take «يوسَرِّح» = 220 ms. Old file: voice/old_v7/e11fix/",
-"psola": {
-"tool": "Praat (parselmouth 0.4.7) To Manipulation 0.01/75/600 + DurationTier, overlap-add",
-"region_s": [
-1.095,
-1.175
-],
-"factor": 0.725,
-"u_ms_before": 80,
-"u_ms_after": 60,
-"u_ms_old_rejected": 95,
-"splice": [
-1.012,
-1.29
-],
-"xfade_ms": 12,
-"script": "voice/raw/e11fb/psola/u_short.py",
-"note": "Only the back-rounded run (F1<500, F2<1300) before «سَ» was shortened; everything else is the s9b_A take. Owner A/B: voice/old_v7/e11fix/bq7_E11_s9_q1.mp3 (rejected) vs bq7_E11_s9_q1_s9bA_90ms.mp3 (previous) vs this file.",
-"reexport": "from psola/s9b_A_u58.wav: atrim 3.72 s + 40 ms fade, +5.3 dB, alimiter −1.6 dBFS → −17.0 LUFS / −2.0 dBTP (ebur128); previous export (−16.7) kept as voice/old_v7/e11fix/bq7_E11_s9_q1_psola60_m16_7LUFS.mp3; owner A/B /mnt/user-data/outputs/progress/E11_yusarrih_AB.mp3 (rejected · 0.7 s · new)"
-}
+"voice": "w4LX7bK479eHGM1k15Em",
+"prompt": "[clearly] ماجِدٌ يُريدُ أَنْ يَسْرَحَ شَعْرَهُ. ماذا يَحْتاجُ؟",
+"gen_id": "BcDUEhRAqmYhzDwU6Uq8",
+"takes": 8,
+"asr": "ماجد يريد أن يسرح شعره. ماذا يحتاج؟",
+"proxy_2reading": "ماجِدٌ يُريدُ أَنْ يَسْرَحَ شَعْرَهِ ماذا يحتاج؟",
+"verb_check": {
+"pre_s_vowel": "a (F1 max 627 Hz, F2 2387: /ja/, not /ju/)",
+"s_to_hah_ms": 110,
+"reading": "yas-ra-ħa (no vowel between s and r, no geminate rr)"
+},
+"dur": 3.97,
+"lufs": -17.5,
+"tp": -1.9,
+"fix_round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E11_s9_q1.mp3"
 }
 },
 {
@@ -7324,7 +7365,15 @@
 "status": "DRAFT",
 "dur": 4.36,
 "lufs": -17.4,
-"tp": -1.3
+"tp": -1.4,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 4.236 s, kept to 4.258, silence to 4.288 (next speech 4.318)",
+"lufs": -17.4,
+"tp": -1.4,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E10c_intro.mp3"
+}
 }
 },
 {
@@ -7491,32 +7540,48 @@
 "id": "bq7_E10c_win_maj",
 "speaker": "MAJ",
 "text": "حَقيبَتي جاهِزَةٌ لِلْمَدْرَسَةِ! تُصْبِحُ عَلى خَيْرٍ يا بارِقْ.",
-"dur": 4.81,
+"dur": 4.78,
 "file": "media/audio7/bq7_E10c_win_maj.mp3",
 "take": "e10c/win_maj_B",
 "checks": {
 "asr": "حقيبتي جاهزة للمدرسة تصبح على خير يا بارق",
 "model": "eleven_v4",
 "status": "DRAFT",
-"dur": 4.81,
+"dur": 4.78,
 "lufs": -17.4,
-"tp": -4.1
+"tp": -4.2,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 4.645 s, kept to 4.667, silence to 4.737 (next speech 4.767)",
+"lufs": -17.4,
+"tp": -4.2,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E10c_win_maj.mp3"
+}
 }
 },
 {
 "id": "bq7_E10c_win_brq",
 "speaker": "BRQ",
 "text": "وَأَنْتَ مِنْ أَهْلِهِ يا ماجِدْ!",
-"dur": 2.17,
+"dur": 2.14,
 "file": "media/audio7/bq7_E10c_win_brq.mp3",
 "take": "e10c/win_brq_D",
 "checks": {
 "asr": "وأنت من أهله يا ماجد",
 "model": "eleven_v4",
 "status": "DRAFT",
-"dur": 2.17,
-"lufs": -17.5,
-"tp": -1.4
+"dur": 2.14,
+"lufs": -17.4,
+"tp": -1.3,
+"voice9_tail_trim": {
+"what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
+"trim": "burst onset 2.017 s, kept to 2.039, silence to 2.089 (next speech 2.119)",
+"lufs": -17.4,
+"tp": -1.3,
+"round": "VOICE-9 2026-10-07",
+"old_file": "v7/voice/old_v7/voice9/bq7_E10c_win_brq.mp3"
+}
 }
 },
 {
@@ -8369,6 +8434,150 @@
 "dur": 4.86,
 "lufs": -17.4,
 "tp": -1.3
+}
+},
+{
+"id": "bq7_FB_yes1",
+"speaker": "BRQ",
+"text": "مُمْتازٌ! أَنْتَ بَطَلٌ!",
+"dur": 2.3,
+"file": "media/audio7/bq7_FB_yes1.mp3",
+"take": "FB_yes1_A",
+"checks": {
+"dur": 2.3,
+"lufs": -17.4,
+"tp": -3.4,
+"model": "eleven_v4",
+"prompt": "[excited] مُمْتازٌ! أَنْتَ بَطَلٌ!",
+"gen_id": "CxsYEUUMvOCAUQZHm0JX",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_yes2",
+"speaker": "BRQ",
+"text": "أَحْسَنْتَ! أَنا فَخورٌ بِكَ!",
+"dur": 2.74,
+"file": "media/audio7/bq7_FB_yes2.mp3",
+"take": "FB_yes2_A",
+"checks": {
+"dur": 2.74,
+"lufs": -17.5,
+"tp": -1.5,
+"model": "eleven_v4",
+"prompt": "[excited] أَحْسَنْتَ! أَنا فَخورٌ بِكَ!",
+"gen_id": "Qa8RHDRA1G1TyCE4tsts",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_yes3",
+"speaker": "BRQ",
+"text": "رائِعٌ جِدًّا! أَحْسَنْتَ!",
+"dur": 2.64,
+"file": "media/audio7/bq7_FB_yes3.mp3",
+"take": "FB_yes3_A",
+"checks": {
+"dur": 2.64,
+"lufs": -17.6,
+"tp": -1.4,
+"model": "eleven_v4",
+"prompt": "[excited] رائِعٌ جِدًّا! أَحْسَنْتَ!",
+"gen_id": "POXTAHPAOvQhsFiXIMcx",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_yes4",
+"speaker": "BRQ",
+"text": "صَحيحٌ! أَنْتَ ذَكِيٌّ!",
+"dur": 2.27,
+"file": "media/audio7/bq7_FB_yes4.mp3",
+"take": "FB_yes4_A",
+"checks": {
+"dur": 2.27,
+"lufs": -17.5,
+"tp": -1.4,
+"model": "eleven_v4",
+"prompt": "[excited] صَحيحٌ! أَنْتَ ذَكِيٌّ!",
+"gen_id": "C8HPkdw4FSsT8LuQYqO8",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_yes5",
+"speaker": "BRQ",
+"text": "عَمَلٌ رائِعٌ! اِسْتَمِرَّ!",
+"dur": 2.43,
+"file": "media/audio7/bq7_FB_yes5.mp3",
+"take": "FB_yes5_A",
+"checks": {
+"dur": 2.43,
+"lufs": -17.4,
+"tp": -1.8,
+"model": "eleven_v4",
+"prompt": "[excited] عَمَلٌ رائِعٌ! اِسْتَمِرَّ!",
+"gen_id": "l24N0jgxA08P19Pp3Ygz",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_try1",
+"speaker": "BRQ",
+"text": "أَنْتَ قَريبٌ، حاوِلْ مَرَّةً أُخْرى.",
+"dur": 2.77,
+"file": "media/audio7/bq7_FB_try1.mp3",
+"take": "FB_try1_A",
+"checks": {
+"dur": 2.77,
+"lufs": -17.5,
+"tp": -2.1,
+"model": "eleven_v4",
+"prompt": "[gently, encouraging] أَنْتَ قَريبٌ، حاوِلْ مَرَّةً أُخْرى.",
+"gen_id": "rW59q4X8fGTdrF3j8xJB",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_try2",
+"speaker": "BRQ",
+"text": "لا بَأْسَ، فَكِّرْ وَجَرِّبْ مَرَّةً أُخْرى.",
+"dur": 3.55,
+"file": "media/audio7/bq7_FB_try2.mp3",
+"take": "FB_try2_A",
+"checks": {
+"dur": 3.55,
+"lufs": -17.5,
+"tp": -1.3,
+"model": "eleven_v4",
+"prompt": "[gently, encouraging] لا بَأْسَ، فَكِّرْ وَجَرِّبْ مَرَّةً أُخْرى.",
+"gen_id": "pTrogntzFKfOwVmQbcTv",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
+}
+},
+{
+"id": "bq7_FB_solve1",
+"speaker": "BRQ",
+"text": "لا بَأْسَ، هَذا هُوَ الصَّوابُ. أَكْمِلْ وَرَكِّزْ.",
+"dur": 4.23,
+"file": "media/audio7/bq7_FB_solve1.mp3",
+"take": "FB_solve1_A",
+"checks": {
+"dur": 4.23,
+"lufs": -17.4,
+"tp": -1.5,
+"model": "eleven_v4",
+"prompt": "[warmly, encouraging] لا بَأْسَ، هَذا هُوَ الصَّوابُ. أَكْمِلْ وَرَكِّزْ.",
+"gen_id": "lg3YAVnuMHd77huFmLPP",
+"asr_model": "whisper-large-v3-turbo",
+"fix_round": "FB-1 2026-10-07 · DRAFT text — owner approves"
 }
 }
 ]

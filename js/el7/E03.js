@@ -149,7 +149,7 @@
       const cards = order.map((slug, i) => {
         const c = I.card(slug, { aria: 'صورة ' + I.AR(i + 1), earId: I.wordId(slug), ear: async (e) => { if (busy) return; busy = true; e.classList.add('is-play'); await I.playOn(S, c, I.wordId(slug)); e.classList.remove('is-play'); busy = false; } });
         I.hoverReplay(c, async () => { busy = true; await I.playOn(S, c, I.wordId(slug)); busy = false; }, () => !busy && !c.classList.contains('is-ok'));
-        c.slug = slug; c.yes = R.yes.includes(slug); c.classList.add('i7-in'); c.style.animationDelay = (i * 0.1) + 's';
+        c.slug = slug; c.yes = R.yes.includes(slug); if (BQ.fb) BQ.fb.qa(c, c.yes); c.classList.add('i7-in'); c.style.animationDelay = (i * 0.1) + 's';
         wrap.append(c);
         return c;
       });
@@ -193,7 +193,7 @@
             busy = false; return;
           }
           I.helped = true; buddy.point();
-          for (const y of left()) { y.classList.add('is-ok'); await I.playOn(S, y, I.segId(y.slug)); await S.sleep(250); }
+          for (const y of left()) { y.classList.add('is-ok'); if (V8) f8.help(); await I.playOn(S, y, I.segId(y.slug)); await S.sleep(250); } // FB-1: Bariq-found words → «helped» slots, no gold
           cards.forEach((x) => { if (!x.yes && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
           I.record(S, 'S1', false, { item: 'l1-' + (r + 1), kind: 'all' }); I.record(S, 'S2', false, { item: 'l1-' + (r + 1) });
           await S.say(I.solveL(), { talk: true });
@@ -266,8 +266,8 @@
           await I.playOn(S, b, sid(b.s)); // يُسمَع ثم يُحكم
           if (b.s === yes) {
             if (first == null) { first = true; I.record(S, 'S2', true, { item: yes }); }
-            b.classList.add(V8 ? 'is-ok' : 'is-glow'); I.sfx('rise'); I.burst(root, b, 14); buddy.cheer();
-            bubs.forEach((x) => { if (x !== b) x.classList.add('is-dim'); });
+            if (V8) I.markOk(b); else b.classList.add('is-glow'); I.sfx('rise'); I.burst(root, b, 14); buddy.cheer();
+            bubs.forEach((x) => { if (x !== b && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
             if (V8) { await I.flyTo(root, b, f8.starAt() || buddy.el, 700); f8.star(); } else await I.flyTo(root, b, buddy.el, 700);
             b.classList.add('is-fly');
             await S.say(I.yes(), { talk: true });
@@ -276,7 +276,7 @@
           }
           if (first == null) { first = false; I.record(S, 'S2', false, { item: yes, picked: b.s }); }
           const st = await pol.wrong(b);
-          if (st === 'model') return resolve();
+          if (st === 'model') { if (V8) f8.help(); return resolve(); } // FB-1 star rule
           busy = false;
         }));
       });

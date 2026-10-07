@@ -312,6 +312,7 @@
 @keyframes e11Pop { from { transform: scale(.2); opacity: 0; } }
 .e11-flystar { position: fixed; z-index: 10001; width: 56px; height: 56px; transform: translate(-50%, -50%); transition: transform .65s cubic-bezier(.5,0,.3,1), opacity .65s; pointer-events: none; }
 .e11-flystar svg { width: 100%; height: 100%; display: block; }
+.x7-dots i.is-say, .bq8-progress > i.is-say { background: #C9D6E3 !important; }
 .x7-dots i.is-miss, .bq8-progress > i.is-miss { background: #fff !important; box-shadow: inset 0 0 0 3px #B9C6D6 !important; }
 `;
   const NEXT_SVG = '<svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -348,13 +349,23 @@
     const status = (s) => { try { return M() ? M().status(s) : null; } catch (e) { return null; } };
     /* ---- feedback ladder (owner on E11) ---- */
     const fbI = { yes: 0, try: 0, solve: 0 };
-    const fb = (k) => FB[k][fbI[k]++ % FB[k].length];
+    // FB-1: the lines come from the ONE shared pool (js/fb.js · BQ.fb); the local list is only a fallback
+    const fb = (k) => (BQ.fb ? (k === 'yes' ? BQ.fb.yes() : k === 'try' ? BQ.fb.tryL() : BQ.fb.solveL()) : FB[k][fbI[k]++ % FB[k].length]);
+    /* FB-1 (owner «الحرف متلوّن … يعني السؤال محلول»): the instruction bubble must not show the asked word when seeing it gives the answer
+       away (S5 q2 «بِأَيِّ حَرْفٍ تَبْدَأُ؟» shows «مُشْط» = its first letter; S6 q2 shows «فَم» = the final form; S8 q2 shows «مُثَلَّث» = the
+       form to write). The word is still SAID; on screen it becomes «…» (the picture is on the board). */
+    const MASK = { bq7_E11_s5_q2: 'مشط', bq7_E11_s6_q2: 'فم', bq7_E11_s8_q8: 'مثلث' };
+    const bareAr = (t) => t.replace(/[\u064B-\u0652\u0670\u0640]/g, '');
+    const qText = (id) => {
+      const t = X.text(id); const w = MASK[id]; if (!w || !t) return t;
+      return t.split(' ').map((tok) => (bareAr(tok).replace(/[.،:؟!]/g, '') === w ? '…' + (tok.match(/[.،:؟!]+$/) || [''])[0].replace(/^[.]$/, '') : tok)).join(' ');
+    };
     const res = []; // per main item: true = correct (by the child) · false = not — the HUD dots fill only for correct answers
     let nCorrect = 0, qaN = 0;
     const paintDots = (k) => {
       dots.set(k);
       const ds = dots.el ? [...dots.el.children] : [];
-      ds.forEach((d, j) => { if (j < k && res[j] !== true) { d.className = 'is-miss'; } });
+      ds.forEach((d, j) => { if (j < k && res[j] === false) d.className = 'is-miss'; else if (j < k && res[j] == null) d.className = 'is-say'; }); // FB-1: the teacher-judged «قُلْ» item is neutral, not a miss
     };
     function mark(el, kind) {
       if (!el) return;
@@ -563,7 +574,7 @@
       wrapOpts.classList.add('is-locked');
       // owner E11_g: «وَالآنَ، وَحْدَكَ.» is said WITH the retest item on the board (never an empty board)
       if (o.lead) { ctx.instruction(X.text(o.lead), o.lead, { icon: 'ear' }); asking = S.say(o.lead); await asking; asking = null; }
-      ctx.instruction(X.text(it.q), it.q, { icon: it.type === 'read' ? 'eye' : 'ear' });
+      ctx.instruction(qText(it.q), it.q, { icon: it.type === 'read' ? 'eye' : 'ear' });
       ctx.onReplay(() => { if (!asking && !busy) asking = ask().finally(() => { asking = null; }); });
       asking = ask(); await asking; asking = null;
       // v8: the first time each kind of item appears, a small hand shows «listen again here · then touch one» (no answer shown)
@@ -704,7 +715,7 @@
         const mk = (n, model) => { wrap.replaceChildren(); return X.writePad(wrap, { form: it.form || 'iso', ctxBefore: it.before, ctxAfter: it.after, guide: model ? 'road' : 'none', arrows: !!model, start: !!model || n > 1, lenient: false, ink: model ? 'path' : 'free', oneShot: !model }); };
         let pad = mk(1);
         if (o.lead) { ctx.instruction(X.text(o.lead), o.lead, { icon: 'hand' }); await S.say(o.lead); }
-        ctx.instruction(X.text(it.q), it.q, { icon: 'hand' });
+        ctx.instruction(qText(it.q), it.q, { icon: 'hand' });
         ctx.onReplay(() => S.say(it.q));
         await S.say(it.q);
         const r1 = await S.gate(pad.done);

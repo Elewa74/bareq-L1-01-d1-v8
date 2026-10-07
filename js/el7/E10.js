@@ -31,6 +31,10 @@
   const PRAISE_R1 = ['bq7_E10_found', 'bq7_G_yes3', 'bq7_E10_found', 'bq7_G_yes4'];
   const TRY = ['bq7_E11_fb_try1', 'bq7_E11_fb_try2', 'bq7_E11_fb_try3'];
   const SOLVE = ['bq7_E11_fb_solve1', 'bq7_E11_fb_solve2', 'bq7_E11_fb_solve3'];
+  /* FB-1: praise / retry / solve lines come from the ONE shared pool (js/fb.js · BQ.fb) — the lists above are only the fallback */
+  const fbRot = (L) => { let i = 0; return () => L[(i++) % L.length]; };
+  const fbYes0 = fbRot(PRAISE), fbTry0 = fbRot(TRY), fbSolve0 = fbRot(SOLVE);
+  const fbYes = () => (BQ.fb ? BQ.fb.yes() : fbYes0()), fbTry = () => (BQ.fb ? BQ.fb.tryL() : fbTry0()), fbSolve = () => (BQ.fb ? BQ.fb.solveL() : fbSolve0());
   const MARK_NO = '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#E53935" stroke="#fff" stroke-width="4"/><path d="M16 16l16 16M32 16 16 32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>';
   /* HTML fallback, round 1 (v8 R2): renders of the SAME 3D rail shots made by the game (1920×1080): per shot bg_<id>, the things that fly
      sp_<id>_<slug> [x, y, w, h], every touchable thing's box r [x0, y0, x1, y1], Bariq's plate bq [x, y, w, h] and his near-marks
@@ -226,7 +230,7 @@
     const bqTo = (mark) => { place(bq, bqRect(mark)); return wait(ctx, BQ.reduced() ? 50 : 650); };
     const react = (k) => { bq.classList.remove('is-hop', 'is-think'); void bq.offsetWidth; bq.classList.add(k === 'think' ? 'is-think' : 'is-hop'); };
     // ≥ 64 px on the glass: in the v8 fixed stage = max(76, 64 / stage scale) layout px (portrait iPad scales the stage to ≈ 0.69)
-    const touchMin = () => (BQ.fixedStage && BQ.fixedStage() ? Math.max(76, 64 / ((BQ.stageScale && BQ.stageScale()) || 1)) : 64);
+    const touchMin = () => (BQ.fixedStage && BQ.fixedStage() ? 76 /* TX-1: constant in the fixed stage (= its value on the iPad-landscape stage, 64 ÷ 0.846 → 76); was 64 ÷ the live window scale */ : 64);
     const setLock = (v) => { lock = v; box.dataset.lock = v ? '1' : '0'; }; // data-lock / data-shot: QA hooks (no visual effect)
 
     async function goShot(i) {
@@ -321,7 +325,7 @@
       if (how !== 'shown') { if (stars[nStar]) stars[nStar].classList.add('is-on'); nStar++; }
       ctx.record('S1', good, { item: it.s, from: 'E10' });
       streak = 0; clean = true;
-      await say(how === 'shown' ? SOLVE[(nSolve++) % SOLVE.length] : PRAISE_R1[(res.found - 1) % PRAISE_R1.length]); if (!ok()) return;
+      await say(how === 'shown' ? fbSolve() : fbYes()); if (!ok()) return;
       await say(FIRST[it.s]); if (!ok()) return; // SCI-1: «مِفْتاح… يَبْدَأُ بِـ مِ»
       if (res.found >= 4) { setLock(true); await wait(ctx, 500); if (ok()) { unHud(); box.remove(); next(); } return; }
       if (!leftInShot().length && si < SH.length - 1) await goShot(si + 1);
@@ -361,7 +365,7 @@
       { const k = box.clientWidth / W; const mk = h('span.e10-no', { html: MARK_NO }); mk.style.left = ((it.rr[0] + it.rr[2]) / 2 * k) + 'px'; mk.style.top = Math.max(40, it.rr[1] * k - 14) + 'px';
         box.append(mk); setTimeout(() => mk.remove(), 2000); }
       await wait(ctx, 300);
-      if (streak < 2) { await say(TRY[(nTry++) % TRY.length]); if (!ok()) return; await say(L.start); it.b.classList.remove('is-shake'); return; }
+      if (streak < 2) { await say(fbTry()); if (!ok()) return; await say(L.start); it.b.classList.remove('is-shake'); return; }
       it.b.classList.remove('is-shake');
       streak = 0; // ✗2 in a row: Bariq solves — he takes the nearest target of this shot (no star, no first-try credit)
       const left = leftInShot(); if (!left.length) return;
@@ -435,7 +439,7 @@
     const h = BQ.h;
     const ok = () => ctx.alive();
     const say = (id) => (id ? ctx.say(id, { noCaption: !BQ.state.cc }) : Promise.resolve());
-    let pi = 0, nStar = 0, nTry = 0, nSolve = 0; const praise = () => PRAISE[(pi++) % PRAISE.length];
+    let pi = 0, nStar = 0, nTry = 0, nSolve = 0; const praise = () => fbYes(); void pi;
     const V8 = v8();
     let host, bqEl, stars = [], prog = [], react, f8 = null;
     if (V8 && BQ.ix1 && BQ.ix1.frame8) {
@@ -480,7 +484,7 @@
         if (juicy) { BQ.audio.fx && BQ.audio.fx(BQ.sfx.ok, 1); react('right'); }
         if (juicy && stars.length) { nStar++; if (stars[nStar - 1]) stars[nStar - 1].classList.add('is-on'); } // stars only on correct answers
         await say('bq7_W_' + w.s); if (!ok()) return;
-        await say(juicy ? praise() : SOLVE[(nSolve++) % SOLVE.length]); if (!ok()) return;
+        await say(juicy ? praise() : fbSolve()); if (!ok()) return;
         await say({ mawz: FIRST.mawz, musht: FIRST.musht, qamar: 'bq7_G_pos_mid', fam: 'bq7_G_pos_last' }[w.s]); if (!ok()) return; // SCI-1: same as the g9 game
         await wait(ctx, 400);
         done.end();
@@ -493,7 +497,7 @@
         tier++; b.classList.remove('is-shake', 'is-wrong'); void b.offsetWidth; b.classList.add(glowCls ? 'is-wrong' : 'is-shake', 'is-no');
         b.append(h('span.e10-x', { html: MARK_NO })); b.setAttribute('aria-disabled', 'true'); react('think');
         await wait(ctx, 300);
-        if (tier === 1) { await say(TRY[(nTry++) % TRY.length]); if (!ok()) return; await say(L.shape); }
+        if (tier === 1) { await say(fbTry()); if (!ok()) return; await say(L.shape); }
         else { const rb = pcs.find((x) => x.dataset.t === w.right); rb.classList.add('is-solve'); gapEl.classList.add('is-glow');
           await say(L.model); if (!ok()) return; await finishWord(rb, 'shown', false); return; }
         busy = false;

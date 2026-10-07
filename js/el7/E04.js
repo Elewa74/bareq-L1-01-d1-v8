@@ -233,7 +233,7 @@
           if (c === right()) {
             if (first == null) { first = true; I.record(S, 'S9', true, { item: q.t }); }
             c.classList.remove('is-soft'); c.classList.add('is-ok'); I.anim(c, 'i7-pop', 450); I.sfx('ok'); I.burst(root, c, 16); buddy.cheer();
-            opts.forEach((x) => { if (x !== c) x.classList.add('is-dim'); });
+            opts.forEach((x) => { if (x !== c && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
             await S.say(I.yes(), { talk: true });
             await S.say('bq7_E04_mean_' + q.t);
             await S.sleep(300);

@@ -192,7 +192,7 @@
     requestAnimationFrame(lines);
     if (window.ResizeObserver) { const ro = new ResizeObserver(() => lines()); ro.observe(map); ctx.onCleanup(() => ro.disconnect()); }
 
-    let si = -1, got = 0, intro = true, finished = false;
+    let si = -1, got = 0, intro = true, finished = false, helpedSt = false;
     const errs = new Map();
     const slotFor = (p) => slotsOf[STAGES[si].id].find((s) => s.dataset.t === p.t);
     const dnd = X.dnd({
@@ -203,6 +203,7 @@
         if (z.dataset.t === p.t) { settle(t, p, z); return true; }
         const n = (errs.get(p.t) || 0) + 1; errs.set(p.t, n);
         z.classList.remove('is-no'); void z.offsetWidth; z.classList.add('is-no'); setTimeout(() => z.classList.remove('is-no'), 700);
+        if (BQ.fb) BQ.fb.markNo(z, { stay: false, ms: 1300 }); // FB-1: clear red mark on the chosen slot
         buddy.mood('think', 1300);
         if (n >= 2) {
           // ✗2: Bariq puts the piece in its place and says it (no star credit change — the stage still completes)
@@ -211,9 +212,9 @@
             const s = slotFor(p); if (!s) return;
             s.classList.add('is-hint'); buddy.mood('talk', 1800);
             await S.say(X.G.model);
-            if (t.isConnected && dnd.tiles.has(t)) settle(t, p, s, true);
+            if (t.isConnected && dnd.tiles.has(t)) { helpedSt = true; settle(t, p, s, true); }
           }, 380);
-        } else S.say(X.G.try);
+        } else S.say(X.tryL()); // FB-1 shared retry pool
         return false;
       },
     });
@@ -229,18 +230,21 @@
       const fit = () => { tc.style.scale = ''; const k = Math.min(1, (slot.clientWidth - 2) / (tc.offsetWidth || 1), (slot.clientHeight - 2) / (tc.offsetHeight || 1)); if (k < 1) tc.style.scale = k.toFixed(3); };
       fit(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
       S.fx(X.sfx.snap, 0.5); X.burst(tc, 8); buddy.mood(solved ? 'talk' : 'clap', 1200);
-      const sayP = S.say(p.au, { stim: !/_G_|_E14_/.test(p.au) });
+      // FB-1: ✗2 → encouraging line · right after a ✗1 → a praise sentence (the child needs to hear that the retry was right)
+      const sayP = S.say(p.au, { stim: !/_G_|_E14_/.test(p.au) }).then(() => (solved ? S.say(X.solveL()) : (errs.get(p.t) || 0) >= 1 ? S.say(X.yes()) : null));
       if (++got === STAGES[si].pieces.length) sayP.then(() => stageDone());
     }
     async function stageDone() {
       const st = STAGES[si];
       brEl[st.id].classList.remove('is-cur'); brEl[st.id].classList.add('is-filled');
-      paths[st.id].classList.add('on'); F8.star(); buddy.mood('cheer', 1600);
-      await S.say(X.yes());
+      paths[st.id].classList.add('on'); buddy.mood('cheer', 1600);
+      // FB-1 star rule: the stage star is gold only when the child placed every piece himself; Bariq placed one → «helped» slot
+      if (helpedSt && F8.starsEl) { const sl = F8.starsEl.children[F8.stars]; F8.star(); if (BQ.fb) BQ.fb.helpSlot(sl); } else F8.star();
+      if (!helpedSt) await S.say(X.yes()); // praise only for a stage the child completed himself (the solve line was already said)
       if (si + 1 < STAGES.length) startStage(si + 1); else finish();
     }
     async function startStage(i) {
-      si = i; got = 0; intro = true; errs.clear();
+      si = i; got = 0; intro = true; errs.clear(); helpedSt = false;
       const st = STAGES[i];
       STAGES.forEach((x, j) => { brEl[x.id].classList.toggle('is-later', j > i); brEl[x.id].classList.toggle('is-cur', j === i); });
       tray.replaceChildren();

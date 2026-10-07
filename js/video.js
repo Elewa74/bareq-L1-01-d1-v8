@@ -953,7 +953,7 @@
            rounding flip of ch could re-layout on every ResizeObserver tick); (2) v8 fixed stage: bar 84 layout px so the 76-px buttons/segments sit
            INSIDE it (they overflowed a 63–66 bar onto the picture); box/bar sizes and the frame's top-left are snapped to whole device px. */
         const s8 = BQ.fixedStage && BQ.fixedStage() ? BQ.stageScale() : 0;
-        const ch = s8 ? Math.max(84, Math.ceil(Math.max(76, 64 / s8)) + 8) : Math.round(Math.max(62, Math.min(66, W * 0.065))); // v8: ≥ the in-stage touch size (--bq8-glass64) + 8
+        const ch = s8 ? 84 /* TX-1: constant in the fixed stage (was 64 ÷ scale + 8 → the bar and the picture changed size with the window) */ : Math.round(Math.max(62, Math.min(66, W * 0.065))); // v8: ≥ the in-stage touch size (--bq8-glass64) + 8
         // v0-10: الإطار ثابت الارتفاع ⇒ يُحدّ عرض المشغّل بما يتّسع له ارتفاع المسرح (مع النقاط والزرّ تحته) فلا تمرير ولا قصّ
         const stg = root.closest('.elp-stage');
         if (stg && stg.clientHeight) {

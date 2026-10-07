@@ -221,7 +221,7 @@
         }
         let first = null;
         const pol = I.policy(S, {
-          opts, right, solveLine: SOLVE,
+          opts, right, // FB-1: ✗2 line from the shared pool (BQ.fb.solveL — all end in an encouraging «أَكْمِلْ…/نُكْمِلُ…»)
           async hint1() {
             if (T.t === 'A') { await S.sleep(200); await stim(); }
             else { opts.forEach((c) => { if (!I.isNo(c)) c.classList.add('is-hint'); }); await S.say('bq7_E05_s1_look'); opts.forEach((c) => c.classList.remove('is-hint')); }
@@ -246,7 +246,7 @@
             const st = await pol.wrong(c);
             if (st === 'model') {
               // Bariq solved: this item's star stays empty (owner: stars only for the child's own right answers)
-              if (V8) { const sl = f8.starAt(); f8.star(); if (sl) { sl.classList.remove('is-on'); sl.classList.add('is-help'); } }
+              if (V8) f8.help(); // FB-1 star rule: Bariq solved → «helped» slot, no gold
               await S.sleep(400); return resolve();
             }
             busy = false;

@@ -24,7 +24,10 @@
   X.addText = (map) => Object.assign(T, map);
   const YES = ['bq7_G_yes1', 'bq7_G_yes2', 'bq7_G_yes3', 'bq7_G_yes4'];
   let yesI = 0;
-  X.yes = () => YES[yesI++ % YES.length];
+  // FB-1: praise / retry / «Bariq solved» lines come from the ONE shared pool (js/fb.js · BQ.fb); local fallback only if it is missing
+  X.yes = () => (BQ.fb ? BQ.fb.yes() : YES[yesI++ % YES.length]);
+  X.tryL = () => (BQ.fb ? BQ.fb.tryL() : 'bq7_G_try');
+  X.solveL = () => (BQ.fb ? BQ.fb.solveL() : 'bq7_E11_fb_solve1');
   X.G = { try: 'bq7_G_try', listen: 'bq7_G_listen_again', hintStart: 'bq7_G_hint_start', light: 'bq7_G_look_light', shape: 'bq7_G_look_shape', model: 'bq7_G_model', next: 'bq7_G_next', choose: 'bq7_G_listen_choose', end: 'bq7_G_end', pos: { ini: 'bq7_G_pos_first', mid: 'bq7_G_pos_mid', fin: 'bq7_G_pos_last' } };
 
   /* ================= المفردات والمقاطع (SPEC v7 · DECISIONS و) ================= */

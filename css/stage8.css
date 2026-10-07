@@ -85,7 +85,14 @@
 
 /* VIDEO_E07 r4 (review 2026-10-05) · touch targets that must stay ≥ 64 px ON THE GLASS at every stage scale (portrait 820×1180 ≈ 0.66):
    in-stage size = max(76 layout px, 64 px ÷ the current stage scale --bq-stage-s set by core.js stageFit) */
-.elp-fit { --bq8-glass64: max(76px, calc(64px / var(--bq-stage-s, 1))); }
+/* TX-1 (2026-10-07, owner «مقاس النشاط وشكل عرضه يكون ثابت … مع تغيير حجم الشاشة»): the size may NOT depend on the window → one constant
+   76 layout px (≥ 64 px on the glass on the iPad-landscape stage, scale 0.846); before, 64 px ÷ scale made the cover button / player bar / say
+   buttons grow on narrow (portrait) windows and moved the cover title by 6 px. */
+.elp-fit { --bq8-glass64: 76px; }
+/* TX-1 · --bq8-sref = the DESIGN stage scale (iPad landscape 1180×820 screen → 0.846). Touch-size rules that were written as «N px on the glass
+   ÷ the live scale --bq-s» (cover «اِبْدَأِ النَّشاطَ», video play button, ix1 --i8-t) use this constant instead, so their layout size is the same on
+   every window (owner: fixed stage). --bq-s itself stays the live scale used by the transform only. */
+.elp-fit { --bq8-sref: 0.846; }
 .elp-fit .vp-mp4 .vp-ctl > button, .elp-fit .vp-mp4 .vp-ctl > button.pp { min-width: var(--bq8-glass64) !important; min-height: var(--bq8-glass64) !important; flex-basis: var(--bq8-glass64); }
 .elp-fit .vp-mp4 .vp-ctl { height: auto; min-height: var(--bq8-glass64); }
 .elp-fit .vp-mp4 .vp-track { min-height: var(--bq8-glass64); }
@@ -110,3 +117,12 @@
 /* 3) iPad portrait (owner photo E14_ipad_drag_huge.jpg: the stage sat at the top with ~half the screen empty below): the element head +
       the fixed stage are centred as ONE block in the free height (head stays attached to the stage; landscape already fills the height). */
 @media (orientation: portrait) and (min-height: 501px) { :root[data-theme="8"] .bq-frame.elp { justify-content: center; } }
+
+/* ===== TX-1 (2026-10-07) · voweled Arabic stays INSIDE its box (owner «التشكيل في أكثر من موضع يخرج من الإطار») =====
+   Measured (canvas ink of the real fonts, worst real clusters «أُ» above / «مِ» «بٍ» below): Scheherazade New A 1.34 D 0.70 ink ↑1.33 ↓0.65 em;
+   Vazirmatn/BQ8 Letter A 0.89 D 0.22 ink ↑1.33 ↓0.46 em; Readex Pro ink ↑1.33 ↓0.59 em → a line box of ≥ 2.05 em holds every haraka of its
+   line in all of them. .bq-ar = utility for any voweled text set inside a tile / chip / bubble / button (line box = ink box, small inner gap).
+   Audit: review/tx1/qa (tx_audit.js, Playwright walk of E01–E16) · actions: review/tx1/TX_actions.md. Sizes are stage layout px only. */
+.bq-ar { line-height: 2.05 !important; padding-block: .08em .1em; overflow: visible !important; }
+/* E09 feedback pill «جَرِّبْ مَرَّةً أُخْرى…» / «الشَّكْلُ صَحيحٌ»: line-height 1.4 put «أُ» / «شَّ» 1–2 px above the pill top */
+:root[data-theme="8"] .elp-fit .x7-fb > span { line-height: 2.05; padding-block: calc(var(--u, 1px) * 3) calc(var(--u, 1px) * 4); }

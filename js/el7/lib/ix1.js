@@ -551,9 +551,14 @@
      ✗2 Bariq solves (the right option turns green + its model) + an encouraging line · stars / progress fill only on the child's own right answers
      · nothing is pre-coloured or glowed before the answer. Lines: G_yes1..4 + E11_fb_yes1..5 · E11_fb_try1..3 · E11_fb_solve1..3 (all BRQ, eleven_v4). */
   const rot = (ids) => { let k = Math.floor(Math.random() * ids.length); return () => { k = (k + 1) % ids.length; const id = ids[k]; return I.hasAudio(id) ? id : ids.find((x) => I.hasAudio(x)) || ids[0]; }; };
-  I.yes = rot(['bq7_G_yes1', 'bq7_E11_fb_yes2', 'bq7_G_yes2', 'bq7_E11_fb_yes3', 'bq7_G_yes3', 'bq7_E11_fb_yes5', 'bq7_G_yes4', 'bq7_E11_fb_yes1']);
-  I.tryL = rot(['bq7_E11_fb_try1', 'bq7_E11_fb_try2', 'bq7_E11_fb_try3']);
-  I.solveL = rot(['bq7_E11_fb_solve1', 'bq7_E11_fb_solve2', 'bq7_E11_fb_solve3']);
+  // FB-1: the line pools + rotation live in ONE shared module (js/fb.js · BQ.fb); local rotation only if it is missing
+  const FBp = () => (window.BQ && BQ.fb) || null;
+  const yes0 = rot(['bq7_E11_fb_yes2', 'bq7_G_yes2', 'bq7_E11_fb_yes3', 'bq7_G_yes3', 'bq7_E11_fb_yes5', 'bq7_G_yes4', 'bq7_E11_fb_yes1']);
+  const try0 = rot(['bq7_E11_fb_try1', 'bq7_E11_fb_try2', 'bq7_E11_fb_try3']);
+  const solve0 = rot(['bq7_E11_fb_solve1', 'bq7_E11_fb_solve2', 'bq7_E11_fb_solve3']);
+  I.yes = () => (FBp() ? FBp().yes() : yes0());
+  I.tryL = () => (FBp() ? FBp().tryL() : try0());
+  I.solveL = () => (FBp() ? FBp().solveL() : solve0());
   /** Bariq solved the current item → the next progress dot is «helped» (not green) */
   I.helped = false;
   /** red mark on the chosen option (✗1 / ✗2) — it stays red and can no longer be chosen */
@@ -563,6 +568,12 @@
     el.classList.add('is-no');
     if (!el.querySelector(':scope > .i7-nob')) el.append(h('span.i7-nob', { 'aria-hidden': 'true' }));
     I.anim(el, 'i7-wob', 550); I.sfx('soft');
+  };
+  /** FB-1: green ✓ on the chosen / solved option — round sound buttons get a badge (cards draw their own check) */
+  I.markOk = function (el) {
+    if (!el || !el.classList) return;
+    el.classList.remove('is-soft', 'is-glow', 'is-dim'); el.classList.add('is-ok');
+    if (el.classList.contains('i7-snd') && !el.querySelector(':scope > .i7-okb')) el.append(h('span.i7-okb', { 'aria-hidden': 'true' }));
   };
   /** OWNER_R3: sound choices replay on hover (mouse / pen dwell 180 ms, debounce 1.2 s) — hovering never answers. can() false while busy. */
   I.hoverReplay = function (el, play, can) {
@@ -605,10 +616,11 @@
   I.policy = function (S, o) {
     let n = 0;
     I.helped = false;
+    if (window.BQ_QA && BQ.fb) { try { const r = o.right(); (o.opts || []).forEach((x) => BQ.fb.qa(x, x === r)); } catch (e) { /* */ } } // automated QA only
     const solve = async (picked) => {
       const r = o.right();
       (o.opts || []).forEach((x) => { if (x !== r && !x.classList.contains('is-no')) x.classList.add('is-dim'); });
-      if (r) { r.classList.remove('is-dim', 'is-soft', 'is-glow'); r.classList.add('is-ok'); }
+      if (r) I.markOk(r);
       I.helped = true;
       if (S.buddy) S.buddy.point();
       if (o.modelLine) await S.say(o.modelLine);
@@ -622,7 +634,10 @@
         n++;
         if (S.buddy) S.buddy.think();
         I.markNo(picked);
-        if (n === 1) { await S.say(I.tryL(), { talk: true }); if (o.hint1) await o.hint1(picked); return 'hint1'; }
+        // FB-1 forced-choice rule: after ✗1 only one live option left → no real choice → Bariq solves now (no star)
+        const forced = n === 1 && (o.opts || []).length > 0 && (o.opts || []).filter((x) => x !== o.right() && !I.isNo(x)).length === 0;
+        if (n === 1 && !forced) { await S.say(I.tryL(), { talk: true }); if (o.hint1) await o.hint1(picked); return 'hint1'; }
+        n = 2;
         await solve(picked);
         return 'model';
       },
@@ -920,6 +935,9 @@
 .i7-nob { position: absolute; z-index: 6; top: -14px; inset-inline-end: -14px; width: 46px; height: 46px; border-radius: 50%; pointer-events: none;
   background: #fff url(assets/icons8/close.svg) center / 100% no-repeat; box-shadow: 0 3px 8px rgba(0,0,0,.25); animation: i7Pop .4s ease-out; }
 .bq8-progress > i.i8-help { background: #9FB6CC; }
+/* FB-1: ✓ badge on round sound buttons (cards already show their own check) */
+.i7-okb { position: absolute; z-index: 6; top: -14px; inset-inline-end: -14px; width: 46px; height: 46px; border-radius: 50%; pointer-events: none;
+  background: url(assets/icons8/check.svg) center / 100% no-repeat; filter: drop-shadow(0 3px 4px rgba(0,0,0,.25)); animation: i7Pop .4s ease-out; }
 .i7-tw-d.is-no { color: #E2574C; text-shadow: none; }`;
   if (!document.getElementById('st-ix1b')) document.head.append(h('style', { id: 'st-ix1b' }, CSS2));
 
@@ -992,6 +1010,8 @@
       /** light the next star (RTL: the first is the right-most) → the star element */
       star() { const s = starsEl.children[starN]; if (s) { s.classList.add('is-on'); starN++; I.sfx('sparkle'); } return s || null; },
       starAt(k) { return starsEl.children[k == null ? starN : k] || null; },
+      /** FB-1 star rule: a Bariq-solved item takes its slot as «helped» (no gold, no sparkle) */
+      help() { const s = starsEl.children[starN]; if (s) { s.classList.add('is-help'); starN++; } return s || null; },
       get starN() { return starN; },
     };
     F8 = api;
@@ -1156,7 +1176,7 @@
 .bq8-progress > i { transition: width .3s, background .3s; }
 /* child touch target ≥ 64 px ON THE GLASS at the current stage scale (--bq-s from core.js: 0.851 iPad landscape → 78 layout px,
    0.664 iPad portrait → 99 layout px), never below the platform's 76, capped at 104 for phones */
-.bq8-stage { --i8-t: clamp(76px, calc(66px / var(--bq-s, 1)), 104px); }
+.bq8-stage { --i8-t: clamp(76px, calc(66px / var(--bq8-sref, 1)), 104px); } /* TX-1: design scale (stage8.css --bq8-sref), never the live window scale */
 /* panel = element root */
 .bq8-stage > .bq8-panel.i8p { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u)*22); padding: calc(var(--u)*28); }
 .i8p, .i8p * { -webkit-tap-highlight-color: transparent; }

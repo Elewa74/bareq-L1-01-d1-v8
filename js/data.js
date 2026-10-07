@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261007091324",
+"build": "261007185210",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -2329,7 +2329,7 @@ window.BQ_DATA={
 "sp": "ماجد",
 "t": "أَلْبَسُ قَمِيصِي.",
 "tag": "",
-"use": "E02 shot 2 (then W_qamis_emph)"
+"use": "E02 shot 2 (then W_qamis_emph) · VOICE-9 2026-10-07: re-recorded «أَلْبَسُ» (old take said «أَلْبِسُ»; prompt with ا + PSOLA shortening to a short /a/) — DRAFT for owner review"
 },
 "bq7_E02_maj_musht": {
 "sp": "ماجد",
@@ -3293,9 +3293,9 @@ window.BQ_DATA={
 },
 "bq7_E11_s9_q1": {
 "sp": "حبيبة",
-"t": "مَاجِدٌ يُرِيدُ أَن يُسَرِّحَ شَعْرَهُ. مَاذَا يَحْتَاجُ؟",
+"t": "مَاجِدٌ يُرِيدُ أَن يَسْرَحَ شَعْرَهُ. مَاذَا يَحْتَاجُ؟",
 "tag": "[clearly]",
-"use": "E11 S9 item 1 (مُشْط / مِفْتَاح / مَانْجُو)"
+"use": "E11 S9 item 1 (مُشْط / مِفْتَاح / مَانْجُو) · FB-1 2026-10-07: owner «يَسْرَحَ شَعْرَهُ» (on-screen text; audio = VOICE re-record) · VOICE-9 2026-10-07: re-recorded (DRAFT for owner review)"
 },
 "bq7_E11_s9_q2": {
 "sp": "حبيبة",
@@ -3739,7 +3739,7 @@ window.BQ_DATA={
 "sp": "بارق",
 "t": "اُنْظُر إِلَى رَسْمِ مَاجِد. تَعَالَ نَعْرِف حِكَايَتَهُ.",
 "tag": "[curious, inviting]",
-"use": "E13 cold-open hook (STORY_FINAL_v7.md shot 0) · v8 name fix: waqf «مَاجِد» (DRAFT text — owner approves)"
+"use": "E13 cold-open hook (STORY_FINAL_v7.md shot 0) · v8 name fix: waqf «مَاجِد» (DRAFT text — owner approves) · VOICE-9 2026-10-07: re-recorded (DRAFT for owner review)"
 },
 "bq7_E13_maj8b": {
 "sp": "ماجد",
@@ -4022,9 +4022,57 @@ window.BQ_DATA={
 "t": "مِظَلَّة",
 "tag": "[clearly]",
 "use": "word model — E15 colouring page (T5 umbrella picture; SCI-1 T3)"
+},
+"bq7_FB_yes1": {
+"sp": "بارق",
+"t": "مُمْتَازٌ، أَنْتَ بَطَلٌ.",
+"tag": "[excited]",
+"use": "shared ✓ praise pool (BQ.fb) — all interactive elements · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_yes2": {
+"sp": "بارق",
+"t": "أَحْسَنْتَ، أَنَا فَخُورٌ بِكَ.",
+"tag": "[excited]",
+"use": "shared ✓ praise pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_yes3": {
+"sp": "بارق",
+"t": "رَائِعٌ جِدًّا، أَحْسَنْتَ.",
+"tag": "[excited]",
+"use": "shared ✓ praise pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_yes4": {
+"sp": "بارق",
+"t": "صَحِيحٌ، أَنْتَ ذَكِيٌّ.",
+"tag": "[excited]",
+"use": "shared ✓ praise pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_yes5": {
+"sp": "بارق",
+"t": "عَمَلٌ رَائِعٌ، اِسْتَمِرَّ.",
+"tag": "[excited]",
+"use": "shared ✓ praise pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_try1": {
+"sp": "بارق",
+"t": "أَنْتَ قَرِيبٌ، حَاوِل مَرَّةً أُخْرَى.",
+"tag": "[gently, encouraging]",
+"use": "shared ✗1 retry pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_try2": {
+"sp": "بارق",
+"t": "لَا بَأْسَ، فَكِّر وَجَرِّب مَرَّةً أُخْرَى.",
+"tag": "[gently, encouraging]",
+"use": "shared ✗1 retry pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
+},
+"bq7_FB_solve1": {
+"sp": "بارق",
+"t": "لَا بَأْسَ، هَذَا هُوَ الصَّوَابُ. أَكْمِل وَرَكِّز.",
+"tag": "[warmly, encouraging]",
+"use": "shared ✗2 «Bariq solved» pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
 }
 },
-"lines7": 387,
+"lines7": 395,
 "audio": [
 "L1-01_aud-104_mix_v01",
 "L1-01_d1_s1_01",
@@ -4423,6 +4471,14 @@ window.BQ_DATA={
 "bq7_E16_pick8",
 "bq7_E16_task",
 "bq7_E16_title",
+"bq7_FB_solve1",
+"bq7_FB_try1",
+"bq7_FB_try2",
+"bq7_FB_yes1",
+"bq7_FB_yes2",
+"bq7_FB_yes3",
+"bq7_FB_yes4",
+"bq7_FB_yes5",
 "bq7_G_end",
 "bq7_G_hint_lips",
 "bq7_G_hint_start",
@@ -5183,12 +5239,12 @@ window.BQ_DATA={
 "vdur7": {
 "E02": 68.71,
 "E02_720": 68.71,
-"E07": 60.88,
-"E07_720": 60.88,
+"E07": 60.83,
+"E07_720": 60.84,
 "E12": 63.12,
 "E12_720": 63.12,
-"E13": 105.53,
-"E13_720": 105.54
+"E13": 105.42,
+"E13_720": 105.42
 },
 "el7": [
 "E01",
