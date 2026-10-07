@@ -6,7 +6,7 @@
  "poster": "media/video7/E02.jpg",
  "duration": 70.67,
  "status": "draft_unapproved",
- "source": "video_src/build_v8_videos.py · v8pipe-video10b-2026-10-08 · 1920×1080 24 fps · DIRECTION_v8",
+ "source": "video_src/build_v8_videos.py · v8pipe-video12-2026-10-08 · 1920×1080 24 fps · DIRECTION_v8",
  "scenes": [
   {
    "t": 0.0,
@@ -129,8 +129,8 @@
   },
   {
    "id": "bq7_W_numur_emph",
-   "t": 49.845,
-   "end": 51.185,
+   "t": 49.875,
+   "end": 50.61,
    "sp": "HAB",
    "text": "نُمُور"
   },
