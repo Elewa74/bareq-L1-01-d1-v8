@@ -106,8 +106,8 @@
 .e04-8 .e04-face { display: flex; flex-direction: column; }
 .e04-8 .e04-face > .i7-pic, .e04-8 .e04-qc > .i7-pic, .e04-8 .e04-opic > .i7-pic { flex: none; width: 100%; height: auto; aspect-ratio: 1; }
 .e04-8 .e04-w { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; direction: rtl; white-space: nowrap;
-  font: 700 calc(var(--u)*60)/1 var(--font-letter); color: var(--bq8-navy); padding-top: calc(var(--u)*10); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-.e04-8 .e04-w > span { display: block; line-height: 1.6; }
+  font: 700 calc(var(--u)*60)/1 var(--font-letter); color: var(--bq8-navy); padding-top: 0; /* FIX12 R12-04: was 10 u — pushed the word 3–5 px past the box bottom */ cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.e04-8 .e04-w > span { display: block; line-height: 1.45; } /* FIX12 R12-04: 1.6 overflowed the word box by 3–5 px at the bottom */
 .e04-8 .e04-quiz .i7-card.e04-qc { aspect-ratio: auto; height: calc(var(--s) + var(--u)*86); display: flex; flex-direction: column; }
 .e04-8 .e04-qc .e04-w { font-size: calc(var(--u)*54); cursor: inherit; }
 .e04-8 .e04-opic { width: calc(var(--u)*380); height: auto; aspect-ratio: 380 / 490; display: flex; flex-direction: column; }

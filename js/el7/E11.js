@@ -183,7 +183,11 @@
 .x7p.e11 .e11-opt.bq8-card { width: calc(var(--u)*250); }
 .x7p.e11.is-tall .e11-opts { gap: calc(var(--u)*28); }
 .x7p.e11.is-tall .e11-opt.bq8-card { width: calc(var(--u)*236); }
-.x7p.e11 .e11-opt.bq8-card .bq8-card__ear .bq8-btn { width: max(64px, calc(var(--u)*72)); height: max(64px, calc(var(--u)*72)); font-size: max(46px, calc(var(--u)*54)); }
+.x7p.e11 .e11-opt.bq8-card .bq8-card__ear .bq8-btn { width: max(var(--e11-ear, 64px), calc(var(--u)*72)); height: max(var(--e11-ear, 64px), calc(var(--u)*72)); font-size: max(calc(var(--e11-ear, 64px) * .72), calc(var(--u)*54)); }
+/* FIX12 R12-02: --e11-ear = max(64, 66 ÷ stage scale) layout px (set from JS) → the «listen again» buttons are ≥ 64 px ON THE GLASS at every
+   stage scale (portrait 820×1180 ≈ .69 → 96 layout px; were 64 layout ≈ 44–50 visual px). The card leaves room below for the bigger ear. */
+.x7p.e11 .e11-opt.bq8-card:has(.bq8-card__ear) { padding-bottom: max(calc(var(--u)*40), calc(var(--e11-ear, 64px) * .55)); margin-bottom: max(0px, calc(var(--e11-ear, 64px) * .5 - var(--u)*30)); }
+.x7p.e11 .e11-opt.bq8-card .bq8-card__ear { bottom: min(calc(var(--u)*-30), calc(var(--e11-ear, 64px) * -.42)); }
 /* states (one shared look for cards, tiles, speaker cards) */
 .x7p.e11 .e11-opt.is-play, .x7p.e11 .e11-opt.is-say { transform: translateY(calc(var(--u)*-8)); box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-listen), var(--bq8-sh-2); }
 .x7p.e11 .e11-opt.is-pick { transform: translateY(calc(var(--u)*-6)); box-shadow: 0 0 0 var(--bq8-rim) #fff, 0 0 0 calc(var(--u)*11) var(--bq8-eye), var(--bq8-sh-2); }
@@ -207,7 +211,7 @@
 .x7p.e11 .e11-opt:is(.is-play, .is-say) .e11-spk::after { animation: x7Wave 1s .45s ease-out infinite; }
 @keyframes x7Wave { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
 .x7p.e11 .e11-sc .bq8-card__ear { bottom: calc(var(--u)*-34); }
-.x7p.e11 .e11-sc .bq8-card__ear .bq8-btn { width: max(64px, calc(var(--u)*72)); height: max(64px, calc(var(--u)*72)); font-size: max(46px, calc(var(--u)*54)); }
+.x7p.e11 .e11-sc .bq8-card__ear .bq8-btn { width: max(var(--e11-ear, 64px), calc(var(--u)*72)); height: max(var(--e11-ear, 64px), calc(var(--u)*72)); font-size: max(calc(var(--e11-ear, 64px) * .72), calc(var(--u)*54)); }
 .x7p.e11 .e11-wordpic { width: calc(var(--u)*176); cursor: default; }
 .x7p.e11 .e11-wordpic:hover { transform: none; }
 /* short / long (S3) */
@@ -325,6 +329,9 @@
     X.ICON.next = NEXT_SVG;
     X.ICON.near = '<svg viewBox="0 0 48 48"><path d="M24 4l5.6 12.3 13.4 1.4-10 9 2.9 13.2L24 33.2 12.1 39.9 15 26.7l-10-9 13.4-1.4z" fill="#FFF6C4" stroke="#C98F00" stroke-width="2" stroke-linejoin="round"/><path d="M24 4l5.6 12.3 13.4 1.4-10 9 2.9 13.2L24 33.2z" fill="#FEBA02"/></svg>';
     const S = X.session(ctx);
+    // FIX12 R12-02: ear buttons ≥ 64 VISUAL px on the scaled v8 stage (same rule as the video buttons, C-16)
+    const earSz = () => { const sc = BQ.fixedStage && BQ.fixedStage() && BQ.stageScale ? BQ.stageScale() : 1; stage.style.setProperty('--e11-ear', Math.max(64, Math.ceil(66 / (sc || 1))) + 'px'); };
+    earSz(); window.addEventListener('resize', earSz); ctx.onCleanup(() => { window.removeEventListener('resize', earSz); stage.style.removeProperty('--e11-ear'); });
     const root = X.root(ctx, 'e11', { panel: ['tall', 'col'], stars: 5 });
     const F8 = root._8;
     const AR = X.AR;
