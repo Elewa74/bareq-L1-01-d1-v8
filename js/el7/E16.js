@@ -18,10 +18,11 @@
      الحركات (مِ – مُ – ما – مو – مي)» · «عناوين المهام طويلة جدّاً، مع تغيير صوت مَ إلى حركات مختلفة قصيرة أو طويلة» →
      4 missions, short titles, each on a DIFFERENT vowel sound: k1 مِ (مِفْتاح · مِلْعَقَة · مِرْآة) · k2 مَ (مَوْز) · k3 مُ (مُثَلَّث · مُرَبَّع · مُسْتَطيل) ·
      k4 the long sounds ما · مي · مو (draw «م» in the sand and say them). Lines bq7_E16_pick8 · bq7_E16_k1..k4 (BRQ, eleven_v4, −17 LUFS). */
-  const HAVE8 = new Set(['e16_sand_tray', 'w8_muthallath']); // img8 keys known to exist (T5 art, 2026-10-07)
+  const HAVE8 = new Set(['e16_sand_tray', 'w8_muthallath', 'e16_k1_trio']); // img8 keys known to exist (T5 art, 2026-10-07)
   const SHAPES = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#FFF7E6"/><path d="M78 36 136 136H20z" fill="#FFC21A" stroke="#0B2D4F" stroke-width="9" stroke-linejoin="round"/><rect x="162" y="44" width="96" height="96" rx="6" fill="#3D7BF0" stroke="#0B2D4F" stroke-width="9"/><rect x="48" y="178" width="204" height="86" rx="6" fill="#22C27A" stroke="#0B2D4F" stroke-width="9"/></svg>';
   const MISSIONS = [
-    { id: 'k1', img: 'card_miftah', label: 'مِفْتاحٌ وَمِرْآةٌ', line: 'bq7_E16_k1', text: 'اِبْحَث مَعَ أُسْرَتِكَ عَن: مِفْتاحٍ، وَمِلْعَقَةٍ، وَمِرْآةٍ.' },
+    // ART-12 B-11: k1 picture = key + spoon + mirror (GPT draft e16_k1_trio); card_miftah stays as fallback
+    { id: 'k1', img8: 'e16_k1_trio', img: 'card_miftah', label: 'مِفْتاحٌ وَمِلْعَقَةٌ وَمِرْآةٌ', line: 'bq7_E16_k1', text: 'اِبْحَث مَعَ أُسْرَتِكَ عَن: مِفْتاحٍ، وَمِلْعَقَةٍ، وَمِرْآةٍ.' },
     { id: 'k2', img: 'card_mawz', label: 'مَوْزٌ لَذيذٌ', line: 'bq7_E16_k2', text: 'تَذَوَّق مَعَ أُسْرَتِكَ مَوْزًا، وَقُلِ اسْمَهُ.' },
     // FIX12-B B-11: k3 shows all THREE shapes of its task (triangle + square + rectangle, the SHAPES drawing) — not the triangle alone
     { id: 'k3', svg: SHAPES, label: 'مُثَلَّثٌ وَمُرَبَّعٌ', line: 'bq7_E16_k3', text: 'اُرْسُم مَعَ أُسْرَتِكَ: مُثَلَّثًا، وَمُرَبَّعًا، وَمُسْتَطيلًا.' },
