@@ -246,18 +246,11 @@
   "text": "مانْجو",
   "dur": 1.49,
   "file": "media/audio7/bq7_W_manju.mp3",
-  "take": "mj_A",
+  "take": null,
   "checks": {
-   "asr": "مانجو",
-   "dj_fric_ms": 60,
-   "prompt": "«مانْجُو. / IPA /ˈmaːnd͡ʒuː/ …» chunk 0",
-   "dur": 0.84,
-   "lufs": -17.5,
-   "tp": -4.6,
-   "max_closed_nasal_s": 0.14,
-   "fix_round": "R2-fix 2026-10-05",
-   "alias_of": "bq7_W_mango",
-   "nasal_run_resolution_s": 0.05
+   "verdict": "NO CHANGE",
+   "note": "retake W_manju__1 (ASR «مانجو» p0.97, dj 40, ā F1>550 ≈0.14 s) not better than the live file, which now measures ASR «مانجو» p0.78, dj 50, ā ≈0.18 s → live kept; W_manju__2 (Latin+Arabic) ASR «منجو» FAIL",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   },
   "voice10": true
  },
@@ -793,18 +786,16 @@
   "id": "bq7_S_ba",
   "speaker": "HAB",
   "text": "بَ",
-  "dur": 0.39,
+  "dur": 0.6,
   "file": "media/audio7/bq7_S_ba.mp3",
-  "take": "G_c_B#0",
+  "take": "g_bf__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.11,
-   "voiced_s": 0.24,
-   "breath_after_s": 0.0,
-   "dur": 0.39,
-   "lufs": -18.2,
-   "tp": -1.4
-  }
+   "asr": "ب",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_baa",
@@ -812,67 +803,59 @@
   "text": "با",
   "dur": 0.81,
   "file": "media/audio7/bq7_S_baa.mp3",
-  "take": "G_L_B#3",
+  "take": "g_long2__1.mp3",
   "checks": {
-   "kind": "long",
-   "vowel_est_s": 0.58,
-   "voiced_s": 0.68,
-   "breath_after_s": 0.0,
-   "dur": 0.81,
-   "lufs": -17.5,
-   "tp": -4.7
-  }
+   "asr": "ب",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_bi",
   "speaker": "HAB",
   "text": "بِ",
-  "dur": 0.39,
+  "dur": 0.65,
   "file": "media/audio7/bq7_S_bi.mp3",
-  "take": "G_c_B#2",
+  "take": "g_bf__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.18,
-   "voiced_s": 0.28,
-   "breath_after_s": 0.01,
-   "dur": 0.39,
-   "lufs": -17.5,
-   "tp": -1.4
-  }
+   "asr": "ب",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_bu",
   "speaker": "HAB",
   "text": "بُ",
-  "dur": 0.39,
+  "dur": 0.63,
   "file": "media/audio7/bq7_S_bu.mp3",
-  "take": "G_c_B#4",
+  "take": "g_bf__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.18,
-   "voiced_s": 0.28,
-   "breath_after_s": 0.0,
-   "dur": 0.39,
-   "lufs": -17.5,
-   "tp": -1.6
-  }
+   "asr": "بو",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_buu",
   "speaker": "HAB",
   "text": "بو",
-  "dur": 0.71,
+  "dur": 0.94,
   "file": "media/audio7/bq7_S_buu.mp3",
-  "take": "G_L_A#5",
+  "take": "g_long2__1.mp3",
   "checks": {
-   "kind": "long",
-   "vowel_est_s": 0.38,
-   "voiced_s": 0.48,
-   "breath_after_s": 0.0,
-   "dur": 0.71,
-   "lufs": -17.6,
-   "tp": -1.4
-  }
+   "asr": "بو",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_chain_long",
@@ -911,359 +894,286 @@
   "id": "bq7_S_fa",
   "speaker": "HAB",
   "text": "فَ",
-  "dur": 0.34,
+  "dur": 0.55,
   "file": "media/audio7/bq7_S_fa.mp3",
-  "take": "G_c_B#1",
+  "take": "g_bf__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.1,
-   "voiced_s": 0.07,
-   "breath_after_s": 0.0,
-   "dur": 0.34,
-   "lufs": -17.8,
-   "tp": -1.5
-  }
+   "asr": "ف",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_faa",
   "speaker": "HAB",
   "text": "فا",
-  "dur": 0.68,
+  "dur": 0.86,
   "file": "media/audio7/bq7_S_faa.mp3",
-  "take": "nf_A",
+  "take": "g_long2__1.mp3",
   "checks": {
-   "asr": "فا",
-   "dur": 0.68,
-   "lufs": -17.0,
-   "tp": -2.7,
-   "max_closed_nasal_s": 0,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05,
-   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
-  }
+   "asr": "فى",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_fi",
   "speaker": "HAB",
   "text": "فِ",
-  "dur": 0.42,
+  "dur": 0.63,
   "file": "media/audio7/bq7_S_fi.mp3",
-  "take": "G_c_B#3",
+  "take": "g_bf__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.18,
-   "voiced_s": 0.18,
-   "breath_after_s": 0.0,
-   "dur": 0.42,
-   "lufs": -17.5,
-   "tp": -3.0
-  }
+   "asr": "في",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_fii",
   "speaker": "HAB",
   "text": "في",
-  "dur": 0.86,
+  "dur": 0.91,
   "file": "media/audio7/bq7_S_fii.mp3",
-  "take": "G_L_B#4",
+  "take": "g_long2__1.mp3",
   "checks": {
-   "kind": "long",
-   "vowel_est_s": 0.52,
-   "voiced_s": 0.52,
-   "breath_after_s": 0.0,
-   "dur": 0.86,
-   "lufs": -17.4,
-   "tp": -5.8
-  }
+   "asr": "في",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_fu",
   "speaker": "HAB",
   "text": "فُ",
-  "dur": 0.39,
+  "dur": 0.63,
   "file": "media/audio7/bq7_S_fu.mp3",
-  "take": "G_c_B#5",
+  "take": "g_bf__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.14,
-   "voiced_s": 0.14,
-   "breath_after_s": 0.0,
-   "dur": 0.39,
-   "lufs": -17.4,
-   "tp": -2.2
-  }
+   "asr": "فو",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_fuu",
   "speaker": "HAB",
   "text": "فو",
-  "dur": 0.84,
+  "dur": 0.89,
   "file": "media/audio7/bq7_S_fuu.mp3",
-  "take": "nf_A",
+  "take": "g_long2__1.mp3",
   "checks": {
    "asr": "فو",
-   "dur": 0.84,
-   "lufs": -17.4,
-   "tp": -1.9,
-   "max_closed_nasal_s": 0.05,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_m",
   "speaker": "HAB",
   "text": "مْ",
-  "dur": 0.5,
+  "dur": 0.6,
   "file": "media/audio7/bq7_S_m.mp3",
-  "take": "G_m_A",
+  "take": "g_m0__1.mp3",
   "checks": {
-   "kind": "closed-lip nasal, brief",
-   "energy_lt500": 0.995,
-   "energy_700_1500": 0.0007,
-   "asr": "همم (no vowel)",
-   "dur": 0.5,
-   "lufs": -17.4,
-   "tp": -5.1
-  }
+   "asr": "نانسي",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_m0",
   "speaker": "HAB",
   "text": "مْ",
-  "dur": 0.5,
+  "dur": 0.6,
   "file": "media/audio7/bq7_S_m0.mp3",
-  "take": "G_m_A",
+  "take": "g_m0__1.mp3",
   "checks": {
-   "kind": "closed-lip nasal, brief",
-   "energy_lt500": 0.995,
-   "energy_700_1500": 0.0007,
-   "asr": "همم (no vowel)",
-   "dur": 0.5,
-   "lufs": -17.4,
-   "tp": -5.1
-  }
+   "asr": "هم",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_ma",
   "speaker": "HAB",
   "text": "مَ",
-  "dur": 0.39,
+  "dur": 0.6,
   "file": "media/audio7/bq7_S_ma.mp3",
-  "take": "G_sA_A#0",
+  "take": "g_mshort__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.11,
-   "voiced_s": 0.25,
-   "breath_after_s": 0.0,
-   "dur": 0.39,
-   "lufs": -17.0,
-   "tp": -7.0,
-   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
-  }
+   "asr": "م",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_maa",
   "speaker": "HAB",
   "text": "ما",
-  "dur": 0.81,
+  "dur": 1.02,
   "file": "media/audio7/bq7_S_maa.mp3",
-  "take": "G_L_A#0",
+  "take": "g_mlong__1.mp3",
   "checks": {
-   "kind": "long",
-   "vowel_est_s": 0.58,
-   "voiced_s": 0.68,
-   "breath_after_s": 0.0,
-   "dur": 0.81,
-   "lufs": -17.4,
-   "tp": -3.9
-  }
+   "asr": "ما",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_mak",
   "speaker": "HAB",
   "text": "مَكْ",
-  "dur": 0.73,
+  "dur": 1.02,
   "file": "media/audio7/bq7_S_mak.mp3",
-  "take": "g1_A",
+  "take": "g_closed__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     0.59
-    ],
-    "B": [
-     1.0,
-     0,
-     0.65
-    ]
-   },
-   "heard": "مك",
-   "max_closed_nasal_s": 0,
-   "dur": 0.73,
-   "lufs": -17.4,
-   "tp": -2.9
-  }
+   "asr": "مك",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_mi",
   "speaker": "HAB",
   "text": "مِ",
-  "dur": 0.42,
+  "dur": 0.63,
   "file": "media/audio7/bq7_S_mi.mp3",
-  "take": "mi8a_C",
+  "take": "X_E05_say_mi__2.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.18,
-   "voiced_s": 0.28,
-   "breath_after_s": 0.0,
-   "dur": 0.42,
-   "lufs": -17.0,
-   "tp": -5.7,
    "asr": "مي",
-   "nasal_ms": 130,
-   "i_ms": 150,
-   "F1_hz": 396,
-   "F2_hz": 3223,
-   "note": "owner R3-6: bright full [i] like the start of «مي»; prompt «مِي» cut short (old take was lax «مِه», F1≈500)",
-   "max_closed_nasal_s": 0,
-   "fix_round": "v8 2026-10-05",
-   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
-  }
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_mif",
   "speaker": "HAB",
   "text": "مِفْ",
-  "dur": 0.73,
+  "dur": 0.78,
   "file": "media/audio7/bq7_S_mif.mp3",
-  "take": "g1_A",
+  "take": "g_closed__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     0.61
-    ],
-    "B": [
-     1.0,
-     0,
-     0.68
-    ]
-   },
-   "heard": "مف",
-   "max_closed_nasal_s": 0,
-   "dur": 0.73,
-   "lufs": -17.4,
-   "tp": -3.3
-  }
+   "asr": "ميث",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_mii",
   "speaker": "HAB",
   "text": "مي",
-  "dur": 0.81,
+  "dur": 0.89,
   "file": "media/audio7/bq7_S_mii.mp3",
-  "take": "G_L_A#1",
+  "take": "g_mlong__1.mp3",
   "checks": {
-   "kind": "long",
-   "vowel_est_s": 0.59,
-   "voiced_s": 0.69,
-   "breath_after_s": 0.0,
-   "dur": 0.81,
-   "lufs": -17.5,
-   "tp": -6.6
-  }
+   "asr": "مي",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_mu",
   "speaker": "HAB",
   "text": "مُ",
-  "dur": 0.39,
+  "dur": 0.6,
   "file": "media/audio7/bq7_S_mu.mp3",
-  "take": "G_sA_B#2",
+  "take": "G_mimu_ar__1.mp3",
   "checks": {
-   "kind": "short",
-   "vowel_est_s": 0.2,
-   "voiced_s": 0.3,
-   "breath_after_s": 0.0,
-   "dur": 0.39,
-   "lufs": -17.5,
-   "tp": -6.3
-  }
+   "asr": "م",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_muu",
   "speaker": "HAB",
   "text": "مو",
-  "dur": 0.76,
+  "dur": 0.78,
   "file": "media/audio7/bq7_S_muu.mp3",
-  "take": "G_L_A#2",
+  "take": "g_mlong__1.mp3",
   "checks": {
-   "kind": "long",
-   "vowel_est_s": 0.53,
-   "voiced_s": 0.63,
-   "breath_after_s": 0.0,
-   "dur": 0.76,
-   "lufs": -17.4,
-   "tp": -6.6
-  }
+   "asr": "مو",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_na",
   "speaker": "HAB",
   "text": "نَ",
-  "dur": 0.42,
+  "dur": 0.63,
   "file": "media/audio7/bq7_S_na.mp3",
-  "take": "g-syl (re-cut)",
+  "take": "g_n__2.mp3",
   "checks": {
-   "asr": "نه",
-   "note": "tail trimmed to ≈0.39 s (R1 row 7)",
-   "dur": 0.42,
-   "lufs": -17.9,
-   "tp": -3.8,
-   "max_closed_nasal_s": 0.06,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "asr": "ن",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_naa",
   "speaker": "HAB",
   "text": "نا",
-  "dur": 0.89,
+  "dur": 0.78,
   "file": "media/audio7/bq7_S_naa.mp3",
-  "take": "nf_A",
+  "take": "g_long2__1.mp3",
   "checks": {
    "asr": "نا",
-   "dur": 0.89,
-   "lufs": -17.4,
-   "tp": -6.2,
-   "max_closed_nasal_s": 0.06,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_nu",
   "speaker": "HAB",
   "text": "نُ",
-  "dur": 0.42,
+  "dur": 0.65,
   "file": "media/audio7/bq7_S_nu.mp3",
-  "take": "g-syl (re-cut)",
+  "take": "g_n__2.mp3",
   "checks": {
    "asr": "نو",
-   "note": "tail trimmed to ≈0.39 s (R1 row 7)",
-   "dur": 0.42,
-   "lufs": -17.9,
-   "tp": -4.9,
-   "max_closed_nasal_s": 0,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_S_pair_a",
@@ -1350,29 +1260,16 @@
   "id": "bq7_S_tim",
   "speaker": "HAB",
   "text": "تِمْ",
-  "dur": 0.57,
+  "dur": 0.73,
   "file": "media/audio7/bq7_S_tim.mp3",
-  "take": "g1_A",
+  "take": "g_closed__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     0.44
-    ],
-    "B": [
-     1.0,
-     0,
-     0.46
-    ]
-   },
-   "heard": "تم",
-   "max_closed_nasal_s": 0,
-   "dur": 0.57,
-   "lufs": -17.4,
-   "tp": -4.0
-  }
+   "asr": "تم",
+   "verdict": "PASS",
+   "note": "replaces OLD-narrator clip (pre-F3, 10-04/05, md5 = pre-voice10 backup); old → v7/voice/old_v7/voice13/",
+   "round": "VOICE-13"
+  },
+  "voice13": true
  },
  {
   "id": "bq7_E01_bridge",
@@ -1724,14 +1621,11 @@
   "text": "شُكْرًا، فِي الدُّرْجِ كِتَابُ الْحَيَوَانَاتِ.",
   "dur": 3.5,
   "file": "media/audio7/bq7_E02_maj_book.mp3",
-  "take": "sci1/MT_A_3",
+  "take": null,
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "شُكْرًا! في الدُّرْجِ كِتابُ الحَيَواناتِ.",
-   "dur": 3.5,
-   "lufs": -17.5,
-   "tp": -2.8
+   "verdict": "NO CHANGE",
+   "note": "MBK#1 retake: prompted ASR «الدُّرْجِ» p0.84 vs approved final_M take p0.87; vowel after د F2 1430–1550 (not better) → keep owner-approved lip-sync take",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   }
  },
  {
@@ -1880,14 +1774,15 @@
   "text": "أَيْنَ مِفْتَاحُ الدُّرْجِ؟",
   "dur": 1.44,
   "file": "media/audio7/bq7_E02_maj_where_key.mp3",
-  "take": "sci1/MT_A_2",
+  "take": "MWK__1.mp3",
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "أَيْنَ مِفْتاحُ الدُّرْجِ؟",
-   "dur": 1.44,
-   "lufs": -17.4,
-   "tp": -1.9
+   "asr": "أين مفتاح الدرج؟",
+   "sim": 1.0,
+   "verdict": "PASS",
+   "lufs": -17.5,
+   "tp": -1.3,
+   "note": "prompted ASR keeps «الدُّرْجِ» p0.74 raw / 0.73 after variant A (old final_M 0.49 «الدرْجِ»); vowel after د F2 1193–1484 (median ≈1320, borderline vs ≤1300)",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   }
  },
  {
@@ -2047,18 +1942,16 @@
   "id": "bq7_E03_l2_intro",
   "speaker": "HAB",
   "text": "الْآنَ نَسْتَمِعُ إِلَى أَصْوَاتٍ. اِخْتَرِ الْفُقَّاعَةَ الَّتِي فِيهَا صَوْتُنَا: مَ – مِ – مُ.",
-  "dur": 10.4,
+  "dur": 10.27,
   "file": "media/audio7/bq7_E03_l2_intro.mp3",
-  "take": "sci1/G3_A_2 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3",
+  "take": null,
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "الْآنَ نَسْتَمِعُ إِلَى أَصْوَاتٍ. اِخْتَرِ الْفُقَّاعَةَ الَّتِي فِيهَا صَوْتُنَا: مَ… مِ… مُ.",
-   "dur": 7.6,
-   "lufs": -17.4,
-   "tp": -1.9
+   "asr": "الآن نستمع إلى أصوات اختر الفقاعة التي فيها صوتنا م مي مو",
+   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_E03_title",
@@ -2980,18 +2873,20 @@
   "id": "bq7_E05_say_mi",
   "speaker": "HAB",
   "text": "قُلْ مَعي: مِ.",
-  "dur": 2.04,
+  "dur": 2.01,
   "file": "media/audio7/bq7_E05_say_mi.mp3",
-  "take": "composed",
+  "take": "X_E05_say_mi__2.mp3",
   "checks": {
-   "composed": "c_qul_maai +0.3s bq7_S_mi",
-   "note": "rebuilt with v8 bq7_S_mi",
-   "dur": 1.41,
-   "lufs": -17.5,
-   "tp": -4.1,
-   "fix_round": "v8 2026-10-05"
+   "asr": "قل معي",
+   "sim": 1.0,
+   "verdict": "PASS (whole take, first reading)",
+   "lufs": -17.4,
+   "tp": -4.2,
+   "note": "«قُلْ مَعِي. mi.» take repeated itself → first complete reading kept (edge trim); mi 0.36 s bright /i/ F2 3136",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_E05_say_mii",
@@ -3127,16 +3022,13 @@
   "text": "حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.",
   "dur": 6.92,
   "file": "media/audio7/bq7_E06_brq_wow.mp3",
-  "take": "sci1/B1_B_2 + brq_ma.mp3 + brq_mi.mp3 + brq_mu.mp3",
+  "take": null,
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "حَرْفُ الْمِيمِ، صَوْتُهُ: مَ… مِ… مُ.",
-   "dur": 4.83,
-   "lufs": -17.6,
-   "tp": -1.9
+   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_E06_end",
@@ -3226,18 +3118,20 @@
   "id": "bq7_E06_recall",
   "speaker": "HAB",
   "text": "سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.",
-  "dur": 6.24,
+  "dur": 4.81,
   "file": "media/audio7/bq7_E06_recall.mp3",
-  "take": "composed",
+  "take": "X_E06_recall__2.mp3",
   "checks": {
-   "composed": "c_E06rec +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu",
-   "note": "rebuilt with v8 bq7_S_mi",
-   "dur": 4.0,
+   "asr": "سمعنا هذا الصوت ما مي مو سمعنا هذا الصوت ما مي مو",
+   "sim": 0.51,
+   "verdict": "PASS* (whole take, first reading; mu borderline)",
    "lufs": -17.4,
-   "tp": -2.7,
-   "fix_round": "v8 2026-10-05"
+   "tp": -4.3,
+   "note": "first complete reading kept (edge trim); ma .33 /a/ · mi .35 /i/ F2 3200 · mu .42 /u/ (slightly long)",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_E06_reveal",
@@ -3322,18 +3216,16 @@
   "id": "bq7_E06_vowels",
   "speaker": "HAB",
   "text": "المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.",
-  "dur": 6.71,
+  "dur": 6.58,
   "file": "media/audio7/bq7_E06_vowels.mp3",
-  "take": "composed",
+  "take": null,
   "checks": {
-   "composed": "c_E06vow +0.35s bq7_S_ma +0.45s bq7_S_mi +0.45s bq7_S_mu",
-   "note": "rebuilt with v8 bq7_S_mi",
-   "dur": 4.21,
-   "lufs": -17.4,
-   "tp": -4.0,
-   "fix_round": "v8 2026-10-05"
+   "asr": "الميم مع الحركات",
+   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_E07_alone",
@@ -4028,17 +3920,15 @@
   "text": "المِيمُ، صَوْتُها مَ: في الأَوَّلِ… في الوَسَطِ… في الآخِرِ!",
   "dur": 6.32,
   "file": "media/audio7/bq7_E07m_sum.mp3",
-  "take": "composed",
+  "take": "X_E07m_sum__2.mp3",
   "checks": {
-   "composed": "sum_A[0-2.15] + BRQ «مَ» (carriers/brq_ma.mp3 from bs_A 0.18-0.53, F2 1726 Hz, vowel 190 ms) + sum_A[3.2-]",
-   "asr": "... صوتها ما في الأول في الوسط في الآخر",
-   "note": "bad carriers/brq_ma.wav deleted",
-   "dur": 6.32,
-   "lufs": -17.4,
-   "tp": -2.5,
-   "max_closed_nasal_s": 0.16,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
+   "asr": "الميم صوتها ما في الأول في الوسط في الآخر",
+   "sim": 0.97,
+   "verdict": "PASS (whole take)",
+   "lufs": -17.5,
+   "tp": -1.3,
+   "note": "one take, «ma» short 0.34 s open /a/ (F1 666); ASR text 0.97 — replaces the spliced composite",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   }
  },
  {
@@ -5363,18 +5253,16 @@
   "id": "bq7_E11_s1_q",
   "speaker": "HAB",
   "text": "أَيُّ كَلِمَةٍ فِيهَا صَوْتُ (مَ – مِ – مُ)؟ اِسْتَمِع، ثُمَّ اخْتَر.",
-  "dur": 10.16,
+  "dur": 10.03,
   "file": "media/audio7/bq7_E11_s1_q.mp3",
-  "take": "sci1/G3_A_5 + bq7_S_ma.mp3 + bq7_S_mi.mp3 + bq7_S_mu.mp3 + sci1/G1_A_3",
+  "take": null,
   "checks": {
-   "model": "eleven_v4",
-   "fix_round": "SCI-1 2026-10-07",
-   "prompt": "أَيُّ كَلِمَةٍ فِيهَا صَوْتُ: مَ… مِ… مُ؟ اِسْتَمِعْ، ثُمَّ اخْتَرْ.",
-   "dur": 6.74,
-   "lufs": -17.4,
-   "tp": -1.8
+   "asr": "أي كلمة فيها صوت؟ م م م استمع ثم اختر",
+   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_E11_s2_q",
@@ -5909,19 +5797,15 @@
   "text": "أَمْسِكا يَدي يا وَلَدَيَّ… هَيّا نَدْخُلْ!",
   "dur": 3.03,
   "file": "media/audio7/bq7_E13_jda3.mp3",
-  "take": "jda3_C",
+  "take": "J3__3.mp3",
   "checks": {
-   "dur": 3.03,
-   "lufs": -17.6,
-   "tp": -4.1,
-   "asr_medium": "أمسك يدي يا ولدي هيا ندخل",
-   "dual_check": "after «أَمْسِكا» kāf: 0.30 s voiced to the «يدي» d-burst (HAB «أمسيكا» ref = 0.24 s) → dual ā present; ASR folds ā",
-   "voice": "Kalemon - Grandmother 0dHpICF3K2yC9cu1PEWg (approved JDA_0)",
-   "takes": 3,
-   "max_closed_nasal_s": 0.18,
-   "nasal_run_resolution_s": 0.05,
-   "note": "«وَلَدَيَّ» in pause = /waladayy/; ASR writes «ولدي» — listen",
-   "fix_round": "JDA 2026-10-05"
+   "asr": "أمسك يدي يا ولدي هيا ندخل",
+   "sim": 0.95,
+   "verdict": "BEST-OF-4 (LISTEN)",
+   "lufs": -17.5,
+   "tp": -3.5,
+   "note": "«أمسكا» /aː/ F1 650–1140 ≈300 ms PASS; «وَلَدَيْيَ» spelling: vowel after د F1 444–494 F2 ≈2300 (front /a/, borderline vs F1>500) — best of 4 takes (#1/#2/#4 steady /i/ or F1≈400)",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   }
  },
  {
@@ -5930,19 +5814,15 @@
   "text": "تَفَضَّلا يا وَلَدَيَّ!",
   "dur": 2.01,
   "file": "media/audio7/bq7_E13_jda6.mp3",
-  "take": "jda6_A",
+  "take": "J6__1.mp3",
   "checks": {
-   "dur": 2.01,
-   "lufs": -17.5,
-   "tp": -4.2,
-   "asr_medium": "تفضلا يا ولدي",
-   "dual_check": "«تفضلا» dual heard by ASR",
-   "voice": "Kalemon - Grandmother 0dHpICF3K2yC9cu1PEWg (approved JDA_0)",
-   "takes": 3,
-   "max_closed_nasal_s": 0.13,
-   "nasal_run_resolution_s": 0.05,
-   "note": "«وَلَدَيَّ» in pause = /waladayy/; ASR writes «ولدي» — listen",
-   "fix_round": "JDA 2026-10-05"
+   "asr": "تفضل يا ولدي",
+   "sim": 0.95,
+   "verdict": "PASS",
+   "lufs": -17.7,
+   "tp": -1.5,
+   "note": "«تفضلا» final /aː/ F1 560–1070 ≈200 ms; «وَلَدَيْ» /a/ F1 511–522 after د then glide F2 2316→3010 (diphthong)",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   }
  },
  {
@@ -6099,15 +5979,15 @@
   "text": "اِسْتَيْقَظَ مَاجِدٌ مُبَكِّرًا. لَبِسَ قَمِيصَهُ، وَسَرَّحَ شَعْرَهُ بِالْمُشْطِ.",
   "dur": 6.01,
   "file": "media/audio7/bq7_E13_n1.mp3",
-  "take": "V11_E13_n1__4.mp3",
+  "take": "N1__3.mp3",
   "checks": {
-   "asr": "استيقف ماجد مبكرا لبس قميصه وسرح شعره بالموشط",
-   "sim": 0.97,
-   "verdict": "PASS*",
-   "whole_take": true,
-   "lufs": -17.4,
+   "asr": "استيقظ ماجد مبكرا لبس قميصه وسرح شعره بالمشط",
+   "sim": 0.91,
+   "verdict": "PASS* (LISTEN)",
+   "lufs": -17.5,
    "tp": -1.4,
-   "round": "VOICE-11"
+   "note": "tts «… bil-mushṭ» (Latin last word): musht F2 1134 /u/, voiced /u/ ≈0.16 s (was 0.28); ASR «بالمشط»; check accent of the Latin-prompted word",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   },
   "voice11": true
  },
@@ -6117,15 +5997,15 @@
   "text": "وَضَعَ ماجِدٌ مانْجو وَمَوْزًا في حَقيبَتِهِ.",
   "dur": 3.5,
   "file": "media/audio7/bq7_E13_n2.mp3",
-  "take": "V11_E13_n2__5.mp3",
+  "take": "N2__4.mp3",
   "checks": {
-   "asr": "وضع ماجد منجو وموزاً في حقيبته",
-   "sim": 0.96,
-   "verdict": "PASS",
-   "whole_take": true,
+   "asr": "وضع ماجد مانجو وموزاً في حقيبته",
+   "sim": 0.98,
+   "verdict": "PASS (dj borderline)",
    "lufs": -17.4,
-   "tp": -3.0,
-   "round": "VOICE-11"
+   "tp": -2.3,
+   "note": "ASR «مانجو» p0.95, dj 35 ms (threshold), 4.6 s",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   },
   "voice11": true
  },
@@ -6234,18 +6114,15 @@
   "text": "جَلَسوا تَحْتَ الظِّلِّ، وَأَكَلُوا المانْجو وَالمَوْزَ.",
   "dur": 3.89,
   "file": "media/audio7/bq7_E13_n6.mp3",
-  "take": "fx_n6_A",
+  "take": "N6__1.mp3",
   "checks": {
-   "dj_fric_ms": 50,
-   "dj_splice": "/g/ release replaced by same-voice /dʒ/ release from mj_A.mp3",
-   "note": "TTS sentence takes still said /g/; closure-to-closure splice keeps sentence prosody",
-   "dur": 3.89,
+   "asr": "جلسوا تحت الظل وأكلوا المانجو والموز",
+   "sim": 0.98,
+   "verdict": "PASS",
    "lufs": -17.4,
-   "tp": -1.4,
-   "max_closed_nasal_s": 0.3,
-   "fix_round": "R2-fix 2026-10-05",
-   "note_nasal": "0.30 s run = «…كَلُوا الْمـ» (/uː l m/ sequence), same in both takes — not a hum",
-   "nasal_run_resolution_s": 0.05
+   "tp": -2.0,
+   "note": "ASR «الظل» p1.0 / «والموز» p1.0 (no /a/ tail), dj 45 ms",
+   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
   }
  },
  {
@@ -7381,28 +7258,17 @@
   "text": "دَوْرُكَ!",
   "dur": 1.2,
   "file": "media/audio7/bq7_G_your_turn.mp3",
-  "take": "g1_A",
+  "take": "G_your_turn__1.mp3",
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     0.73
-    ],
-    "B": [
-     1.0,
-     0,
-     0.75
-    ]
-   },
-   "heard": "دورك",
-   "max_closed_nasal_s": 0,
-   "dur": 0.86,
-   "lufs": -17.4,
-   "tp": -3.8
+   "asr": "دورك",
+   "verdict": "PASS",
+   "lufs": -17.7,
+   "tp": -1.3,
+   "note": "ASR «دورك» p0.99 (old live file ASR «دور» = final -ka inaudible)",
+   "round": "VOICE-13"
   },
-  "voice10": true
+  "voice10": true,
+  "voice13": true
  },
  {
   "id": "bq7_song",
