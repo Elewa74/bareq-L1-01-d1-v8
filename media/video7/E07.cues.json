@@ -4,9 +4,9 @@
  "title": "أَيْنَ الحَرْفُ؟",
  "src": "media/video7/E07.mp4",
  "poster": "media/video7/E07.jpg",
- "duration": 66.875,
+ "duration": 67.333,
  "status": "draft_unapproved",
- "source": "video_src/e07_v8.py · v8 SCI-1 text (no exclamation mark, full tashkeel) (E07-v8-video10b-2026-10-08) · 1920×1080 24 fps",
+ "source": "video_src/e07_v8.py · v8 SCI-1 text (no exclamation mark, full tashkeel) (E07-v8-video14-2026-10-09) · 1920×1080 24 fps",
  "scenes": [
   {
    "t": 0,
@@ -33,7 +33,7 @@
    "title": "أَشْكَالُ الْمِيمِ"
   },
   {
-   "t": 53.833,
+   "t": 54.308,
    "title": "تَذَكَّر"
   }
  ],
@@ -104,34 +104,34 @@
   },
   {
    "id": "bq7_E07m_sum",
-   "t": 46.853,
-   "end": 53.383,
+   "t": 46.848,
+   "end": 53.858,
    "sp": "BRQ",
    "text": "الْمِيمُ، صَوْتُهَا مَ: فِي الْأَوَّلِ… فِي الْوَسَطِ… فِي الْآخِرِ."
   },
   {
    "id": "bq7_E07m_saywithme",
-   "t": 54.233,
-   "end": 55.523,
+   "t": 54.708,
+   "end": 55.998,
    "sp": "HAB",
    "text": "قُلْهَا مَعَ بَارِقٍ."
   },
   {
    "id": "bq7_E07m_rule",
-   "t": 55.718,
-   "end": 63.878,
+   "t": 56.193,
+   "end": 64.353,
    "sp": "BRQ",
    "text": "تَذَكَّرِ الْمِيمَ، صَوْتُهَا مَ: تُمْسِكُ يَدَ جَارِهَا… وَفِي الْآخِرِ تُرْخِي ذَيْلَهَا."
   }
  ],
  "marks": [
   {
-   "t": 63.928,
+   "t": 64.403,
    "text": "✋ قُلْهَا: تُمْسِكُ يَدَ جَارِهَا… وَفِي الْآخِرِ تُرْخِي ذَيْلَهَا."
   }
  ],
  "endq": {
-  "t": 66.878,
+  "t": 67.353,
   "lines": [
    "bq7_E07_q1",
    "bq7_E07_q2"
@@ -162,8 +162,8 @@
   {
    "gid": "V8_E07_M09",
    "line": "bq7_E07m_sum",
-   "t": 46.823,
-   "end": 53.383,
+   "t": 46.818,
+   "end": 53.858,
    "rect": [
     815,
     85,
@@ -176,8 +176,8 @@
   {
    "gid": "V8_E07_M10",
    "line": "bq7_E07m_rule",
-   "t": 55.688,
-   "end": 63.878,
+   "t": 56.163,
+   "end": 64.353,
    "rect": [
     1330,
     590,
@@ -189,7 +189,7 @@
   }
  ],
  "interim": "Grok motion pending: V8_E07_M09 V8_E07_M10 (start-frame stills with gentle motion)",
- "build": "E07-v8-video10b-2026-10-08",
+ "build": "E07-v8-video14-2026-10-09",
  "rail_clearance": {
   "limit": 784,
   "bottoms": {
