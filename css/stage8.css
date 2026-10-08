@@ -58,6 +58,7 @@
 .elp-fit .bq8-btn, .elp-fit .bq8-stage .bq8-slot__label { min-width: var(--bq8-touch-min); min-height: var(--bq8-touch-min); } /* theme-8 stickers/labels never below the in-stage minimum (E11 ear 72 → 76, E14 labels) */
 .elp-fit .v7-eq-say, .elp-fit .v7-eq-ear { width: 76px; height: 76px; }
 .elp-fit .v5-end .bq-btn, .elp-fit .vp-fail .bq-btn, .elp-fit .elp-stage .vp-fail .vp-msg .bq-btn { min-height: 76px; }
+.elp-fit .v5-end .bq-btn { min-height: var(--vp-tap, 76px) !important; padding-block: 0; } /* FIX13 R13-A-03: end-row buttons ≥ 64 VISUAL px at every stage scale (--vp-tap = max(76, 66 ÷ scale), video.js) */
 .elp-fit .bq-godot-fs { width: 76px; height: 76px; }
 .elp-fit .bq-godot-fs svg { width: 30px; height: 30px; }
 .elp-fit .vp-mp4 .vp-ctl > button, .elp-fit .vp-mp4 .vp-ctl > button.pp { min-width: 76px !important; min-height: 76px !important; flex-basis: 76px; }
@@ -126,3 +127,4 @@
 .bq-ar { line-height: 2.05 !important; padding-block: .08em .1em; overflow: visible !important; }
 /* E09 feedback pill «جَرِّبْ مَرَّةً أُخْرى…» / «الشَّكْلُ صَحيحٌ»: line-height 1.4 put «أُ» / «شَّ» 1–2 px above the pill top */
 :root[data-theme="8"] .elp-fit .x7-fb > span { line-height: 2.05; padding-block: calc(var(--u, 1px) * 3) calc(var(--u, 1px) * 4); }
+.elp-fit .bq-end .bq-end-row .bq-btn { min-height: max(76px, calc(66px / var(--bq-s, 1))) !important; } /* FIX13 R13-A-08: end-card buttons (incl. the lesson-end card) ≥ 64 VISUAL px at every stage scale */

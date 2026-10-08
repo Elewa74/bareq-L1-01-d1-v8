@@ -100,8 +100,8 @@
       bq7_E05_s1_q: 'اِسْتَمِع، ثُمَّ اخْتَرِ البِطاقَةَ الَّتي سَمِعْتَها.',
       bq7_E05_s1_find_long: 'حَدِّدِ الحَرَكَةَ الطَّويلَةَ.', bq7_E05_s1_find_short: 'حَدِّدِ الحَرَكَةَ القَصيرَةَ.',
       bq7_E05_s1_end: 'أَحْسَنْتَ. عَرَفْتَ الحَرَكاتِ القَصيرَةَ وَالطَّويلَةَ.',
-      bq7_E05_say_ma: 'قُل مَعي: مَ.', bq7_E05_say_mi: 'قُل مَعي: مِ.', bq7_E05_say_mu: 'قُل مَعي: مُ.',
-      bq7_E05_say_maa: 'قُل مَعي: ما.', bq7_E05_say_mii: 'قُل مَعي: مي.', bq7_E05_say_muu: 'قُل مَعي: مو.',
+      bq7_E05_say_ma: 'قُل مَعِي: مَ.', bq7_E05_say_mi: 'قُل مَعِي: مِ.', bq7_E05_say_mu: 'قُل مَعِي: مُ.',
+      bq7_E05_say_maa: 'قُل مَعِي: مَا.', bq7_E05_say_mii: 'قُل مَعِي: مِي.', bq7_E05_say_muu: 'قُل مَعِي: مُو.', // FIX13 R13-B-04 (DRAFT)
     });
     const PAIRS = [{ v: 'a', s: 'ma', l: 'maa' }, { v: 'i', s: 'mi', l: 'mii' }, { v: 'u', s: 'mu', l: 'muu' }];
     const TASKS = [
@@ -240,7 +240,7 @@
               await S.sleep(200); await stim();
             } else { await S.sleep(200); await S.say(lineId); } // FIX12 A-20: no glowing madd letter (it would show the answer) — the instruction again
           },
-          async model() { reveal(); const r = right(); await sylOn(r, r.s); },
+          async model() { reveal(); const r = right(); if (I.justHeard(sid(r.s))) { r.classList.add('is-play'); r.run(); await S.sleep(650); r.classList.remove('is-play'); } else await sylOn(r, r.s); }, // FIX13 R13-A-04: the hint sound is not repeated back-to-back
         });
         await new Promise((resolve) => {
           opts.forEach((c) => c.addEventListener('click', async () => {

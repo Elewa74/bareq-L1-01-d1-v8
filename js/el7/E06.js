@@ -258,6 +258,7 @@
     }
 
     async function words() {
+      let wowFind = false;
       for (const w of WORDS) {
         steps.cur(si);
         const info = I.W[w.slug];
@@ -288,7 +289,7 @@
               if (first == null) { first = true; I.record(S, 'S5', true, { item: w.slug }); log.push([info.w, true]); }
               tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); s.classList.add('i8-ok'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer(); if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
-              await S.say('bq7_E06_brq_wow', { talk: true }); // «حَرْفُ المِيمِ! صَوْتُهُ: مَ!» — الاسم مقروناً بالصوت (ok_letter المسجَّل يقول الاسم وحده)
+              if (!wowFind) { wowFind = true; await S.say('bq7_E06_brq_wow', { talk: true }); } // «حَرْفُ المِيمِ، صَوْتُهُ: مَ» — FIX13 R13-A-05: once for the find moment (first word), not after every word
               await I.playOn(S, pic, I.segId(w.slug));
               await S.sleep(350);
               idleSet(null); return resolve();
@@ -329,7 +330,7 @@
         const pol = I.policy(S, {
           opts: tiles, right,
           async hint1() { refB.classList.remove('is-hint'); void refB.offsetWidth; refB.classList.add('is-hint'); await S.say('bq7_G_look_shape'); await ask(); },
-          async model() { await I.playOn(S, right(), sid(it.s)); },
+          async model() { await I.modelOn(S, right(), sid(it.s)); }, // FIX13 R13-A-04
         });
         await new Promise((resolve) => {
           tiles.forEach((t) => t.addEventListener('click', async () => {

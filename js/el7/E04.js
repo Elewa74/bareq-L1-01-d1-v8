@@ -225,7 +225,7 @@
         const pol = I.policy(S, {
           opts, right,
           async hint1() { await S.stim(I.wordId(q.t)); },
-          async model() { await I.playOn(S, right(), I.wordId(q.t)); },
+          async model() { await I.modelOn(S, right(), I.wordId(q.t)); }, // FIX13 R13-A-04: not twice back-to-back after the hint
         });
         opts.forEach((c) => c.addEventListener('click', async () => {
           if (busy || I.isNo(c)) return;
@@ -300,7 +300,7 @@
       if (!onlyOral) for (let q = 0; q < QUIZ.length; q++) { res.push(await quizRound(QUIZ[q], q)); steps.on(WORDS.length + q); }
       else QUIZ.forEach((q, i) => steps.on(WORDS.length + i));
       await oral();
-      I.note(S, '<p><b>«قُلْها!» (S9 — استعمال الكلمة):</b> بعد التحقّق يسأل ماجد سؤالين (القَميص ثم النُّمور) ويتوقّف ٣ ث ليقول الطفل الكلمة، ثم يُسمَع النموذج في جملة. ' +
+      I.note(S, '<p><b>«قُلْها» (S9 — استعمال الكلمة):</b> بعد التحقّق يسأل ماجد سؤالين (القَميص ثم النُّمور) ويتوقّف ٣ ث ليقول الطفل الكلمة، ثم يُسمَع النموذج في جملة. ' +
         '<b>احكم أنت:</b> اضغط مطوّلاً ١٫٥ ث على زاوية بارق ← «أتقن · قريب · ليس بعد» (أو من صفحة «دليل الإتقان»). ' + (judged ? 'سُجِّل حكمك.' : 'بلا حكم = لا تسجيل.') + '</p>' +
         (res.length ? '<p><b>نتيجة «كلماتي» (S9):</b> ' + QUIZ.map((q, i) => I.W[q.t].w + ' ' + (res[i] ? '✓ من الأولى' : '— بعد تلميح')).join(' · ') + ' (النجاح: ٣/٣، منها ٢ من الأولى).</p>' : '') +
         '<p>وقفة «قُل» بلا ميكروفون: استمع أنت إلى ترديد الطفل، واربط الكلمة بشيء حقيقيّ في الغرفة إن أمكن. في الحصّة التالية: جملة من كلّ طفل عن شيء أحضره («هَذا مِفْتاحٌ»).</p>');

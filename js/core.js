@@ -201,6 +201,8 @@
   A.pooled = () => poolEl() || mkAudio();
   /** رفض المتصفّح التشغيل: زرّ «اضْغَطْ لِلاسْتِماعِ» + إعادة تلقائية عند أيّ لمسة تالية */
   A.whenUnlocked = (fn) => { queue.push({ fn, t: Date.now() }); };
+  /** FIX13 R13-A-01: leaving an element drops every retry queued for the next gesture (a blocked line/effect of element N never starts in N+1) */
+  A.flush = () => { queue.length = 0; A.segLive = false; A.pending = null; };
   A.blocked = (retry) => { let once = false; const go = () => { if (once) return; once = true; hideUnlock(); retry(); }; showUnlock(go); A.whenUnlocked(go); };
   A.stop = function () {
     A.token++;
@@ -416,20 +418,23 @@
     const tid = 'bq-end-' + Math.random().toString(36).slice(2, 7);
     const home = (opt.home || []).filter(Boolean).slice(0, 3);
     const nextBtn = nx ? h('button.bq-btn', { type: 'button', onclick: () => { A.unlock(); BQ.goNext(); } }, 'التَّالِي', BQ.icon('next')) : null;
+    /* FIX13 R13-A-08: the LAST element (no next) ends the lesson — no «التَّالِي» to a missing element; «أَعِدِ النَّشاطَ» + the lesson menu instead */
+    const toMenu = () => { A.unlock(); const mb = document.getElementById('menuBtn'); if (mb && mb.offsetParent) mb.click(); else { const p = BQ.path && BQ.path()[0]; if (p) BQ.open(p.id); } };
+    const menuBtn = nx ? null : h('button.bq-btn.bq-end-menu', { type: 'button', onclick: toMenu }, BQ.icon('menu'), 'عَنَاصِرُ الدَّرْسِ');
     /* v0-12: الورقة فوق منطقة اللعب كلّها (لا داخل المسرح المتمرّر) وتتّسع للإطار بلا تمرير: الأزرار قبل «في البيت اليوم» */
-    const card = h('div.bq-end', { role: 'dialog', 'aria-labelledby': tid },
+    const card = h('div.bq-end' + (nx ? '' : '.is-lesson-end'), { role: 'dialog', 'aria-labelledby': tid },
       h('div.bq-end-card', null,
         UI.brq('cheer', 'bq-end-brq', 6000), // [brq-anim v1]
         h('p.bq-end-t', { id: tid }, opt.title || 'أَحْسَنْتَ.'),
         opt.note ? h('p.bq-end-n', null, opt.note) : null,
         h('div.bq-end-row', null,
           h('button.bq-btn.ghost', { type: 'button', onclick: () => { card.remove(); opt.onReplay && opt.onReplay(); } }, BQ.icon('replay'), 'أَعِدِ النَّشاطَ'),
-          nextBtn),
+          nextBtn, menuBtn),
         nx ? h('p.bq-end-next', null, h('small', null, 'التَّالِي'), ' ', h('b', null, nx.name)) : null, // R3-N9
         home.length ? homeBox(home) : null));
     const host = (stage && stage.closest && stage.closest('.elp-play')) || stage;
     host.append(card);
-    requestAnimationFrame(() => { try { (nextBtn || card.querySelector('button')).focus({ preventScroll: true }); } catch (e) { /* */ } });
+    requestAnimationFrame(() => { try { (nextBtn || menuBtn || card.querySelector('button')).focus({ preventScroll: true }); } catch (e) { /* */ } });
     if (opt.line) BQ.audio.play(opt.line);
     return card;
   };
@@ -556,6 +561,7 @@
   function teardown() {
     if (life) { life.alive = false; life.timers.forEach(clearTimeout); life.timers.clear(); }
     BQ.audio.stop();
+    try { BQ.audio.flush(); } catch (e) { /* */ }
     hushAll();
     cleanups.forEach((f) => { try { f(); } catch (e) {} }); cleanups = [];
     closeConfirm();
@@ -592,7 +598,7 @@
   }
   function kicker(id) { return 'الْعُنْصُرُ ' + AR((BQ.meta(id) || {}).menu || '') + ' مِن ' + AR(D.elements.length); }
 
-  const FN = [[/قول|قُل|غَنّ|رَدِّد|ما هَذا|سَمِعْتُ فَرْقاً/, 'mouth'], [/أَيْنَ|مَنْ|المِسْ|الْمِسْ|تَتَبَّع|ضَعْ|اقْلِب|رَتِّب|اخْتَر|حَدِّد|سِرْ مَعَ|لَوِّن/, 'hand'], [/انْظُر|شاهِد|حَرْفُ|هَذِهِ الميمُ|^ماء/, 'eye']];
+  const FN = [[/قول|قُل|غَنّ|رَدِّد|ما هَذا|سَمِعْتُ فَرْقاً|سَمِعْتُ الْفَرْقَ/, 'mouth'], [/أَيْنَ|مَنْ|المِسْ|الْمِسْ|تَتَبَّع|ضَعْ|اقْلِب|رَتِّب|اخْتَر|حَدِّد|سِرْ مَعَ|لَوِّن/, 'hand'], [/انْظُر|شاهِد|حَرْفُ|هَذِهِ الميمُ|^ماء/, 'eye']];
   const fnIcon = (text, line) => { const t = text || ((BQ.line(line) || {}).t) || ''; for (const [re, ic] of FN) if (re.test(t)) return ic; return 'ear'; };
 
   /* ---------- v8 FIXED STAGE (owner R3 «STAGE» 2026-10-05: «مقاس النشاط وشكل عرضه يكون ثابت») · css/stage8.css ----------

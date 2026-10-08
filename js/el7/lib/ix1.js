@@ -188,7 +188,8 @@
           const failed = () => { const au = BQ.audio && BQ.audio.cur; return !!(au && au.error && String(au.currentSrc || au.src || '').indexOf(id + '.mp3') >= 0); };
           p = sayOnce().then(() => (failed() && alive() ? new Promise((r) => setTimeout(r, 250)).then(() => (alive() ? sayOnce() : null)) : null));
         }
-        return gate(p.then(() => { if (brq && S.buddy) S.buddy.set('idle'); }));
+        const lv = (I.lastVoice = { id, end: 0 }); // FIX13 R13-A-04: what was heard last (I.justHeard)
+        return gate(p.then(() => { lv.end = performance.now(); if (brq && S.buddy) S.buddy.set('idle'); }));
       },
       stim(id, o) { return S.say(id, Object.assign({ stim: true }, o || {})); },
       async seq(list) { for (const it of list) { if (typeof it === 'number') await S.sleep(it); else if (typeof it === 'function') await it(); else if (it) await S.say(it); } },
@@ -391,6 +392,15 @@
     return b;
   };
   /** يشغّل صوت عنصر مع حالة «يعزف» */
+  /** FIX13 R13-A-04: true when «id» was the LAST voice clip and it ended < ms ago (nothing else heard since) — a model sound right after the
+   *  same hint sound is shown (the card lights up) but not played a second time back-to-back */
+  I.justHeard = (id, ms) => { const v = I.lastVoice; return !!(v && v.id === id && v.end && performance.now() - v.end < (ms || 4000)); };
+  /** the ✗2 model: light the card + its sound, unless that exact sound was just heard (then light only) */
+  I.modelOn = async function (S, el, id, o) {
+    if (!I.justHeard(id)) return I.playOn(S, el, id, o);
+    if (el) el.classList.add('is-play');
+    try { await S.sleep(650); } finally { if (el) el.classList.remove('is-play'); }
+  };
   I.playOn = async function (S, el, id, o) {
     if (el) el.classList.add('is-play');
     try { await S.stim(id, o); } finally { if (el) el.classList.remove('is-play'); }

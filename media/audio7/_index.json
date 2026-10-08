@@ -934,11 +934,12 @@
   "checks": {
    "asr": "فا",
    "dur": 0.68,
-   "lufs": -17.4,
-   "tp": -1.9,
+   "lufs": -17.0,
+   "tp": -2.7,
    "max_closed_nasal_s": 0,
    "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
+   "nasal_run_resolution_s": 0.05,
+   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
   }
  },
  {
@@ -1056,8 +1057,9 @@
    "voiced_s": 0.25,
    "breath_after_s": 0.0,
    "dur": 0.39,
-   "lufs": -17.4,
-   "tp": -5.0
+   "lufs": -17.0,
+   "tp": -7.0,
+   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
   }
  },
  {
@@ -1118,8 +1120,8 @@
    "voiced_s": 0.28,
    "breath_after_s": 0.0,
    "dur": 0.42,
-   "lufs": -17.4,
-   "tp": -4.0,
+   "lufs": -17.0,
+   "tp": -5.7,
    "asr": "مي",
    "nasal_ms": 130,
    "i_ms": 150,
@@ -1127,7 +1129,8 @@
    "F2_hz": 3223,
    "note": "owner R3-6: bright full [i] like the start of «مي»; prompt «مِي» cut short (old take was lax «مِه», F1≈500)",
    "max_closed_nasal_s": 0,
-   "fix_round": "v8 2026-10-05"
+   "fix_round": "v8 2026-10-05",
+   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
   }
  },
  {
@@ -2647,8 +2650,9 @@
    "heard": "بكتب",
    "max_closed_nasal_s": 0,
    "dur": 0.84,
-   "lufs": -18.8,
-   "tp": -2.2
+   "lufs": -17.1,
+   "tp": -2.6,
+   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
   },
   "voice10": true
  },
@@ -4440,9 +4444,10 @@
    "heard": "اكتب",
    "max_closed_nasal_s": 0,
    "dur": 0.76,
-   "lufs": -18.8,
+   "lufs": -17.1,
    "tp": -2.2,
-   "verdict": "PASS"
+   "verdict": "PASS",
+   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
   },
   "voice10": true
  },
@@ -6584,10 +6589,11 @@
    "heard": "قصه",
    "max_closed_nasal_s": 0,
    "dur": 0.91,
-   "lufs": -17.4,
+   "lufs": -17.0,
    "tp": -3.8,
    "asr": "قصة",
-   "verdict": "PASS"
+   "verdict": "PASS",
+   "norm": "FIX13 2026-10-08: -17 LUFS (10x-loop integrated, decoded mp3), TP<=-1.5 (gain + 4x-oversampled limiter); no new TTS"
   },
   "voice10": true
  },

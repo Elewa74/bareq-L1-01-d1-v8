@@ -215,6 +215,8 @@
       if (V8) root.replaceChildren(h('div.e16-mv.is-v8', null, text, h('div.e16-row', null, card, slotsEl)), back);
       else root.replaceChildren(h('div.e16-mv', null, card, h('div.e16-side', null, text, slotsEl)), back);
       I.instr(S, m.line, 'family', async () => { if (busy) return; busy = true; await say(m.line, null, { talk: true }); busy = false; });
+      // FIX13 R13-A-09: the mission sentence is on the board (.e16-text) — the top bubble keeps only its replay speaker + icon, not a second copy
+      { const ins = ctx.frame && ctx.frame.querySelector('.elp-instr'); const t = ins && ins.querySelector('.elp-instr-t'); if (t) t.textContent = ''; const fn = ins && ins.querySelector('.elp-fn'); if (fn) fn.hidden = false; }
       (async () => { busy = true; await S.sleep(350); await S.say('bq7_E16_add', { talk: true }); busy = false; })();
     }
 
@@ -231,11 +233,16 @@
         if (!src) return;
         store.set(m.id, i, src); show(src); I.sfx('ok'); I.burst(root, el, 14); buddy.cheer();
         if (V8 && f8) { /* stars live only on the mission view */ }
-        if (filled(m) >= 3 && !finished) { finished = true; ctx.done(); (async () => { await S.sleep(500); await S.say('bq7_E16_bye', { talk: true }); })(); }
+        // FIX13 R13-A-08: the lesson's last element ends like the others — «إِلَى اللِّقَاءِ…» heard to its end, then the standard end card
+        // (lesson-complete state: no «التَّالِي», «أَعِدِ النَّشاطَ» + «عَنَاصِرُ الدَّرْسِ»)
+        if (filled(m) >= 3 && !finished) {
+          finished = true; busy = true; ctx.done();
+          (async () => { await S.sleep(500); await S.say('bq7_E16_bye', { talk: true }); await S.sleep(250); I.finish(S, { pose: 'cheer', title: 'أَحْسَنْتَ، أَنْهَيْتَ الدَّرْسَ.' /* DRAFT */ }); })();
+        }
       };
-      cam.addEventListener('click', () => { S.stop(); try { file.value = ''; file.click(); } catch (e) { /* */ } });
+      cam.addEventListener('click', () => { if (finished) return; S.stop(); try { file.value = ''; file.click(); } catch (e) { /* */ } });
       file.addEventListener('change', async () => { const f = file.files && file.files[0]; if (!f) return; put(await shrink(f)); });
-      pen.addEventListener('click', () => { S.stop(); drawPad((src) => put(src)); });
+      pen.addEventListener('click', () => { if (finished) return; S.stop(); drawPad((src) => put(src)); });
       el.append(cam, pen, file);
       show(store.get(m.id, i));
       return { el };

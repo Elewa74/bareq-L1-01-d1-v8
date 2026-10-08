@@ -679,7 +679,7 @@
           await wait(r, o.ms || BQ.silence(kind === 'say' ? 'say' : 'invite'));
           if (o.model) { await gate(r); lay.remove(); freeze(false); bedHold = false; syncBed(); await o.model(); return { picked }; }
         } else if (kind === 'phrase') {
-          lay.append(h('div.vp-banner', { lang: 'ar' }, o.text || 'سَمِعْتُ فَرْقاً!'));
+          lay.append(h('div.vp-banner', { lang: 'ar' }, o.text || 'سَمِعْتُ الْفَرْقَ.' /* FIX13 R13-B-06 (DRAFT) */));
           await wait(r, o.ms || BQ.silence('say'));
         }
         // v0-12 r3: لا طبقة «صوت واحد/مختلفان» بالرموز في مشغّل المشاهد أيضاً — يُكمل بلا سؤال.
@@ -772,7 +772,7 @@
     if (adultP && opt.strip !== false) {
       const strip = h('div.vp-strip');
       scenes.forEach((sc, i) => { const b = h('button', { type: 'button', onclick: () => goto(i), title: sc.title }, h('img', { src: SRC(sc.thumb || 'ROOM-M_r01'), alt: '' }), h('span', null, AR(i + 1) + ' · ' + (sc.title || ''))); stripBtns.push(b); strip.append(b); });
-      adultP.append(h('p', null, h('b', null, 'شريط المشاهد:'), ' المس مشهداً لإعادته.'), strip);
+      adultP.append(h('p', null, h('b', null, 'شريط المشاهد:'), ' اِخْتَر مَشْهَدًا لِإِعَادَتِهِ.' /* FIX13 R13-B-07 (DRAFT) */), strip);
       if (opt.adultExtra) adultP.append(opt.adultExtra);
     }
 
@@ -1159,7 +1159,7 @@
       if (adultP) {
         const strip = h('div.vp-strip');
         scenes.forEach((sc, i) => { const b = h('button', { type: 'button', onclick: () => goto(i), title: sc.title }, h('img', { src: SRC(sc.thumb || 'ROOM-M_r01'), alt: '' }), h('span', null, AR(i + 1) + ' · ' + (sc.title || ''))); stripBtns.push(b); strip.append(b); });
-        const p1 = h('p', null, h('b', null, 'شريط المشاهد:'), ' المس مشهداً لإعادته.');
+        const p1 = h('p', null, h('b', null, 'شريط المشاهد:'), ' اِخْتَر مَشْهَدًا لِإِعَادَتِهِ.' /* FIX13 R13-B-07 (DRAFT) */);
         adultP.append(p1, strip); adultNodes.push(p1, strip);
         if (o.adultExtra) { const x = o.adultExtra(); if (x) { adultP.append(x); adultNodes.push(x); } }
       }
@@ -1235,7 +1235,7 @@
           lay.append(h('div.vp-badge', { role: 'img', 'aria-label': c.kind === 'where' ? 'أَيْنَ؟' : c.kind === 'say' ? 'قُل' : 'ما؟', html: SV[c.kind] }));
           await wait(c.ms || BQ.silence(c.kind === 'say' ? 'say' : 'invite'));
         } else if (c.kind === 'phrase') {
-          lay.append(h('div.vp-banner', { lang: 'ar' }, c.text || 'سَمِعْتُ فَرْقاً!'));
+          lay.append(h('div.vp-banner', { lang: 'ar' }, c.text || 'سَمِعْتُ الْفَرْقَ.' /* FIX13 R13-B-06 (DRAFT) */));
           await wait(c.ms || BQ.silence('say'));
         }
         // v0-12 r3 (المالك: «المقطع مقطع» و«الرموز غير مفهومة»): وقفات judge/stop لا تعرض طبقة أسئلة ولا رموزاً — يُكمل المقطع؛ يوقفه المعلّم إن شاء.

@@ -297,6 +297,12 @@
         });
       } else BQ.shuffle(tilesData).forEach((d) => tray.append(dnd.tile(h('div.x7-in', { 'aria-label': 'قِطْعَةٌ', dataset: { slot: d.slot } }, h('span.x7-w', null, d.t)), d)));
       slotEls.forEach((z, i) => dnd.zone(z, { i }));
+      /* FIX13 R13-A-07 (automated QA only, like BQ.fb.qa → data-fbqa): each piece names the slot it belongs to (data-ans = slot index, «x» = distractor)
+         and each slot its own index — no class, style, label or behaviour change; absent unless window.BQ_QA */
+      if (window.BQ_QA) {
+        tray.querySelectorAll('[data-slot]').forEach((el) => { el.dataset.ans = +el.dataset.slot >= 0 ? String(el.dataset.slot) : 'x'; });
+        slotEls.forEach((z, i) => { z.dataset.ans = String(i); });
+      }
       await S.say(X.wordId(it.w), { stim: true });
       function place(t, z) {
         if (V8) {
