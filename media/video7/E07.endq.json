@@ -1,0 +1,104 @@
+[
+ {
+  "prompt": "bq7_E07_q1b",
+  "prompt_fb": "bq7_E11_s6_q1",
+  "prompt_text": "قَمِيص. حَدِّد حَرْفَ الْمِيمِ فِي الْكَلِمَةِ.",
+  "skill": "S6",
+  "img": "card_qamis",
+  "attempts": 2,
+  "word": "قَمِيص",
+  "parts": [
+   {
+    "id": "q",
+    "a": 0,
+    "b": 2
+   },
+   {
+    "id": "m",
+    "a": 2,
+    "b": 4,
+    "aria": "الْمِيمُ"
+   },
+   {
+    "id": "r",
+    "a": 4,
+    "b": 6
+   }
+  ],
+  "correct": "m",
+  "fb_yes": [
+   [
+    "bq7_G_yes2",
+    "bq7_G_pos_mid"
+   ],
+   [
+    "bq7_G_yes4",
+    "bq7_G_pos_mid"
+   ],
+   [
+    "bq7_G_yes1",
+    "bq7_G_pos_mid"
+   ],
+   [
+    "bq7_G_yes3",
+    "bq7_G_pos_mid"
+   ]
+  ],
+  "fb_retry": "bq7_G_try",
+  "fb_show": "bq7_G_model",
+  "model": "bq7_W_qamis",
+  "fb_end": "bq7_E11_fb_solve2",
+  "note": "CODE-14 P1-a 2026-10-09: «قَمِيص» replaces «قَمَر» (DRAFT)"
+ },
+ {
+  "prompt": "bq7_E07_q2",
+  "prompt_text": "مَوْز. أَيُّ شَكْلٍ لِلْمِيمِ هُنَا؟",
+  "skill": "S6",
+  "img": "card_mawz",
+  "attempts": 2,
+  "options": [
+   {
+    "id": "first",
+    "glyph": "مـ"
+   },
+   {
+    "id": "mid",
+    "glyph": "ـمـ"
+   },
+   {
+    "id": "last",
+    "glyph": "ـم"
+   }
+  ],
+  "correct": "first",
+  "fb_yes": [
+   [
+    "bq7_G_yes3",
+    "bq7_G_pos_first",
+    "bq7_W_mawz"
+   ],
+   [
+    "bq7_G_yes1",
+    "bq7_G_pos_first",
+    "bq7_W_mawz"
+   ],
+   [
+    "bq7_G_yes4",
+    "bq7_G_pos_first",
+    "bq7_W_mawz"
+   ],
+   [
+    "bq7_G_yes2",
+    "bq7_G_pos_first",
+    "bq7_W_mawz"
+   ]
+  ],
+  "fb_retry": "bq7_G_try",
+  "fb_show": "bq7_G_model",
+  "model": [
+   "bq7_G_pos_first",
+   "bq7_W_mawz"
+  ],
+  "fb_end": "bq7_E11_fb_solve2"
+ }
+]

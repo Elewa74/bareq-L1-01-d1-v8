@@ -27,10 +27,28 @@
     objects: [{ k: 'musht', box: [0.6269, 0.3358, 0.9825, 0.5811] },
       { k: 'miftah', box: [0.3869, 0.3137, 0.6381, 0.5974] },
       { k: 'mawz', box: [0.0169, 0.3248, 0.3525, 0.5926] },
-      { k: 'maktab', box: [0.6544, 0.658, 0.9844, 0.8979] },
-      { k: 'mizalla', box: [0.3256, 0.6297, 0.6569, 0.8953] },
+      { k: 'maktab', box: [0.6544, 0.658, 0.9844, 0.8979], extra: true }, // CODE-14 P3: not one of the 4 counted م pictures (2nd مَ)
+      { k: 'mizalla', box: [0.3256, 0.6297, 0.6569, 0.8953], extra: true }, // CODE-14 P3: not lesson vocabulary
       { k: 'manju', box: [0.0281, 0.6253, 0.3175, 0.901] }] }];
-  const MIN_OBJ = 2;        // done = the letter + ≥ 2 pictures (SCI-1)
+  /* CODE-14 · DECIDE_PEDAGOGY P3 (2026-10-09): the page becomes a real choice — 4 «م» pictures (one per vowel: مَوْز مُشْط مِفْتَاح مَانْجُو)
+     + 2 distractors «كُرَة» «بَطَّة» (role 'no': a colour tap does NOT fill → red ✗ 1 s + bq7_E15_no_<k>; the 2nd distractor tap → BQ.fb.solveL()
+     and the uncoloured م pictures glow). Done = the letter + ≥ 3 of the 4 م pictures. Until the ART team's new line art lands, the current
+     sheet stays (no distractor regions → that logic is inactive; مَكْتَب/مِظَلَّة still colour + say their name but do not count).
+     NEW ART CONTRACT (GPT edit of img8/color_page_m8_raw.png → `build.py <raw> musht kura mawz batta miftah manju --frame=260,138,1339,629`):
+       closed regions per cell — top row L→R: mawz · kura · musht ; bottom row L→R: manju · miftah · batta ; + the «م» frame (letter / hole / card points).
+       Object keys the code expects: mawz, musht, miftah, manju (role m) · kura, batta (role 'no'). Output file: media/img8/color_page_m9.webp.
+     Then paste build.py's boxes into PAGES_V9 below and set ART_V9 = true (QA preview now: ?e15v9=1 — only once the file exists). */
+  const ART_V9 = false;
+  const PAGES_V9 = [{ key: 'color_page_m9', src: 'media/img8/color_page_m9.webp', letter: [0.4656, 0.1445], hole: [0.5294, 0.1246], card: [0.1812, 0.0742],
+    objects: [{ k: 'musht', box: [0.6269, 0.3358, 0.9825, 0.5811] }, // provisional = today's cell boxes (replace with build.py output)
+      { k: 'kura', box: [0.3869, 0.3137, 0.6381, 0.5974], role: 'no' },
+      { k: 'mawz', box: [0.0169, 0.3248, 0.3525, 0.5926] },
+      { k: 'batta', box: [0.6544, 0.658, 0.9844, 0.8979], role: 'no' },
+      { k: 'miftah', box: [0.3256, 0.6297, 0.6569, 0.8953] },
+      { k: 'manju', box: [0.0281, 0.6253, 0.3175, 0.901] }] }];
+  if (ART_V9 || /[?&]e15v9=1/.test(location.search)) PAGES.splice(0, PAGES.length, ...PAGES_V9);
+  const MIN_OBJ = 3;        // CODE-14 P3: done = the letter + ≥ 3 of the 4 «م» pictures (was ≥ 2 of 6)
+  const isTarget = (o) => !!o && o.role !== 'no' && !o.extra;
   const BG_MAX = 0.22;      // منطقة أكبر من هذا (نسبة من الصفحة) = خلفية/بطاقة، لا تُلوَّن
   const PW = 760; // دقّة المعالجة (العرض بالبكسل)
 
@@ -90,6 +108,10 @@
 .e15-fin[hidden] { display: flex !important; visibility: hidden; }
 .e15-finbtn { min-height: 64px; min-width: 64px; }
 .e15-dot.is-no { background: transparent !important; border: 3px solid rgba(11,45,79,.35); }
+.e15-x { position: absolute; z-index: 4; width: 44px; height: 44px; margin: -22px 0 0 -22px; pointer-events: none; animation: e15X 1s ease-out forwards; }
+.e15-x svg { width: 100%; height: 100%; display: block; }
+@keyframes e15X { 0% { transform: scale(.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+.e15-glow { position: absolute; z-index: 3; border-radius: 18px; pointer-events: none; box-shadow: 0 0 0 4px #FFC21A, 0 0 22px 6px rgba(255,194,26,.75); animation: e15Glow 1.4s ease-in-out 3; }
 .x7p.e15 .e15-finbtn { flex-direction: column; justify-content: center; gap: calc(var(--u)*4); min-width: max(64px, calc(var(--u)*132)); min-height: max(64px, calc(var(--u)*132));
   padding: calc(var(--u)*12) calc(var(--u)*16) calc(var(--u)*20); border-radius: calc(var(--u)*34); font: 700 max(20px, calc(var(--u)*30))/1.6 var(--font-ui); }
 .x7p.e15 .e15-finbtn .bq8-ic { font-size: max(40px, calc(var(--u)*62)); margin: 0; }
@@ -282,6 +304,8 @@
         page.append(no); setTimeout(() => no.remove(), 600);
         return;
       }
+      { const oi0 = st.objOf[r], o0 = oi0 >= 0 ? st.objs[oi0] : null;
+        if (o0 && o0.role === 'no') { noTap(st, o0, e); return; } } // CODE-14 P3: a distractor never fills
       const col = COLORS[cur];
       if (st.fills.get(r) === col) return;
       st.undo.push({ r, prev: st.fills.get(r) || null });
@@ -302,9 +326,31 @@
         st.reminded = true; Promise.resolve(talk).then(() => { X.anim(page, 'fx7-pop', 400); return S.say('bq7_E15_intro8'); });
       }
     }
-    /** pictures with at least one coloured region */
-    const objCount = (st) => { const s = new Set(); st.fills.forEach((c, r) => { const oi = st.objOf ? st.objOf[r] : -1; if (oi >= 0) s.add(oi); }); return s.size; };
-    const enough = (st) => !!st && (st.fallback || ((st.letter < 0 || st.fills.has(st.letter)) && objCount(st) >= Math.min(MIN_OBJ, (st.objs || []).length)));
+    /** «م» pictures (role m, not extra) with at least one coloured region */
+    const objCount = (st) => { const s = new Set(); st.fills.forEach((c, r) => { const oi = st.objOf ? st.objOf[r] : -1; if (oi >= 0 && isTarget(st.objs[oi])) s.add(oi); }); return s.size; };
+    const enough = (st) => !!st && (st.fallback || ((st.letter < 0 || st.fills.has(st.letter)) && objCount(st) >= Math.min(MIN_OBJ, (st.objs || []).filter(isTarget).length)));
+    /* CODE-14 P3: distractor tap — small red ✗ for 1 s + its whole-take line (until recorded: its word only); ✗2 → Bariq's solve line + glow */
+    const MARK_NO = '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#E53935" stroke="#fff" stroke-width="4"/><path d="M16 16l16 16M32 16 16 32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>';
+    let noN = 0, noBusy = false;
+    async function noTap(st, o, e) {
+      const m = h('span.e15-x', { 'aria-hidden': 'true', html: MARK_NO, style: { left: px(e) + '%', top: py(e) + '%' } });
+      page.append(m); setTimeout(() => m.remove(), 1000);
+      if (noBusy) return; noBusy = true; noN++; buddy.mood('think', 1400);
+      try {
+        const line = 'bq7_E15_no_' + o.k;
+        await S.say((BQ.hasAudio && BQ.hasAudio(line)) || !BQ.hasAudio ? line : X.wordId(o.k));
+        if (noN === 2) { await S.say(BQ.fb && BQ.fb.solveL ? BQ.fb.solveL() : 'bq7_E11_fb_solve1'); glowLeft(st); }
+      } finally { noBusy = false; }
+    }
+    function glowLeft(st) { // the «م» pictures not coloured yet glow (rings on their boxes, in page %)
+      const done = new Set(); st.fills.forEach((c, r) => { const oi = st.objOf[r]; if (oi >= 0) done.add(oi); });
+      const pr = page.getBoundingClientRect(), cr = st.cv.getBoundingClientRect(); if (!pr.width || !cr.width) return;
+      st.objs.forEach((o, i) => { if (!isTarget(o) || done.has(i)) return;
+        const L = (cr.left - pr.left + o.box[0] * cr.width) / pr.width * 100, T = (cr.top - pr.top + o.box[1] * cr.height) / pr.height * 100;
+        const W = (o.box[2] - o.box[0]) * cr.width / pr.width * 100, H = (o.box[3] - o.box[1]) * cr.height / pr.height * 100;
+        const g = h('span.e15-glow', { 'aria-hidden': 'true', style: { left: L + '%', top: T + '%', width: W + '%', height: H + '%' } });
+        page.append(g); setTimeout(() => g.remove(), 4200); });
+    }
     function glowOther() { /* one page only (SCI-1) */ }
     async function becomeReady() {
       if (ready) return;
@@ -365,8 +411,8 @@
       const b1 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => X.print(PAGES.map((p, i) => ({ img: srcOf(i) })), { title: 'لوّن — صوت الميم' }) }, 'اطبع صفحة التلوين (A4)');
       const b2 = h('button', { type: 'button', class: 'bq-btn ghost', onclick: () => { const pgs = state.filter((st) => st && !st.fallback).map((st) => ({ img: st.cv.toDataURL('image/png') })); if (pgs.length) X.print(pgs, { title: 'تلوين الطفل' }); } }, 'اطبع ما لوّنه الطفل');
       X.note(ctx, h('div', null,
-        h('div', { html: '<p><b>ما يجري:</b> «لَوِّن حَرْفَ المِيمِ، وَلَوِّنِ الصُّوَرَ الَّتي فيها صَوْتُ المِيمِ». صفحة واحدة: «م» بشكلها الصحيح (رأس مستدير مفرَّغ وذيل) في إطار، وستّ صور أشياء تبدأ بصوت الميم (مُشط، مِفتاح، مَوز، مَكتب، مِظلّة، مانجو). يختار الطفل لوناً ثم يلمس منطقة فتتلوّن، وأوّل تلوين لكلّ صورة يُسمِع اسمها. «تراجع» يلغي آخر تلوين. خلفية الصفحة لا تتلوّن. حين يلوّن الحرف وصورتين على الأقلّ يظهر «التّالي» ويُسجَّل النشاط منجزاً، ويمكنه أن يكمل التلوين.</p>' +
-          '<p><b>اسأله أثناء التلوين:</b> «ما هذا؟ أين الميم في اسمه؟» — دون ضغط؛ هذا نشاط تعزيز غير مسجَّل.</p>' }),
+        h('div', { html: '<p><b>ما يجري:</b> «لَوِّن حَرْفَ المِيمِ، وَلَوِّنِ الصُّوَرَ الَّتي فيها صَوْتُ المِيمِ». صفحة واحدة: «م» بشكلها الصحيح (رأس مستدير مفرَّغ وذيل) في إطار، وستّ صور أشياء تبدأ بصوت الميم (مُشط، مِفتاح، مَوز، مَكتب، مِظلّة، مانجو). يختار الطفل لوناً ثم يلمس منطقة فتتلوّن، وأوّل تلوين لكلّ صورة يُسمِع اسمها. «تراجع» يلغي آخر تلوين. خلفية الصفحة لا تتلوّن. حين يلوّن الحرف وثلاثاً على الأقلّ من صور الميم الأربع (مَوز، مُشط، مِفتاح، مانجو) يظهر «التّالي» ويُسجَّل النشاط منجزاً، ويمكنه أن يكمل التلوين.</p>' +
+          (ART_V9 || /[?&]e15v9=1/.test(location.search) ? '<p><b>صورتان بلا ميم:</b> كُرة وبَطّة — إن لمسهما الطفل بلون لا تتلوّنان، ويظهر ✗ ويقول بارق «… لَيْسَ فِيهَا صَوْتُ الْمِيمِ».</p>' : '') + '<p><b>اسأله أثناء التلوين:</b> «ما هذا؟ أين الميم في اسمه؟» — دون ضغط؛ هذا نشاط تعزيز غير مسجَّل.</p>' }),
         h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } }, b1, b2)));
     }
   }

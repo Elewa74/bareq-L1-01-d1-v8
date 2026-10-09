@@ -108,6 +108,7 @@
     if (!document.getElementById('st-e03')) document.head.append(h('style', { id: 'st-e03' }, CSS));
     if (!document.getElementById('st-e03-8')) document.head.append(h('style', { id: 'st-e03-8' }, CSS8));
     const S = I.session(ctx, { noText: true });
+    if (BQ.splitWarm) BQ.splitWarm(['bq7_E03_l2_intro']); // CODE-14 D3
     const V8 = I.v8();
     I.lines({
       bq7_E03_l1_s1: 'اِسْتَمِع، وَحَدِّد كُلَّ كَلِمَةٍ فيها صَوْتُنا: مَ… مِ… مُ.',
@@ -248,11 +249,15 @@
       } else field.replaceChildren(sky);
       // R1-6: سطر «الآنَ أَصْواتٌ قَصيرَةٌ» المسجَّل لا يصدق على جولة ما/با — في الجولة الطويلة تُعاد «اِسْمَعْ، ثُمَّ اخْتَرْ.»
       const longR = yes.length > 2;
-      const introId = longR ? 'bq7_G_listen_choose' : 'bq7_E03_l2_s1';
-      I.instr(S, introId, 'hand', async () => { if (busy) return; busy = true; await S.say(introId); await playAll(); busy = false; });
+      // CODE-14 D3: when the whole-take carrier of bq7_E03_l2_intro is live → the sentence, then the drill «مَ – مِ – مُ» on its own chip strip
+      // (not on the bubbles: lighting a bubble would point at an answer); until then the whole take bq7_E03_l2_s1 stays (no composite)
+      const split = !longR && await BQ.splitReady('bq7_E03_l2_intro');
+      const introId = longR ? 'bq7_G_listen_choose' : split ? 'bq7_E03_l2_intro' : 'bq7_E03_l2_s1';
+      const sayIntro = () => (split ? BQ.sayDrill(S, introId, null) : S.say(introId));
+      I.instr(S, introId, 'hand', async () => { if (busy) return; busy = true; await sayIntro(); await playAll(); busy = false; });
       steps.cur(ri);
       await S.sleep(500);
-      if (r === 0) await S.say('bq7_E03_l2_s1');
+      if (r === 0) await sayIntro();
       else if (longR) await S.say('bq7_G_listen_choose');
       await playAll();
       let first = null;
@@ -309,7 +314,7 @@
       if (!onlyL1) for (let r = 0; r < L2.length; r++) await sylRound(L2[r], r);
       const okN = log.filter((x) => x[1]).length;
       I.note(S, (ctx.review ? '<p><b>مراجعة موجّهة (' + ctx.review.skill + ')</b> — ' + (onlyL1 ? 'المستوى ١ (كلمات)' : startL2 ? 'المستوى ٢ (مقاطع)' : 'النشاط كاملاً') + '.</p>' : '') +
-        '<p><b>نتيجة «اِستمع وميّز»:</b> ' + I.AR(okN) + ' من ' + I.AR(log.length) + ' من المحاولة الأولى (مؤشّر للمعلّم: ٥ من ٦ — جولتا الكلمات تُحسبان ناجحتين إذا لُمست كلّ الصحيحة قبل أيّ مشتّت).</p><ul>' +
+        '<p><b>نتيجة «استمع وميّز»:</b> ' + I.AR(okN) + ' من ' + I.AR(log.length) + ' من المحاولة الأولى (مؤشّر للمعلّم: ٥ من ٦ — جولتا الكلمات تُحسبان ناجحتين إذا لُمست كلّ الصحيحة قبل أيّ مشتّت).</p><ul>' +
         log.map((x) => '<li>' + x[0] + ' — ' + (x[1] ? 'من الأولى' : 'بعد تلميح/نموذج') + '</li>').join('') + '</ul>' +
         '<p>إن تكرّر لمس «باب» أو «بَ»: قولا «مَ… بَ» متتاليتين، والمسا الأنف معاً — في /م/ يهتزّ الأنف، وفي /ب/ لا يهتزّ.</p>' +
         (longSet.length < 3 ? '<p>الجولة «ما / با» بخيارين مؤقّتاً حتى يُسجَّل «فا» أو «نا».</p>' : ''));

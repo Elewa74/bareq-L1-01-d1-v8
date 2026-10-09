@@ -1,0 +1,102 @@
+[
+ {
+  "prompt": [
+   "bq7_E13_q_intro",
+   "bq7_E13_q_musht"
+  ],
+  "prompt_text": "بِمَاذَا سَرَّحَ مَاجِدٌ شَعْرَهُ؟",
+  "skill": "S9",
+  "shuffle": true,
+  "options": [
+   {
+    "id": "musht",
+    "img": "card_musht",
+    "aria": "مُشْط"
+   },
+   {
+    "id": "qalam",
+    "img": "card_qalam",
+    "aria": "قَلَم"
+   },
+   {
+    "id": "kura",
+    "img": "card_kura",
+    "aria": "كُرَة"
+   }
+  ],
+  "correct": "musht",
+  "fb_yes": [
+   "bq7_G_yes3",
+   "bq7_W_musht"
+  ],
+  "fb_retry": "bq7_G_try",
+  "fb_glow": "bq7_G_look_light",
+  "fb_show": "bq7_G_model",
+  "model": "bq7_W_musht",
+  "note": "CODE-14 P1-f 2026-10-09: morning event (story order q1), replaces the moon question (DRAFT)"
+ },
+ {
+  "prompt": "bq7_E13_q1",
+  "prompt_text": "مَاذَا رَأَى مَاجِدٌ عِنْدَ الْبُحَيْرَةِ؟",
+  "skill": "S9",
+  "shuffle": true,
+  "options": [
+   {
+    "id": "timsah",
+    "img": "card_timsah",
+    "aria": "تِمْسَاح"
+   },
+   {
+    "id": "numur",
+    "img": "card_numur",
+    "aria": "نُمُور"
+   },
+   {
+    "id": "fil",
+    "img": "card_fil",
+    "aria": "فِيل"
+   }
+  ],
+  "correct": "timsah",
+  "fb_yes": [
+   "bq7_G_yes1",
+   "bq7_W_timsah"
+  ],
+  "fb_retry": "bq7_G_try",
+  "fb_glow": "bq7_G_look_light",
+  "fb_show": "bq7_G_model",
+  "model": "bq7_W_timsah"
+ },
+ {
+  "prompt": "bq7_E13_q2",
+  "prompt_text": "مَاذَا أَكَلَ الْأَصْدِقَاءُ؟",
+  "skill": "S9",
+  "shuffle": true,
+  "options": [
+   {
+    "id": "manju",
+    "img": "card_manju",
+    "aria": "مَانْجُو"
+   },
+   {
+    "id": "qalam",
+    "img": "card_qalam",
+    "aria": "قَلَم"
+   },
+   {
+    "id": "timsah",
+    "img": "card_timsah",
+    "aria": "تِمْسَاح"
+   }
+  ],
+  "correct": "manju",
+  "fb_yes": [
+   "bq7_G_yes2",
+   "bq7_W_manju"
+  ],
+  "fb_retry": "bq7_G_try",
+  "fb_glow": "bq7_G_look_light",
+  "fb_show": "bq7_G_model",
+  "model": "bq7_W_manju"
+ }
+]

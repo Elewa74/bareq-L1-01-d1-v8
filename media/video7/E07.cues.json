@@ -133,10 +133,10 @@
  "endq": {
   "t": 67.353,
   "lines": [
-   "bq7_E07_q1",
+   "bq7_E07_q1b",
    "bq7_E07_q2"
   ],
-  "note": "platform end questions (SPEC): q1 قَمَر — touch the م · q2 ـوْز — which form"
+  "note": "platform end questions (SPEC): q1 قَمِيص — touch the م · q2 ـوْز — which form"
  },
  "endq_note": "the platform shows the interactive end-question card after the video (media/video7/E07.endq.json or element data)",
  "forms": [

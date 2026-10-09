@@ -147,7 +147,8 @@
     async function hear(o, b) { b.classList.add('is-hear'); await say(o.audio); b.classList.remove('is-hear'); }
     async function intro() {
       if (over) return;
-      await say(q.prompt);
+      // CODE-14: prompt_fb = an existing whole take with the same sentence, used until the new prompt is recorded (E07 q1b ← bq7_E11_s6_q1)
+      await say(q.prompt_fb ? [].concat(q.prompt).map((id) => (BQ.hasAudio(id) ? id : q.prompt_fb)) : q.prompt);
       if (q.pre && opts.some((o) => o.audio)) await say(q.pre);
       for (const [i, o] of opts.entries()) { if (!alive() || over) break; if (o.audio) { await BQ.sleep(250); await hear(o, picks[i]); } }
     }

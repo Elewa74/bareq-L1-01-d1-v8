@@ -329,6 +329,7 @@
     X.ICON.next = NEXT_SVG;
     X.ICON.near = '<svg viewBox="0 0 48 48"><path d="M24 4l5.6 12.3 13.4 1.4-10 9 2.9 13.2L24 33.2 12.1 39.9 15 26.7l-10-9 13.4-1.4z" fill="#FFF6C4" stroke="#C98F00" stroke-width="2" stroke-linejoin="round"/><path d="M24 4l5.6 12.3 13.4 1.4-10 9 2.9 13.2L24 33.2z" fill="#FEBA02"/></svg>';
     const S = X.session(ctx);
+    if (BQ.splitWarm) BQ.splitWarm(['bq7_E11_s1_q']); // CODE-14 D3
     // FIX12 R12-02: ear buttons ≥ 64 VISUAL px on the scaled v8 stage (same rule as the video buttons, C-16)
     const earSz = () => { const sc = BQ.fixedStage && BQ.fixedStage() && BQ.stageScale ? BQ.stageScale() : 1; stage.style.setProperty('--e11-ear', Math.max(64, Math.ceil(66 / (sc || 1))) + 'px'); };
     earSz(); window.addEventListener('resize', earSz); ctx.onCleanup(() => { window.removeEventListener('resize', earSz); stage.style.removeProperty('--e11-ear'); });
@@ -447,7 +448,7 @@
           paintDots(k);
           const it = ITEMS[s][i];
           // الاسم يُقرن بصوته بعد بنود S2 وS5 (لا تلقين لجوابهما — R1b N5): قبل أوّل بند من S6
-          if (s === 'S6' && i === 0) await S.say(X.NAME_SOUND);
+          if (s === 'S6' && i === 0) await X.sayNameSound(S); // CODE-14 D3
           if (it.type === 'say') { await sayItem(it); res[k++] = null; continue; }
           const r = await runItem(it, 'neutral', k === 0 ? { lead: 'bq7_E11_intro' } : null);
           log[s].items.push(r.ok);
@@ -572,8 +573,11 @@
       if (window.BQ_QA) wrapOpts.dataset.ck = ck; // للاختبار الآليّ فقط
       // السؤال + المثير + إسماع الخيارات بالترتيب (كلّ خيار يضيء)
       let asking = null, busy = false;
+      // CODE-14 D3: S1 items 1–2 / practice / retest — once the whole-take carrier bq7_E11_s1_q is live: sentence → drill «مَ – مِ – مُ» →
+      // bq7_E11_s1_lc «اِسْتَمِعْ، ثُمَّ اخْتَرْ.»; until then the current composite bq7_E11_s1_q8 stays (nothing heard twice)
+      const qid = (it.q === 'bq7_E11_s1_q8' && BQ.splitReady && await BQ.splitReady('bq7_E11_s1_q')) ? 'bq7_E11_s1_q' : it.q;
       const ask = async () => {
-        if (it.q) await S.say(it.q);
+        if (it.q) await (qid !== it.q ? BQ.sayDrill(S, qid, null) : S.say(it.q));
         if (it.type === 'tapword' && it.say) await S.say(X.wordId(it.word), { stim: true });
         if (it.stim) await S.say(it.stim, { stim: true });
         if (it.announce || it.type === 'brq') for (const b of btns) { b.classList.add('is-play'); if (b._face) b._face.brq('talk'); await S.say(audioOf(it, b.dataset.k), { stim: true }); if (b._face) b._face.brq('idle'); b.classList.remove('is-play'); await S.sleep(180); }
@@ -581,7 +585,7 @@
       wrapOpts.classList.add('is-locked');
       // owner E11_g: «وَالآنَ، وَحْدَكَ.» is said WITH the retest item on the board (never an empty board)
       if (o.lead) { ctx.instruction(X.text(o.lead), o.lead, { icon: 'ear' }); asking = S.say(o.lead); await asking; asking = null; }
-      ctx.instruction(qText(it.q), it.q, { icon: it.type === 'read' ? 'eye' : 'ear' });
+      ctx.instruction(qText(qid), qid, { icon: it.type === 'read' ? 'eye' : 'ear' });
       ctx.onReplay(() => { if (!asking && !busy) asking = ask().finally(() => { asking = null; }); });
       asking = ask(); await asking; asking = null;
       // v8: the first time each kind of item appears, a small hand shows «listen again here · then touch one» (no answer shown)

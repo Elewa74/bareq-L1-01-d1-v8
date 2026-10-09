@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261009001550",
+"build": "261009025859",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -231,12 +231,13 @@ window.BQ_DATA={
 "owner": "VIDEO",
 "endq": [
 {
-"prompt": "bq7_E07_q1",
-"prompt_text": "قَمَر. اِلْمِس حَرْفَ الْمِيمِ فِي الْكَلِمَةِ.",
+"prompt": "bq7_E07_q1b",
+"prompt_fb": "bq7_E11_s6_q1",
+"prompt_text": "قَمِيص. حَدِّد حَرْفَ الْمِيمِ فِي الْكَلِمَةِ.",
 "skill": "S6",
-"img": "card_qamar",
+"img": "card_qamis",
 "attempts": 2,
-"word": "قَمَر",
+"word": "قَمِيص",
 "parts": [
 {
 "id": "q",
@@ -252,7 +253,7 @@ window.BQ_DATA={
 {
 "id": "r",
 "a": 4,
-"b": 5
+"b": 6
 }
 ],
 "correct": "m",
@@ -276,8 +277,9 @@ window.BQ_DATA={
 ],
 "fb_retry": "bq7_G_try",
 "fb_show": "bq7_G_model",
-"model": "bq7_G_pos_mid",
-"fb_end": "bq7_E11_fb_solve2"
+"model": "bq7_W_qamis",
+"fb_end": "bq7_E11_fb_solve2",
+"note": "CODE-14 P1-a 2026-10-09: «قَمِيص» replaces «قَمَر» (DRAFT)"
 },
 {
 "prompt": "bq7_E07_q2",
@@ -527,8 +529,41 @@ window.BQ_DATA={
 {
 "prompt": [
 "bq7_E13_q_intro",
-"bq7_E13_q1"
+"bq7_E13_q_musht"
 ],
+"prompt_text": "بِمَاذَا سَرَّحَ مَاجِدٌ شَعْرَهُ؟",
+"skill": "S9",
+"shuffle": true,
+"options": [
+{
+"id": "musht",
+"img": "card_musht",
+"aria": "مُشْط"
+},
+{
+"id": "qalam",
+"img": "card_qalam",
+"aria": "قَلَم"
+},
+{
+"id": "kura",
+"img": "card_kura",
+"aria": "كُرَة"
+}
+],
+"correct": "musht",
+"fb_yes": [
+"bq7_G_yes3",
+"bq7_W_musht"
+],
+"fb_retry": "bq7_G_try",
+"fb_glow": "bq7_G_look_light",
+"fb_show": "bq7_G_model",
+"model": "bq7_W_musht",
+"note": "CODE-14 P1-f 2026-10-09: morning event (story order q1), replaces the moon question (DRAFT)"
+},
+{
+"prompt": "bq7_E13_q1",
 "prompt_text": "مَاذَا رَأَى مَاجِدٌ عِنْدَ الْبُحَيْرَةِ؟",
 "skill": "S9",
 "shuffle": true,
@@ -590,38 +625,6 @@ window.BQ_DATA={
 "fb_glow": "bq7_G_look_light",
 "fb_show": "bq7_G_model",
 "model": "bq7_W_manju"
-},
-{
-"prompt": "bq7_E13_q3",
-"prompt_text": "ماذا ظَهَرَ في السَّمَاءِ في المَساءِ؟",
-"skill": "S9",
-"shuffle": true,
-"options": [
-{
-"id": "qamar",
-"img": "card_qamar",
-"aria": "قَمَر"
-},
-{
-"id": "numur",
-"img": "card_numur",
-"aria": "نُمُور"
-},
-{
-"id": "qalam",
-"img": "card_qalam",
-"aria": "قَلَم"
-}
-],
-"correct": "qamar",
-"fb_yes": [
-"bq7_G_yes3",
-"bq7_W_qamar"
-],
-"fb_retry": "bq7_G_try",
-"fb_glow": "bq7_G_look_light",
-"fb_show": "bq7_G_model",
-"model": "bq7_W_qamar"
 }
 ],
 "menu": 13,
@@ -2413,7 +2416,7 @@ window.BQ_DATA={
 "sp": "حبيبة",
 "t": "الْآنَ نَسْتَمِعُ إِلَى أَصْوَاتٍ. اِخْتَرِ الْفُقَّاعَةَ الَّتِي فِيهَا صَوْتُنَا: مَ – مِ – مُ.",
 "tag": "[clearly]",
-"use": "E03 level 2 instruction (syllable bubbles) · SCI-1 2026-10-07: اسمع→استمع · المس→اختر · broaden (composed) · RE-RECORDED"
+"use": "E03 level 2 instruction (syllable bubbles) · SCI-1 2026-10-07: اسمع→استمع · المس→اختر · broaden (composed) · RE-RECORDED · D3 SPLIT 2026-10-09: carrier takes/c_E03l2__1 + drill bq7_S_ma/mi/mu (until live, E03 keeps bq7_E03_l2_s1)"
 },
 "bq7_E03_hint": {
 "sp": "حبيبة",
@@ -2729,15 +2732,33 @@ window.BQ_DATA={
 },
 "bq7_E06_brq_wow": {
 "sp": "بارق",
-"t": "حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.",
+"t": "حَرْفُ الْمِيمِ. وَهَذَا صَوْتُهُ: مَ – مِ – مُ.",
 "tag": "[excited]",
-"use": "E06 step 2 reaction (name always followed by sound) · SCI-1 2026-10-07: broaden مَ → مَ – مِ – مُ (composed BRQ) · RE-RECORDED"
+"use": "E06 name→sound (D3 SPLIT 2026-10-09): ONE B2 take «حَرْفُ الْمِيمِ. وَهَذَا صَوْتُهُ.» + B2 drill bq7_SB_ma/mi/mu (display without «.»); code keeps the composite until the carrier is live · DRAFT"
+},
+"bq7_SB_ma": {
+"sp": "بارق",
+"t": "مَ",
+"tag": "[clearly, short]",
+"use": "D3 B2 drill syllable (segment of takes/gb_mshort__2, edge cut, −17 LUFS) · after bq7_E06_brq_wow"
+},
+"bq7_SB_mi": {
+"sp": "بارق",
+"t": "مِ",
+"tag": "[clearly, short]",
+"use": "D3 B2 drill syllable (segment of takes/gb_mshort__2, edge cut, −17 LUFS) · after bq7_E06_brq_wow"
+},
+"bq7_SB_mu": {
+"sp": "بارق",
+"t": "مُ",
+"tag": "[clearly, short]",
+"use": "D3 B2 drill syllable (segment of takes/gb_mshort__2, edge cut, −17 LUFS) · after bq7_E06_brq_wow"
 },
 "bq7_E06_vowels": {
 "sp": "حبيبة",
 "t": "الْمِيمُ مَعَ الْحَرَكَاتِ: مَ… مِ… مُ.",
 "tag": "[clearly]",
-"use": "E06 step 3 (written مَ مِ مُ appear)"
+"use": "E06 step 3 (written مَ مِ مُ appear) · D3 SPLIT 2026-10-09: carrier takes/c_E06vow__1 + drill bq7_S_ma/mi/mu"
 },
 "bq7_E06_tap_vowels": {
 "sp": "حبيبة",
@@ -2834,6 +2855,12 @@ window.BQ_DATA={
 "t": "قَمَر. حَدِّد حَرْفَ الْمِيمِ فِي الْكَلِمَةِ.",
 "tag": "[clearly]",
 "use": "E07 end question 1 (interactive) · SCI-1 2026-10-07: المس→حدد (composed: old «قَمَر.» + new tail) · RE-RECORDED"
+},
+"bq7_E07_q1b": {
+"sp": "حبيبة",
+"t": "قَمِيص. حَدِّد حَرْفَ الْمِيمِ فِي الْكَلِمَةِ.",
+"tag": "[clearly]",
+"use": "E07 end question 1 (P1-a: replaces bq7_E07_q1 «قَمَر») · HAB F3 ONE take · until recorded the code plays bq7_E11_s6_q1 (same sentence, whole take) · DRAFT"
 },
 "bq7_E07_q2": {
 "sp": "حبيبة",
@@ -3067,13 +3094,13 @@ window.BQ_DATA={
 "sp": "حبيبة",
 "t": "اِخْتَر شَيْئًا كَبِيرًا يَبْدَأُ بِصَوْتِ الْمِيمِ.",
 "tag": "[clearly]",
-"use": "E10 C — last decision in the desk shot (مَكْتَب vs كِتَاب); TTS whole line (eleven_v4) · WORDING 2026-10-06 (DECISIONS_v7 D-E10c-W): «بِصَوْتِ الْمِيمِ» not «بِصَوْتِ: مَ» · DRAFT · SCI-1 2026-10-07 (T4): full tashkeel, no «.»; RE-RECORDED (eleven_v4) — «اِخْتَر» not «اِلْمِس» / task lists مَ – مِ – مُ"
+"use": "E10 C — last decision in the desk shot (مَكْتَب vs كِتَاب); TTS whole line (eleven_v4) · WORDING 2026-10-06 (DECISIONS_v7 D-E10c-W): «بِصَوْتِ الْمِيمِ» not «بِصَوْتِ: مَ» · DRAFT · SCI-1 2026-10-07 (T4): full tashkeel, no «.»; RE-RECORDED (eleven_v4) — «اِخْتَر» not «اِلْمِس» / task lists مَ – مِ – مُ · P4-C2 2026-10-09: no longer used by the g9 game (final desk choice cut); file kept"
 },
 "bq7_E10c_desk_ok": {
 "sp": "بارق",
 "t": "نَضَعُ الْحَقِيبَةَ عَلَى الْمَكْتَبِ لِلصَّبَاحِ.",
 "tag": "[cheerful]",
-"use": "E10 C — after مَكْتَب is found: the backpack goes onto the desk · DRAFT · SCI-1 2026-10-07 (T4): full tashkeel, no «.»; audio unchanged (same words)"
+"use": "E10 C — after مَكْتَب is found: the backpack goes onto the desk · DRAFT · SCI-1 2026-10-07 (T4): full tashkeel, no «.»; audio unchanged (same words) · P4-C2 2026-10-09: no longer used by the g9 game (final desk choice cut); file kept"
 },
 "bq7_E10c_l2_intro": {
 "sp": "بارق",
@@ -3083,9 +3110,9 @@ window.BQ_DATA={
 },
 "bq7_E10c_box_open": {
 "sp": "بارق",
-"t": "اِنْفَتَحَ الصُّنْدُوقُ. اُنْظُر إِلَى النُّجُومِ.",
+"t": "اِنْفَتَحَ الصُّنْدُوقُ. اُنْظُر إِلَى وِسَامِ الْمِيمِ.",
 "tag": "[amazed, delighted]",
-"use": "E10 C — box opens, star night-light shines on the ceiling · DRAFT · SCI-1 2026-10-07 (T4): full tashkeel, no «!»; audio unchanged (same words)"
+"use": "E10 C — box opens, star night-light shines on the ceiling · DRAFT · SCI-1 2026-10-07 (T4): full tashkeel, no «.»; audio unchanged (same words) · P6-3 2026-10-09: text «وِسَامِ الْمِيمِ» approved; BRQ B2 re-take ONE take (VOICE-14) · DRAFT"
 },
 "bq7_E10c_win_maj": {
 "sp": "ماجد",
@@ -3127,7 +3154,7 @@ window.BQ_DATA={
 "sp": "بارق",
 "t": "مَكْتَب… يَبْدَأُ بِـ مَ",
 "tag": "[cheerful]",
-"use": "E10 C — Bariq names the found thing's OWN first syllable (SCI-1 2026-10-07: مِفْتَاح→مِ, مُشْط→مُ, مَوْز/مَكْتَب→مَ, مَانْجُو→مَا); found مَكْتَب; also level 2 not used; COMPOSED: BRQ word + BRQ carrier «يَبْدَأُ بِـ» + approved BRQ syllable (carriers/brq_*) · DRAFT"
+"use": "E10 C — Bariq names the found thing's OWN first syllable (SCI-1 2026-10-07: مِفْتَاح→مِ, مُشْط→مُ, مَوْز/مَكْتَب→مَ, مَانْجُو→مَا); found مَكْتَب; also level 2 not used; COMPOSED: BRQ word + BRQ carrier «يَبْدَأُ بِـ» + approved BRQ syllable (carriers/brq_*) · DRAFT · P4-C2 2026-10-09: no longer used by the g9 game (final desk choice cut); file kept"
 },
 "bq7_E11_intro": {
 "sp": "بارق",
@@ -3215,9 +3242,15 @@ window.BQ_DATA={
 },
 "bq7_E11_s1_q": {
 "sp": "حبيبة",
-"t": "أَيُّ كَلِمَةٍ فِيهَا صَوْتُ (مَ – مِ – مُ)؟ اِسْتَمِع، ثُمَّ اخْتَر.",
+"t": "أَيُّ كَلِمَةٍ فِيهَا صَوْتُ الْمِيمِ (مَ – مِ – مُ)؟ اِسْتَمِع، ثُمَّ اخْتَر.",
+"tag": "[calm, warm, slowly, gentle teacher, clear pause after each phrase]",
+"use": "E11 S1 items 1–2 / practice / retest (D3 SPLIT 2026-10-09): whole take «أَيُّ كَلِمَةٍ فِيهَا صَوْتُ الْمِيمِ؟» + drill bq7_S_ma/mi/mu + bq7_E11_s1_lc; code keeps bq7_E11_s1_q8 until the carrier is live · DRAFT"
+},
+"bq7_E11_s1_lc": {
+"sp": "حبيبة",
+"t": "اِسْتَمِع، ثُمَّ اخْتَر.",
 "tag": "[clearly]",
-"use": "E11 S1 items 1–2; review S1 · SCI-1 2026-10-07: sci: «صوت (مَ – مِ – مُ)» · «استمع ثم اختر» (composed) · RE-RECORDED"
+"use": "E11 S1 tail after the drill (D3: export of takes/c_lc__2) · DRAFT"
 },
 "bq7_E11_s2_q": {
 "sp": "حبيبة",
@@ -3284,12 +3317,6 @@ window.BQ_DATA={
 "t": "اُكْتُب حَرْفَ الْمِيمِ.",
 "tag": "[clearly]",
 "use": "E11 S8 item 1 (empty box)"
-},
-"bq7_E11_s8_q2": {
-"sp": "حبيبة",
-"t": "اُكْتُبِ الْمِيمَ فِي الْكَلِمَةِ: قَمَر.",
-"tag": "[clearly]",
-"use": "E11 S8 item 2 (قَـ _ ـر)"
 },
 "bq7_E11_s9_q1": {
 "sp": "حبيبة",
@@ -3561,6 +3588,12 @@ window.BQ_DATA={
 "tag": "[clearly]",
 "use": "E13 Q3 (قَمَر / مَوْز / مَكْتَب)"
 },
+"bq7_E13_q_musht": {
+"sp": "حبيبة",
+"t": "بِمَاذَا سَرَّحَ مَاجِدٌ شَعْرَهُ؟",
+"tag": "[clearly]",
+"use": "E13 end question 1 (story order: morning) — P1-f, answer مُشْط · HAB F3 ONE take (ear-check «سَرَّحَ» /sar.ra.ħa/) · DRAFT"
+},
 "bq7_E14_intro": {
 "sp": "حبيبة",
 "t": "هَيَّا نُكْمِلُ الشَّكْلَ: اُنْظُر، ثُمَّ ضَع كُلَّ قِطْعَةٍ فِي مَكَانِهَا الصَّحِيحِ.",
@@ -3767,7 +3800,7 @@ window.BQ_DATA={
 },
 "bq7_E13_jda3": {
 "sp": "JDA",
-"t": "أَمْسِكَا يَدِي يَا وَلَدَيَّ… هَيَّا نَدْخُل.",
+"t": "أَمْسِكَا يَدِي يَا أَحِبَّائِي… هَيَّا نَدْخُل.",
 "tag": "[warm, gentle]",
 "use": "E13 scene 3 — grandmother, voice 0dHpICF3K2yC9cu1PEWg; replaces bq7_E13_say3 in the cut"
 },
@@ -3866,6 +3899,18 @@ window.BQ_DATA={
 "t": "لَوِّن حَرْفَ الْمِيمِ، وَلَوِّنِ الصُّوَرَ الَّتِي فِيهَا صَوْتُ الْمِيمِ.",
 "tag": "[clearly]",
 "use": "E15 instruction (SCI-1, verbatim)"
+},
+"bq7_E15_no_kura": {
+"sp": "بارق",
+"t": "كُرَة… لَيْسَ فِيهَا صَوْتُ الْمِيمِ.",
+"tag": "[gentle]",
+"use": "E15 distractor «كُرَة» touched with a colour (P3) · BRQ B2 ONE take · DRAFT"
+},
+"bq7_E15_no_batta": {
+"sp": "بارق",
+"t": "بَطَّة… لَيْسَ فِيهَا صَوْتُ الْمِيمِ.",
+"tag": "[gentle]",
+"use": "E15 distractor «بَطَّة» touched with a colour (P3) · BRQ B2 ONE take · DRAFT"
 },
 "bq7_E16_pick8": {
 "sp": "بارق",
@@ -4072,7 +4117,7 @@ window.BQ_DATA={
 "use": "shared ✗2 «Bariq solved» pool (BQ.fb) · FB-1 2026-10-07 · DRAFT text — owner approves"
 }
 },
-"lines7": 395,
+"lines7": 402,
 "audio": [
 "L1-01_aud-104_mix_v01",
 "L1-01_d1_s1_01",
@@ -4280,6 +4325,7 @@ window.BQ_DATA={
 "bq7_E07_numur",
 "bq7_E07_open",
 "bq7_E07_q1",
+"bq7_E07_q1b",
 "bq7_E07_q2",
 "bq7_E07_qalam",
 "bq7_E07_shape_first",
@@ -4385,6 +4431,7 @@ window.BQ_DATA={
 "bq7_E11_results",
 "bq7_E11_retest",
 "bq7_E11_review_done",
+"bq7_E11_s1_lc",
 "bq7_E11_s1_q",
 "bq7_E11_s1_q8",
 "bq7_E11_s2_q",
@@ -4437,6 +4484,7 @@ window.BQ_DATA={
 "bq7_E13_q2",
 "bq7_E13_q3",
 "bq7_E13_q_intro",
+"bq7_E13_q_musht",
 "bq7_E13_say3",
 "bq7_E13_say4",
 "bq7_E13_say6",
@@ -4456,6 +4504,8 @@ window.BQ_DATA={
 "bq7_E15_done",
 "bq7_E15_intro",
 "bq7_E15_intro8",
+"bq7_E15_no_batta",
+"bq7_E15_no_kura",
 "bq7_E15_title",
 "bq7_E16_add",
 "bq7_E16_bye",
@@ -4497,6 +4547,9 @@ window.BQ_DATA={
 "bq7_G_yes3",
 "bq7_G_yes4",
 "bq7_G_your_turn",
+"bq7_SB_ma",
+"bq7_SB_mi",
+"bq7_SB_mu",
 "bq7_S_ba",
 "bq7_S_baa",
 "bq7_S_bi",

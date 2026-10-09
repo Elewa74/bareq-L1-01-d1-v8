@@ -18,7 +18,7 @@
   const BR = [
     { id: 'forms', icon: 'map_icon_forms', line: 'bq7_E14_br_forms', label: 'أَشْكالُ المِيمِ' },
     { id: 'vowels', icon: 'map_icon_vowels', line: 'bq7_E14_br_vowels', label: 'المِيمُ مَعَ الحَرَكاتِ' },
-    { id: 'words', icon: 'map_icon_words', line: 'bq7_E14_br_words', label: 'كَلِمَاتٌ فِيهَا الْمِيمُ' } /* FIX13 R13-B-05 (DRAFT) */,
+    { id: 'words', icon: 'map_icon_words', line: 'bq7_E14_br_words', label: 'كَلِمَاتٌ فِيهَا حَرْفُ الْمِيمِ' } /* CODE-14 P6-6 */,
   ];
   const PIECES = [
     { br: 'forms', t: 'مـ', au: 'bq7_G_pos_first' }, { br: 'forms', t: 'ـمـ', au: 'bq7_G_pos_mid' }, { br: 'forms', t: 'ـم', au: 'bq7_G_pos_last' }, { br: 'forms', t: 'م', au: 'bq7_E14_alone' },

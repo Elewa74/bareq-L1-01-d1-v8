@@ -768,8 +768,10 @@
   X.saysSound = (id) => /صَوْتُ(?:هُ|ها)[:،\s]*مَ/.test(X.text(id) || '');
   X.nameSound = async function (S, id) {
     await S.say(id);
-    if (!X.saysSound(id)) await S.say(X.NAME_SOUND);
+    if (!X.saysSound(id)) await X.sayNameSound(S);
   };
+  /** CODE-14 D3: the name→sound pair = «حَرْفُ الْمِيمِ. وَهَذَا صَوْتُهُ:» (one B2 take) + the B2 drill مَ – مِ – مُ (composite until the carrier is live) */
+  X.sayNameSound = (S) => (BQ.sayDrill ? BQ.sayDrill(S, X.NAME_SOUND, null, { talk: true }) : S.say(X.NAME_SOUND));
 
   /* ================= v8 (THEME8.md · owner R3) — draft_unapproved ================= */
   /* ?theme=8 → <html data-theme="8"> + theme8.css. Then every IX2 element is drawn on a .bq8-stage (island or wooden board):

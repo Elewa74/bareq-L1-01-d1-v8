@@ -105,6 +105,80 @@
   BQ.audioSrc = (id) => (audio7.has(id) || (scan && !audioSet.has(id) && /^bq7_/.test(id)) ? 'media/audio7/' : 'media/audio/') + id + '.mp3';
   if (scan) BQ.hasAudio = (id) => audioSet.has(id) || /^bq7_/.test(id);
 
+  /* CODE-14 · D3 (DECIDE_VOICE 2026-10-09): a SENTENCE is one whole take, then the syllables «مَ – مِ – مُ» are a separate DRILL
+     (isolated clips, each chip lit while it sounds; gaps 0.6 s after the sentence, 1.0 s between syllables).
+     The VOICE team swaps the composite files for the whole-take carriers under the SAME ids. Until a carrier is live the old
+     composite (which already contains the syllables) keeps playing alone — so nothing is heard twice and nothing regresses.
+     Carrier detection = real duration of the live file (decoded, no autoplay needed) ≤ max s (composites: 10.3 / 6.6 / 6.9 / 10.0 s)
+     + the drill/tail clips it needs exist. BQ.SPLIT_FORCE = {id: true|false} overrides (QA). */
+  BQ.SPLIT = {
+    bq7_E03_l2_intro: { max: 8.3, drill: 'hab' }, bq7_E06_vowels: { max: 4.6, drill: 'hab' },
+    bq7_E06_brq_wow: { max: 5.0, drill: 'brq' }, bq7_E11_s1_q: { max: 6.2, drill: 'hab', tail: 'bq7_E11_s1_lc' },
+  };
+  BQ.DRILL = { hab: ['bq7_S_ma', 'bq7_S_mi', 'bq7_S_mu'], brq: ['bq7_SB_ma', 'bq7_SB_mi', 'bq7_SB_mu'] };
+  BQ.DRILL_T = ['مَ', 'مِ', 'مُ'];
+  BQ.SPLIT_FORCE = BQ.SPLIT_FORCE || {};
+  const splitP = {};
+  BQ.splitReady = (id) => {
+    const c = BQ.SPLIT[id]; if (!c) return Promise.resolve(false);
+    if (id in BQ.SPLIT_FORCE) return Promise.resolve(!!BQ.SPLIT_FORCE[id]);
+    if (splitP[id]) return splitP[id];
+    const need = [id].concat(BQ.DRILL[c.drill] || [], c.tail ? [c.tail] : []);
+    if (!need.every((x) => BQ.hasAudio(x)) || BQ.scan) return (splitP[id] = Promise.resolve(false));
+    const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    const dur = new Promise((res) => {
+      const t = setTimeout(() => res(null), 4000);
+      fetch(BQ.audioSrc(id)).then((r) => (r.ok ? r.arrayBuffer() : null)).then((buf) => {
+        if (!buf || !OAC) return null;
+        const oc = new OAC(1, 1, 44100);
+        return new Promise((ok2) => { const pr = oc.decodeAudioData(buf, (ab) => ok2(ab.duration), () => ok2(null)); if (pr && pr.catch) pr.catch(() => ok2(null)); });
+      }).catch(() => null).then((d) => { clearTimeout(t); res(d); });
+    });
+    return (splitP[id] = dur.then((d) => !!(d && d <= c.max)));
+  };
+  /** drill(S, ids, chips) — each syllable clip with its chip lit (chips: elements, or none → a transient chip strip in the stage) */
+  BQ.drill = async (S, ids, chips, o) => {
+    o = o || {};
+    let strip = null;
+    if (!chips || !chips.length) {
+      const host = o.host || document.querySelector('.elp-play .bq8-stage, .elp-play') || document.body;
+      strip = h('div.bq-drill', { 'aria-hidden': 'true', lang: 'ar' }, BQ.DRILL_T.slice(0, ids.length).map((t) => h('span.bq-drill-c', null, t)));
+      host.append(strip); chips = [...strip.children];
+    }
+    const pause = (ms) => (S.wait ? S.wait(ms) : S.sleep(ms)); // speech gaps are not motion: never shortened by reduced-motion
+    try {
+      await pause(o.gap0 == null ? 600 : o.gap0);
+      for (let i = 0; i < ids.length; i++) {
+        const c = chips[i]; if (c) c.classList.add('is-play');
+        try { await S.stim(ids[i]); } finally { if (c) c.classList.remove('is-play'); }
+        if (i < ids.length - 1) await pause(o.gap == null ? 1000 : o.gap);
+      }
+    } finally { if (strip) setTimeout(() => strip.remove(), 350); }
+  };
+  /** sayDrill(S, id, chips, opt) — the whole-take sentence, then (when its carrier is live) the drill and the optional tail line */
+  BQ.sayDrill = async (S, id, chips, opt) => {
+    const c = BQ.SPLIT[id]; const ready = c ? await BQ.splitReady(id) : false;
+    await S.say(id, opt);
+    if (!ready) return false;
+    await BQ.drill(S, BQ.DRILL[c.drill], chips, opt);
+    if (c.tail) { await (S.wait ? S.wait(600) : S.sleep(600)); await S.say(c.tail); }
+    return true;
+  };
+  /* CODE-14 · U2: the «rotate the iPad» hint (icon only · portrait + covers/end cards only, via CSS · dismissable for this visit) */
+  (function rotHint() {
+    const mk = () => {
+      if (document.querySelector('.bq-rot')) return;
+      let off = false; try { off = sessionStorage.getItem('bq-rot-off') === '1'; } catch (e) { /* */ }
+      if (off) return;
+      const b = h('button.bq-rot', { type: 'button', 'aria-label': 'أَدِرِ الْجِهَازَ' });
+      b.innerHTML = '<svg viewBox="0 0 72 72" aria-hidden="true"><g class="bq-rot-pad"><rect x="22" y="10" width="28" height="52" rx="6" fill="#fff" stroke="currentColor" stroke-width="4"/><circle cx="36" cy="55" r="2.6" fill="currentColor"/></g><path d="M58 22a26 26 0 0 0-14-12" fill="none" stroke="#13A3AE" stroke-width="4" stroke-linecap="round"/><path d="M45 5l-2 6 6 2" fill="none" stroke="#13A3AE" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="bq-rot-x" aria-hidden="true">×</span>';
+      b.addEventListener('click', () => { b.hidden = true; try { sessionStorage.setItem('bq-rot-off', '1'); } catch (e) { /* */ } });
+      document.body.append(b);
+    };
+    if (document.body) mk(); else document.addEventListener('DOMContentLoaded', mk);
+  })();
+  BQ.splitWarm = (ids) => { try { ids.forEach((id) => BQ.splitReady(id)); } catch (e) { /* */ } }; // elements call it on start
+
 
   /* ---------- الصوت + النصّ المصاحب ---------- */
   const SPEAKER = { 'ماجد': 'ماجِد', 'سيف': 'سَيْف', 'بارق': 'بارِق', 'واجهة': '', 'مؤثّر': '' };
@@ -428,7 +502,7 @@
         h('p.bq-end-t', { id: tid }, opt.title || 'أَحْسَنْتَ.'),
         opt.note ? h('p.bq-end-n', null, opt.note) : null,
         h('div.bq-end-row', null,
-          h('button.bq-btn.ghost', { type: 'button', onclick: () => { card.remove(); opt.onReplay && opt.onReplay(); } }, BQ.icon('replay'), 'أَعِدِ النَّشاطَ'),
+          h('button.bq-btn.ghost', { type: 'button', onclick: () => { card.remove(); opt.onReplay && opt.onReplay(); } }, BQ.icon('replay'), 'أَعِدِ النَّشَاطَ'),
           nextBtn, menuBtn),
         nx ? h('p.bq-end-next', null, h('small', null, 'التَّالِي'), ' ', h('b', null, nx.name)) : null, // R3-N9
         home.length ? homeBox(home) : null));

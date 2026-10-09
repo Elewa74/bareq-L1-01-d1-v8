@@ -25,21 +25,19 @@ const ITEMS = {
   tuffaha: { role: 'none', word: 'تُفَّاحَة' },
   miftah: { role: 'target', word: 'مِفْتَاح', m: 0, n: 1, first: 'bq7_E10c_first_miftah' }, qalam: { role: 'mid', pos: 'last', word: 'قَلَم', m: 2 },
   musht: { role: 'target', word: 'مُشْط', m: 0, n: 1, first: 'bq7_E10c_first_musht' }, kura: { role: 'none', word: 'كُرَة' },
-  qamis: { role: 'mid', pos: 'mid', word: 'قَمِيص', m: 1 }, qamar: { role: 'mid', pos: 'mid', word: 'قَمَر', m: 1 },
-  maktab: { role: 'target', word: 'مَكْتَب', m: 0, n: 1, first: 'bq7_E10c_first_maktab' }, kitab: { role: 'none', word: 'كِتَاب' },
+  // CODE-14 (DECIDE_PEDAGOGY P1-c/P4-C1/C2): qamis (wardrobe), qamar (window) and maktab/kitab (final desk choice) are no longer things to find;
+  // the wardrobe stays closed scenery (PROP_qamis hidden), the moon is scenery only (visible through the opened curtains, not tappable)
 };
+const SCENERY_HIDE = ['PROP_qamis', 'HIT_qamis'];
 const PLACES = {
   lunchbag: { cam: 'CAM_lunchbag', opens: ['ANIM_lunchbag_flap'], items: ['mawz', 'manju', 'tuffaha'], target: 'manju', demo: 'mawz' },
   drawer_desk: { cam: 'CAM_drawer_desk', opens: ['ANIM_drawer_desk'], items: ['miftah', 'qalam'], target: 'miftah' },
   chest: { cam: 'CAM_chest', opens: ['ANIM_drawer_chest'], items: ['musht', 'kura'], target: 'musht' },
-  wardrobe: { cam: 'CAM_wardrobe', opens: ['ANIM_wardrobe_L', 'ANIM_wardrobe_R'], items: ['qamis'], bonus: true },
-  window: { cam: 'CAM_window', opens: ['ANIM_curtain_L', 'ANIM_curtain_R'], items: ['qamar'], bonus: true, wonder: 'bq7_E10c_moon' },
 };
-const FINAL = { cam: 'CAM_final', items: ['maktab', 'kitab'], target: 'maktab' };
-const WORDS = [ // level 2 = SPEC §E10 round 2 (approved «أَكْمِلِ الكَلِمَةَ»), now the 4 locks of Majed's box
-  { s: 'mawz', word: 'مَوْز', m: 0, parts: ['#', 'ـوْز'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5', after: 'bq7_E10c_first_mawz' }, // SCI-1: Bariq names the piece's sound
-  { s: 'musht', word: 'مُشْط', m: 0, parts: ['#', 'ـشْط'], right: 'مُـ', wrong: ['بُـ', 'فُـ'], skill: 'S5', after: 'bq7_E10c_first_musht' },
-  { s: 'qamar', word: 'قَمَر', m: 1, parts: ['قَـ', '#', 'ـر'], right: 'ـمَـ', wrong: ['ـبَـ', 'ـفَـ'], skill: 'S6', after: 'bq7_G_pos_mid' },
+const CURTAINS = ['ANIM_curtain_L', 'ANIM_curtain_R']; // CODE-14: opened once at start so the moon is visible as scenery (owner concept C)
+const WORDS = [ // level 2 = SPEC §E10 round 2 (approved «أَكْمِلِ الكَلِمَةَ») · CODE-14 P4-C3: 3 locks, one per position (initial / middle / final)
+  { s: 'mawz', word: 'مَوْز', m: 0, parts: ['#', 'ـوْز'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5', after: null }, // P4-C4: first_mawz already heard twice in level 1
+  { s: 'numur', word: 'نُمُور', m: 1, parts: ['نُـ', '#', 'ـور'], right: 'ـمُـ', wrong: ['ـبُـ', 'ـفُـ'], skill: 'S6', after: 'bq7_G_pos_mid' }, // P1-b: replaces «قَمَر»
   { s: 'fam', word: 'فَم', m: 1, parts: ['فَـ', '#'], right: 'ـم', wrong: ['ـب', 'ـف'], skill: 'S6', after: 'bq7_G_pos_last' },
 ];
 const L = {
@@ -230,7 +228,7 @@ export async function run(host, api) {
   const reduced = !!(api.reduced && api.reduced());
   const box = h('div.g9', { 'data-shot': 'load', 'data-lock': '1' });
   host.append(box);
-  const res = { found: 0, targets: 4, wrong: 0, mid_heard: [], picks: [], words: [], items: [], first_try: 0, after_hint: 0, shown: 0, views_used: [], build_ok: true, build: VERSION };
+  const res = { found: 0, targets: 3, wrong: 0, mid_heard: [], picks: [], words: [], items: [], first_try: 0, after_hint: 0, shown: 0, views_used: [], build_ok: true, build: VERSION };
   const LOG = (window.__g9log = []); const t0 = performance.now();
   const logEv = (k, v) => LOG.push({ t: Math.round(performance.now() - t0), k, v });
   let alive = true; let muted = false;
@@ -386,6 +384,7 @@ export async function run(host, api) {
      believable comb) keeps it flat on the drawer floor (scaled about its own origin on the floor) */
   ['PROP_musht', 'HIT_musht'].forEach((n) => { const o = get(n); if (o && extras(get('PROP_kitab')).c3_book) { o.scale.multiplyScalar(1.35); o.updateMatrixWorld(true); } });
   const showWhen = []; props.scene.traverse((o) => { const v = extras(o).visible_when; if (v) { showWhen.push({ o, v }); o.visible = false; } });
+  SCENERY_HIDE.forEach((n) => { const o = get(n); if (o) { o.visible = false; o.userData.g9off = true; } }); // CODE-14: the closed wardrobe keeps its tee hidden
   /* REWORK C2: things inside a CLOSED place are hidden until it opens (in-game C5: the key peeked over the closed drawer, the tee through
      the wardrobe-door gap) and hidden again once it has closed; the moon stays (the curtains hide it) */
   Object.entries(PLACES).forEach(([p, P]) => P.items.forEach((s) => { const o = get('PROP_' + s); if (!o || s === 'qamar' || showWhen.some((x) => x.o === o)) return; showWhen.push({ o, v: p + '_open' }); o.visible = false; }));
@@ -600,9 +599,9 @@ export async function run(host, api) {
   path.append(goal);
   hud.append(instrSlot, albumBtn, h('i.g9-sp'), path, homeBtn); // C2: no second speaker-shaped button next to «listen» (the mute sticker read as a 2nd listen button); same HUD as the other v8 elements
   const starsEl = h('div.g9-stars', { 'aria-hidden': 'true' }); const stars = [];
-  for (let i = 0; i < 4; i++) { const s2 = h('i'); stars.push(s2); starsEl.append(s2); }
+  for (let i = 0; i < 3; i++) { const s2 = h('i'); stars.push(s2); starsEl.append(s2); } // CODE-14: 3 own finds in level 1 (manju · miftah · musht)
   const album = h('div.g9-album', { hidden: '' });
-  const ALB = ['manju', 'miftah', 'musht', 'maktab', 'mawz', 'qalam', 'qamis', 'qamar', 'medal'];
+  const ALB = ['manju', 'miftah', 'musht', 'mawz', 'qalam', 'medal']; // CODE-14: no maktab / qamis / qamar (not findable any more)
   const albSt = {}; ALB.forEach((s) => { const st = h('div.st', { 'data-s': s }); st.addEventListener('click', () => { if (st.classList.contains('is-on') && s !== 'medal') say('bq7_W_' + s); }); albSt[s] = st; album.append(st); });
   const albX = h('button.bq8-btn.bq8-btn--home.x', { type: 'button', 'aria-label': 'إِغْلَاقٌ' }, h('i.bq8-ic.bq8-ic--close'));
   album.append(albX);
@@ -610,7 +609,7 @@ export async function run(host, api) {
   const wordBox = h('div.g9-word', { hidden: '' });
   box.append(hud, starsEl, chip, wordBox, album);
   if (api.mountInstr) api.mountInstr(instrSlot);
-  let nStar = 0; const starOn = () => { if (stars[nStar % 4]) stars[nStar % 4].classList.add('is-on'); nStar++; ceilingStar(nStar - 1); };
+  let nStar = 0; const starOn = () => { if (stars[nStar % 3]) stars[nStar % 3].classList.add('is-on'); nStar++; ceilingStar(nStar - 1); };
   let nBag = 0; let pathN = 0; let level = 1;
   const goalFill = () => { const f = goal.querySelector('.fill'); if (f) { const hh2 = 60 * Math.min(1, nBag / 5); f.style.height = hh2 + 'px'; f.style.y = (86 - hh2) + 'px'; f.setAttribute('height', hh2); f.setAttribute('y', 86 - hh2); } };
   const pathNow = () => pathSt.forEach((st, i) => st.classList.toggle('is-now', i === pathN && pathN < 4));
@@ -620,6 +619,9 @@ export async function run(host, api) {
   const bagPop = () => { nBag++; goalFill(); goal.classList.remove('is-pop'); void goal.offsetWidth; goal.classList.add('is-pop'); setTimeout(() => goal.classList.remove('is-pop'), 320); };
   const toLevel2 = () => { level = 2; pathN = 0; nBag = 0; starsEl.hidden = true;
     pathSt.forEach((st) => { st.className = 'st'; st.replaceChildren(h('span', { html: PADLOCK_SVG(false) })); }); pathLn.forEach((l) => l.classList.remove('is-on'));
+    pathSt.forEach((st, i) => { st.hidden = i >= WORDS.length; }); pathLn.forEach((l, i) => { l.hidden = i >= WORDS.length && i < pathLn.length - 1; }); // CODE-14 P4-C3: 3 padlocks
+    [pads[3]].forEach((p) => { if (p) { [p.body, p.sh].forEach((o) => { if (o) { o.visible = false; o.userData.g9off = true; } }); } }); // hide the 4th padlock (code only)
+    boxStars.slice(WORDS.length).forEach((o) => { o.visible = false; o.userData.g9off = true; });
     goal.innerHTML = CHEST_SVG; pathNow(); };
   pathNow();
   const albAdd = (s, heard) => { const st = albSt[s]; if (!st || st.classList.contains('is-on')) return; st.classList.add('is-on');
@@ -816,7 +818,7 @@ export async function run(host, api) {
   let pI = 0; const praise = () => (FBP() ? FBP().yes() : PRAISE[(pI++) % PRAISE.length]);
   let tI = 0, sI = 0, midSeen = false, streak = 0, clean = true, earEls = [];
   const instr = (id) => { curInstr = id; return api.instruction ? api.instruction(id) : say(id); };
-  let curInstr = null;
+  let curInstr = null, nPickPl = 0;
 
   /* REWORK C2 prize (owner: «وبعد الفتح أجد جائزة»): the «م» medal rises out of the chest, confetti, then it goes into the album */
   function confetti(ms = 2800) {
@@ -963,19 +965,20 @@ export async function run(host, api) {
     if (opts.demo) { await opts.demo(ctx2); if (!ok()) return; }
     targetsNow = P.items.filter((s) => items[s] && !items[s].gone).map((s) => ({ key: s, obj: items[s].hit || items[s].prop, min: MIN_HIT, fn: () => tapThing(items[s], ctx2) }));
     box.dataset.items = P.items.filter((s) => items[s] && !items[s].gone).join(',');
-    if (!opts.demo) { await instr(L.pickThing); if (!ok()) return; }
+    if (!opts.demo) { nPickPl++; // CODE-14 P4-C8 (measured > 5:30): «اِخْتَرْ مَا يَبْدَأُ…» spoken at the first two places only; the third shows the HUD text + ear replay
+      if (nPickPl >= 2 && api.instructionQuiet) { curInstr = L.pickThing; await api.instructionQuiet(L.pickThing); } else { await instr(L.pickThing); } if (!ok()) return; }
     setLock(false); idleT = 0;
     await done; if (!ok()) return;
     setLock(true); targetsNow = []; P.leave = null;
     if (ctx2.solved && !P.bonus) P.done = true;
     if (P.bonus && ctx2.solved) P.done = true;
     homeBtn.hidden = true;
-    await sleep(350);
-    await playOpen(P.opens, false); unreveal(p);
+    await sleep(150);
     Object.values(items).forEach((it) => { if (itemGlow[it.s]) thingGlow(it.s, null); });
     earEls.forEach((e) => e.remove()); earEls = [];
     box.dataset.shot = 'master';
-    await Promise.all([glideCam('CAM_master'), brqTo('MARK_bariq_master', GLIDE)]);
+    // CODE-14 P4-C7: the place closes WHILE the camera glides back (no dead time)
+    await Promise.all([playOpen(P.opens, false).then(() => unreveal(p)), sleep(250).then(() => Promise.all([glideCam('CAM_master'), brqTo('MARK_bariq_master', GLIDE)]))]);
   }
   homeBtn.addEventListener('click', () => { if (lock) return; const P = Object.values(hs).find((x) => x.leave); if (P) P.leave(); });
 
@@ -1025,6 +1028,7 @@ export async function run(host, api) {
 
   /* ================= LEVEL 1 ================= */
   setLock(true);
+  playOpen(CURTAINS, true); // CODE-14 P1-c: the moon = scenery only (visible, never a thing to tap, no line)
   await sleep(500);
   brqAct('cheer'); await say(L.intro); if (!ok()) return res;
   brqGlowTo = 1.6; await say(L.light); if (!ok()) return res;
@@ -1036,7 +1040,7 @@ export async function run(host, api) {
     await say('bq7_W_mawz'); if (!ok()) return;
     await sayFirst(m); if (!ok()) return; // L.demo = «مَوْز… يَبْدَأُ بِـ مَ» (SCI-1; was bq7_E10_demo «…مَ! يَبْدَأُ بِصَوْتِ المِيمِ»)
     lift('mawz', false); thingGlow('mawz', null); m.gone = true; brqAct('hop');
-    await flyItem(m); albAdd('mawz', false);
+    await flyItem(m); albAdd('mawz', false); pathMark('mawz'); // CODE-14 P4-C2: the HUD's 4 stations = مَوْز (demo) · مَانْجُو · مِفْتَاح · مُشْط
     await brqTo('MARK_bariq_lunchbag', 0.6);
     await say(L.turn); if (!ok()) return;
     await instr(L.pickThing);
@@ -1051,29 +1055,7 @@ export async function run(host, api) {
     await enterPlace(p); if (!ok()) return res;
   }
   Object.keys(hs).forEach((q) => hsGlow(q, false));
-  // the last decision: the room itself — the desk (مَكْتَب) vs the picture book (كِتاب)
-  {
-    setLock(true); box.dataset.shot = 'final'; res.views_used.push('final');
-
-    await Promise.all([glideCam(FINAL.cam), brqTo('MARK_bariq_final', GLIDE)]); if (!ok()) return res;
-    const ctx2 = { place: 'final', target: 'maktab', solved: false };
-    const done = new Promise((r) => { ctx2.resolve = r; });
-    targetsNow = FINAL.items.filter((s) => items[s]).map((s) => ({ key: s, obj: items[s].hit || items[s].prop, min: MIN_HIT, fn: () => tapThing(items[s], ctx2) }));
-    box.dataset.items = FINAL.items.join(',');
-    await instr(L.final); if (!ok()) return res;
-    setLock(false); idleT = 0;
-    await done; if (!ok()) return res;
-    setLock(true); targetsNow = [];
-    // the backpack stays in Majed's hands (billboard art); without the billboard the 3D backpack goes onto the desk for the morning
-    if (!byName.majed_bb) {
-      const spot = get('SPOT_backpack_desk'), desk = get('ENV_desk');
-      if (backpack && (spot || desk)) { const p = new THREE.Vector3();
-        if (spot) spot.getWorldPosition(p); else { const db = new THREE.Box3().setFromObject(desk, true); p.set(db.max.x - 0.32, db.max.y, (db.min.z + db.max.z) / 2); }
-        backpack.parent.worldToLocal(p); backpack.position.copy(p); backpack.rotation.set(0, 0, 0); }
-      morph(backpack, 'zip', 1);
-      await say(L.deskOk); if (!ok()) return res;
-    }
-  }
+  // CODE-14 P4-C2: the final desk choice (مَكْتَب vs كِتَاب) is cut — from the chest straight to level 2
 
   /* ================= LEVEL 2 · Majed's box (REWORK C2: every correct word = one padlock drops + one stud lights + the lid creaks; then a prize) ================= */
   box.dataset.shot = 'box'; res.views_used.push('box');
@@ -1087,7 +1069,7 @@ export async function run(host, api) {
   const lidTo = (frac) => { if (!lidA) return; const act = lidA.act; act.setLoop(THREE.LoopOnce, 1); act.clampWhenFinished = true; act.enabled = true; if (!act.isRunning()) { act.reset(); act.play(); } act.paused = true; act.time = lidA.clip.duration * frac; lidA.mx.update(0); };
   let lidF = 0;
   const creak = async (n) => { // n = words done (1..3): the lid lifts a crack, light leaks out
-    const to = [0, 0.05, 0.09, 0.13][n] || 0.13; const from = lidF; const t1 = performance.now(), dur = reduced ? 30 : 500;
+    const to = [0, 0.06, 0.12][n] || 0.12; /* CODE-14 P4-C3: 3 locks */ const from = lidF; const t1 = performance.now(), dur = reduced ? 30 : 500;
     if (boxGlowDeco) boxGlowDeco.visible = true; leak.userData.want = 0.25 + 0.2 * n;
     if (api.fx) api.fx('open', 0.5);
     await new Promise((r) => { const st = () => { const t = clamp((performance.now() - t1) / dur, 0, 1); lidF = from + (to - from) * ease(t) + Math.sin(t * Math.PI * 3) * 0.006 * (1 - t); lidTo(lidF); if (t < 1 && alive) requestAnimationFrame(st); else r(); }; st(); });
@@ -1123,7 +1105,7 @@ export async function run(host, api) {
         pathMark(w.s); goal.classList.add('is-glow'); { const gl = goal.querySelector('.glow'); if (gl) gl.setAttribute('stroke-width', String(2 + 2.5 * (studs + 1))); }
         const pk = studs; studs++;
         await Promise.all([dropPad(pk), say('bq7_W_' + w.s)]); if (!ok()) return;
-        if (studs < 4) await creak(studs);
+        if (studs < WORDS.length) await creak(studs);
         await say(juicy ? praise() : (FBP() ? FBP().solveL() : SOLVE[(nSolve2++) % SOLVE.length])); if (!ok()) return;
         if (w.after) { row.querySelectorAll('.m').forEach((e) => e.classList.add('is-pulse')); await say(w.after); if (!ok()) return; } // SCI-1: «مُشْط… يَبْدَأُ بِـ مُ» · قَمَر/فَم: where the م sits
         await sleep(250);

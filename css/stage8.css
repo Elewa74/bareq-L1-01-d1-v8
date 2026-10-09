@@ -128,3 +128,39 @@
 /* E09 feedback pill «جَرِّبْ مَرَّةً أُخْرى…» / «الشَّكْلُ صَحيحٌ»: line-height 1.4 put «أُ» / «شَّ» 1–2 px above the pill top */
 :root[data-theme="8"] .elp-fit .x7-fb > span { line-height: 2.05; padding-block: calc(var(--u, 1px) * 3) calc(var(--u, 1px) * 4); }
 .elp-fit .bq-end .bq-end-row .bq-btn { min-height: max(76px, calc(66px / var(--bq-s, 1))) !important; } /* FIX13 R13-A-08: end-card buttons (incl. the lesson-end card) ≥ 64 VISUAL px at every stage scale */
+
+/* ===== CODE-14 · U2 (DECIDE_DESIGN 2026-10-09) · portrait 820×1180 — top-align + one tap floor + a gentle «rotate» hint =====
+   Landscape is untouched: --bq-tap = 76 layout px there (the constant already used, ≥ 64 px on the glass at s 0.846) and the
+   generic floor below only applies in portrait. Portrait: --bq-tap = max(76, 66 px ÷ live stage scale) → every in-stage control
+   ≥ 66 px on the glass (s 0.664 → 99 layout px). Text pills keep their width; only the minimum box grows. */
+:root[data-theme="8"] .elp-fit { --bq-tap: 76px; }
+@media (orientation: portrait) {
+  :root[data-theme="8"] .elp-fit { --bq-tap: max(76px, calc(66px / var(--bq-stage-s, 0.846))); --vp-tap: var(--bq-tap); --bq8-glass64: var(--bq-tap); }
+  :root[data-theme="8"] .elp-fit .elp-play :is(button, [role="button"], .bq8-cover__go, .bq8-btn, .bq8-slot__label, .bq8-pill, .bq-btn):not([hidden]):not(.vp-dot):not(.vp-seg) {
+    min-width: var(--bq-tap); min-height: var(--bq-tap); }
+  :root[data-theme="8"] .elp-fit .v5-end .bq-btn { min-height: var(--bq-tap) !important; }
+  /* element-head tools (outside the stage, not scaled): ≥ 64 px on the glass too — portrait has the room */
+  :root[data-theme="8"] .elp-tool { min-width: 64px; min-height: 64px; }
+}
+/* top-align: the head + stage block sits directly under the header (was centred → 375 px empty above the stage) */
+@media (orientation: portrait) and (min-height: 501px) { :root[data-theme="8"] .bq-frame.elp { justify-content: flex-start; } }
+/* «rotate the iPad» hint: icon only, portrait only, in the free band UNDER the stage (never over a control), on covers and end cards only
+   (hidden during play), dismissable (✕ = the whole sticker, remembered for this visit), turns once (2.6 s) then stays still. */
+.bq-rot { display: none; }
+@media (orientation: portrait) and (min-height: 760px) {
+  :root[data-theme="8"] body:has(.elp-fit .bq8-cover, .elp-fit .bq-end, .elp-fit .i7-end, .elp-fit .v5-end) .bq-rot:not([hidden]) { display: grid; }
+}
+.bq-rot { position: fixed; z-index: 30; left: 50%; bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px)); transform: translateX(-50%);
+  width: 112px; height: 112px; place-items: center; padding: 0; border: 3px solid #0B2D4F; border-radius: 28px; background: #FFF8E7; color: #0B2D4F;
+  box-shadow: 0 6px 0 rgba(11,45,79,.18), 0 10px 24px rgba(11,45,79,.18); cursor: pointer; opacity: .92; }
+.bq-rot svg { width: 72px; height: 72px; display: block; }
+.bq-rot .bq-rot-pad { transform-origin: 36px 36px; animation: bqRot 2.6s ease-in-out 1 both; }
+.bq-rot .bq-rot-x { position: absolute; top: -12px; inset-inline-end: -12px; width: 34px; height: 34px; border-radius: 50%; background: #0B2D4F; color: #fff; display: grid; place-items: center; font: 700 20px/1 system-ui, sans-serif; }
+@keyframes bqRot { 0%, 20% { transform: rotate(0); } 70%, 100% { transform: rotate(-90deg); } }
+@media (prefers-reduced-motion: reduce) { .bq-rot .bq-rot-pad { animation: none; transform: rotate(-90deg); } }
+/* D3 drill chips (BQ.drill transient strip): «مَ – مِ – مُ», each lit while its syllable sounds */
+.bq-drill { position: absolute; z-index: 40; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 22px; direction: rtl; pointer-events: none; animation: bqDrillIn .25s ease-out both; }
+.bq-drill-c { min-width: 96px; height: 96px; display: grid; place-items: center; border-radius: 26px; background: #fff; border: 4px solid #0B2D4F; color: #0B2D4F;
+  font: 700 54px/2.05 var(--bq8-font-letter, 'Vazirmatn', sans-serif); box-shadow: 0 6px 0 rgba(11,45,79,.2); transition: transform .18s, background .18s; }
+.bq-drill-c.is-play { background: #FFC21A; transform: scale(1.12); }
+@keyframes bqDrillIn { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }

@@ -547,7 +547,7 @@
     }
     const host = (ctx.frame && ctx.frame.querySelector('.elp-play')) || ctx.stage;
     const nextBtn = h('button.bq-btn', { type: 'button', onclick: () => BQ.goNext() }, 'التَّالِي');
-    const el = h('div.i7-end', { role: 'dialog', 'aria-label': 'انْتَهى النَّشاطُ' }, BQ.ui.brq(opt.pose || 'clap', null, 6500), h('div.i7-end-row', null, h('button.bq-btn.ghost.i7-again', { type: 'button', 'aria-label': 'أَعِدِ النَّشاطَ', onclick: replay }, '↺'), nextBtn));
+    const el = h('div.i7-end', { role: 'dialog', 'aria-label': 'انْتَهى النَّشاطُ' }, BQ.ui.brq(opt.pose || 'clap', null, 6500), h('div.i7-end-row', null, h('button.bq-btn.ghost.i7-again', { type: 'button', 'aria-label': 'أَعِدِ النَّشَاطَ', onclick: replay }, '↺'), nextBtn));
     host.append(el);
     if (opt.line) S.say(opt.line, { talk: true });
     return el;

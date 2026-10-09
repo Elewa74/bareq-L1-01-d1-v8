@@ -1942,16 +1942,19 @@
   "id": "bq7_E03_l2_intro",
   "speaker": "HAB",
   "text": "الْآنَ نَسْتَمِعُ إِلَى أَصْوَاتٍ. اِخْتَرِ الْفُقَّاعَةَ الَّتِي فِيهَا صَوْتُنَا: مَ – مِ – مُ.",
-  "dur": 10.27,
+  "dur": 6.11,
   "file": "media/audio7/bq7_E03_l2_intro.mp3",
   "take": null,
   "checks": {
-   "asr": "الآن نستمع إلى أصوات اختر الفقاعة التي فيها صوتنا م مي مو",
-   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
-   "round": "VOICE-13"
+   "verdict": "PASS (D3 split: carrier only)",
+   "lufs": -17.5,
+   "tp": -1.4,
+   "note": "D3: existing F3 whole take c_E03l2__1 (sentence part) replaces the composite; drill bq7_S_* by code. 0 credits",
+   "round": "VOICE-14"
   },
   "voice10": true,
-  "voice13": true
+  "voice13": true,
+  "voice14": true
  },
  {
   "id": "bq7_E03_title",
@@ -3020,15 +3023,19 @@
   "id": "bq7_E06_brq_wow",
   "speaker": "BRQ",
   "text": "حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.",
-  "dur": 6.92,
+  "dur": 3.13,
   "file": "media/audio7/bq7_E06_brq_wow.mp3",
   "take": null,
   "checks": {
-   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
-   "round": "VOICE-13"
+   "verdict": "PASS (D3 split: sentence only)",
+   "lufs": -17.4,
+   "tp": -1.6,
+   "note": "B2 whole take. ASR exact 1.00, «الميم» p0.99. Display: owner rule no «!» (code team). Audio = sentence only; B2 drill bq7_SB_ma/mi/mu played by code. Replaces the composite",
+   "round": "VOICE-14"
   },
   "voice10": true,
-  "voice13": true
+  "voice13": true,
+  "voice14": true
  },
  {
   "id": "bq7_E06_end",
@@ -3216,16 +3223,19 @@
   "id": "bq7_E06_vowels",
   "speaker": "HAB",
   "text": "المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.",
-  "dur": 6.58,
+  "dur": 2.51,
   "file": "media/audio7/bq7_E06_vowels.mp3",
   "take": null,
   "checks": {
-   "asr": "الميم مع الحركات",
-   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
-   "round": "VOICE-13"
+   "verdict": "PASS (D3 split: carrier only)",
+   "lufs": -17.1,
+   "tp": -3.6,
+   "note": "D3: existing F3 whole take c_E06vow__1 replaces the composite; drill bq7_S_* by code. 0 credits",
+   "round": "VOICE-14"
   },
   "voice10": true,
-  "voice13": true
+  "voice13": true,
+  "voice14": true
  },
  {
   "id": "bq7_E07_alone",
@@ -5253,16 +5263,19 @@
   "id": "bq7_E11_s1_q",
   "speaker": "HAB",
   "text": "أَيُّ كَلِمَةٍ فِيهَا صَوْتُ (مَ – مِ – مُ)؟ اِسْتَمِع، ثُمَّ اخْتَر.",
-  "dur": 10.03,
+  "dur": 3.32,
   "file": "media/audio7/bq7_E11_s1_q.mp3",
   "take": null,
   "checks": {
-   "asr": "أي كلمة فيها صوت؟ م م م استمع ثم اختر",
-   "verdict": "COMPOSITE KEPT — 4 whole takes FAIL (syllables long 0.42–0.56 s, or mi→u, or sentence repeated / garbled)",
-   "round": "VOICE-13"
+   "verdict": "PASS (D3 split: sentence only)",
+   "lufs": -17.4,
+   "tp": -4.2,
+   "note": "F3 whole take. ASR exact 1.00, «الميم» p1.00, no repetition. Audio = sentence only; drill bq7_S_ma/mi/mu + bq7_E11_s1_lc are played by code (S.drill). Replaces the composite",
+   "round": "VOICE-14"
   },
   "voice10": true,
-  "voice13": true
+  "voice13": true,
+  "voice14": true
  },
  {
   "id": "bq7_E11_s2_q",
@@ -5795,18 +5808,15 @@
   "id": "bq7_E13_jda3",
   "speaker": "JDA",
   "text": "أَمْسِكا يَدي يا وَلَدَيَّ… هَيّا نَدْخُلْ!",
-  "dur": 3.03,
+  "dur": 4.78,
   "file": "media/audio7/bq7_E13_jda3.mp3",
-  "take": "J3__3.mp3",
+  "take": null,
   "checks": {
-   "asr": "أمسك يدي يا ولدي هيا ندخل",
-   "sim": 0.95,
-   "verdict": "BEST-OF-4 (LISTEN)",
-   "lufs": -17.5,
-   "tp": -3.5,
-   "note": "«أمسكا» /aː/ F1 650–1140 ≈300 ms PASS; «وَلَدَيْيَ» spelling: vowel after د F1 444–494 F2 ≈2300 (front /a/, borderline vs F1>500) — best of 4 takes (#1/#2/#4 steady /i/ or F1≈400)",
-   "round": "audio7 unchanged; VOICE-13 take only in final_V13 (video)"
-  }
+   "verdict": "FINAL (D2 panel 2026-10-09, take J3D__1)",
+   "note": "V13 DRAFT installed unchanged (no new generation): ASR «أحبائي» p0.99, every segment present, «أمسكا» dual /aː/ ≈0.20 s then pause",
+   "round": "VOICE-14"
+  },
+  "voice14": true
  },
  {
   "id": "bq7_E13_jda6",
@@ -5964,14 +5974,15 @@
   "text": "حَرْفُ المِيمِ… صَوْتُهُ مَ! وَهُوَ في يَوْمي كُلِّهِ!",
   "dur": 4.94,
   "file": "media/audio7/bq7_E13_maj8b.mp3",
-  "take": "maj8b_B",
+  "take": null,
   "checks": {
-   "note": "new take; «مَ!» separate chunk 0.35 s",
-   "max_closed_nasal_s": 0,
-   "dur": 4.94,
-   "lufs": -17.4,
-   "tp": -2.6
-  }
+   "verdict": "PASS* (LISTEN: syllables slightly long)",
+   "lufs": -17.5,
+   "tp": -1.4,
+   "note": "P5 follow-up, Majed variant A (+4 % formant). ONE whole take with Latin syllables: a/i/u clearly distinct (F1/F2 666/1683 · 292/2537 · 368/1067), vowels 0.29–0.35 s (a bit long; ASR hears «ما مي مو»). Take 1 (Arabic مَ، مِ، مُ) = same vowel ×3 FAIL. final_V14 only (audio7 unchanged) — for the next E13 rebuild (T32 re-sync)",
+   "round": "VOICE-14"
+  },
+  "voice14": true
  },
  {
   "id": "bq7_E13_n1",
@@ -6041,16 +6052,15 @@
   "id": "bq7_E13_n3b",
   "speaker": "HAB",
   "text": "أَخَذَتِ الجَدَّةُ ماجِدًا وَسَيْفًا إِلى حَديقَةِ الحَيَوانِ.",
-  "dur": 4.1,
+  "dur": 4.81,
   "file": "media/audio7/bq7_E13_n3b.mp3",
-  "take": "g37_A",
+  "take": null,
   "checks": {
-   "asr_score": 1.0,
-   "heard": "اخذتالجدهماجداوسيفااليحديقهالحيوان",
-   "dur": 4.1,
-   "lufs": -17.5,
-   "tp": -1.4
-  }
+   "verdict": "PASS (R13-B-17 housekeeping)",
+   "note": "stale «ماجداً» audio7 copy replaced by the verified video take final_M/bq7_E13_n3b (n3b__1, ASR exact)",
+   "round": "VOICE-14"
+  },
+  "voice14": true
  },
  {
   "id": "bq7_E13_n4",
@@ -6360,87 +6370,50 @@
   "id": "bq7_E13_say3",
   "speaker": "SAY",
   "text": "صَباحُ الخَيْرِ يا ماجِدُ! صَباحُ الخَيْرِ يا بارِقُ!",
-  "dur": 3.89,
+  "dur": 3.55,
   "file": "media/audio7/bq7_E13_say3.mp3",
-  "take": "g33_A",
+  "take": null,
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     3.3
-    ],
-    "B": [
-     1.0,
-     0,
-     3.26
-    ]
-   },
-   "heard": "صباحالخيرياماجدصباحالخيريابارق",
-   "max_closed_nasal_s": 0,
-   "dur": 3.42,
+   "verdict": "PASS",
    "lufs": -17.5,
    "tp": -1.4,
-   "voice9_tail_trim": {
-    "what": "phrase-final name: qalqala burst kept 22 ms + 12 ms fade, the a-coloured aspirated tail after it (heard as «…ـا») removed; same fix as bq7_E13_brq0",
-    "trim": "burst onset 3.217 s, kept to 3.239, silence to 3.259 (next speech 3.289)",
-    "lufs": -17.4,
-    "tp": -3.2,
-    "round": "VOICE-9 2026-10-07",
-    "old_file": "v7/voice/old_v7/voice9/bq7_E13_say3.mp3"
-   },
-   "asr": "صباح الخير يا ماجد صباح الخير يا بارق",
-   "verdict": "PASS"
+   "note": "Ekram + formant +6 %. ASR exact (1.00); F0 med 273; cos Majed 0.708. Take 2 F0 238 FAIL. NB: say3 is not in the current E13 cut (jda3 replaced it) — recorded for consistency",
+   "round": "VOICE-14"
   },
-  "voice10": true
+  "voice10": true,
+  "voice14": true
  },
  {
   "id": "bq7_E13_say4",
   "speaker": "SAY",
   "text": "اُنْظُرا! نُمورٌ كَبيرَةٌ!",
-  "dur": 2.51,
+  "dur": 2.8,
   "file": "media/audio7/bq7_E13_say4.mp3",
-  "take": "g33_A",
+  "take": null,
   "checks": {
-   "asr_score": 1.0,
-   "scores": {
-    "A": [
-     1.0,
-     0,
-     2.37
-    ],
-    "B": [
-     1.0,
-     0,
-     2.4
-    ]
-   },
-   "heard": "انظرانموركبيره",
-   "max_closed_nasal_s": 0,
-   "dur": 2.51,
+   "verdict": "PASS (whole take, first reading)",
    "lufs": -17.4,
-   "tp": -5.6
-  }
+   "tp": -3.9,
+   "note": "Saif = EKRAM LE1b8WpPSScCUklGPKzg + formant +6 % (D1 panel). Take SAY4__4 (tts «اُنْظُرَاا» doubled alif) repeated the sentence → first complete reading kept (edge trim, 0–3.05 s raw). ASR «انظرا» p0.91; dual /aː/ F1 640–850 F2 1400–1600 ≈0.44 s then 0.29 s pause; F0 med 294; cos Majed 0.766 (<0.78). Takes 1–2 (tts «اُنْظُرَا…») ASR «انظر» FAIL; take 3 (Latin unẓurā) ASR «انظر» 10.9 s FAIL",
+   "round": "VOICE-14"
+  },
+  "voice14": true
  },
  {
   "id": "bq7_E13_say6",
   "speaker": "SAY",
   "text": "المانْجو حُلْوَةٌ!",
-  "dur": 1.41,
+  "dur": 1.54,
   "file": "media/audio7/bq7_E13_say6.mp3",
-  "take": "fx_say6_A",
+  "take": null,
   "checks": {
-   "dj_fric_ms": 50,
-   "dj_splice": "/g/ release replaced by same-voice /dʒ/ release from ipa_say_A.mp3",
-   "note": "TTS sentence takes still said /g/; closure-to-closure splice keeps sentence prosody",
-   "dur": 1.41,
+   "verdict": "PASS",
    "lufs": -17.4,
-   "tp": -3.2,
-   "max_closed_nasal_s": 0,
-   "fix_round": "R2-fix 2026-10-05",
-   "nasal_run_resolution_s": 0.05
-  }
+   "tp": -4.0,
+   "note": "Ekram + formant +6 %. ASR «المنجو حلوة» (sim .91, p .90); jīm frication 45 ms (≥35); F0 med 250 (gate 250–320, at the edge); cos Majed 0.716. Take 1: dj 20 ms FAIL",
+   "round": "VOICE-14"
+  },
+  "voice14": true
  },
  {
   "id": "bq7_E13_title",
@@ -7775,19 +7748,16 @@
   "id": "bq7_E10c_box_open",
   "speaker": "BRQ",
   "text": "اِنْفَتَحَ الصُّنْدوقُ! اُنْظُرْ إِلى النُّجومِ!",
-  "dur": 3.66,
+  "dur": 4.1,
   "file": "media/audio7/bq7_E10c_box_open.mp3",
-  "take": "e10c/box_open_A",
+  "take": null,
   "checks": {
-   "asr": "انفتح الصندوق انظر الى النجوم",
-   "model": "eleven_v4",
-   "status": "DRAFT",
-   "dur": 3.4,
-   "lufs": -17.4,
-   "tp": -4.1,
-   "verdict": "PASS"
+   "verdict": "PASS (P6-3 approved)",
+   "note": "existing V12 B2 whole take V12_E10c_box_open__1 installed unchanged (ASR exact, 4.1 s)",
+   "round": "VOICE-14"
   },
-  "voice10": true
+  "voice10": true,
+  "voice14": true
  },
  {
   "id": "bq7_E10c_win_maj",
@@ -8945,5 +8915,127 @@
   "checks": {
    "verdict": "PASS"
   }
+ },
+ {
+  "id": "bq7_E11_s1_lc",
+  "speaker": "HAB",
+  "text": "اِسْتَمِع، ثُمَّ اخْتَر.",
+  "dur": 2.53,
+  "file": "media/audio7/bq7_E11_s1_lc.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (existing carrier)",
+   "lufs": -17.4,
+   "tp": -3.9,
+   "note": "D3: existing F3 whole take c_lc__2 exported as its own file (edge trim + −17). 0 credits",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_SB_ma",
+  "speaker": "BRQ",
+  "text": "مَ",
+  "dur": 0.63,
+  "file": "media/audio7/bq7_SB_ma.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (isolated syllable)",
+   "note": "D3: B2 drill syllable, segment 0 of gb_mshort__2 (build_A SEG B_ma), exp13_syl way. 0 credits",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_SB_mi",
+  "speaker": "BRQ",
+  "text": "مِ",
+  "dur": 0.63,
+  "file": "media/audio7/bq7_SB_mi.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (isolated syllable)",
+   "note": "D3: segment 1 of gb_mshort__2 (B_mi). 0 credits",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_SB_mu",
+  "speaker": "BRQ",
+  "text": "مُ",
+  "dur": 0.71,
+  "file": "media/audio7/bq7_SB_mu.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (isolated syllable)",
+   "note": "D3: segment 2 of gb_mshort__2 (B_mu). 0 credits",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_E07_q1b",
+  "speaker": "HAB",
+  "text": "قَمِيص. حَدِّد حَرْفَ الْمِيمِ فِي الْكَلِمَةِ.",
+  "dur": 3.84,
+  "file": "media/audio7/bq7_E07_q1b.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (DRAFT text, P1-a)",
+   "lufs": -17.4,
+   "tp": -3.6,
+   "note": "F3 ONE whole take (replaces composed bq7_E07_q1, retired). ASR exact 1.00 («قميص» p0.96, «الميم» p1.00)",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_E13_q_musht",
+  "speaker": "HAB",
+  "text": "بِمَاذَا سَرَّحَ مَاجِدٌ شَعْرَهُ؟",
+  "dur": 2.56,
+  "file": "media/audio7/bq7_E13_q_musht.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (DRAFT text, P1-f; LISTEN «سَرَّحَ»)",
+   "lufs": -17.4,
+   "tp": -1.6,
+   "note": "F3 whole take. ASR exact 1.00 («سرح» p0.86 — ear-check gemination /sar.ra.ħa/). End question, new order q1 = this. Replaces retired bq7_E13_q3",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_E15_no_kura",
+  "speaker": "BRQ",
+  "text": "كُرَة… لَيْسَ فِيهَا صَوْتُ الْمِيمِ.",
+  "dur": 3.24,
+  "file": "media/audio7/bq7_E15_no_kura.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (DRAFT text, P3)",
+   "lufs": -17.4,
+   "tp": -2.8,
+   "note": "B2 whole take. ASR exact 1.00",
+   "round": "VOICE-14"
+  },
+  "voice14": true
+ },
+ {
+  "id": "bq7_E15_no_batta",
+  "speaker": "BRQ",
+  "text": "بَطَّة… لَيْسَ فِيهَا صَوْتُ الْمِيمِ.",
+  "dur": 3.37,
+  "file": "media/audio7/bq7_E15_no_batta.mp3",
+  "take": null,
+  "checks": {
+   "verdict": "PASS (DRAFT text, P3)",
+   "lufs": -17.5,
+   "tp": -1.3,
+   "note": "B2 whole take. ASR exact 1.00 («بطة» p0.85)",
+   "round": "VOICE-14"
+  },
+  "voice14": true
  }
 ]

@@ -9,7 +9,7 @@
      كلّ لمس يُسمِع الاسم أوّلاً ← ✓ إلى السلّة + نجمة + مديح · قَلَم/قَميص: توهّج ذهبيّ + «أَحْسَنْتَ!» + بطاقة الكلمة والميم ملوّنة + موضعها + «اِلْمِسْ كُلَّ شَيْءٍ يَبْدَأُ بِصَوْتِ المِيمِ… مَ»
      · ✗١ علامة حمراء + «حاوِلْ مَرَّةً أُخْرى» + «اِسْمَعْ أَوَّلَ الكَلِمَةِ.» · ✗٢ متتاليتان ← بارق يأخذ أقرب هدف (بلا نجمة) + جملة مشجّعة. record('S1', ok) لكلّ هدف.
    الجولة ٢ «أَكْمِلِ الكَلِمَةَ» (نشاط HTML عاديّ؛ بنمط v8 حين ?theme=8): صورة + كلمة بخانة ناقصة + ٣ قطع صامتة (لمس أو سحب، تثبت مباشرة)
-     ✗١ شكل الميم · ✗٢ الضوء · ③ النموذج بهدوء. record('S5') مَوْزْ مُشْطْ · record('S6') قَمَرْ فَمْ (ok = من المحاولة الأولى).
+     ✗١ شكل الميم · ✗٢ الضوء · ③ النموذج بهدوء. record('S5') مَوْز · record('S6') نُمُور فَم (ok = من المحاولة الأولى) — CODE-14: 3 locks.
    الفوز: «شُكْرًا يا صَديقي! وَجَدْنا كُلَّ شَيْءٍ!». لا مؤقّت ولا خسارة. العقد: {bq:'done', station:'E10', result:{…}} من اللعبة (الجولة ١). */
 (function () {
   'use strict';
@@ -48,8 +48,7 @@
   const MIDW = { qalam: { word: 'قَلَم', m: 2 }, qamis: { word: 'قَميص', m: 1 } };
   const WORDS = [
     { s: 'mawz', word: 'مَوْز', m: 0, parts: ['#', 'ـوْز'], right: 'مَـ', wrong: ['بَـ', 'فَـ'], skill: 'S5' },
-    { s: 'musht', word: 'مُشْط', m: 0, parts: ['#', 'ـشْط'], right: 'مُـ', wrong: ['بُـ', 'فُـ'], skill: 'S5' },
-    { s: 'qamar', word: 'قَمَر', m: 1, parts: ['قَـ', '#', 'ـر'], right: 'ـمَـ', wrong: ['ـبَـ', 'ـفَـ'], skill: 'S6' },
+    { s: 'numur', word: 'نُمُور', m: 1, parts: ['نُـ', '#', 'ـور'], right: 'ـمُـ', wrong: ['ـبُـ', 'ـفُـ'], skill: 'S6' }, // CODE-14 P1-b/P4-C3: 3 locks مَوْز · نُمُور · فَم (no «قَمَر», no 2nd مُشْط)
     { s: 'fam', word: 'فَم', m: 1, parts: ['فَـ', '#'], right: 'ـم', wrong: ['ـب', 'ـف'], skill: 'S6' },
   ];
   const v8 = () => document.documentElement.dataset.theme === '8';
@@ -485,7 +484,7 @@
         if (juicy && stars.length) { nStar++; if (stars[nStar - 1]) stars[nStar - 1].classList.add('is-on'); } // stars only on correct answers
         await say('bq7_W_' + w.s); if (!ok()) return;
         await say(juicy ? praise() : fbSolve()); if (!ok()) return;
-        await say({ mawz: FIRST.mawz, musht: FIRST.musht, qamar: 'bq7_G_pos_mid', fam: 'bq7_G_pos_last' }[w.s]); if (!ok()) return; // SCI-1: same as the g9 game
+        { const af = { numur: 'bq7_G_pos_mid', fam: 'bq7_G_pos_last' }[w.s]; if (af) { await say(af); if (!ok()) return; } } // CODE-14 P4-C4: same as the g9 game (no line after مَوْز)
         await wait(ctx, 400);
         done.end();
       };
@@ -593,11 +592,11 @@
   function report(ctx, r) {
     const AR = BQ.AR || String;
     const pk = (r.picks || []).map((p) => ({ maktab: 'مَكْتَب', musht: 'مُشْط', miftah: 'مِفْتاح', manju: 'مانْجو' }[p.slug] || p.slug) + (p.how === 'shown' ? ' (أخذه بارق بعد لمستين)' : p.how === 'hint' ? ' (بعد أن أضاءه بارق)' : p.ok ? ' ✓' : ' (بعد لمسة في غير موضعها)')).join(' · ');
-    const md = (r.mid_heard || []).map((m) => ({ qalam: 'قَلَم (آخرها)', qamis: 'قَميص (وسطها)', qamar: 'قَمَر (وسطها)' }[m.slug] || m.slug)).join(' · ');
-    const wd = (r.words || []).map((w) => ({ mawz: 'مَوْز', musht: 'مُشْط', qamar: 'قَمَر', fam: 'فَم' }[w.slug] || w.slug) + ': ' + (w.how === 'first' ? 'من المحاولة الأولى' : w.how === 'shown' ? 'عُرض النموذج' : 'بعد تلميح')).join(' · ');
-    ctx.adultNote('<p class="goal"><b>نتيجة «اِلْعَب» (قرائن لا درجة):</b> وجد ' + AR(r.found || 0) + ' من ' + AR(r.targets || 4) + ' أشياء تبدأ بصوت الميم · لمسات في غير موضعها: ' + AR(r.wrong || 0) + '.</p>' +
+    const md = (r.mid_heard || []).map((m) => ({ qalam: 'قَلَم (آخرها)', qamis: 'قَمِيص (وسطها)' }[m.slug] || m.slug)).join(' · ');
+    const wd = (r.words || []).map((w) => ({ mawz: 'مَوْز', numur: 'نُمُور', fam: 'فَم' }[w.slug] || w.slug) + ': ' + (w.how === 'first' ? 'من المحاولة الأولى' : w.how === 'shown' ? 'عُرض النموذج' : 'بعد تلميح')).join(' · ');
+    ctx.adultNote('<p class="goal"><b>نتيجة «اِلْعَب» (قرائن لا درجة):</b> وجد ' + AR(r.found || 0) + ' من ' + AR(r.targets || 3) + ' أشياء تبدأ بصوت الميم · لمسات في غير موضعها: ' + AR(r.wrong || 0) + '.</p>' +
       (pk ? '<p>الجولة ١ (S1): ' + pk + '</p>' : '') + (md ? '<p>سمع الميم في غير أوّل الكلمة (قرينة S6، ليست خطأ): ' + md + '</p>' : '') + (wd ? '<p>الجولة ٢ (S5 أوّل الكلمة · S6 وسطها وآخرها): ' + wd + '</p>' : '') +
-      '<p class="lp-muted">لاحظ: هل يعتمد على الصوت (يستمع قبل أن يقرّر) أم على التخمين بالصورة؟ قَلَم وقَميص فيهما ميم ليست في الأوّل.</p>');
+      '<p class="lp-muted">لاحظ: هل يعتمد على الصوت (يستمع قبل أن يقرّر) أم على التخمين بالصورة؟ قَلَم فيه ميم ليست في الأوّل.</p>');
   }
 
   /* the 16:9 board (round 1) and the 1180:820 v8 stage (round 2) as big as the screen allows */
@@ -652,6 +651,7 @@
       img: (k) => ctx.img(k),
       say: (id, o) => { muted = !!(o && o.volume === 0); return ctx.say(id, { noCaption: !BQ.state.cc, volume: o && o.volume != null ? o.volume : 1 }); },
       instruction: (id) => (muted ? (ctx.instruction(lineText(id), null, { icon: 'hand' }), Promise.resolve()) : ctx.instruction(lineText(id), id, { icon: 'hand' })),
+      instructionQuiet: (id) => { ctx.instruction(lineText(id), null, { icon: 'hand' }); if (ctx.onReplay) ctx.onReplay(() => ctx.say(id, { noCaption: !BQ.state.cc })); return Promise.resolve(); }, // CODE-14 P4-C8
       stopAudio: () => { try { BQ.audio.stop(); } catch (e) { /* */ } },
       fx: (k, v) => { if (muted || !FX[k] || !BQ.audio.fx) return; BQ.audio.fx(FX[k], v == null ? 0.8 : v); },
       record: (skill, ok, extra) => ctx.record(skill, ok, extra),
@@ -715,7 +715,7 @@
     const runHtml = () => { stage.replaceChildren(); round1Html(stage, ctx, res, toRound2); };
     const canGame = BQ.ui && BQ.ui.godot && BQ.ui.godotOK && BQ.ui.godotOK();
     if (!canGame) return runHtml();
-    const note = h('p.meta', null, 'الجولة ١ لعبة ثلاثية الأبعاد (غرفة ماجد)، والجولة ٢ نشاط «أَكْمِلِ الكَلِمَةَ»؛ النتيجة تظهر هنا للمعلّم حين تنتهي.');
+    const note = h('p.meta', null, 'الجولة ١ لعبة ثلاثية الأبعاد (غرفة ماجد): يجد الطفل ٣ أشياء تبدأ بصوت الميم (مانجو · مفتاح · مشط) = S1، وبارق يبدأ بالموز. الجولة ٢ صندوق ماجد بثلاثة أقفال «أَكْمِلِ الكَلِمَةَ»: مَوْز (أوّل الكلمة) = S5 · نُمُور (وسطها) وفَم (آخرها) = S6. النتيجة تظهر هنا للمعلّم حين تنتهي.');
     const alt = h('p', null, h('button.bq-btn.ghost', { type: 'button', onclick: () => { g.destroy(); alt.remove(); note.textContent = 'تعمل الآن النسخة الخفيفة.'; runHtml(); } }, 'تشغيل النسخة الخفيفة (تعمل في أيّ متصفّح)'));
     ctx.adultNote(h('div', null, note, alt));
     let r1done = false;

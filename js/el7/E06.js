@@ -143,6 +143,9 @@
     if (!document.getElementById('st-e06')) document.head.append(h('style', { id: 'st-e06' }, CSS));
     if (!document.getElementById('st-e06-8')) document.head.append(h('style', { id: 'st-e06-8' }, CSS8));
     const S = I.session(ctx, { noText: false });
+    // CODE-14 D3: «حَرْفُ الْمِيمِ. وَهَذَا صَوْتُهُ:» (one take) + the B2 drill مَ – مِ – مُ — always paired (name → sound)
+    const sayNameSound = () => BQ.sayDrill(S, 'bq7_E06_brq_wow', null, { talk: true });
+    if (BQ.splitWarm) BQ.splitWarm(['bq7_E06_brq_wow', 'bq7_E06_vowels']);
     const V8 = I.v8();
     /* v8 element builders */
     const ref8 = (big) => { const sp = h('span', null, 'م'); const t = h('button.e06-ref.bq8-tile.bq8-tile--letter' + (big ? '.e06-ref-big' : ''), { type: 'button', 'aria-label': 'م', lang: 'ar' }, sp); I.fitGlyph(t, sp, 0.16); return t; };
@@ -151,7 +154,7 @@
     const kas8 = (g) => g.replace(/\u0645\u0650/g, '\u0645<i class="e06-kas" aria-hidden="true"></i>');
     const tile8 = (g, aria, spk) => { const sp = h('span', { html: kas8(g) }); const t = h('button.e06-tile.bq8-tile.bq8-tile--syll', { type: 'button', 'aria-label': aria, lang: 'ar' }, sp); if (spk) t.append(h('span.e06-spk', { 'aria-hidden': 'true' }, I.i8('listen'))); I.fitGlyph(t, sp, 0.13); return t; };
     I.lines({
-      bq7_E06_recall: 'سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.', bq7_E06_reveal: 'وَهَذا شَكْلُهُ: م. هَذا حَرْفُ المِيمِ.', bq7_E06_brq_wow: 'حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.',
+      bq7_E06_recall: 'سَمِعْنا هَذا الصَّوْتَ: مَ… مِ… مُ.', bq7_E06_reveal: 'وَهَذا شَكْلُهُ: م. هَذا حَرْفُ المِيمِ.', bq7_E06_brq_wow: 'حَرْفُ الْمِيمِ. وَهَذَا صَوْتُهُ: مَ – مِ – مُ.',
       bq7_E06_vowels: 'المِيمُ مَعَ الحَرَكاتِ: مَ… مِ… مُ.', bq7_E06_tap_vowels: 'اِخْتَر كُلَّ وَاحِدَةٍ، وَاسْتَمِع.',
       bq7_E06_find_intro: 'اِسْتَمِع إِلَى الْكَلِمَةِ، وَحَدِّد حَرْفَ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.', bq7_E06_ok_letter: 'هَذَا حَرْفُ الْمِيمِ، صَوْتُهُ: مَ – مِ – مُ.',
       bq7_E06_match_intro: 'اِسْتَمِع، ثُمَّ اخْتَرِ الْمَكْتُوبَ الَّذِي سَمِعْتَهُ.', bq7_E06_end: 'الآنَ نَعْرِفُ شَكْلَ صَوْتِنا: م.',
@@ -203,7 +206,7 @@
       big.classList.add('lit'); I.sfx('sparkle'); I.burst(root, big, 26);
       await p;
       buddy.cheer();
-      await S.say('bq7_E06_brq_wow', { talk: true });
+      await sayNameSound();
       steps.on(si++);
     }
     async function reveal() {
@@ -224,7 +227,7 @@
       board.classList.add('lit'); I.sfx('sparkle'); I.burst(root, board, 26);
       await p;
       wrap.querySelector('.e06-holder .bq-brq').brq && wrap.querySelector('.e06-holder .bq-brq').brq('cheer');
-      await S.say('bq7_E06_brq_wow', { talk: true }); // بلا فاصل: «…حَرْفُ المِيمِ.» ← «حَرْفُ المِيمِ! صَوْتُهُ: مَ!» (الاسم لا يبقى وحده)
+      await sayNameSound(); // CODE-14 D3 · بلا فاصل: «…حَرْفُ المِيمِ.» ← «حَرْفُ المِيمِ! صَوْتُهُ: مَ!» (الاسم لا يبقى وحده)
       buddy.el.style.visibility = '';
       steps.on(si++);
     }
@@ -233,11 +236,14 @@
       steps.cur(si);
       const wrap = h('div.e06-tiles', { role: 'group', 'aria-label': 'مَ مِ مُ' });
       const tiles = SYL.map((x, i) => { const t = V8 ? tile8(colorM(x.g), x.g, true) : h('button.e06-tile', { type: 'button', 'aria-label': x.g, lang: 'ar' }, h('span', { html: colorM(x.g) })); t.x = x; t.classList.add('i7-in'); t.style.animationDelay = (i * 0.12) + 's'; wrap.append(t); return t; });
-      if (V8) { const rb = ref8(true); rb.tabIndex = -1; rb.addEventListener('click', async () => { if (busy) return; busy = true; rb.classList.add('is-hint'); await S.say('bq7_E06_brq_wow', { talk: true }); rb.classList.remove('is-hint'); busy = false; }); main.replaceChildren(rb, wrap); }
+      if (V8) { const rb = ref8(true); rb.tabIndex = -1; rb.addEventListener('click', async () => { if (busy) return; busy = true; rb.classList.add('is-hint'); await sayNameSound(); rb.classList.remove('is-hint'); busy = false; }); main.replaceChildren(rb, wrap); }
       else main.replaceChildren(wrap);
-      const p = S.say('bq7_E06_vowels');
-      for (const t of tiles) { await S.wait(900); t.classList.add('is-play'); setTimeout(() => t.classList.remove('is-play'), 600); }
-      await p;
+      if (await BQ.splitReady('bq7_E06_vowels')) { await S.say('bq7_E06_vowels'); await BQ.drill(S, BQ.DRILL.hab, tiles); } // CODE-14 D3: whole-take heading, then the drill on the tiles
+      else { // the composite is still live (it carries the syllables itself)
+        const p = S.say('bq7_E06_vowels');
+        for (const t of tiles) { await S.wait(900); t.classList.add('is-play'); setTimeout(() => t.classList.remove('is-play'), 600); }
+        await p;
+      }
       I.instr(S, 'bq7_E06_tap_vowels', 'hand', async () => { if (busy) return; busy = true; await S.say('bq7_E06_tap_vowels'); busy = false; });
       await S.say('bq7_E06_tap_vowels');
       tiles.forEach((t) => t.classList.add('need'));
@@ -289,7 +295,7 @@
               if (first == null) { first = true; I.record(S, 'S5', true, { item: w.slug }); log.push([info.w, true]); }
               tw.unpaint(tIdx, 'is-hint'); tw.paint(tIdx, 'is-m'); s.classList.add('i8-ok'); I.sfx('ok'); I.burst(root, s, 16); buddy.cheer(); if (V8) f8.star();
               await S.say(I.yes(), { talk: true });
-              if (!wowFind) { wowFind = true; await S.say('bq7_E06_brq_wow', { talk: true }); } // «حَرْفُ المِيمِ، صَوْتُهُ: مَ» — FIX13 R13-A-05: once for the find moment (first word), not after every word
+              if (!wowFind) { wowFind = true; await sayNameSound(); } // «حَرْفُ المِيمِ، صَوْتُهُ: مَ» — FIX13 R13-A-05: once for the find moment (first word), not after every word
               await I.playOn(S, pic, I.segId(w.slug));
               await S.sleep(350);
               idleSet(null); return resolve();
