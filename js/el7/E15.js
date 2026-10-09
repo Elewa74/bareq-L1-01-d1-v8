@@ -38,14 +38,14 @@
        closed regions per cell — top row L→R: mawz · kura · musht ; bottom row L→R: manju · miftah · batta ; + the «م» frame (letter / hole / card points).
        Object keys the code expects: mawz, musht, miftah, manju (role m) · kura, batta (role 'no'). Output file: media/img8/color_page_m9.webp.
      Then paste build.py's boxes into PAGES_V9 below and set ART_V9 = true (QA preview now: ?e15v9=1 — only once the file exists). */
-  const ART_V9 = false;
+  const ART_V9 = true;   // ART-15 2026-10-09: media/img8/color_page_m9.webp delivered (GPT ball + duck composited on T5's line art)
   const PAGES_V9 = [{ key: 'color_page_m9', src: 'media/img8/color_page_m9.webp', letter: [0.4656, 0.1445], hole: [0.5294, 0.1246], card: [0.1812, 0.0742],
-    objects: [{ k: 'musht', box: [0.6269, 0.3358, 0.9825, 0.5811] }, // provisional = today's cell boxes (replace with build.py output)
-      { k: 'kura', box: [0.3869, 0.3137, 0.6381, 0.5974], role: 'no' },
-      { k: 'mawz', box: [0.0169, 0.3248, 0.3525, 0.5926] },
-      { k: 'batta', box: [0.6544, 0.658, 0.9844, 0.8979], role: 'no' },
-      { k: 'miftah', box: [0.3256, 0.6297, 0.6569, 0.8953] },
-      { k: 'manju', box: [0.0281, 0.6253, 0.3175, 0.901] }] }];
+    objects: [{ k: 'mawz', box: [0.0169, 0.3248, 0.3525, 0.5926] }, // ART-15 2026-10-09: build.py boxes for color_page_m9 (draft_unapproved art)
+      { k: 'kura', box: [0.3725, 0.3672, 0.6206, 0.5444], role: 'no' },
+      { k: 'musht', box: [0.6269, 0.3358, 0.9825, 0.5811] },
+      { k: 'manju', box: [0.0281, 0.6253, 0.3175, 0.901] },
+      { k: 'miftah', box: [0.3656, 0.6209, 0.6169, 0.9046] },
+      { k: 'batta', box: [0.675, 0.6686, 0.965, 0.8869], role: 'no' }] }];
   if (ART_V9 || /[?&]e15v9=1/.test(location.search)) PAGES.splice(0, PAGES.length, ...PAGES_V9);
   const MIN_OBJ = 3;        // CODE-14 P3: done = the letter + ≥ 3 of the 4 «م» pictures (was ≥ 2 of 6)
   const isTarget = (o) => !!o && o.role !== 'no' && !o.extra;

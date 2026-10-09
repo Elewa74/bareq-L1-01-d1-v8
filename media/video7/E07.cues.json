@@ -6,7 +6,7 @@
  "poster": "media/video7/E07.jpg",
  "duration": 67.333,
  "status": "draft_unapproved",
- "source": "video_src/e07_v8.py · v8 SCI-1 text (no exclamation mark, full tashkeel) (E07-v8-video14-2026-10-09) · 1920×1080 24 fps",
+ "source": "video_src/e07_v8.py · v8 SCI-1 text (no exclamation mark, full tashkeel) (E07-v8-video15-2026-10-09) · 1920×1080 24 fps",
  "scenes": [
   {
    "t": 0,
@@ -189,7 +189,7 @@
   }
  ],
  "interim": "Grok motion pending: V8_E07_M09 V8_E07_M10 (start-frame stills with gentle motion)",
- "build": "E07-v8-video14-2026-10-09",
+ "build": "E07-v8-video15-2026-10-09",
  "rail_clearance": {
   "limit": 784,
   "bottoms": {
