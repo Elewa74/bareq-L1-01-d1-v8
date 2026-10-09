@@ -6,7 +6,7 @@
  "poster": "media/video7/E07.jpg",
  "duration": 67.333,
  "status": "draft_unapproved",
- "source": "video_src/e07_v8.py · v8 SCI-1 text (no exclamation mark, full tashkeel) (E07-v8-video15-2026-10-09) · 1920×1080 24 fps",
+ "source": "video_src/e07_v8.py · v8 SCI-1 text (no exclamation mark, full tashkeel) (E07-v8-video16-2026-10-09) · 1920×1080 24 fps",
  "scenes": [
   {
    "t": 0,
@@ -158,38 +158,8 @@
   }
  ],
  "rule": "تُمْسِكُ يَدَ جَارِهَا… وَفِي الْآخِرِ تُرْخِي ذَيْلَهَا.",
- "placeholders": [
-  {
-   "gid": "V8_E07_M09",
-   "line": "bq7_E07m_sum",
-   "t": 46.818,
-   "end": 53.858,
-   "rect": [
-    815,
-    85,
-    1105,
-    345
-   ],
-   "still": "site_v7/media/img8/brq8_point.webp",
-   "note": "PLACEHOLDER: approved Bariq still (no lip overlay) — the lead drops the aligned Grok speaking clip here"
-  },
-  {
-   "gid": "V8_E07_M10",
-   "line": "bq7_E07m_rule",
-   "t": 56.163,
-   "end": 64.353,
-   "rect": [
-    1330,
-    590,
-    1560,
-    820
-   ],
-   "still": "site_v7/media/img8/brq8_front.webp",
-   "note": "PLACEHOLDER: approved Bariq still (no lip overlay) — the lead drops the aligned Grok speaking clip here"
-  }
- ],
  "interim": "Grok motion pending: V8_E07_M09 V8_E07_M10 (start-frame stills with gentle motion)",
- "build": "E07-v8-video15-2026-10-09",
+ "build": "E07-v8-video16-2026-10-09",
  "rail_clearance": {
   "limit": 784,
   "bottoms": {
@@ -201,5 +171,32 @@
    "shelf ـم": 779,
    "shelf م": 773
   }
- }
+ },
+ "bariq_loops": [
+  {
+   "gid": "g15_E07_brq_wave",
+   "t": 42.05,
+   "end": 46.4,
+   "use": "S5 «وَحْدَهَا» goodbye wave"
+  },
+  {
+   "gid": "g15_E07_brq_point",
+   "t": 46.36,
+   "end": 54.3,
+   "use": "S6 M09 bq7_E07m_sum (voice-over, closed-mouth smile)"
+  },
+  {
+   "gid": "g15_E07_brq_point (mirrored)",
+   "t": 54.3,
+   "end": 64.35,
+   "use": "S7 M10 bq7_E07m_rule (voice-over), points at the rule card"
+  },
+  {
+   "gid": "g15_E07_brq_listen",
+   "t": 64.15,
+   "end": 67.33,
+   "use": "S8 ✋ listen loop"
+  }
+ ],
+ "bariq_loops_note": "VIDEO-16: lead green-screen Grok loops (grok15/), chroma-keyed + despilled, ping-pong looped, ≥ 18 % frame height; replace the M09/M10 placeholder stills"
 }

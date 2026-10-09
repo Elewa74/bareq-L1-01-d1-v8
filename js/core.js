@@ -992,8 +992,11 @@
     let started = false; // the whole card is one tap target (≥ 64 px at every stage scale) → start only once
     const go = () => { if (started) return; started = true; A.unlock(); if (play) play.classList.remove('has-cover'); ctx.frame.classList.remove('has-cover'); if (c) c.remove(); onStart(); };
     /* known v8 covers (data.js «cov8», scanned by build_data_v7.py) → never request a missing file (no 404); old data without the list → try + fallback */
-    const has8 = !Array.isArray(D.cov8) || D.cov8.includes(id);
-    const img = h('img', { src: has8 ? 'media/img8/cov8_' + id + '.webp' : (meta.cover_file || BLANK8), alt: '', decoding: 'async', draggable: 'false' });
+    /* ART-16 · DECIDE_DESIGN U1 d2 «شريط الحكاية»: a cov9_<ID>.webp picture (data «cov9») → full-bleed picture + cream ribbon (inline SVG)
+       + title zone (right) + ONE button zone (left); otherwise the older cov8 layout below stays as fallback. */
+    const d2 = Array.isArray(D.cov9) && D.cov9.includes(id);
+    const has8 = !d2 && (!Array.isArray(D.cov8) || D.cov8.includes(id));
+    const img = h('img', { src: d2 ? 'media/img8/cov9_' + id + '.webp' : has8 ? 'media/img8/cov8_' + id + '.webp' : (meta.cover_file || BLANK8), alt: '', decoding: 'async', draggable: 'false' });
     if (has8 && COV8_POS[id]) img.style.objectPosition = COV8_POS[id];
     img.addEventListener('error', () => { img.style.objectPosition = ''; if (meta.cover_file) img.src = meta.cover_file; }, { once: true });
     const tid = 'elp-cv-t';
@@ -1002,12 +1005,57 @@
     const btn = isVid
       ? h('button.bq8-cover__playbtn', { type: 'button', 'aria-label': 'شَغِّلِ الفيديو', onclick: stop })
       : h('button.bq8-cover__go', { type: 'button', onclick: stop }, 'اِبْدَأِ النَّشاطَ', h('i.bq8-ic.bq8-ic--next', { 'aria-hidden': 'true' }));
-    const card = h('div.bq8-cover.bq8-cover--' + (isVid ? 'video' : 'activity'), { role: 'group', 'aria-labelledby': tid, onclick: go },
-      h('div.bq8-cover__art', null, img),
-      h('div.bq8-cover__side', null, title, btn));
+    const card = d2
+      ? h('div.bq8-cover.bq8-cover--d2.bq8-cover--' + (isVid ? 'video' : 'activity'), { role: 'group', 'aria-labelledby': tid, onclick: go },
+          h('div.bq8-cover__art', null, img),
+          h('div.bq8-cover__ribbon', { 'aria-hidden': 'true', html: COV9_RIBBON }),
+          h('div.bq8-cover__tz', null, title),
+          h('div.bq8-cover__bz', null, btn))
+      : h('div.bq8-cover.bq8-cover--' + (isVid ? 'video' : 'activity'), { role: 'group', 'aria-labelledby': tid, onclick: go },
+          h('div.bq8-cover__art', null, img),
+          h('div.bq8-cover__side', null, title, btn));
     c = h('div.elp-start.elp-cover', { dataset: { el: id } }, card);
     (play || ctx.stage).append(c);
-    cov8FitTitle(title);
+    if (d2) cov9InkFit(title); else cov8FitTitle(title);
+  }
+  /* d2 ribbon (U1 §2): ONE inline SVG in stage units 1180×820 — paper top edge y 600, scroll curls x 0–70 / 1110–1180, #FBF3E0→#F6EAD0, soft navy shadow */
+  const COV9_RIBBON = '<svg viewBox="0 0 1180 820" preserveAspectRatio="none" focusable="false"><defs>'
+    + '<linearGradient id="cv9p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF3E0"/><stop offset="1" stop-color="#F6EAD0"/></linearGradient>'
+    + '<linearGradient id="cv9c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBD9B4"/><stop offset="1" stop-color="#E0C99C"/></linearGradient>'
+    + '<filter id="cv9s" x="-5%" y="-30%" width="110%" height="160%"><feDropShadow dx="0" dy="-4" stdDeviation="7" flood-color="#0B2D4F" flood-opacity=".18"/></filter></defs>'
+    + '<path d="M0 600 H1180 V820 H0 Z" fill="url(#cv9p)" filter="url(#cv9s)"/>'
+    + '<path d="M0 600 Q35 588 70 600 V786 Q35 774 0 786 Z" fill="url(#cv9c)" opacity=".85"/>'
+    + '<path d="M1180 600 Q1145 588 1110 600 V786 Q1145 774 1180 786 Z" fill="url(#cv9c)" opacity=".85"/>'
+    + '<path d="M70 600 V786 M1110 600 V786" stroke="#D8C08F" stroke-width="2" opacity=".7"/>'
+    + '<path d="M0 601 H1180" stroke="#FFFDF6" stroke-width="3" opacity=".9"/></svg>';
+  /* U1 §3 ink-fit: the title glyphs INCLUDING tashkeel (canvas actualBoundingBox) sit centred inside the safe ink box x 575–1110 · y 612–736
+     of the 1180×820 stage; one line, max 96 / min 64 px (below 64 the content team rewords — logged, never wrapped). Layout px of the card,
+     so the result is the same at every stage scale. */
+  const COV9_SAFE = [575, 612, 1110, 736];
+  function cov9InkFit(t) {
+    const fit = () => {
+      if (!t.isConnected) return;
+      const card = t.closest('.bq8-cover'), z = t.parentNode, k = card.offsetWidth / 1180;
+      if (!(k > 0)) return;
+      const S = COV9_SAFE.map((v) => v * k), W = S[2] - S[0], H = S[3] - S[1], T = t.textContent;
+      const ff = getComputedStyle(t).fontFamily, cv = document.createElement('canvas').getContext('2d');
+      cv.direction = 'rtl'; cv.textAlign = 'right'; cv.textBaseline = 'alphabetic';
+      const m = (f) => { cv.font = '700 ' + f + 'px ' + ff; const r = cv.measureText(T); return { L: r.actualBoundingBoxLeft, R: r.actualBoundingBoxRight, A: r.actualBoundingBoxAscent, D: r.actualBoundingBoxDescent }; };
+      let f = 96 * k, q = m(f);
+      while (f > 30 * k && (q.L + q.R > W || q.A + q.D > H)) { f -= 1; q = m(f); }
+      if (f < 64 * k) console.warn('cover title below 64 px — needs a shorter title (content team):', T);
+      t.style.fontSize = f + 'px';
+      /* canvas textAlign right: x = right anchor; ink spans [x-L, x+R]; text-box right edge = anchor. Baseline from a 0-size marker. */
+      let mk = t.querySelector('.bq8-bl'); if (!mk) { mk = document.createElement('span'); mk.className = 'bq8-bl'; t.appendChild(mk); }
+      const sc = card.getBoundingClientRect().width / card.offsetWidth || 1, tb = t.getBoundingClientRect();
+      const base = (mk.getBoundingClientRect().top - tb.top) / sc, tw = tb.width / sc;
+      const cx = (S[0] + S[2]) / 2, cy = (S[1] + S[3]) / 2, xr = cx - (q.R - q.L) / 2, yb = cy - (q.D - q.A) / 2;
+      t.style.left = (xr - tw) + 'px'; t.style.top = (yb - base) + 'px';
+      t.dataset.ink = [xr - q.L, yb - q.A, xr + q.R, yb + q.D].map((v) => Math.round(v / k)).join(',');
+      t.dataset.fs = Math.round(f / k);
+    };
+    requestAnimationFrame(fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
   /* العنوان سطرٌ واحد دائماً (عيب المالك E16: حركات «الأُ» في فراغ السطرين تصطدم بالسطر الأوّل) — يُصغَّر الخطّ حتى يتّسع؛
      المسرح ثابت 1180×820 فالقياس بوحدات التخطيط نفسها في كلّ مقاس. */

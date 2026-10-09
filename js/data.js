@@ -1,6 +1,6 @@
 /* data.js — مولَّد من build_data_v7.py (لا تحرّره يدوياً) · v7 مسوّدة · draft_unapproved */
 window.BQ_DATA={
-"build": "261009034506",
+"build": "261009125903",
 "lesson_id": "L1-01-d1",
 "title": "صَوْتُ «م»",
 "title_plan": "صوت الميم /م/",
@@ -5272,6 +5272,24 @@ window.BQ_DATA={
 "card_qadam": "media/img7/w_qadam.webp"
 },
 "cov8": [
+"E01",
+"E02",
+"E03",
+"E04",
+"E05",
+"E06",
+"E07",
+"E08",
+"E09",
+"E10",
+"E11",
+"E12",
+"E13",
+"E14",
+"E15",
+"E16"
+],
+"cov9": [
 "E01",
 "E02",
 "E03",

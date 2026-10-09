@@ -303,3 +303,27 @@
 @keyframes bq8CovDrift { from { transform: scale(1); } to { transform: scale(1.05) translateX(1%); } }
 @media (prefers-reduced-motion: reduce) { .bq8-cover__art > img { animation: none; } }
 /* (portrait branch removed 2026-10-05: the stage is fixed 1180×740 and scaled, so the cover is always landscape) */
+
+/* ───────── 9b · ART-16 · DECIDE_DESIGN U1 d2 «شريط الحكاية» (Story Ribbon) cover — draft_unapproved ─────────
+   Card = the 1180×820 stage (cq units: 1cqw = 11.8 layout px, 1cqh = 8.2). Picture full-bleed (GPT 1536×1024, centre cover-crop, action y ≤ 590);
+   cream ribbon = ONE inline SVG (core.js COV9_RIBBON, top edge y 600); title zone right (ink box x 575–1110, y 612–736, core.js cov9InkFit);
+   button zone left, centre (283, 690): activity = yellow pill «اِبْدَأِ النَّشاطَ» 84 layout px high, video = round play Ø 124 at the same centre.
+   Owner R3: title + ONE button only, no chip, no duration; the whole card stays the tap target. Tap floor --bq-tap (U2) keeps ≥ 64 px on glass. */
+.bq8-cover--d2 { background: #F6EAD0; }
+.bq8-cover--d2::after { content: none; }
+.bq8-cover--d2 .bq8-cover__art { inset: 0; width: 100%; -webkit-mask-image: none; mask-image: none; }
+.bq8-cover--d2 .bq8-cover__art > img { object-position: 50% 50%; animation: none; transform: none; }
+.bq8-cover__ribbon { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
+.bq8-cover__ribbon > svg { display: block; width: 100%; height: 100%; }
+.bq8-cover__tz { position: absolute; z-index: 3; inset: 0; pointer-events: none; }
+.bq8-cover--d2 .bq8-cover__title { position: absolute; left: 48.7cqw; top: 74.6cqh; margin: 0; padding: 0; line-height: 1; white-space: nowrap;
+  font: 700 8.13cqw/1 var(--font-bubble); color: #0B2D4F; overflow: visible; }
+.bq8-cover--d2 .bq8-bl { display: inline-block; width: 0; height: 0; vertical-align: baseline; }
+.bq8-cover__bz { position: absolute; z-index: 3; left: 23.98cqw; top: 84.15cqh; width: 0; height: 0; display: block; }
+.bq8-cover--d2 .bq8-cover__go { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); white-space: nowrap;
+  min-height: max(7.12cqw, var(--bq-tap, 76px)); height: auto; padding: 0 2.4cqw 0 1.9cqw; gap: .5em; font: 600 2.63cqw/1 var(--font-ui); }
+.bq8-cover--d2 .bq8-cover__go:hover { transform: translate(-50%, calc(-50% - 2px)); }
+.bq8-cover--d2 .bq8-cover__go:active { transform: translate(-50%, calc(-50% + 3px)); }
+.bq8-cover--d2 .bq8-cover__playbtn { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); width: max(10.51cqw, var(--bq-tap, 76px)); }
+.bq8-cover--d2 .bq8-cover__playbtn:hover { transform: translate(-50%, calc(-50% - 2px)); }
+.bq8-cover--d2 .bq8-cover__playbtn:active { transform: translate(-50%, calc(-50% + 3px)); }
